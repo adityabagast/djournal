@@ -1,0 +1,89 @@
+import 'db/app_database.dart';
+
+/// Semua data keuangan dalam satu objek, plus perhitungan turunannya.
+/// Saldo tidak pernah disimpan: selalu dihitung dari transaksi
+/// (docs/data-model.md §4.1).
+class MoneySnapshot {
+  MoneySnapshot({
+    required this.wallets,
+    required this.categories,
+    required this.transactions,
+    this.budgets = const [],
+  }) : walletById = {for (final w in wallets) w.id: w},
+       categoryById = {for (final c in categories) c.id: c};
+
+  final List<Wallet> wallets;
+  final List<Category> categories;
+  final List<Budget> budgets;
+
+  /// Terbaru dulu.
+  final List<MoneyTx> transactions;
+
+  final Map<String, Wallet> walletById;
+  final Map<String, Category> categoryById;
+
+  int balanceOf(String walletId) {
+    final w = walletById[walletId];
+    var total = w?.openingBalance ?? 0;
+    for (final t in transactions) {
+      switch (t.type) {
+        case 'income' when t.walletId == walletId:
+          total += t.amount;
+        case 'expense' when t.walletId == walletId:
+          total -= t.amount;
+        case 'transfer':
+          if (t.walletId == walletId) total -= t.amount;
+          if (t.toWalletId == walletId) total += t.amount;
+      }
+    }
+    return total;
+  }
+
+  int get totalBalance => wallets.fold(0, (sum, w) => sum + balanceOf(w.id));
+
+  Iterable<MoneyTx> onDate(String localDate) =>
+      transactions.where((t) => t.localDate == localDate);
+
+  Iterable<MoneyTx> inMonth(String monthKey) =>
+      transactions.where((t) => t.localDate.startsWith(monthKey));
+
+  static int sumOf(Iterable<MoneyTx> txs, String type) =>
+      txs.where((t) => t.type == type).fold(0, (s, t) => s + t.amount);
+
+  /// Budget yang berlaku untuk [monthKey] = baris dengan start_month
+  /// terbesar yang ≤ bulan itu (docs/data-model.md §4.4). 0 = tanpa budget.
+  int budgetFor(String categoryId, String monthKey) {
+    Budget? best;
+    for (final b in budgets) {
+      if (b.categoryId != categoryId || b.startMonth.compareTo(monthKey) > 0) {
+        continue;
+      }
+      if (best == null || b.startMonth.compareTo(best.startMonth) > 0) best = b;
+    }
+    return best?.amount ?? 0;
+  }
+
+  int totalBudget(String monthKey) => categories
+      .where((c) => c.kind == 'expense')
+      .fold(0, (sum, c) => sum + budgetFor(c.id, monthKey));
+
+  int spentIn(String categoryId, String monthKey) =>
+      inMonth(monthKey)
+          .where((t) => t.type == 'expense' && t.categoryId == categoryId)
+          .fold(0, (s, t) => s + t.amount);
+
+  /// Total pengeluaran per kategori, terbesar dulu.
+  List<(Category, int)> expenseByCategory(String monthKey) {
+    final totals = <String, int>{};
+    for (final t in inMonth(monthKey)) {
+      if (t.type != 'expense' || t.categoryId == null) continue;
+      totals[t.categoryId!] = (totals[t.categoryId!] ?? 0) + t.amount;
+    }
+    final rows = [
+      for (final e in totals.entries)
+        if (categoryById[e.key] case final c?) (c, e.value),
+    ];
+    rows.sort((a, b) => b.$2.compareTo(a.$2));
+    return rows;
+  }
+}

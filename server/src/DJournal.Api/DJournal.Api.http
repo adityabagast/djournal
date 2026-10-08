@@ -1,0 +1,52 @@
+### Contoh request. Di VS Code butuh ekstensi "REST Client" (humao.rest-client).
+
+@host = http://localhost:5095
+
+### Cek server
+GET {{host}}/api/health
+
+### Daftar
+POST {{host}}/api/auth/register
+Content-Type: application/json
+
+{ "email": "kamu@example.com", "password": "rahasia123" }
+
+### Login → salin accessToken ke variabel @token di bawah
+# @name login
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{ "email": "kamu@example.com", "password": "rahasia123" }
+
+###
+@token = {{login.response.body.accessToken}}
+
+### Info user
+GET {{host}}/api/me
+Authorization: Bearer {{token}}
+
+### Push satu dompet
+POST {{host}}/api/sync/push
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+{
+  "wallets": [
+    {
+      "id": "6f1c1f9e-1b7a-4c7e-9a52-3f1d2b8f0001",
+      "createdAt": "2026-10-08T01:00:00Z",
+      "updatedAt": "2026-10-08T01:00:00Z",
+      "deletedAt": null,
+      "name": "Tunai",
+      "type": "cash",
+      "openingBalance": 100000,
+      "color": null,
+      "sortOrder": 0,
+      "isArchived": false
+    }
+  ]
+}
+
+### Pull semua perubahan
+GET {{host}}/api/sync/pull?since=0
+Authorization: Bearer {{token}}

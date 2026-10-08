@@ -1,0 +1,7 @@
+# Pengaturan lokal Claude Code / editor per orang
+.claude/settings.local.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

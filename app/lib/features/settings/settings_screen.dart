@@ -1,0 +1,124 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../core/theme.dart';
+import '../../providers.dart';
+import '../../ui/common.dart';
+import '../account/account_card.dart';
+import '../money/budget_screen.dart';
+
+class SettingsScreen extends ConsumerWidget {
+  const SettingsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final t = Theme.of(context).textTheme;
+    final lang = context.localeTag;
+
+    Widget sectionTitle(String text) => Padding(
+      padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+      child: Text(
+        text.toUpperCase(),
+        style: t.bodySmall?.copyWith(
+          fontWeight: FontWeight.w600,
+          color: AppColors.muted,
+          fontSize: 13,
+        ),
+      ),
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          l.settings,
+          style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+        children: [
+          const AccountCard(),
+          const SizedBox(height: 20),
+          sectionTitle(l.language),
+          AppCard(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l.language,
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      SegmentedButton<String>(
+                        showSelectedIcon: false,
+                        segments: const [
+                          ButtonSegment(value: 'id', label: Text('Indonesia')),
+                          ButtonSegment(value: 'en', label: Text('English')),
+                        ],
+                        selected: {lang},
+                        onSelectionChanged: (s) => ref
+                            .read(settingsRepositoryProvider)
+                            .set('language', s.first),
+                      ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 1, color: AppColors.divider),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l.currency,
+                          style: const TextStyle(fontWeight: FontWeight.w500),
+                        ),
+                      ),
+                      Text(
+                        l.currencyValue,
+                        style: const TextStyle(color: AppColors.muted),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 20),
+          sectionTitle(l.data),
+          AppCard(
+            padding: EdgeInsets.zero,
+            child: ListTile(
+              onTap: () => BudgetScreen.open(context),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18),
+              ),
+              title: Text(
+                l.budget,
+                style: const TextStyle(fontWeight: FontWeight.w500),
+              ),
+              subtitle: Text(
+                l.budgetSubtitle,
+                style: const TextStyle(fontSize: 12, color: AppColors.muted),
+              ),
+              trailing: const Icon(Icons.chevron_right, color: AppColors.muted),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Center(
+            child: Text(
+              l.versionLabel('0.1.0'),
+              style: t.bodySmall?.copyWith(color: AppColors.muted),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
