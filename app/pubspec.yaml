@@ -18,6 +18,7 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^3.4.3
   flutter_secure_storage: ^11.2.0
+  flutter_svg: ^2.3.0
   google_fonts: ^9.0.0
   http: ^1.6.0
   intl: ^0.20.3
@@ -33,7 +34,28 @@ dev_dependencies:
   flutter_lints: ^6.0.0
   drift_dev: ^2.35.1
   build_runner: ^2.16.2
+  flutter_launcher_icons: ^0.14.4
 
 flutter:
   uses-material-design: true
   generate: true
+  assets:
+    - assets/mascot/
+
+# Icon app. Sumbernya SVG di tool/icon/; cara membuat ulang ada di
+# tool/render_icons_test.dart.
+flutter_launcher_icons:
+  image_path: tool/icon/out/icon.png
+  android: true
+  min_sdk_android: 21
+  adaptive_icon_background: "#CDEBDD"
+  adaptive_icon_foreground: tool/icon/out/icon_foreground.png
+  # Foreground sudah berupa kanvas 108dp lengkap dengan area aman.
+  adaptive_icon_foreground_inset: 0
+  ios: true
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: tool/icon/out/icon.png
+    background_color: "#CDEBDD"
+    theme_color: "#1F5F4E"
