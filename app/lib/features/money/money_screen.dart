@@ -8,6 +8,7 @@ import '../../data/db/app_database.dart';
 import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 import 'tx_form_screen.dart';
 import 'wallet_form_sheet.dart';
 
@@ -92,7 +93,26 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
               ],
             ),
             const SizedBox(height: 16),
-            if (groups.isEmpty) EmptyNote(l.noTransactions),
+            if (snap.transactions.isEmpty)
+              MascotEmpty(
+                pose: MascotPose.koin,
+                tint: MascotTint.lemon,
+                title: l.mascotTxEmptyTitle,
+                message: l.mascotTxEmptyBody,
+                size: 160,
+                action: FilledButton(
+                  onPressed: () => TxFormScreen.open(context),
+                  child: Text(l.mascotRecordTx),
+                ),
+              )
+            else if (groups.isEmpty)
+              MascotEmpty(
+                pose: MascotPose.mencari,
+                tint: MascotTint.sky,
+                title: l.mascotFilterEmptyTitle,
+                message: l.mascotFilterEmptyBody,
+                size: 140,
+              ),
             for (final entry in groups.entries) ...[
               _DayHeader(
                 label: dayLabel(context, entry.key),

@@ -8,6 +8,7 @@ import '../../data/journal_repository.dart';
 import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 import '../../ui/mood.dart';
 import '../money/tx_form_screen.dart';
 
@@ -111,7 +112,14 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
           body: _body.text,
           tags: parseTags(_tags.text),
         );
-    if (mounted) Navigator.of(context).pop();
+    if (!mounted) return;
+    final l = context.l10n;
+    showMascotSnackBar(
+      context,
+      MascotPose.senang,
+      widget.existing == null ? l.toastEntrySaved : l.toastEntryUpdated,
+    );
+    Navigator.of(context).pop();
   }
 
   Future<void> _delete() async {

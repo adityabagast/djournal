@@ -606,4 +606,85 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get errServer =>
       'Something went wrong on the server. Try again later.';
+
+  @override
+  String get mascotTodayEmptyTitle => 'Hi! Today is still empty';
+
+  @override
+  String get mascotJournalEmptyTitle => 'No entries yet';
+
+  @override
+  String get mascotJournalEmptyBody =>
+      'Write a little about your day: mood, stories, or spending.';
+
+  @override
+  String get mascotWriteEntry => 'Write an entry';
+
+  @override
+  String get mascotTxEmptyTitle => 'No transactions yet';
+
+  @override
+  String get mascotTxEmptyBody => 'Record your first income or expense.';
+
+  @override
+  String get mascotRecordTx => 'Record a transaction';
+
+  @override
+  String get mascotFilterEmptyTitle => 'Nothing found';
+
+  @override
+  String get mascotFilterEmptyBody => 'No transactions match this filter yet.';
+
+  @override
+  String get mascotReportEmptyTitle => 'No data this month yet';
+
+  @override
+  String get mascotReportEmptyBody =>
+      'The report appears once you record some spending.';
+
+  @override
+  String get mascotNoBudgetTitle => 'No budget yet';
+
+  @override
+  String get mascotNoBudgetBody =>
+      'Set a budget to keep your spending in check.';
+
+  @override
+  String get mascotBudgetOkTitle => 'All budgets are on track';
+
+  @override
+  String get mascotBudgetOkBody => 'Keep it up until the end of the month!';
+
+  @override
+  String mascotBudgetOverTitle(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count categories over budget',
+      one: '1 category over budget',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String mascotBudgetOverBody(String names) {
+    return '$names. Maybe ease off a little.';
+  }
+
+  @override
+  String get toastEntrySaved => 'Entry saved';
+
+  @override
+  String get toastEntryUpdated => 'Entry updated';
+
+  @override
+  String get toastTxSaved => 'Transaction saved';
+
+  @override
+  String toastBudgetOver(String category) {
+    return '$category budget exceeded';
+  }
+
+  @override
+  String get toastSynced => 'Sync complete';
 }

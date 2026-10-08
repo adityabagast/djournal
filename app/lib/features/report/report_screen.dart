@@ -8,6 +8,7 @@ import '../../data/insights.dart';
 import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 import '../money/budget_screen.dart';
 
 class ReportScreen extends ConsumerWidget {
@@ -82,6 +83,15 @@ class ReportScreen extends ConsumerWidget {
             ScreenHeader(
               overline: DateFormat('MMMM y', context.localeTag).format(now),
               title: l.navReport,
+            ),
+            const SizedBox(height: 16),
+            _BudgetMood(
+              hasSpending: monthOut > 0,
+              hasBudget: budgetRows.any((r) => r.$3 > 0),
+              overBudget: [
+                for (final (cat, spent, budget) in budgetRows)
+                  if (budget > 0 && spent > budget) categoryLabel(l, cat),
+              ],
             ),
             const SizedBox(height: 16),
             AppCard(
@@ -210,6 +220,81 @@ class _MoodSpendingCard extends StatelessWidget {
           ),
           const SizedBox(height: 10),
           Text(text, style: t.bodyMedium?.copyWith(color: deep)),
+        ],
+      ),
+    );
+  }
+}
+
+/// Kartu maskot di atas laporan: ringkasan kondisi budget bulan ini.
+class _BudgetMood extends StatelessWidget {
+  const _BudgetMood({
+    required this.hasSpending,
+    required this.hasBudget,
+    required this.overBudget,
+  });
+
+  final bool hasSpending;
+  final bool hasBudget;
+
+  /// Nama kategori yang pengeluarannya melewati budget.
+  final List<String> overBudget;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final t = Theme.of(context).textTheme;
+    final (pose, tint, title, body) = !hasSpending
+        ? (
+            MascotPose.tidur,
+            MascotTint.sky,
+            l.mascotReportEmptyTitle,
+            l.mascotReportEmptyBody,
+          )
+        : overBudget.isNotEmpty
+        ? (
+            MascotPose.sedih,
+            MascotTint.rose,
+            l.mascotBudgetOverTitle(overBudget.length),
+            l.mascotBudgetOverBody(overBudget.join(', ')),
+          )
+        : !hasBudget
+        ? (
+            MascotPose.koin,
+            MascotTint.lemon,
+            l.mascotNoBudgetTitle,
+            l.mascotNoBudgetBody,
+          )
+        : (
+            MascotPose.senang,
+            MascotTint.pink,
+            l.mascotBudgetOkTitle,
+            l.mascotBudgetOkBody,
+          );
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(8, 10, 16, 10),
+      decoration: BoxDecoration(
+        color: tint,
+        borderRadius: BorderRadius.circular(18),
+      ),
+      child: Row(
+        children: [
+          Mascot(pose, size: 80),
+          const SizedBox(width: 8),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const SizedBox(height: 2),
+                Text(body, style: t.bodySmall?.copyWith(color: AppColors.ink)),
+              ],
+            ),
+          ),
         ],
       ),
     );

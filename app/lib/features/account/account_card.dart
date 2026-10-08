@@ -7,6 +7,7 @@ import '../../core/theme.dart';
 import '../../data/sync/account_controller.dart';
 import '../../data/sync/backend.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 import 'sign_in_screen.dart';
 
 /// Kartu akun di Pengaturan: ajakan masuk, atau email + status sync.
@@ -18,7 +19,6 @@ class AccountCard extends ConsumerWidget {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
     final account = ref.watch(accountProvider);
-    final controller = ref.read(accountProvider.notifier);
 
     final avatar = Container(
       width: 48,
@@ -144,7 +144,9 @@ class AccountCard extends ConsumerWidget {
                       child: Text(l.signIn),
                     )
                   : OutlinedButton(
-                      onPressed: account.syncing ? null : controller.sync,
+                      onPressed: account.syncing
+                          ? null
+                          : () => _syncNow(context, ref),
                       child: Text(l.syncNow),
                     ),
             ],
@@ -165,6 +167,18 @@ class AccountCard extends ConsumerWidget {
           ),
         ],
       ),
+    );
+  }
+
+  /// Sinkron manual dari tombol; sinkron otomatis tidak memunculkan snackbar.
+  Future<void> _syncNow(BuildContext context, WidgetRef ref) async {
+    await ref.read(accountProvider.notifier).sync();
+    if (!context.mounted || ref.read(accountProvider).error != null) return;
+    showMascotSnackBar(
+      context,
+      MascotPose.sinkron,
+      context.l10n.toastSynced,
+      aboveDock: false,
     );
   }
 

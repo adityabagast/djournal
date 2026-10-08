@@ -605,4 +605,79 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get errServer => 'Terjadi kesalahan di server. Coba lagi nanti.';
+
+  @override
+  String get mascotTodayEmptyTitle => 'Hai! Hari ini masih kosong';
+
+  @override
+  String get mascotJournalEmptyTitle => 'Belum ada catatan';
+
+  @override
+  String get mascotJournalEmptyBody =>
+      'Tulis sedikit tentang harimu: mood, cerita, atau pengeluaran.';
+
+  @override
+  String get mascotWriteEntry => 'Tulis catatan';
+
+  @override
+  String get mascotTxEmptyTitle => 'Belum ada transaksi';
+
+  @override
+  String get mascotTxEmptyBody => 'Catat pemasukan atau pengeluaran pertamamu.';
+
+  @override
+  String get mascotRecordTx => 'Catat transaksi';
+
+  @override
+  String get mascotFilterEmptyTitle => 'Tidak ketemu';
+
+  @override
+  String get mascotFilterEmptyBody => 'Belum ada transaksi untuk filter ini.';
+
+  @override
+  String get mascotReportEmptyTitle => 'Belum ada data bulan ini';
+
+  @override
+  String get mascotReportEmptyBody =>
+      'Laporan muncul setelah kamu mencatat pengeluaran.';
+
+  @override
+  String get mascotNoBudgetTitle => 'Belum ada budget';
+
+  @override
+  String get mascotNoBudgetBody =>
+      'Atur budget supaya pengeluaranmu terpantau.';
+
+  @override
+  String get mascotBudgetOkTitle => 'Semua budget masih aman';
+
+  @override
+  String get mascotBudgetOkBody => 'Pertahankan sampai akhir bulan!';
+
+  @override
+  String mascotBudgetOverTitle(int count) {
+    return '$count kategori lewat budget';
+  }
+
+  @override
+  String mascotBudgetOverBody(String names) {
+    return '$names. Coba rem sedikit, ya.';
+  }
+
+  @override
+  String get toastEntrySaved => 'Catatan tersimpan';
+
+  @override
+  String get toastEntryUpdated => 'Catatan diperbarui';
+
+  @override
+  String get toastTxSaved => 'Transaksi tersimpan';
+
+  @override
+  String toastBudgetOver(String category) {
+    return 'Budget $category terlewati';
+  }
+
+  @override
+  String get toastSynced => 'Sinkron selesai';
 }

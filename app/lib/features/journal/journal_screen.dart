@@ -9,6 +9,7 @@ import '../../data/journal_repository.dart';
 import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 import '../../ui/mood.dart';
 import 'entry_form_screen.dart';
 import 'entry_rows.dart';
@@ -52,7 +53,18 @@ class JournalScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             _WeekStrip(entries: entries),
             const SizedBox(height: 16),
-            if (groups.isEmpty) AppCard(child: EmptyNote(l.journalEmpty)),
+            if (groups.isEmpty)
+              MascotEmpty(
+                pose: MascotPose.menulis,
+                tint: MascotTint.peach,
+                title: l.mascotJournalEmptyTitle,
+                message: l.mascotJournalEmptyBody,
+                size: 180,
+                action: FilledButton(
+                  onPressed: () => EntryFormScreen.open(context),
+                  child: Text(l.mascotWriteEntry),
+                ),
+              ),
             for (final MapEntry(key: date, value: items) in groups.entries) ...[
               _DayHeader(date: date, entries: entries, snapshot: snap),
               AppCard(

@@ -4,8 +4,9 @@ import 'package:flutter/services.dart';
 import '../../core/theme.dart';
 import '../../data/security/pin_store.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 
-/// Layar PIN hijau seperti desain: ikon gembok, judul, 4 titik, keypad.
+/// Layar PIN hijau seperti desain: maskot gembok, judul, 4 titik, keypad.
 /// Dipakai untuk membuka kunci, membuat PIN, dan konfirmasi PIN.
 class PinPad extends StatefulWidget {
   const PinPad({
@@ -103,21 +104,13 @@ class _PinPadState extends State<PinPad> {
                               icon: const Icon(Icons.arrow_back),
                             ),
                     ),
-                    const SizedBox(height: 24),
-                    Container(
-                      width: 64,
-                      height: 64,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.14),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.lock_outline,
-                        color: Colors.white,
-                        size: 30,
-                      ),
+                    const SizedBox(height: 8),
+                    const MascotBadge(
+                      MascotPose.gembok,
+                      tint: MascotTint.lilac,
+                      size: 128,
                     ),
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 16),
                     Text(
                       widget.title,
                       textAlign: TextAlign.center,

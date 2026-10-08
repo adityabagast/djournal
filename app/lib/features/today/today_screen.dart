@@ -8,6 +8,7 @@ import '../../data/journal_repository.dart';
 import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 import '../journal/entry_form_screen.dart';
 import '../journal/entry_rows.dart';
 import '../money/tx_form_screen.dart';
@@ -196,7 +197,14 @@ class TodayScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  if (timeline.isEmpty) EmptyNote(l.timelineEmpty),
+                  if (timeline.isEmpty)
+                    MascotEmpty(
+                      pose: MascotPose.halo,
+                      tint: MascotTint.mint,
+                      title: l.mascotTodayEmptyTitle,
+                      message: l.timelineEmpty,
+                      size: 130,
+                    ),
                   for (var i = 0; i < timeline.length; i++)
                     timeline[i].$2(i < timeline.length - 1),
                 ],

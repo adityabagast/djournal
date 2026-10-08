@@ -1219,6 +1219,138 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Terjadi kesalahan di server. Coba lagi nanti.'**
   String get errServer;
+
+  /// No description provided for @mascotTodayEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Hai! Hari ini masih kosong'**
+  String get mascotTodayEmptyTitle;
+
+  /// No description provided for @mascotJournalEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan'**
+  String get mascotJournalEmptyTitle;
+
+  /// No description provided for @mascotJournalEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis sedikit tentang harimu: mood, cerita, atau pengeluaran.'**
+  String get mascotJournalEmptyBody;
+
+  /// No description provided for @mascotWriteEntry.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis catatan'**
+  String get mascotWriteEntry;
+
+  /// No description provided for @mascotTxEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada transaksi'**
+  String get mascotTxEmptyTitle;
+
+  /// No description provided for @mascotTxEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat pemasukan atau pengeluaran pertamamu.'**
+  String get mascotTxEmptyBody;
+
+  /// No description provided for @mascotRecordTx.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat transaksi'**
+  String get mascotRecordTx;
+
+  /// No description provided for @mascotFilterEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ketemu'**
+  String get mascotFilterEmptyTitle;
+
+  /// No description provided for @mascotFilterEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada transaksi untuk filter ini.'**
+  String get mascotFilterEmptyBody;
+
+  /// No description provided for @mascotReportEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada data bulan ini'**
+  String get mascotReportEmptyTitle;
+
+  /// No description provided for @mascotReportEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan muncul setelah kamu mencatat pengeluaran.'**
+  String get mascotReportEmptyBody;
+
+  /// No description provided for @mascotNoBudgetTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada budget'**
+  String get mascotNoBudgetTitle;
+
+  /// No description provided for @mascotNoBudgetBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur budget supaya pengeluaranmu terpantau.'**
+  String get mascotNoBudgetBody;
+
+  /// No description provided for @mascotBudgetOkTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua budget masih aman'**
+  String get mascotBudgetOkTitle;
+
+  /// No description provided for @mascotBudgetOkBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Pertahankan sampai akhir bulan!'**
+  String get mascotBudgetOkBody;
+
+  /// No description provided for @mascotBudgetOverTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kategori lewat budget'**
+  String mascotBudgetOverTitle(int count);
+
+  /// No description provided for @mascotBudgetOverBody.
+  ///
+  /// In id, this message translates to:
+  /// **'{names}. Coba rem sedikit, ya.'**
+  String mascotBudgetOverBody(String names);
+
+  /// No description provided for @toastEntrySaved.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan tersimpan'**
+  String get toastEntrySaved;
+
+  /// No description provided for @toastEntryUpdated.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan diperbarui'**
+  String get toastEntryUpdated;
+
+  /// No description provided for @toastTxSaved.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi tersimpan'**
+  String get toastTxSaved;
+
+  /// No description provided for @toastBudgetOver.
+  ///
+  /// In id, this message translates to:
+  /// **'Budget {category} terlewati'**
+  String toastBudgetOver(String category);
+
+  /// No description provided for @toastSynced.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinkron selesai'**
+  String get toastSynced;
 }
 
 class _AppLocalizationsDelegate

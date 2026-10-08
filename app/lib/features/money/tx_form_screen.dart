@@ -8,6 +8,7 @@ import '../../core/theme.dart';
 import '../../data/db/app_database.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 
 /// Form catat / edit transaksi. [existing] null = transaksi baru.
 class TxFormScreen extends ConsumerStatefulWidget {
@@ -84,6 +85,8 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
       return;
     }
     setState(() => _saving = true);
+    final categoryId = _categoryId ?? cats.first.id;
+    final overBudget = _exceedsBudget(categoryId, amount);
     await ref
         .read(moneyRepositoryProvider)
         .saveTransaction(
@@ -91,11 +94,42 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           type: _type,
           amount: amount,
           walletId: _walletId ?? wallets.first.id,
-          categoryId: _categoryId ?? cats.first.id,
+          categoryId: categoryId,
           note: _note.text,
           occurredAt: _occurredAt,
         );
-    if (mounted) Navigator.of(context).pop();
+    if (!mounted) return;
+    final l = context.l10n;
+    if (overBudget) {
+      final cat = cats.firstWhere((c) => c.id == categoryId);
+      showMascotSnackBar(
+        context,
+        MascotPose.sedih,
+        l.toastBudgetOver(categoryLabel(l, cat)),
+      );
+    } else {
+      showMascotSnackBar(context, MascotPose.senang, l.toastTxSaved);
+    }
+    Navigator.of(context).pop();
+  }
+
+  /// Apakah pengeluaran ini membuat kategorinya lewat budget bulan itu.
+  bool _exceedsBudget(String categoryId, int amount) {
+    final snap = ref.read(moneySnapshotProvider).value;
+    if (_type != 'expense' || snap == null) return false;
+    final month = toMonthKey(_occurredAt);
+    final budget = snap.budgetFor(categoryId, month);
+    if (budget <= 0) return false;
+    // Saat edit, nominal lama sudah termasuk di spentIn: jangan dihitung dua kali.
+    final old = widget.existing;
+    final oldAmount =
+        old != null &&
+            old.type == 'expense' &&
+            old.categoryId == categoryId &&
+            old.localDate.startsWith(month)
+        ? old.amount
+        : 0;
+    return snap.spentIn(categoryId, month) - oldAmount + amount > budget;
   }
 
   Future<void> _delete() async {
