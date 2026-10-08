@@ -6,6 +6,7 @@ import '../../providers.dart';
 import '../../ui/common.dart';
 import '../account/account_card.dart';
 import 'data_section.dart';
+import 'security_section.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -90,6 +91,9 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          const SizedBox(height: 20),
+          sectionTitle(l.security),
+          const SecuritySection(),
           const SizedBox(height: 20),
           sectionTitle(l.data),
           const DataSection(),

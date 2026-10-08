@@ -944,6 +944,156 @@ abstract class AppLocalizations {
   /// **'Gagal mengekspor data.'**
   String get exportFailed;
 
+  /// No description provided for @security.
+  ///
+  /// In id, this message translates to:
+  /// **'Keamanan'**
+  String get security;
+
+  /// No description provided for @lockWithPin.
+  ///
+  /// In id, this message translates to:
+  /// **'Kunci dengan PIN'**
+  String get lockWithPin;
+
+  /// No description provided for @lockWithPinSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Minta PIN saat app dibuka'**
+  String get lockWithPinSub;
+
+  /// No description provided for @unlockWithBiometric.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka dengan biometrik'**
+  String get unlockWithBiometric;
+
+  /// No description provided for @unlockWithBiometricSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Sidik jari atau wajah'**
+  String get unlockWithBiometricSub;
+
+  /// No description provided for @biometricUnavailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak tersedia di perangkat ini'**
+  String get biometricUnavailable;
+
+  /// No description provided for @lockNow.
+  ///
+  /// In id, this message translates to:
+  /// **'Kunci aplikasi sekarang'**
+  String get lockNow;
+
+  /// No description provided for @enterPin.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan PIN untuk membuka'**
+  String get enterPin;
+
+  /// No description provided for @wrongPin.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN salah'**
+  String get wrongPin;
+
+  /// No description provided for @tooManyAttempts.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu banyak percobaan. Coba lagi dalam {seconds} detik.'**
+  String tooManyAttempts(int seconds);
+
+  /// No description provided for @useBiometric.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai biometrik'**
+  String get useBiometric;
+
+  /// No description provided for @biometricReason.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka djournal'**
+  String get biometricReason;
+
+  /// No description provided for @forgotPin.
+  ///
+  /// In id, this message translates to:
+  /// **'Lupa PIN?'**
+  String get forgotPin;
+
+  /// No description provided for @forgotPinTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Reset PIN?'**
+  String get forgotPinTitle;
+
+  /// No description provided for @forgotPinBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu akan keluar dari akun dan data di HP ini dihapus. Data yang sudah tersinkron tetap aman di server dan kembali saat kamu masuk lagi.'**
+  String get forgotPinBody;
+
+  /// No description provided for @forgotPinBodyLocal.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua data di HP ini akan dihapus permanen karena kamu belum masuk ke akun (belum ada salinan di server).'**
+  String get forgotPinBodyLocal;
+
+  /// No description provided for @resetPin.
+  ///
+  /// In id, this message translates to:
+  /// **'Reset'**
+  String get resetPin;
+
+  /// No description provided for @createPin.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat PIN'**
+  String get createPin;
+
+  /// No description provided for @createPinHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih 4 angka yang mudah kamu ingat'**
+  String get createPinHint;
+
+  /// No description provided for @confirmPin.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulangi PIN'**
+  String get confirmPin;
+
+  /// No description provided for @confirmPinHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik PIN yang sama sekali lagi'**
+  String get confirmPinHint;
+
+  /// No description provided for @pinMismatch.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN tidak sama. Ulangi dari awal.'**
+  String get pinMismatch;
+
+  /// No description provided for @currentPin.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN saat ini'**
+  String get currentPin;
+
+  /// No description provided for @currentPinHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Masukkan PIN untuk melanjutkan'**
+  String get currentPinHint;
+
+  /// No description provided for @deleteDigit.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus digit'**
+  String get deleteDigit;
+
   /// No description provided for @transfer.
   ///
   /// In id, this message translates to:

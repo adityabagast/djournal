@@ -459,6 +459,85 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exportFailed => 'Export failed.';
 
   @override
+  String get security => 'Security';
+
+  @override
+  String get lockWithPin => 'Lock with PIN';
+
+  @override
+  String get lockWithPinSub => 'Ask for a PIN when the app opens';
+
+  @override
+  String get unlockWithBiometric => 'Unlock with biometrics';
+
+  @override
+  String get unlockWithBiometricSub => 'Fingerprint or face';
+
+  @override
+  String get biometricUnavailable => 'Not available on this device';
+
+  @override
+  String get lockNow => 'Lock app now';
+
+  @override
+  String get enterPin => 'Enter your PIN to unlock';
+
+  @override
+  String get wrongPin => 'Wrong PIN';
+
+  @override
+  String tooManyAttempts(int seconds) {
+    return 'Too many attempts. Try again in $seconds seconds.';
+  }
+
+  @override
+  String get useBiometric => 'Use biometrics';
+
+  @override
+  String get biometricReason => 'Unlock djournal';
+
+  @override
+  String get forgotPin => 'Forgot PIN?';
+
+  @override
+  String get forgotPinTitle => 'Reset PIN?';
+
+  @override
+  String get forgotPinBody =>
+      'You will be signed out and the data on this device removed. Synced data stays safe on the server and returns when you sign in again.';
+
+  @override
+  String get forgotPinBodyLocal =>
+      'All data on this device will be permanently deleted because you are not signed in (there is no copy on the server).';
+
+  @override
+  String get resetPin => 'Reset';
+
+  @override
+  String get createPin => 'Create PIN';
+
+  @override
+  String get createPinHint => 'Pick 4 digits you can remember';
+
+  @override
+  String get confirmPin => 'Repeat PIN';
+
+  @override
+  String get confirmPinHint => 'Type the same PIN again';
+
+  @override
+  String get pinMismatch => 'PINs do not match. Start again.';
+
+  @override
+  String get currentPin => 'Current PIN';
+
+  @override
+  String get currentPinHint => 'Enter your PIN to continue';
+
+  @override
+  String get deleteDigit => 'Delete digit';
+
+  @override
   String get transfer => 'Transfer';
 
   @override

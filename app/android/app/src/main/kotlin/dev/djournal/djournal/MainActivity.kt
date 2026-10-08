@@ -1,5 +1,6 @@
 package dev.djournal.djournal
 
-import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterFragmentActivity
 
-class MainActivity : FlutterActivity()
+// FragmentActivity dibutuhkan package local_auth untuk dialog biometrik.
+class MainActivity : FlutterFragmentActivity()

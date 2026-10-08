@@ -460,6 +460,85 @@ class AppLocalizationsId extends AppLocalizations {
   String get exportFailed => 'Gagal mengekspor data.';
 
   @override
+  String get security => 'Keamanan';
+
+  @override
+  String get lockWithPin => 'Kunci dengan PIN';
+
+  @override
+  String get lockWithPinSub => 'Minta PIN saat app dibuka';
+
+  @override
+  String get unlockWithBiometric => 'Buka dengan biometrik';
+
+  @override
+  String get unlockWithBiometricSub => 'Sidik jari atau wajah';
+
+  @override
+  String get biometricUnavailable => 'Tidak tersedia di perangkat ini';
+
+  @override
+  String get lockNow => 'Kunci aplikasi sekarang';
+
+  @override
+  String get enterPin => 'Masukkan PIN untuk membuka';
+
+  @override
+  String get wrongPin => 'PIN salah';
+
+  @override
+  String tooManyAttempts(int seconds) {
+    return 'Terlalu banyak percobaan. Coba lagi dalam $seconds detik.';
+  }
+
+  @override
+  String get useBiometric => 'Pakai biometrik';
+
+  @override
+  String get biometricReason => 'Buka djournal';
+
+  @override
+  String get forgotPin => 'Lupa PIN?';
+
+  @override
+  String get forgotPinTitle => 'Reset PIN?';
+
+  @override
+  String get forgotPinBody =>
+      'Kamu akan keluar dari akun dan data di HP ini dihapus. Data yang sudah tersinkron tetap aman di server dan kembali saat kamu masuk lagi.';
+
+  @override
+  String get forgotPinBodyLocal =>
+      'Semua data di HP ini akan dihapus permanen karena kamu belum masuk ke akun (belum ada salinan di server).';
+
+  @override
+  String get resetPin => 'Reset';
+
+  @override
+  String get createPin => 'Buat PIN';
+
+  @override
+  String get createPinHint => 'Pilih 4 angka yang mudah kamu ingat';
+
+  @override
+  String get confirmPin => 'Ulangi PIN';
+
+  @override
+  String get confirmPinHint => 'Ketik PIN yang sama sekali lagi';
+
+  @override
+  String get pinMismatch => 'PIN tidak sama. Ulangi dari awal.';
+
+  @override
+  String get currentPin => 'PIN saat ini';
+
+  @override
+  String get currentPinHint => 'Masukkan PIN untuk melanjutkan';
+
+  @override
+  String get deleteDigit => 'Hapus digit';
+
+  @override
   String get transfer => 'Transfer';
 
   @override
