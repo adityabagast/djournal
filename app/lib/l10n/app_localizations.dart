@@ -848,6 +848,132 @@ abstract class AppLocalizations {
   /// **'Sinkronisasi belum diatur di build ini.'**
   String get backendNotConfigured;
 
+  /// No description provided for @exportBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor backup'**
+  String get exportBackup;
+
+  /// No description provided for @exportBackupSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua data dalam satu file JSON'**
+  String get exportBackupSub;
+
+  /// No description provided for @exportExcel.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor ke Excel'**
+  String get exportExcel;
+
+  /// No description provided for @exportExcelSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi, jurnal, dompet, dan budget dalam satu file .xlsx'**
+  String get exportExcelSub;
+
+  /// No description provided for @sheetTransactions.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi'**
+  String get sheetTransactions;
+
+  /// No description provided for @currentBalance.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo sekarang'**
+  String get currentBalance;
+
+  /// No description provided for @spent.
+  ///
+  /// In id, this message translates to:
+  /// **'Terpakai'**
+  String get spent;
+
+  /// No description provided for @remaining.
+  ///
+  /// In id, this message translates to:
+  /// **'Sisa'**
+  String get remaining;
+
+  /// No description provided for @importBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor backup'**
+  String get importBackup;
+
+  /// No description provided for @importBackupSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan data dari file backup'**
+  String get importBackupSub;
+
+  /// No description provided for @importConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor {file}?'**
+  String importConfirm(String file);
+
+  /// No description provided for @importConfirmBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi file digabung dengan data yang ada. Tidak ada yang dihapus; kalau ada data yang sama, versi yang lebih baru yang dipakai.'**
+  String get importConfirmBody;
+
+  /// No description provided for @importAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor'**
+  String get importAction;
+
+  /// No description provided for @importDone.
+  ///
+  /// In id, this message translates to:
+  /// **'{imported} data diimpor, {skipped} sudah ada'**
+  String importDone(int imported, int skipped);
+
+  /// No description provided for @importInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'File ini bukan backup djournal yang valid.'**
+  String get importInvalid;
+
+  /// No description provided for @exportFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengekspor data.'**
+  String get exportFailed;
+
+  /// No description provided for @transfer.
+  ///
+  /// In id, this message translates to:
+  /// **'Transfer'**
+  String get transfer;
+
+  /// No description provided for @csvDate.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal'**
+  String get csvDate;
+
+  /// No description provided for @csvTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam'**
+  String get csvTime;
+
+  /// No description provided for @csvType.
+  ///
+  /// In id, this message translates to:
+  /// **'Jenis'**
+  String get csvType;
+
+  /// No description provided for @csvToWallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet tujuan'**
+  String get csvToWallet;
+
   /// No description provided for @haveAccount.
   ///
   /// In id, this message translates to:

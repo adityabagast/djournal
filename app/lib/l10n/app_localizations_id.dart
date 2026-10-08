@@ -406,6 +406,75 @@ class AppLocalizationsId extends AppLocalizations {
   String get backendNotConfigured => 'Sinkronisasi belum diatur di build ini.';
 
   @override
+  String get exportBackup => 'Ekspor backup';
+
+  @override
+  String get exportBackupSub => 'Semua data dalam satu file JSON';
+
+  @override
+  String get exportExcel => 'Ekspor ke Excel';
+
+  @override
+  String get exportExcelSub =>
+      'Transaksi, jurnal, dompet, dan budget dalam satu file .xlsx';
+
+  @override
+  String get sheetTransactions => 'Transaksi';
+
+  @override
+  String get currentBalance => 'Saldo sekarang';
+
+  @override
+  String get spent => 'Terpakai';
+
+  @override
+  String get remaining => 'Sisa';
+
+  @override
+  String get importBackup => 'Impor backup';
+
+  @override
+  String get importBackupSub => 'Pulihkan data dari file backup';
+
+  @override
+  String importConfirm(String file) {
+    return 'Impor $file?';
+  }
+
+  @override
+  String get importConfirmBody =>
+      'Isi file digabung dengan data yang ada. Tidak ada yang dihapus; kalau ada data yang sama, versi yang lebih baru yang dipakai.';
+
+  @override
+  String get importAction => 'Impor';
+
+  @override
+  String importDone(int imported, int skipped) {
+    return '$imported data diimpor, $skipped sudah ada';
+  }
+
+  @override
+  String get importInvalid => 'File ini bukan backup djournal yang valid.';
+
+  @override
+  String get exportFailed => 'Gagal mengekspor data.';
+
+  @override
+  String get transfer => 'Transfer';
+
+  @override
+  String get csvDate => 'Tanggal';
+
+  @override
+  String get csvTime => 'Jam';
+
+  @override
+  String get csvType => 'Jenis';
+
+  @override
+  String get csvToWallet => 'Dompet tujuan';
+
+  @override
   String get haveAccount => 'Sudah punya akun? Masuk';
 
   @override

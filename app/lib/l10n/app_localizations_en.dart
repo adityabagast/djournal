@@ -405,6 +405,75 @@ class AppLocalizationsEn extends AppLocalizations {
   String get backendNotConfigured => 'Sync is not configured in this build.';
 
   @override
+  String get exportBackup => 'Export backup';
+
+  @override
+  String get exportBackupSub => 'All data in one JSON file';
+
+  @override
+  String get exportExcel => 'Export to Excel';
+
+  @override
+  String get exportExcelSub =>
+      'Transactions, journal, wallets and budgets in one .xlsx file';
+
+  @override
+  String get sheetTransactions => 'Transactions';
+
+  @override
+  String get currentBalance => 'Current balance';
+
+  @override
+  String get spent => 'Spent';
+
+  @override
+  String get remaining => 'Remaining';
+
+  @override
+  String get importBackup => 'Import backup';
+
+  @override
+  String get importBackupSub => 'Restore data from a backup file';
+
+  @override
+  String importConfirm(String file) {
+    return 'Import $file?';
+  }
+
+  @override
+  String get importConfirmBody =>
+      'The file is merged with your existing data. Nothing is deleted; where the same item exists, the newer version wins.';
+
+  @override
+  String get importAction => 'Import';
+
+  @override
+  String importDone(int imported, int skipped) {
+    return '$imported items imported, $skipped already present';
+  }
+
+  @override
+  String get importInvalid => 'This file is not a valid djournal backup.';
+
+  @override
+  String get exportFailed => 'Export failed.';
+
+  @override
+  String get transfer => 'Transfer';
+
+  @override
+  String get csvDate => 'Date';
+
+  @override
+  String get csvTime => 'Time';
+
+  @override
+  String get csvType => 'Type';
+
+  @override
+  String get csvToWallet => 'To wallet';
+
+  @override
   String get haveAccount => 'Already have an account? Sign in';
 
   @override

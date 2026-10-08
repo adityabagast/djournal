@@ -5,7 +5,7 @@ import '../../core/theme.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../account/account_card.dart';
-import '../money/budget_screen.dart';
+import 'data_section.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -92,24 +92,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
           sectionTitle(l.data),
-          AppCard(
-            padding: EdgeInsets.zero,
-            child: ListTile(
-              onTap: () => BudgetScreen.open(context),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18),
-              ),
-              title: Text(
-                l.budget,
-                style: const TextStyle(fontWeight: FontWeight.w500),
-              ),
-              subtitle: Text(
-                l.budgetSubtitle,
-                style: const TextStyle(fontSize: 12, color: AppColors.muted),
-              ),
-              trailing: const Icon(Icons.chevron_right, color: AppColors.muted),
-            ),
-          ),
+          const DataSection(),
           const SizedBox(height: 20),
           Center(
             child: Text(
