@@ -7,14 +7,14 @@ import 'features/shell/home_shell.dart';
 import 'l10n/app_localizations.dart';
 import 'providers.dart';
 
-class DJournalApp extends ConsumerWidget {
-  const DJournalApp({super.key});
+class NyawtatApp extends ConsumerWidget {
+  const NyawtatApp({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider).value ?? const Locale('id');
     return MaterialApp(
-      title: 'djournal',
+      title: 'Nyawtat',
       debugShowCheckedModeBanner: false,
       theme: buildTheme(),
       locale: locale,

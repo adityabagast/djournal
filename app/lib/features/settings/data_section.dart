@@ -128,7 +128,7 @@ class DataSection extends ConsumerWidget {
         await _share(
           context,
           bytes,
-          'djournal-${_stamp()}.xlsx',
+          'nyawtat-${_stamp()}.xlsx',
           'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
         );
       });
@@ -141,7 +141,7 @@ class DataSection extends ConsumerWidget {
         await _share(
           context,
           utf8.encode(json),
-          'djournal-backup-${_stamp()}.json',
+          'nyawtat-backup-${_stamp()}.json',
           'application/json',
         );
       });

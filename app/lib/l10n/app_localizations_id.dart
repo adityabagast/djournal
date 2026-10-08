@@ -10,7 +10,7 @@ class AppLocalizationsId extends AppLocalizations {
   AppLocalizationsId([String locale = 'id']) : super(locale);
 
   @override
-  String get appName => 'djournal';
+  String get appName => 'Nyawtat';
 
   @override
   String get navToday => 'Hari Ini';
@@ -161,7 +161,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String versionLabel(String version) {
-    return 'djournal · versi $version';
+    return 'Nyawtat · versi $version';
   }
 
   @override
@@ -454,7 +454,7 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get importInvalid => 'File ini bukan backup djournal yang valid.';
+  String get importInvalid => 'File ini bukan backup Nyawtat yang valid.';
 
   @override
   String get exportFailed => 'Gagal mengekspor data.';
@@ -495,7 +495,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get useBiometric => 'Pakai biometrik';
 
   @override
-  String get biometricReason => 'Buka djournal';
+  String get biometricReason => 'Buka Nyawtat';
 
   @override
   String get forgotPin => 'Lupa PIN?';

@@ -21,5 +21,5 @@ Future<void> main() async {
     );
   }
   // ProviderScope = "container DI" untuk seluruh app.
-  runApp(const ProviderScope(child: DJournalApp()));
+  runApp(const ProviderScope(child: NyawtatApp()));
 }

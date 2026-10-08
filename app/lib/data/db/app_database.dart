@@ -39,6 +39,7 @@ class AppDatabase extends _$AppDatabase {
 
   static QueryExecutor _openConnection() {
     return driftDatabase(
+      // Nama file lama; jangan diganti, nanti data lokal di web tidak terbaca.
       name: 'djournal',
       web: DriftWebOptions(
         sqlite3Wasm: Uri.parse('sqlite3.wasm'),

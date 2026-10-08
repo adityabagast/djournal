@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appName => 'djournal';
+  String get appName => 'Nyawtat';
 
   @override
   String get navToday => 'Today';
@@ -161,7 +161,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String versionLabel(String version) {
-    return 'djournal · version $version';
+    return 'Nyawtat · version $version';
   }
 
   @override
@@ -453,7 +453,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get importInvalid => 'This file is not a valid djournal backup.';
+  String get importInvalid => 'This file is not a valid Nyawtat backup.';
 
   @override
   String get exportFailed => 'Export failed.';
@@ -494,7 +494,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useBiometric => 'Use biometrics';
 
   @override
-  String get biometricReason => 'Unlock djournal';
+  String get biometricReason => 'Unlock Nyawtat';
 
   @override
   String get forgotPin => 'Forgot PIN?';

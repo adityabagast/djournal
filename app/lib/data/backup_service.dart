@@ -24,6 +24,7 @@ class BackupService {
 
   final AppDatabase _db;
 
+  // Nama lama app; tetap dipakai supaya file backup lama masih bisa diimpor.
   static const format = 'djournal-backup';
   static const version = 1;
 
@@ -64,7 +65,7 @@ class BackupService {
       throw BackupFormatException('bukan JSON');
     }
     if (data['format'] != format) {
-      throw BackupFormatException('bukan file backup djournal');
+      throw BackupFormatException('bukan file backup Nyawtat');
     }
     if ((data['version'] as num?)?.toInt() != version) {
       throw BackupFormatException('versi backup tidak dikenal');

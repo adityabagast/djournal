@@ -1,4 +1,4 @@
-package dev.djournal.djournal
+package dev.nyawtat.app
 
 import io.flutter.embedding.android.FlutterFragmentActivity
 

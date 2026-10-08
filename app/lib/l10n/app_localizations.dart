@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In id, this message translates to:
-  /// **'djournal'**
+  /// **'Nyawtat'**
   String get appName;
 
   /// No description provided for @navToday.
@@ -395,7 +395,7 @@ abstract class AppLocalizations {
   /// No description provided for @versionLabel.
   ///
   /// In id, this message translates to:
-  /// **'djournal · versi {version}'**
+  /// **'Nyawtat · versi {version}'**
   String versionLabel(String version);
 
   /// No description provided for @walletName.
@@ -935,7 +935,7 @@ abstract class AppLocalizations {
   /// No description provided for @importInvalid.
   ///
   /// In id, this message translates to:
-  /// **'File ini bukan backup djournal yang valid.'**
+  /// **'File ini bukan backup Nyawtat yang valid.'**
   String get importInvalid;
 
   /// No description provided for @exportFailed.
@@ -1013,7 +1013,7 @@ abstract class AppLocalizations {
   /// No description provided for @biometricReason.
   ///
   /// In id, this message translates to:
-  /// **'Buka djournal'**
+  /// **'Buka Nyawtat'**
   String get biometricReason;
 
   /// No description provided for @forgotPin.

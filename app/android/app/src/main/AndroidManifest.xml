@@ -2,7 +2,7 @@
     <!-- Untuk login dan sinkronisasi ke server. -->
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
-        android:label="djournal"
+        android:label="Nyawtat"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
