@@ -1,46 +1,40 @@
-// Uji sync sungguhan antara dua "device" (dua database lokal) lewat server.
-// Butuh server berjalan: dotnet run --project server/src/DJournal.Api
-// Jalankan: flutter test test/sync_e2e_test.dart --dart-define=SERVER_URL=http://localhost:5095
+// Uji sync sungguhan antara dua "device" (dua database lokal) lewat Supabase.
+// Butuh migration supabase/migrations sudah dijalankan dan "Confirm email"
+// mati. Jalankan:
+//   flutter test test/sync_e2e_test.dart --dart-define=SUPABASE_URL=... --dart-define=SUPABASE_KEY=...
+import 'package:djournal/config.dart';
 import 'package:djournal/data/db/app_database.dart';
 import 'package:djournal/data/journal_repository.dart';
 import 'package:djournal/data/money_repository.dart';
-import 'package:djournal/data/sync/api_client.dart';
+import 'package:djournal/data/sync/backend.dart';
 import 'package:djournal/data/sync/sync_engine.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-const serverUrl = String.fromEnvironment('SERVER_URL');
-
-/// Pengganti secure storage di test.
-class MemoryTokenStore extends TokenStore {
-  AuthTokens? _tokens;
-  String? _email;
-
-  @override
-  Future<AuthTokens?> readTokens() async => _tokens;
-  @override
-  Future<String?> readEmail() async => _email;
-  @override
-  Future<void> save(AuthTokens tokens, {String? email}) async {
-    _tokens = tokens;
-    _email = email ?? _email;
-  }
-
-  @override
-  Future<void> clear() async => _tokens = _email = null;
-}
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class Device {
-  Device() : db = AppDatabase(NativeDatabase.memory());
+  Device()
+    : db = AppDatabase(NativeDatabase.memory()),
+      backend = SupabaseBackend(
+        // Klien Dart murni, sesi hanya di memori (tiap device terpisah).
+        SupabaseClient(
+          supabaseUrl,
+          supabaseKey,
+          // PKCE butuh penyimpanan persisten; di test cukup alur implicit.
+          authOptions: const AuthClientOptions(
+            autoRefreshToken: false,
+            authFlowType: AuthFlowType.implicit,
+          ),
+        ),
+      );
 
   final AppDatabase db;
-  final tokens = MemoryTokenStore();
-  late final api = ApiClient(baseUrl: serverUrl, tokens: tokens);
+  final SupabaseBackend backend;
   late final money = MoneyRepository(db);
   late final journal = JournalRepository(db);
 
-  Future<void> sync() => SyncEngine(db, api).run();
+  Future<void> sync() => SyncEngine(db, backend).run();
 }
 
 void main() {
@@ -48,15 +42,18 @@ void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;
 
   test(
-    'dua device: data pindah lewat server tanpa duplikat kategori/dompet',
+    'dua device: data pindah lewat Supabase tanpa duplikat kategori/dompet',
     () async {
-      final email = 'e2e${DateTime.now().microsecondsSinceEpoch}@example.com';
+      // Supabase menolak domain tanpa server email (mis. example.com).
+      // "Confirm email" mati, jadi tidak ada email yang benar-benar dikirim.
+      // User tes bisa dihapus di Dashboard → Authentication → Users.
+      final email =
+          'djournal.e2e.${DateTime.now().millisecondsSinceEpoch}@gmail.com';
       const password = 'rahasia123';
 
       // Device A: daftar, catat transaksi + jurnal + budget, sync.
       final a = Device();
-      await a.api.register(email, password);
-      await a.api.login(email, password);
+      await a.backend.signUp(email, password);
       final aWallet = (await a.money.watchWallets().first).single;
       final aFood = (await a.money.watchCategories().first).firstWhere(
         (c) => c.systemKey == 'food',
@@ -83,11 +80,11 @@ void main() {
         amount: 1000000,
       );
       await a.sync();
-      expect(await SyncEngine(a.db, a.api).hasDirtyRows(), isFalse);
+      expect(await SyncEngine(a.db, a.backend).hasDirtyRows(), isFalse);
 
       // Device B: baru install (punya seed sendiri), lalu login dan sync.
       final b = Device();
-      await b.api.login(email, password);
+      await b.backend.signIn(email, password);
       await b.sync();
 
       final bWallets = await b.money.watchWallets().first;
@@ -127,6 +124,7 @@ void main() {
       await a.db.close();
       await b.db.close();
     },
-    skip: serverUrl.isEmpty ? 'SERVER_URL tidak diatur' : false,
+    timeout: const Timeout(Duration(minutes: 2)),
+    skip: backendConfigured ? false : 'SUPABASE_URL/SUPABASE_KEY tidak diatur',
   );
 }

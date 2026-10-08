@@ -398,10 +398,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get passwordHint => 'At least 8 characters';
 
   @override
-  String get serverUrl => 'Server address';
+  String get errConfirmEmail =>
+      'Check your email and click the confirmation link, then sign in.';
 
   @override
-  String get serverUrlHint => 'e.g. http://localhost:5095';
+  String get backendNotConfigured => 'Sync is not configured in this build.';
 
   @override
   String get haveAccount => 'Already have an account? Sign in';

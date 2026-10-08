@@ -1,4 +1,6 @@
-# djournal server
+# djournal server (.NET) — tidak dipakai lagi
+
+> **Status: diarsipkan.** Sejak Oktober 2026 app memakai Supabase sebagai backend (lihat [`../supabase/README.md`](../supabase/README.md)), karena bisa di-host gratis dan selalu menyala. Logika sync di sini sudah dipindahkan apa adanya ke fungsi SQL `sync_push` / `sync_pull`. Kode ini disimpan sebagai referensi dan alternatif self-host; app versi sekarang **tidak** terhubung ke server ini.
 
 Backend ASP.NET Core (.NET 10) + EF Core + PostgreSQL untuk login dan sinkronisasi djournal.
 

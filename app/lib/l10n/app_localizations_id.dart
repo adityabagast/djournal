@@ -399,10 +399,11 @@ class AppLocalizationsId extends AppLocalizations {
   String get passwordHint => 'Minimal 8 karakter';
 
   @override
-  String get serverUrl => 'Alamat server';
+  String get errConfirmEmail =>
+      'Cek email kamu dan klik link konfirmasi, lalu masuk.';
 
   @override
-  String get serverUrlHint => 'Contoh: http://localhost:5095';
+  String get backendNotConfigured => 'Sinkronisasi belum diatur di build ini.';
 
   @override
   String get haveAccount => 'Sudah punya akun? Masuk';

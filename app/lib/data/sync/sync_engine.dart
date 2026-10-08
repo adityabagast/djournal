@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:drift/drift.dart';
 
 import '../db/app_database.dart';
-import 'api_client.dart';
+import 'backend.dart';
 
 /// Sinkronisasi offline-first (docs/data-model.md §5): push semua baris
 /// is_dirty, lalu pull perubahan sejak cursor terakhir.
@@ -11,7 +11,7 @@ class SyncEngine {
   SyncEngine(this._db, this._api);
 
   final AppDatabase _db;
-  final ApiClient _api;
+  final SyncApi _api;
 
   static const cursorKey = 'sync_cursor';
   static const lastSyncKey = 'last_sync_at';

@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme.dart';
 import '../../data/sync/account_controller.dart';
-import '../../data/sync/api_client.dart';
+import '../../data/sync/backend.dart';
 import '../../l10n/app_localizations.dart';
 import '../../ui/common.dart';
 
@@ -13,11 +13,12 @@ String apiErrorText(AppLocalizations l, ApiError e) => switch (e) {
   ApiError.emailTaken => l.errEmailTaken,
   ApiError.invalidEmail => l.errInvalidEmail,
   ApiError.passwordTooShort => l.errPasswordTooShort,
+  ApiError.confirmEmail => l.errConfirmEmail,
   ApiError.sessionExpired => l.errSessionExpired,
   ApiError.server => l.errServer,
 };
 
-/// Form masuk / daftar. Alamat server bisa diubah (self-hosted).
+/// Form masuk / daftar.
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
@@ -32,23 +33,15 @@ class SignInScreen extends ConsumerStatefulWidget {
 class _SignInScreenState extends ConsumerState<SignInScreen> {
   final _email = TextEditingController();
   final _password = TextEditingController();
-  late final TextEditingController _server;
   bool _register = false;
   bool _busy = false;
   bool _obscure = true;
   String? _error;
 
   @override
-  void initState() {
-    super.initState();
-    _server = TextEditingController(text: ref.read(accountProvider).serverUrl);
-  }
-
-  @override
   void dispose() {
     _email.dispose();
     _password.dispose();
-    _server.dispose();
     super.dispose();
   }
 
@@ -66,7 +59,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       await ref
           .read(accountProvider.notifier)
           .signIn(
-            serverUrl: _server.text,
             email: _email.text,
             password: _password.text,
             register: _register,
@@ -130,23 +122,6 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                   ),
                 ),
               ),
-            ),
-            const SizedBox(height: 12),
-            ExpansionTile(
-              tilePadding: EdgeInsets.zero,
-              title: Text(
-                l.serverUrl,
-                style: t.bodyMedium?.copyWith(color: AppColors.muted),
-              ),
-              children: [
-                TextField(
-                  controller: _server,
-                  keyboardType: TextInputType.url,
-                  autocorrect: false,
-                  decoration: InputDecoration(hintText: l.serverUrlHint),
-                ),
-                const SizedBox(height: 8),
-              ],
             ),
             if (_error != null) ...[
               const SizedBox(height: 8),

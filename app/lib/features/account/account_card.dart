@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../config.dart';
 import '../../core/theme.dart';
 import '../../data/sync/account_controller.dart';
-import '../../data/sync/api_client.dart';
+import '../../data/sync/backend.dart';
 import '../../ui/common.dart';
 import 'sign_in_screen.dart';
 
@@ -31,6 +32,15 @@ class AccountCard extends ConsumerWidget {
 
     if (account.loading) {
       return const AppCard(child: LinearProgressIndicator());
+    }
+
+    if (!backendConfigured) {
+      return AppCard(
+        child: Text(
+          l.backendNotConfigured,
+          style: t.bodySmall?.copyWith(color: AppColors.muted),
+        ),
+      );
     }
 
     if (!account.loggedIn) {

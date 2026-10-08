@@ -836,17 +836,17 @@ abstract class AppLocalizations {
   /// **'Minimal 8 karakter'**
   String get passwordHint;
 
-  /// No description provided for @serverUrl.
+  /// No description provided for @errConfirmEmail.
   ///
   /// In id, this message translates to:
-  /// **'Alamat server'**
-  String get serverUrl;
+  /// **'Cek email kamu dan klik link konfirmasi, lalu masuk.'**
+  String get errConfirmEmail;
 
-  /// No description provided for @serverUrlHint.
+  /// No description provided for @backendNotConfigured.
   ///
   /// In id, this message translates to:
-  /// **'Contoh: http://localhost:5095'**
-  String get serverUrlHint;
+  /// **'Sinkronisasi belum diatur di build ini.'**
+  String get backendNotConfigured;
 
   /// No description provided for @haveAccount.
   ///
