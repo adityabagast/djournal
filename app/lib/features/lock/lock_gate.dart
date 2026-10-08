@@ -49,9 +49,14 @@ class _LockGateState extends ConsumerState<LockGate> {
         if (lock.loading) const ColoredBox(color: AppColors.primary),
         if (!lock.loading && lock.locked)
           // Navigator sendiri supaya dialog (mis. "Lupa PIN") bisa tampil.
-          Navigator(
-            onGenerateRoute: (_) =>
-                MaterialPageRoute(builder: (_) => const LockScreen()),
+          // HeroController milik MaterialApp hanya boleh dipakai satu
+          // Navigator; kalau ikut dipakai di sini, navigasi app macet
+          // (layar hitam saat membuka halaman baru).
+          HeroControllerScope.none(
+            child: Navigator(
+              onGenerateRoute: (_) =>
+                  MaterialPageRoute(builder: (_) => const LockScreen()),
+            ),
           ),
       ],
     );
