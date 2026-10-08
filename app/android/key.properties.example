@@ -1,0 +1,6 @@
+# Salin jadi key.properties (file itu tidak di-commit) lalu isi.
+# storeFile: lokasi keystore, sebaiknya DI LUAR folder repo dan ikut di-backup.
+storeFile=D:/keys/nyawtat-release.jks
+storePassword=
+keyAlias=nyawtat
+keyPassword=
