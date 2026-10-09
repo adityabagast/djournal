@@ -42,6 +42,9 @@ flutter:
   generate: true
   assets:
     - assets/mascot/
+    # Poppins dibundel supaya tidak diunduh dari Google saat runtime
+    # (google_fonts mencari file ini berdasarkan namanya).
+    - assets/google_fonts/
 
 # Icon app. Sumbernya SVG di tool/icon/; cara membuat ulang ada di
 # tool/render_icons_test.dart.

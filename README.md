@@ -4,6 +4,21 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 
 > Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.2.0**, lihat [CHANGELOG.md](CHANGELOG.md).
 
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/hari-ini.png" width="240" alt="Layar Hari Ini: pengeluaran hari ini, bar budget, dan timeline jurnal + transaksi"><br><b>Hari Ini</b></td>
+    <td align="center"><img src="docs/screenshots/jurnal.png" width="240" alt="Layar Jurnal: strip minggu dan entri per hari dengan mood dan tag"><br><b>Jurnal</b></td>
+    <td align="center"><img src="docs/screenshots/keuangan.png" width="240" alt="Layar Keuangan: total saldo, dompet, dan daftar transaksi"><br><b>Keuangan</b></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/laporan.png" width="240" alt="Layar Laporan: ringkasan bulan dan budget per kategori"><br><b>Laporan</b></td>
+    <td align="center"><img src="docs/screenshots/tulis-jurnal.png" width="240" alt="Form entri jurnal: jam, mood, judul, cerita, tag, dan transaksi di hari yang sama"><br><b>Tulis jurnal</b></td>
+    <td align="center"><img src="docs/screenshots/kunci.png" width="240" alt="Layar kunci PIN dengan maskot kucing"><br><b>Kunci PIN</b></td>
+  </tr>
+</table>
+
+<sub>Screenshot memakai data contoh dan dibuat otomatis dengan <code>flutter test tool/screenshots_test.dart</code>.</sub>
+
 ## Fitur
 
 **Jurnal**

@@ -185,7 +185,10 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
       foregroundColor: AppColors.primary,
       side: const BorderSide(color: AppColors.line),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      textStyle: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      textStyle: buttonTextStyle(
+        context,
+        const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+      ),
     );
 
     return Scaffold(
@@ -261,10 +264,13 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                   onPressed: () => setState(() => _time = null),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.muted,
-                    textStyle: const TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
-                      decoration: TextDecoration.underline,
+                    textStyle: buttonTextStyle(
+                      context,
+                      const TextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w600,
+                        decoration: TextDecoration.underline,
+                      ),
                     ),
                   ),
                   child: Text(l.clearTime),

@@ -43,6 +43,7 @@ Aturan data (UUID, nominal integer, soft delete, sync last-write-wins) ada di [d
 | `lib/l10n/*.arb` | `flutter gen-l10n` |
 | `tool/icon/*.svg` (icon app) | `flutter test tool/render_icons_test.dart` lalu `dart run flutter_launcher_icons`; batalkan perubahan `ASSETCATALOG…` yang ikut diubah di `ios/Runner.xcodeproj` |
 | `assets/mascot/*.svg` yang dipakai widget | `flutter test tool/render_widget_mascots_test.dart` |
+| Tampilan layar (untuk README) | `flutter test tool/screenshots_test.dart` → `docs/screenshots/*.png`, memakai data contoh |
 
 ## Test
 
@@ -68,6 +69,12 @@ lib/data/home_widget_sync.dart        →  SharedPreferences (home_widget)  → 
 - Kotlin (`android/app/src/main/kotlin/dev/nyawtat/app/widget/`) hanya menampilkan, ditambah satu logika: kalau data berasal dari hari sebelumnya, "keluar hari ini" dan jumlah entri jurnal dianggap 0. Widget memperbarui diri tiap 30 menit.
 - Layout ada di `res/layout/widget_*.xml`, info widget di `res/xml/widget_*_info.xml`.
 - Tombol di widget membuka app dengan URI `nyawtat://tx` atau `nyawtat://write`, ditangani di `features/shell/home_shell.dart`.
+
+## Font
+
+Poppins dibundel di `assets/google_fonts/Poppins-Regular.ttf` (lisensi OFL, lihat `OFL.txt` di folder yang sama) dan `GoogleFonts.config.allowRuntimeFetching = false` di `main.dart`, jadi app tidak mengunduh font dari internet.
+
+Di `ButtonStyle`, `textStyle` **menggantikan** gaya teks tema, tidak digabung. Pakai `buttonTextStyle(context, …)` dari `core/theme.dart` supaya label tombol tetap Poppins.
 
 ## Catatan Android
 

@@ -128,8 +128,9 @@ class ReportScreen extends ConsumerWidget {
                         onPressed: () => BudgetScreen.open(context),
                         style: TextButton.styleFrom(
                           minimumSize: const Size(0, 36),
-                          textStyle: const TextStyle(
-                            fontWeight: FontWeight.w600,
+                          textStyle: buttonTextStyle(
+                            context,
+                            const TextStyle(fontWeight: FontWeight.w600),
                           ),
                         ),
                         child: Text(l.manage),

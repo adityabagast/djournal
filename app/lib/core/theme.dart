@@ -23,11 +23,17 @@ Color hexColor(String hex) =>
 /// Latar lembut untuk chip kategori, diturunkan dari warna utamanya.
 Color softOf(Color c) => Color.lerp(c, Colors.white, 0.86)!;
 
+/// Gaya teks tombol berbasis tema. `textStyle` di ButtonStyle MENGGANTIKAN
+/// gaya tema (tidak digabung), jadi tanpa ini label tombol kehilangan Poppins.
+TextStyle buttonTextStyle(BuildContext context, TextStyle overrides) =>
+    Theme.of(context).textTheme.labelLarge!.merge(overrides);
+
 ThemeData buildTheme() {
   final base = ThemeData(
     useMaterial3: true,
     // google_fonts 9 memakai TextTheme dari package material_ui, jadi
-    // ambil nama font-nya saja (sekaligus memicu download Poppins).
+    // ambil nama font-nya saja (sekaligus memuat Poppins dari
+    // assets/google_fonts/).
     fontFamily: GoogleFonts.poppins().fontFamily,
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,

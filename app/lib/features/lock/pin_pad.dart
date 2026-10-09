@@ -260,10 +260,14 @@ class PinFooterButton extends StatelessWidget {
       onPressed: onTap,
       style: TextButton.styleFrom(
         foregroundColor: AppColors.primaryOnDark,
-        textStyle: const TextStyle(
-          fontSize: 14,
-          decoration: TextDecoration.underline,
-          decorationColor: AppColors.primaryOnDark,
+        textStyle: buttonTextStyle(
+          context,
+          const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w400,
+            decoration: TextDecoration.underline,
+            decorationColor: AppColors.primaryOnDark,
+          ),
         ),
       ),
       child: Text(label),

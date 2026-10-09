@@ -1,5 +1,11 @@
 # Changelog
 
+## Belum dirilis
+
+- Font Poppins dibundel di dalam app: tampil benar walau dibuka pertama kali tanpa internet, dan app tidak lagi menghubungi server Google Fonts.
+- Perbaikan: label beberapa tombol ("Tulis" di Hari Ini, "Atur" di Laporan, tombol di form jurnal, "Pakai biometrik"/"Lupa PIN?") memakai font bawaan sistem, bukan Poppins.
+- README: screenshot aplikasi.
+
 ## 0.2.0 — 2026-10-09
 
 **Baru**
