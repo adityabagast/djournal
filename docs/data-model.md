@@ -117,6 +117,8 @@ saldo = opening_balance
       + Σ transfer masuk  (to_wallet_id = dompet ini)
 ```
 
+**Menghapus dompet** (soft delete) ikut men-soft-delete semua transaksinya, termasuk transfer dari/ke dompet itu, dalam satu transaksi database, supaya total saldo dan laporan tetap konsisten. Minimal satu dompet harus tersisa. Saat sync pertama, dompet "Tunai" bawaan tidak digabung ke dompet yang sudah dihapus.
+
 ### 4.2 `categories` — Kategori
 
 | Kolom | Tipe | Wajib | Keterangan |
