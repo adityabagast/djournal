@@ -1,7 +1,7 @@
 name: djournal
 description: "Jurnal harian dan catatan keuangan"
 publish_to: 'none'
-version: 0.1.0+1
+version: 0.2.0+2
 
 environment:
   sdk: ^3.13.5
@@ -20,6 +20,7 @@ dependencies:
   flutter_secure_storage: ^11.2.0
   flutter_svg: ^2.3.0
   google_fonts: ^9.0.0
+  home_widget: ^0.10.0
   http: ^1.6.0
   intl: ^0.20.3
   local_auth: ^3.0.2

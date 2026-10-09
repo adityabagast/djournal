@@ -101,6 +101,49 @@ void main() {
     expect(snap.balanceOf(cash.id), 0);
   });
 
+  test('ubah dan hapus dompet beserta transaksinya', () async {
+    await repo.addWallet(name: 'BCA', type: 'bank', openingBalance: 0);
+    var snap = await snapshot();
+    final cash = snap.wallets.firstWhere((w) => w.name == 'Tunai');
+    final bca = snap.wallets.firstWhere((w) => w.name == 'BCA');
+    final food = snap.categories.firstWhere((c) => c.systemKey == 'food');
+    for (final walletId in [bca.id, bca.id, cash.id]) {
+      await repo.saveTransaction(
+        type: 'expense',
+        amount: 5000,
+        walletId: walletId,
+        categoryId: food.id,
+        note: null,
+        occurredAt: DateTime(2026, 10, 9),
+      );
+    }
+
+    await repo.updateWallet(
+      id: bca.id,
+      name: ' BCA Utama ',
+      type: 'ewallet',
+      openingBalance: 200000,
+    );
+    snap = await snapshot();
+    final edited = snap.walletById[bca.id]!;
+    expect(edited.name, 'BCA Utama');
+    expect(edited.type, 'ewallet');
+    expect(snap.balanceOf(bca.id), 200000 - 10000);
+
+    await repo.deleteWallet(bca.id);
+    snap = await snapshot();
+    expect(snap.wallets.map((w) => w.name), ['Tunai']);
+    expect(snap.transactions.single.walletId, cash.id);
+    expect(snap.totalBalance, -5000);
+
+    // Soft delete: baris tetap ada (untuk sinkron) dan ditandai dirty.
+    final row = await (db.select(
+      db.wallets,
+    )..where((w) => w.id.equals(bca.id))).getSingle();
+    expect(row.deletedAt, isNotNull);
+    expect(row.isDirty, isTrue);
+  });
+
   test(
     'budget berlaku mulai bulan diatur dan berlanjut ke bulan berikutnya',
     () async {

@@ -192,6 +192,25 @@ class AppLocalizationsId extends AppLocalizations {
   String get walletNameRequired => 'Isi nama dompet dulu ya.';
 
   @override
+  String get editWallet => 'Ubah dompet';
+
+  @override
+  String get deleteWallet => 'Hapus dompet';
+
+  @override
+  String deleteWalletConfirm(String name) {
+    return 'Hapus dompet $name?';
+  }
+
+  @override
+  String deleteWalletTxWarning(int count) {
+    return '$count transaksi di dompet ini juga ikut terhapus.';
+  }
+
+  @override
+  String get lastWalletCantDelete => 'Dompet terakhir tidak bisa dihapus.';
+
+  @override
   String get catFood => 'Makan';
 
   @override
@@ -236,6 +255,24 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get journalEmpty =>
       'Belum ada entri jurnal. Mulai tulis cerita pertamamu.';
+
+  @override
+  String get showAllEntries => 'Tampilkan semua';
+
+  @override
+  String get journalDayEmptyTitle => 'Belum ada entri';
+
+  @override
+  String get journalDayEmptyBody => 'Tidak ada catatan di tanggal ini.';
+
+  @override
+  String get writeForThisDay => 'Tulis di tanggal ini';
+
+  @override
+  String get prevWeek => 'Minggu sebelumnya';
+
+  @override
+  String get nextWeek => 'Minggu berikutnya';
 
   @override
   String dayMoodSummary(String mood) {
@@ -343,6 +380,34 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String budgetUsedPct(int pct) {
     return '$pct% terpakai';
+  }
+
+  @override
+  String get widgetBalance => 'Saldo';
+
+  @override
+  String get widgetTodayOut => 'Keluar hari ini';
+
+  @override
+  String get widgetTodaySuffix => 'keluar hari ini';
+
+  @override
+  String get widgetJournalTitle => 'Jurnal hari ini';
+
+  @override
+  String widgetJournalSummary(int count, String time) {
+    return '$count entri · terakhir $time';
+  }
+
+  @override
+  String get widgetJournalEmptyTitle => 'Gimana harimu?';
+
+  @override
+  String get widgetJournalEmptySub => 'Belum ada cerita hari ini';
+
+  @override
+  String widgetBudgetOver(String month, String amount) {
+    return 'Budget $month lewat $amount';
   }
 
   @override

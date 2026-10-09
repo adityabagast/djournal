@@ -1,9 +1,13 @@
+import 'dart:async';
 import 'dart:ui';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:home_widget/home_widget.dart';
 
 import '../../core/theme.dart';
+import '../../data/home_widget_sync.dart';
 import '../../data/sync/account_controller.dart';
 import '../../ui/common.dart';
 import '../journal/entry_form_screen.dart';
@@ -24,6 +28,7 @@ class HomeShell extends ConsumerStatefulWidget {
 class _HomeShellState extends ConsumerState<HomeShell> {
   int _index = 0;
   late final AppLifecycleListener _lifecycle;
+  StreamSubscription<Uri?>? _widgetClicks;
 
   @override
   void initState() {
@@ -34,12 +39,33 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     _lifecycle = AppLifecycleListener(
       onResume: () => ref.read(accountProvider.notifier).sync(),
     );
+    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+      ref.read(homeWidgetSyncProvider);
+      HomeWidget.initiallyLaunchedFromHomeWidget().then(_openFromWidget);
+      _widgetClicks = HomeWidget.widgetClicked.listen(_openFromWidget);
+    }
   }
 
   @override
   void dispose() {
     _lifecycle.dispose();
+    _widgetClicks?.cancel();
     super.dispose();
+  }
+
+  /// Tombol di widget layar utama membuka app dengan URI
+  /// nyawtat://tx atau nyawtat://write.
+  void _openFromWidget(Uri? uri) {
+    if (uri == null || !mounted) return;
+    final nav = Navigator.of(context)..popUntil((r) => r.isFirst);
+    switch (uri.host) {
+      case 'tx':
+        setState(() => _index = 2);
+        TxFormScreen.open(nav.context);
+      case 'write':
+        setState(() => _index = 1);
+        EntryFormScreen.open(nav.context);
+    }
   }
 
   static const _tabs = [

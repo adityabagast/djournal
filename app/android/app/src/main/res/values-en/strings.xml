@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_ringkas_name">Nyawtat · Summary</string>
+    <string name="widget_ringkas_desc">Balance and today\'s spending</string>
+    <string name="widget_hari_ini_name">Nyawtat · Today</string>
+    <string name="widget_hari_ini_desc">Today\'s spending, budget, record and write</string>
+    <string name="widget_cepat_name">Nyawtat · Quick journal</string>
+    <string name="widget_cepat_desc">Write a journal entry from your home screen</string>
+</resources>

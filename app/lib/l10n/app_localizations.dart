@@ -452,6 +452,36 @@ abstract class AppLocalizations {
   /// **'Isi nama dompet dulu ya.'**
   String get walletNameRequired;
 
+  /// No description provided for @editWallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah dompet'**
+  String get editWallet;
+
+  /// No description provided for @deleteWallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus dompet'**
+  String get deleteWallet;
+
+  /// No description provided for @deleteWalletConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus dompet {name}?'**
+  String deleteWalletConfirm(String name);
+
+  /// No description provided for @deleteWalletTxWarning.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi di dompet ini juga ikut terhapus.'**
+  String deleteWalletTxWarning(int count);
+
+  /// No description provided for @lastWalletCantDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet terakhir tidak bisa dihapus.'**
+  String get lastWalletCantDelete;
+
   /// No description provided for @catFood.
   ///
   /// In id, this message translates to:
@@ -541,6 +571,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Belum ada entri jurnal. Mulai tulis cerita pertamamu.'**
   String get journalEmpty;
+
+  /// No description provided for @showAllEntries.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan semua'**
+  String get showAllEntries;
+
+  /// No description provided for @journalDayEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada entri'**
+  String get journalDayEmptyTitle;
+
+  /// No description provided for @journalDayEmptyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada catatan di tanggal ini.'**
+  String get journalDayEmptyBody;
+
+  /// No description provided for @writeForThisDay.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis di tanggal ini'**
+  String get writeForThisDay;
+
+  /// No description provided for @prevWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu sebelumnya'**
+  String get prevWeek;
+
+  /// No description provided for @nextWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Minggu berikutnya'**
+  String get nextWeek;
 
   /// No description provided for @dayMoodSummary.
   ///
@@ -739,6 +805,54 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{pct}% terpakai'**
   String budgetUsedPct(int pct);
+
+  /// No description provided for @widgetBalance.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo'**
+  String get widgetBalance;
+
+  /// No description provided for @widgetTodayOut.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar hari ini'**
+  String get widgetTodayOut;
+
+  /// No description provided for @widgetTodaySuffix.
+  ///
+  /// In id, this message translates to:
+  /// **'keluar hari ini'**
+  String get widgetTodaySuffix;
+
+  /// No description provided for @widgetJournalTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Jurnal hari ini'**
+  String get widgetJournalTitle;
+
+  /// No description provided for @widgetJournalSummary.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} entri · terakhir {time}'**
+  String widgetJournalSummary(int count, String time);
+
+  /// No description provided for @widgetJournalEmptyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Gimana harimu?'**
+  String get widgetJournalEmptyTitle;
+
+  /// No description provided for @widgetJournalEmptySub.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada cerita hari ini'**
+  String get widgetJournalEmptySub;
+
+  /// No description provided for @widgetBudgetOver.
+  ///
+  /// In id, this message translates to:
+  /// **'Budget {month} lewat {amount}'**
+  String widgetBudgetOver(String month, String amount);
 
   /// No description provided for @overBudget.
   ///

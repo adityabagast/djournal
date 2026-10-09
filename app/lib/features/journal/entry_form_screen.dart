@@ -12,15 +12,24 @@ import '../../ui/mascot.dart';
 import '../../ui/mood.dart';
 import '../money/tx_form_screen.dart';
 
-/// Form tulis / edit entri jurnal. [existing] null = entri baru.
+/// Form tulis / edit entri jurnal. [existing] null = entri baru;
+/// [initialDate] (YYYY-MM-DD) = tanggal awal entri baru, default hari ini.
 class EntryFormScreen extends ConsumerStatefulWidget {
-  const EntryFormScreen({super.key, this.existing});
+  const EntryFormScreen({super.key, this.existing, this.initialDate});
 
   final JournalEntry? existing;
+  final String? initialDate;
 
-  static Future<void> open(BuildContext context, {JournalEntry? existing}) {
+  static Future<void> open(
+    BuildContext context, {
+    JournalEntry? existing,
+    String? initialDate,
+  }) {
     return Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => EntryFormScreen(existing: existing)),
+      MaterialPageRoute(
+        builder: (_) =>
+            EntryFormScreen(existing: existing, initialDate: initialDate),
+      ),
     );
   }
 
@@ -46,7 +55,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
   void initState() {
     super.initState();
     final e = widget.existing;
-    _date = e?.entryDate ?? toLocalDate(DateTime.now());
+    _date = e?.entryDate ?? widget.initialDate ?? toLocalDate(DateTime.now());
     _time = e?.entryTime;
     _mood = e?.mood;
     if (e != null) {

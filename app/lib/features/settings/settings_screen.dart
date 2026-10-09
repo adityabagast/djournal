@@ -100,7 +100,7 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 20),
           Center(
             child: Text(
-              l.versionLabel('0.1.0'),
+              l.versionLabel('0.2.0'),
               style: t.bodySmall?.copyWith(color: AppColors.muted),
             ),
           ),

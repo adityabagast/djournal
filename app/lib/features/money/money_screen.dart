@@ -69,7 +69,11 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                 scrollDirection: Axis.horizontal,
                 children: [
                   for (final w in snap.wallets) ...[
-                    _WalletCard(name: w.name, balance: snap.balanceOf(w.id)),
+                    _WalletCard(
+                      name: w.name,
+                      balance: snap.balanceOf(w.id),
+                      onTap: () => WalletFormSheet.open(context, existing: w),
+                    ),
                     const SizedBox(width: 10),
                   ],
                   _AddWalletCard(onTap: () => WalletFormSheet.open(context)),
@@ -231,40 +235,54 @@ class _BalanceCard extends StatelessWidget {
 }
 
 class _WalletCard extends StatelessWidget {
-  const _WalletCard({required this.name, required this.balance});
+  const _WalletCard({
+    required this.name,
+    required this.balance,
+    required this.onTap,
+  });
 
   final String name;
   final int balance;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
-    return Container(
-      width: 140,
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.line),
+    return Material(
+      color: AppColors.surface,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
+        side: const BorderSide(color: AppColors.line),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(
-            name,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: t.bodySmall?.copyWith(color: AppColors.muted, fontSize: 13),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: Container(
+          width: 140,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: t.bodySmall?.copyWith(
+                  color: AppColors.muted,
+                  fontSize: 13,
+                ),
+              ),
+              FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  '${balance < 0 ? '−' : ''}${rupiah(balance)}',
+                  style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                ),
+              ),
+            ],
           ),
-          FittedBox(
-            fit: BoxFit.scaleDown,
-            child: Text(
-              '${balance < 0 ? '−' : ''}${rupiah(balance)}',
-              style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }

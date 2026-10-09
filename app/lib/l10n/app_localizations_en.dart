@@ -192,6 +192,31 @@ class AppLocalizationsEn extends AppLocalizations {
   String get walletNameRequired => 'Please enter a wallet name.';
 
   @override
+  String get editWallet => 'Edit wallet';
+
+  @override
+  String get deleteWallet => 'Delete wallet';
+
+  @override
+  String deleteWalletConfirm(String name) {
+    return 'Delete wallet $name?';
+  }
+
+  @override
+  String deleteWalletTxWarning(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count transactions in this wallet will also be deleted.',
+      one: '1 transaction in this wallet will also be deleted.',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get lastWalletCantDelete => 'You can\'t delete your last wallet.';
+
+  @override
   String get catFood => 'Food';
 
   @override
@@ -236,6 +261,24 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get journalEmpty =>
       'No journal entries yet. Start writing your first story.';
+
+  @override
+  String get showAllEntries => 'Show all';
+
+  @override
+  String get journalDayEmptyTitle => 'No entries';
+
+  @override
+  String get journalDayEmptyBody => 'Nothing written on this day.';
+
+  @override
+  String get writeForThisDay => 'Write for this day';
+
+  @override
+  String get prevWeek => 'Previous week';
+
+  @override
+  String get nextWeek => 'Next week';
 
   @override
   String dayMoodSummary(String mood) {
@@ -342,6 +385,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String budgetUsedPct(int pct) {
     return '$pct% used';
+  }
+
+  @override
+  String get widgetBalance => 'Balance';
+
+  @override
+  String get widgetTodayOut => 'Spent today';
+
+  @override
+  String get widgetTodaySuffix => 'spent today';
+
+  @override
+  String get widgetJournalTitle => 'Today\'s journal';
+
+  @override
+  String widgetJournalSummary(int count, String time) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count entries',
+      one: '1 entry',
+    );
+    return '$_temp0 · last $time';
+  }
+
+  @override
+  String get widgetJournalEmptyTitle => 'How was your day?';
+
+  @override
+  String get widgetJournalEmptySub => 'No story yet today';
+
+  @override
+  String widgetBudgetOver(String month, String amount) {
+    return '$month budget over by $amount';
   }
 
   @override

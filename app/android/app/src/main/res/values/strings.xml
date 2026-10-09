@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teks di daftar widget launcher. Isi widget sendiri diterjemahkan dari Flutter. -->
+<resources>
+    <string name="widget_ringkas_name">Nyawtat · Ringkas</string>
+    <string name="widget_ringkas_desc">Saldo dan pengeluaran hari ini</string>
+    <string name="widget_hari_ini_name">Nyawtat · Hari ini</string>
+    <string name="widget_hari_ini_desc">Pengeluaran hari ini, budget, catat dan tulis</string>
+    <string name="widget_cepat_name">Nyawtat · Jurnal cepat</string>
+    <string name="widget_cepat_desc">Tulis jurnal langsung dari layar utama</string>
+</resources>

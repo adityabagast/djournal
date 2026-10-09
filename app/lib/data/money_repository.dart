@@ -167,4 +167,48 @@ class MoneyRepository {
           ),
         );
   }
+
+  Future<void> updateWallet({
+    required String id,
+    required String name,
+    required String type,
+    required int openingBalance,
+  }) async {
+    await (_db.update(_db.wallets)..where((w) => w.id.equals(id))).write(
+      WalletsCompanion(
+        name: Value(name.trim()),
+        type: Value(type),
+        openingBalance: Value(openingBalance),
+        updatedAt: Value(DateTime.now().toUtc()),
+        isDirty: const Value(true),
+      ),
+    );
+  }
+
+  /// Soft delete dompet beserta semua transaksinya (termasuk transfer
+  /// dari/ke dompet ini), supaya saldo dan laporan tetap konsisten.
+  Future<void> deleteWallet(String id) async {
+    final now = DateTime.now().toUtc();
+    await _db.transaction(() async {
+      await (_db.update(_db.transactions)..where(
+            (t) =>
+                t.deletedAt.isNull() &
+                (t.walletId.equals(id) | t.toWalletId.equals(id)),
+          ))
+          .write(
+            TransactionsCompanion(
+              deletedAt: Value(now),
+              updatedAt: Value(now),
+              isDirty: const Value(true),
+            ),
+          );
+      await (_db.update(_db.wallets)..where((w) => w.id.equals(id))).write(
+        WalletsCompanion(
+          deletedAt: Value(now),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+    });
+  }
 }

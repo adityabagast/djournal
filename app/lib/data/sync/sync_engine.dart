@@ -252,10 +252,21 @@ class SyncEngine {
 
     final wallets = await _db.select(_db.wallets).get();
     for (final local in wallets.where(
-      (w) => w.isDirty && w.type == 'cash' && w.openingBalance == 0,
+      (w) =>
+          w.isDirty &&
+          w.deletedAt == null &&
+          w.type == 'cash' &&
+          w.openingBalance == 0,
     )) {
+      // Jangan gabung ke dompet yang sudah dihapus di device lain.
       final match = wallets
-          .where((s) => !s.isDirty && s.type == 'cash' && s.name == local.name)
+          .where(
+            (s) =>
+                !s.isDirty &&
+                s.deletedAt == null &&
+                s.type == 'cash' &&
+                s.name == local.name,
+          )
           .firstOrNull;
       if (match == null) continue;
 
