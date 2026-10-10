@@ -65,8 +65,6 @@ djournal/
    └─ setup-windows.md   # Menyiapkan Flutter + Android SDK tanpa Android Studio
 ```
 
-Desain UI dan prototipe ada di design canvas (privat): https://claude.ai/artifact/EeTer4NctCKHnJwgQujW4o
-
 ## Mulai
 
 1. Siapkan toolchain: [docs/setup-windows.md](docs/setup-windows.md)
@@ -81,28 +79,3 @@ Desain UI dan prototipe ada di design canvas (privat): https://claude.ai/artifac
    ```
 
 Detail pengembangan (struktur kode, test, alat bantu) ada di [app/README.md](app/README.md).
-
-## Rilis Android
-
-Kunci rilis disimpan di luar repo (`D:/keys/nyawtat-release.jks`), dibaca lewat `app/android/key.properties` yang di-gitignore. Contoh isinya: `app/android/key.properties.example`.
-
-1. Naikkan `version` di `app/pubspec.yaml` (angka setelah `+` wajib naik setiap rilis) dan label versi di `app/lib/features/settings/settings_screen.dart`.
-2. Tambahkan catatan di [CHANGELOG.md](CHANGELOG.md), lalu commit dan push.
-3. Build dari folder `app/`:
-
-   ```powershell
-   flutter build apk --release --split-per-abi
-   ```
-
-   HP arm64 memakai `build/app/outputs/flutter-apk/app-arm64-v8a-release.apk`.
-4. Buat tag dan push:
-
-   ```powershell
-   git tag -a v0.2.0 -m "Nyawtat 0.2.0"
-   ```
-   ```powershell
-   git push origin v0.2.0
-   ```
-5. Buat GitHub Release dari tag itu dan lampirkan APK-nya.
-
-Build rilis tidak bisa dipasang menimpa build debug (tanda tangan berbeda): uninstall dulu dengan `adb uninstall dev.nyawtat.app`.
