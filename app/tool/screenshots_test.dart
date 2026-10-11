@@ -261,7 +261,7 @@ void main() {
           key: shotKey,
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: buildTheme(),
+            theme: buildTheme(Brightness.light),
             locale: const Locale('id'),
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,

@@ -2,7 +2,7 @@
 
 Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** dalam satu timeline. Nama "Nyawtat" dari *nyaw* (suara kucing) + *catat*. Offline-first: semua data tersimpan di HP, lalu disinkronkan ke cloud kalau login.
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.3.0**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.4.0**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>
@@ -30,12 +30,15 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 - Dompet (tunai, bank, e-wallet, lainnya): tambah, ubah, hapus
 - Transaksi pemasukan/pengeluaran per kategori; saldo selalu dihitung dari transaksi
 - Transfer antar dompet (mis. tarik tunai BCA → Tunai), tidak dihitung sebagai pemasukan/pengeluaran
+- Kelola kategori: urutkan, ubah nama/warna/ikon, sembunyikan, gabungkan, hapus
 - Budget bulanan per kategori yang berlanjut ke bulan berikutnya
 - Laporan: pengeluaran per kategori, budget, serta hubungan mood dan pengeluaran
 
 **Hari Ini**: satu timeline yang mencampur entri jurnal dan transaksi, plus bar budget bulan berjalan.
 
 **Lainnya**
+- Pencarian jurnal dan transaksi (teks, tag, kategori, dompet, nominal) dengan filter jenis dan periode
+- Mode gelap (Sistem / Terang / Gelap), termasuk splash dan widget layar utama
 - Login dan sinkronisasi antar-device lewat Supabase (last-write-wins, soft delete)
 - Kunci PIN 4 digit + sidik jari/wajah; build rilis memblokir screenshot dan pratinjau di daftar app terbaru
 - Ekspor ke Excel (untuk dibaca) dan backup/impor JSON (untuk restore)

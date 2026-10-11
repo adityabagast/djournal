@@ -12,6 +12,7 @@ import '../../ui/mascot.dart';
 import '../journal/entry_form_screen.dart';
 import '../journal/entry_rows.dart';
 import '../money/tx_form_screen.dart';
+import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 
 class TodayScreen extends ConsumerWidget {
@@ -71,20 +72,26 @@ class TodayScreen extends ConsumerWidget {
                 context.localeTag,
               ).format(now),
               title: l.navToday,
-              trailing: IconButton.outlined(
-                tooltip: l.settings,
-                onPressed: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                ),
-                style: IconButton.styleFrom(
-                  backgroundColor: AppColors.surface,
-                  side: const BorderSide(color: AppColors.line),
-                  minimumSize: const Size(44, 44),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14),
+              trailing: Row(
+                spacing: 8,
+                children: [
+                  const SearchButton(),
+                  IconButton.outlined(
+                    tooltip: l.settings,
+                    onPressed: () => Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                    ),
+                    style: IconButton.styleFrom(
+                      backgroundColor: context.colors.surface,
+                      side: BorderSide(color: context.colors.line),
+                      minimumSize: const Size(44, 44),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                    ),
+                    icon: const Icon(Icons.tune, size: 22),
                   ),
-                ),
-                icon: const Icon(Icons.tune, size: 22),
+                ],
               ),
             ),
             const SizedBox(height: 16),
@@ -101,7 +108,7 @@ class TodayScreen extends ConsumerWidget {
                             Text(
                               l.todaySpent,
                               style: t.bodySmall?.copyWith(
-                                color: AppColors.muted,
+                                color: context.colors.muted,
                                 fontSize: 13,
                               ),
                             ),
@@ -119,7 +126,7 @@ class TodayScreen extends ConsumerWidget {
                               Text(
                                 l.monthSpent(rupiah(monthOut)),
                                 style: t.bodySmall?.copyWith(
-                                  color: AppColors.muted,
+                                  color: context.colors.muted,
                                   fontSize: 13,
                                 ),
                               ),
@@ -139,10 +146,10 @@ class TodayScreen extends ConsumerWidget {
                       child: LinearProgressIndicator(
                         value: (monthOut / budget).clamp(0, 1).toDouble(),
                         minHeight: 8,
-                        backgroundColor: AppColors.track,
+                        backgroundColor: context.colors.track,
                         color: monthOut > budget
-                            ? AppColors.expense
-                            : AppColors.primary,
+                            ? context.colors.expense
+                            : context.colors.primary,
                       ),
                     ),
                     const SizedBox(height: 8),
@@ -153,7 +160,7 @@ class TodayScreen extends ConsumerWidget {
                         rupiah((budget - monthOut).clamp(0, budget)),
                       ),
                       style: t.bodySmall?.copyWith(
-                        color: AppColors.muted,
+                        color: context.colors.muted,
                         fontSize: 13,
                       ),
                     ),
@@ -180,8 +187,8 @@ class TodayScreen extends ConsumerWidget {
                       TextButton.icon(
                         onPressed: () => EntryFormScreen.open(context),
                         style: TextButton.styleFrom(
-                          backgroundColor: AppColors.primarySoft,
-                          foregroundColor: AppColors.primary,
+                          backgroundColor: context.colors.primarySoft,
+                          foregroundColor: context.colors.primary,
                           minimumSize: const Size(0, 36),
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                           shape: RoundedRectangleBorder(

@@ -188,6 +188,30 @@ class AppLocalizationsId extends AppLocalizations {
   String get language => 'Bahasa';
 
   @override
+  String get appearance => 'Tampilan';
+
+  @override
+  String get themeSystem => 'Sistem';
+
+  @override
+  String get themeLight => 'Terang';
+
+  @override
+  String get themeDark => 'Gelap';
+
+  @override
+  String get themeSystemHint =>
+      'Mengikuti mode gelap di pengaturan HP. Widget layar utama ikut juga.';
+
+  @override
+  String get themeLightHint =>
+      'Selalu terang, apa pun pengaturan HP. Widget layar utama ikut juga.';
+
+  @override
+  String get themeDarkHint =>
+      'Selalu gelap, apa pun pengaturan HP. Widget layar utama ikut juga.';
+
+  @override
   String get currency => 'Mata uang';
 
   @override
@@ -915,4 +939,249 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get unarchiveShort => 'Keluarkan';
+
+  @override
+  String get manageCategories => 'Kelola kategori';
+
+  @override
+  String get categoriesSub => 'Urutkan, sembunyikan, atau gabungkan kategori';
+
+  @override
+  String get categoryReorderHint =>
+      'Tahan pegangan di kiri lalu geser untuk mengubah urutan. Urutan ini juga dipakai di form catat transaksi.';
+
+  @override
+  String get categorySystemBadge => 'bawaan';
+
+  @override
+  String categoryBudgetMeta(String amount) {
+    return 'budget $amount';
+  }
+
+  @override
+  String hiddenCategoriesTitle(int count) {
+    return 'Disembunyikan ($count)';
+  }
+
+  @override
+  String get hiddenCategoriesHint =>
+      'Tidak muncul di form catat transaksi. Transaksi lamanya tetap memakai kategori ini.';
+
+  @override
+  String get noHiddenCategories => 'Belum ada kategori yang disembunyikan.';
+
+  @override
+  String get showCategory => 'Tampilkan';
+
+  @override
+  String get newExpenseCategory => 'Kategori pengeluaran baru';
+
+  @override
+  String get newIncomeCategory => 'Kategori pemasukan baru';
+
+  @override
+  String get editCategory => 'Ubah kategori';
+
+  @override
+  String get categoryName => 'Nama kategori';
+
+  @override
+  String get categoryNameHint => 'Contoh: Kuota, Admin bank';
+
+  @override
+  String get categoryNameRequired => 'Isi nama kategori dulu ya.';
+
+  @override
+  String get systemCategoryNameNote =>
+      'Nama kategori bawaan mengikuti bahasa app.';
+
+  @override
+  String get categoryColor => 'Warna';
+
+  @override
+  String get hideFromForm => 'Sembunyikan dari form';
+
+  @override
+  String get showInForm => 'Tampilkan lagi di form';
+
+  @override
+  String get mergeCategory => 'Gabungkan ke kategori lain…';
+
+  @override
+  String mergeCategoryTitle(String name) {
+    return 'Gabungkan $name ke…';
+  }
+
+  @override
+  String mergeCategoryHint(int count, String name) {
+    return '$count transaksi akan dipindah, lalu kategori $name dihapus.';
+  }
+
+  @override
+  String get mergeConfirmTitle => 'Gabungkan kategori?';
+
+  @override
+  String mergeConfirmBody(int count, String from, String to) {
+    return '$count transaksi di $from akan dipindah ke $to, lalu $from dihapus. Ini tidak bisa dibatalkan.';
+  }
+
+  @override
+  String get mergeAction => 'Gabungkan';
+
+  @override
+  String get deleteCategory => 'Hapus kategori';
+
+  @override
+  String get deleteSystemCategoryHint =>
+      'Kategori bawaan tidak bisa dihapus, tapi bisa disembunyikan.';
+
+  @override
+  String deleteUsedCategoryHint(int count) {
+    return 'Masih dipakai $count transaksi. Gabungkan dulu ke kategori lain.';
+  }
+
+  @override
+  String get toastCategorySaved => 'Kategori tersimpan';
+
+  @override
+  String toastCategoryHidden(String name) {
+    return '$name disembunyikan';
+  }
+
+  @override
+  String toastCategoryShown(String name) {
+    return '$name ditampilkan lagi';
+  }
+
+  @override
+  String toastCategoryMerged(String from, String to) {
+    return '$from digabung ke $to';
+  }
+
+  @override
+  String get toastCategoryDeleted => 'Kategori dihapus';
+
+  @override
+  String get categoryIcon => 'Ikon';
+
+  @override
+  String get categoryIconNone => 'Tanpa ikon (huruf awal)';
+
+  @override
+  String get iconFood => 'Makan';
+
+  @override
+  String get iconCoffee => 'Kopi';
+
+  @override
+  String get iconCar => 'Mobil';
+
+  @override
+  String get iconMotorbike => 'Motor';
+
+  @override
+  String get iconShopping => 'Belanja';
+
+  @override
+  String get iconBills => 'Tagihan';
+
+  @override
+  String get iconData => 'Kuota';
+
+  @override
+  String get iconEntertainment => 'Hiburan';
+
+  @override
+  String get iconHealth => 'Kesehatan';
+
+  @override
+  String get iconEducation => 'Pendidikan';
+
+  @override
+  String get iconGift => 'Hadiah';
+
+  @override
+  String get iconClothes => 'Pakaian';
+
+  @override
+  String get iconHome => 'Rumah';
+
+  @override
+  String get iconFriends => 'Teman';
+
+  @override
+  String get iconCharity => 'Sedekah';
+
+  @override
+  String get iconSalary => 'Gaji';
+
+  @override
+  String get iconSavings => 'Tabungan';
+
+  @override
+  String get iconInvestment => 'Investasi';
+
+  @override
+  String get iconTravel => 'Perjalanan';
+
+  @override
+  String get search => 'Cari';
+
+  @override
+  String get searchHint => 'Cari jurnal, catatan, kategori, nominal…';
+
+  @override
+  String get clearText => 'Hapus teks';
+
+  @override
+  String get searchScopeAll => 'Semua';
+
+  @override
+  String get searchScopeTx => 'Transaksi';
+
+  @override
+  String get periodAll => 'Semua waktu';
+
+  @override
+  String get periodThisMonth => 'Bulan ini';
+
+  @override
+  String get periodThreeMonths => '3 bulan';
+
+  @override
+  String get recentSearches => 'Pencarian terakhir';
+
+  @override
+  String get clearRecentSearches => 'Hapus';
+
+  @override
+  String get trySearching => 'Coba cari';
+
+  @override
+  String searchCountEntries(int count) {
+    return '$count jurnal';
+  }
+
+  @override
+  String searchSumOut(String amount) {
+    return 'keluar $amount';
+  }
+
+  @override
+  String searchSumIn(String amount) {
+    return 'masuk $amount';
+  }
+
+  @override
+  String get searchNotFound => 'Tidak ketemu';
+
+  @override
+  String searchNotFoundBody(String query) {
+    return 'Tidak ada jurnal atau transaksi yang cocok dengan \"$query\".';
+  }
+
+  @override
+  String searchNotFoundPeriodBody(String query) {
+    return 'Tidak ada jurnal atau transaksi yang cocok dengan \"$query\" di periode ini.';
+  }
 }

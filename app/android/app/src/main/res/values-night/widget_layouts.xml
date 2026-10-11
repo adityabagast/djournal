@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Widget layar utama saat tema "Sistem": layout dipilih otomatis sesuai
+     mode gelap HP. Tema "Terang"/"Gelap" memilih *_light/*_dark langsung
+     (lihat NyawtatWidgets.kt). -->
+<resources>
+    <item name="widget_ringkas" type="layout">@layout/widget_ringkas_dark</item>
+    <item name="widget_hari_ini" type="layout">@layout/widget_hari_ini_dark</item>
+    <item name="widget_cepat" type="layout">@layout/widget_cepat_dark</item>
+</resources>

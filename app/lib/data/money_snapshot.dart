@@ -4,15 +4,17 @@ import 'db/app_database.dart';
 /// Saldo tidak pernah disimpan: selalu dihitung dari transaksi
 /// (docs/data-model.md §4.1).
 class MoneySnapshot {
-  /// [wallets] berisi semua dompet yang belum dihapus, termasuk yang
-  /// diarsipkan; snapshot memisahkannya sendiri.
+  /// [wallets] dan [categories] berisi semua baris yang belum dihapus,
+  /// termasuk yang diarsipkan/disembunyikan; snapshot memisahkannya sendiri.
   MoneySnapshot({
     required List<Wallet> wallets,
-    required this.categories,
+    required List<Category> categories,
     required this.transactions,
     this.budgets = const [],
   }) : wallets = wallets.where((w) => !w.isArchived).toList(),
        archivedWallets = wallets.where((w) => w.isArchived).toList(),
+       categories = categories.where((c) => !c.isArchived).toList(),
+       hiddenCategories = categories.where((c) => c.isArchived).toList(),
        walletById = {for (final w in wallets) w.id: w},
        categoryById = {for (final c in categories) c.id: c};
 
@@ -22,7 +24,15 @@ class MoneySnapshot {
   /// Dompet arsip: disembunyikan, tapi transaksinya tetap ada di riwayat
   /// dan laporan.
   final List<Wallet> archivedWallets;
+
+  /// Kategori yang tampil di form catat transaksi, urut sesuai pilihan user.
   final List<Category> categories;
+
+  /// Kategori yang disembunyikan dari form; transaksi lamanya tetap memakai
+  /// kategori ini, jadi tetap ada di laporan.
+  final List<Category> hiddenCategories;
+
+  List<Category> get allCategories => [...categories, ...hiddenCategories];
   final List<Budget> budgets;
 
   /// Terbaru dulu.
@@ -72,7 +82,7 @@ class MoneySnapshot {
     return best?.amount ?? 0;
   }
 
-  int totalBudget(String monthKey) => categories
+  int totalBudget(String monthKey) => allCategories
       .where((c) => c.kind == 'expense')
       .fold(0, (sum, c) => sum + budgetFor(c.id, monthKey));
 

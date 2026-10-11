@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../core/format.dart';
 import '../core/theme.dart';
+import 'category_icons.dart';
 import '../data/db/app_database.dart';
 import '../data/money_snapshot.dart';
 import '../l10n/app_localizations.dart';
@@ -65,7 +66,7 @@ class ScreenHeader extends StatelessWidget {
               Text(
                 overline,
                 style: t.bodySmall?.copyWith(
-                  color: AppColors.muted,
+                  color: context.colors.muted,
                   fontSize: 13,
                 ),
               ),
@@ -96,24 +97,29 @@ class CategoryBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = category;
-    final fg = c == null ? AppColors.muted : hexColor(c.color);
+    final raw = c == null ? context.colors.muted : hexColor(c.color);
+    final fg = context.colors.fg(raw);
     final label = c == null ? '↔' : categoryLabel(context.l10n, c);
+    // Ikon pilihan user; tanpa ikon = huruf (atau emoji) pertama nama.
+    final icon = categoryIcons[c?.icon];
     return Container(
       width: size,
       height: size,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: softOf(fg),
+        color: context.colors.soft(raw),
         borderRadius: BorderRadius.circular(size * 0.3),
       ),
-      child: Text(
-        label.characters.first.toUpperCase(),
-        style: TextStyle(
-          color: fg,
-          fontWeight: FontWeight.w700,
-          fontSize: size * 0.4,
-        ),
-      ),
+      child: icon != null
+          ? Icon(icon, color: fg, size: size * 0.55)
+          : Text(
+              label.characters.first.toUpperCase(),
+              style: TextStyle(
+                color: fg,
+                fontWeight: FontWeight.w700,
+                fontSize: size * 0.4,
+              ),
+            ),
     );
   }
 }
@@ -133,10 +139,16 @@ class TransferBadge extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: const Color(0xFFE3EDF8),
+        color: context.colors.isDark
+            ? context.colors.soft(_fg)
+            : const Color(0xFFE3EDF8),
         borderRadius: BorderRadius.circular(size * 0.3),
       ),
-      child: Icon(Icons.swap_horiz, color: _fg, size: size * 0.55),
+      child: Icon(
+        Icons.swap_horiz,
+        color: context.colors.fg(_fg),
+        size: size * 0.55,
+      ),
     );
   }
 }
@@ -173,7 +185,7 @@ class TxRow extends StatelessWidget {
     final isOut = tx.type == 'expense';
     final time = hhmm(tx.occurredAt);
     final toWallet = snapshot.walletById[tx.toWalletId];
-    final metaStyle = t.bodySmall?.copyWith(color: AppColors.muted);
+    final metaStyle = t.bodySmall?.copyWith(color: context.colors.muted);
     // Panah transfer berupa icon: Poppins tidak punya karakter "→".
     final meta = <InlineSpan>[
       if (!leadingTime) TextSpan(text: time),
@@ -189,7 +201,7 @@ class TxRow extends StatelessWidget {
                 child: Icon(
                   Icons.arrow_forward,
                   size: 12,
-                  color: AppColors.muted,
+                  color: context.colors.muted,
                   semanticLabel: l.transferTo.toLowerCase(),
                 ),
               ),
@@ -205,10 +217,10 @@ class TxRow extends StatelessWidget {
         ? rupiah(tx.amount)
         : '${isOut ? '−' : '+'}${rupiah(tx.amount)}';
     final amountColor = isTransfer
-        ? AppColors.ink
+        ? context.colors.ink
         : isOut
-        ? AppColors.expense
-        : AppColors.income;
+        ? context.colors.expense
+        : context.colors.income;
 
     return InkWell(
       onTap: onTap,
@@ -216,7 +228,7 @@ class TxRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           border: showDivider
-              ? const Border(bottom: BorderSide(color: AppColors.divider))
+              ? Border(bottom: BorderSide(color: context.colors.divider))
               : null,
         ),
         child: Row(
@@ -228,7 +240,7 @@ class TxRow extends StatelessWidget {
                   time,
                   style: t.bodySmall?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.muted,
+                    color: context.colors.muted,
                   ),
                 ),
               ),
@@ -291,7 +303,7 @@ class EmptyNote extends StatelessWidget {
       child: Text(
         text,
         style: Theme.of(context).textTheme.bodyMedium
-            ?.copyWith(color: AppColors.muted),
+            ?.copyWith(color: context.colors.muted),
       ),
     );
   }

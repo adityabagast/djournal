@@ -67,7 +67,7 @@ class _PinPadState extends State<PinPad> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    const onDark = AppColors.primaryOnDark;
+    const onDark = AppColors.onHeroMuted;
 
     Widget key(String digit) => _KeyButton(
       label: digit,
@@ -83,7 +83,7 @@ class _PinPadState extends State<PinPad> {
     );
 
     return Material(
-      color: AppColors.primary,
+      color: AppColors.hero,
       child: SafeArea(
         child: LayoutBuilder(
           builder: (context, box) => SingleChildScrollView(
@@ -109,6 +109,7 @@ class _PinPadState extends State<PinPad> {
                       MascotPose.gembok,
                       tint: MascotTint.lilac,
                       size: 128,
+                      adaptive: false,
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -259,14 +260,14 @@ class PinFooterButton extends StatelessWidget {
     return TextButton(
       onPressed: onTap,
       style: TextButton.styleFrom(
-        foregroundColor: AppColors.primaryOnDark,
+        foregroundColor: AppColors.onHeroMuted,
         textStyle: buttonTextStyle(
           context,
           const TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w400,
             decoration: TextDecoration.underline,
-            decorationColor: AppColors.primaryOnDark,
+            decorationColor: AppColors.onHeroMuted,
           ),
         ),
       ),

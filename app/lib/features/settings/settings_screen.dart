@@ -5,6 +5,7 @@ import '../../core/theme.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../account/account_card.dart';
+import 'appearance_section.dart';
 import 'data_section.dart';
 import 'security_section.dart';
 
@@ -23,7 +24,7 @@ class SettingsScreen extends ConsumerWidget {
         text.toUpperCase(),
         style: t.bodySmall?.copyWith(
           fontWeight: FontWeight.w600,
-          color: AppColors.muted,
+          color: context.colors.muted,
           fontSize: 13,
         ),
       ),
@@ -70,7 +71,7 @@ class SettingsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const Divider(height: 1, color: AppColors.divider),
+                Divider(height: 1, color: context.colors.divider),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   child: Row(
@@ -83,7 +84,7 @@ class SettingsScreen extends ConsumerWidget {
                       ),
                       Text(
                         l.currencyValue,
-                        style: const TextStyle(color: AppColors.muted),
+                        style: TextStyle(color: context.colors.muted),
                       ),
                     ],
                   ),
@@ -91,6 +92,9 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
+          const SizedBox(height: 20),
+          sectionTitle(l.appearance),
+          const AppearanceSection(),
           const SizedBox(height: 20),
           sectionTitle(l.security),
           const SecuritySection(),
@@ -100,8 +104,8 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: 20),
           Center(
             child: Text(
-              l.versionLabel('0.3.0'),
-              style: t.bodySmall?.copyWith(color: AppColors.muted),
+              l.versionLabel('0.4.0'),
+              style: t.bodySmall?.copyWith(color: context.colors.muted),
             ),
           ),
         ],

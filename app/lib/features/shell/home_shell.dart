@@ -96,7 +96,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final l = context.l10n;
     final choice = await showModalBottomSheet<String>(
       context: context,
-      backgroundColor: AppColors.surface,
+      backgroundColor: context.colors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -112,7 +112,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                   width: 40,
                   height: 4,
                   decoration: BoxDecoration(
-                    color: const Color(0xFFD9D6CD),
+                    color: context.colors.handle,
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),
@@ -126,8 +126,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               const SizedBox(height: 12),
               _QuickAction(
                 icon: Icons.account_balance_wallet_outlined,
-                fg: const Color(0xFF9A3412),
-                bg: const Color(0xFFFCE9DD),
+                fg: context.colors.fg(const Color(0xFF9A3412)),
+                bg: context.colors.isDark
+                    ? context.colors.soft(const Color(0xFF9A3412))
+                    : const Color(0xFFFCE9DD),
                 title: l.quickAddTx,
                 subtitle: l.quickAddTxSub,
                 onTap: () => Navigator.pop(ctx, 'tx'),
@@ -135,8 +137,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
               const SizedBox(height: 12),
               _QuickAction(
                 icon: Icons.menu_book_outlined,
-                fg: AppColors.primary,
-                bg: AppColors.primarySoft,
+                fg: context.colors.onPrimarySoft,
+                bg: context.colors.primarySoft,
                 title: l.quickAddJournal,
                 subtitle: l.quickAddJournalSub,
                 onTap: () => Navigator.pop(ctx, 'journal'),
@@ -232,6 +234,7 @@ class _Dock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     Widget tab(int i) => _DockTab(
       icon: items[i].$1,
       label: items[i].$2,
@@ -242,16 +245,16 @@ class _Dock extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(28),
-        boxShadow: const [
+        boxShadow: [
           BoxShadow(
-            color: Color(0x291B1F1D),
+            color: c.shadow.withValues(alpha: c.isDark ? 0.45 : 0.16),
             blurRadius: 32,
-            offset: Offset(0, 12),
+            offset: const Offset(0, 12),
           ),
           BoxShadow(
-            color: Color(0x0F1B1F1D),
+            color: c.shadow.withValues(alpha: c.isDark ? 0.2 : 0.06),
             blurRadius: 6,
-            offset: Offset(0, 2),
+            offset: const Offset(0, 2),
           ),
         ],
       ),
@@ -263,9 +266,13 @@ class _Dock extends StatelessWidget {
             height: 72,
             padding: const EdgeInsets.symmetric(horizontal: 10),
             decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.86),
+              color: c.isDark
+                  ? const Color(0xFF1E2421).withValues(alpha: 0.88)
+                  : Colors.white.withValues(alpha: 0.86),
               borderRadius: BorderRadius.circular(28),
-              border: Border.all(color: AppColors.line.withValues(alpha: 0.9)),
+              border: Border.all(
+                color: context.colors.line.withValues(alpha: 0.9),
+              ),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -275,17 +282,19 @@ class _Dock extends StatelessWidget {
                 Tooltip(
                   message: addLabel,
                   child: Material(
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                     elevation: 6,
-                    shadowColor: AppColors.primary.withValues(alpha: 0.5),
+                    shadowColor: c.isDark
+                        ? Colors.black
+                        : c.primary.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(20),
                     child: InkWell(
                       onTap: onAdd,
                       borderRadius: BorderRadius.circular(20),
-                      child: const SizedBox(
+                      child: SizedBox(
                         width: 54,
                         height: 54,
-                        child: Icon(Icons.add, color: Colors.white, size: 28),
+                        child: Icon(Icons.add, color: c.onPrimary, size: 28),
                       ),
                     ),
                   ),
@@ -316,7 +325,9 @@ class _DockTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppColors.primary : AppColors.muted;
+    final color = selected
+        ? context.colors.onPrimarySoft
+        : context.colors.muted;
     return Semantics(
       selected: selected,
       button: true,
@@ -330,7 +341,7 @@ class _DockTab extends StatelessWidget {
           width: 64,
           height: 54,
           decoration: BoxDecoration(
-            color: selected ? AppColors.primarySoft : Colors.transparent,
+            color: selected ? context.colors.primarySoft : Colors.transparent,
             borderRadius: BorderRadius.circular(20),
           ),
           child: Column(
@@ -376,10 +387,10 @@ class _QuickAction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: AppColors.surface,
+      color: context.colors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppColors.line),
+        side: BorderSide(color: context.colors.line),
       ),
       child: InkWell(
         onTap: onTap,
@@ -408,9 +419,9 @@ class _QuickAction extends StatelessWidget {
                     ),
                     Text(
                       subtitle,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 13,
-                        color: AppColors.muted,
+                        color: context.colors.muted,
                       ),
                     ),
                   ],

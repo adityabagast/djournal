@@ -1,7 +1,7 @@
 name: djournal
 description: "Jurnal harian dan catatan keuangan"
 publish_to: 'none'
-version: 0.3.0+3
+version: 0.4.0+4
 
 environment:
   sdk: ^3.13.5
@@ -80,9 +80,14 @@ flutter_launcher_icons:
 flutter_native_splash:
   color: "#CDEBDD"
   image: tool/icon/out/splash.png
+  # Mode gelap: latar halaman gelap app, kucing sama.
+  color_dark: "#111513"
+  image_dark: tool/icon/out/splash.png
   android_12:
     color: "#CDEBDD"
     image: tool/icon/out/splash.png
+    color_dark: "#111513"
+    image_dark: tool/icon/out/splash.png
   android: true
   ios: false
   web: false

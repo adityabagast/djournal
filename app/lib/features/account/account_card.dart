@@ -23,11 +23,11 @@ class AccountCard extends ConsumerWidget {
     final avatar = Container(
       width: 48,
       height: 48,
-      decoration: const BoxDecoration(
-        color: AppColors.primarySoft,
+      decoration: BoxDecoration(
+        color: context.colors.primarySoft,
         shape: BoxShape.circle,
       ),
-      child: const Icon(Icons.person_outline, color: AppColors.primary),
+      child: Icon(Icons.person_outline, color: context.colors.primary),
     );
 
     if (account.loading) {
@@ -38,7 +38,7 @@ class AccountCard extends ConsumerWidget {
       return AppCard(
         child: Text(
           l.backendNotConfigured,
-          style: t.bodySmall?.copyWith(color: AppColors.muted),
+          style: t.bodySmall?.copyWith(color: context.colors.muted),
         ),
       );
     }
@@ -55,7 +55,7 @@ class AccountCard extends ConsumerWidget {
                 Expanded(
                   child: Text(
                     l.signInPrompt,
-                    style: t.bodySmall?.copyWith(color: AppColors.muted),
+                    style: t.bodySmall?.copyWith(color: context.colors.muted),
                   ),
                 ),
               ],
@@ -108,14 +108,14 @@ class AccountCard extends ConsumerWidget {
                       account.email!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: t.bodySmall?.copyWith(color: AppColors.muted),
+                      style: t.bodySmall?.copyWith(color: context.colors.muted),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const Divider(height: 28, color: AppColors.divider),
+          Divider(height: 28, color: context.colors.divider),
           Row(
             children: [
               Icon(
@@ -123,8 +123,8 @@ class AccountCard extends ConsumerWidget {
                     ? Icons.cloud_off_outlined
                     : Icons.cloud_done_outlined,
                 color: account.error != null
-                    ? AppColors.expense
-                    : AppColors.primary,
+                    ? context.colors.expense
+                    : context.colors.primary,
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -132,8 +132,8 @@ class AccountCard extends ConsumerWidget {
                   status,
                   style: t.bodySmall?.copyWith(
                     color: account.error != null
-                        ? AppColors.expense
-                        : AppColors.muted,
+                        ? context.colors.expense
+                        : context.colors.muted,
                   ),
                 ),
               ),
@@ -159,7 +159,7 @@ class AccountCard extends ConsumerWidget {
                   ? null
                   : () => _confirmSignOut(context, ref),
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.expense,
+                foregroundColor: context.colors.expense,
                 padding: EdgeInsets.zero,
               ),
               child: Text(l.signOut),
@@ -202,7 +202,9 @@ class AccountCard extends ConsumerWidget {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.expense),
+            style: TextButton.styleFrom(
+              foregroundColor: context.colors.expense,
+            ),
             child: Text(l.signOut),
           ),
         ],

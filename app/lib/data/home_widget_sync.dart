@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
@@ -89,8 +90,8 @@ Map<String, String> buildHomeWidgetData({
   };
 }
 
-/// Menulis ulang data widget setiap data keuangan, jurnal, status PIN, atau
-/// bahasa berubah. Hanya aktif di Android.
+/// Menulis ulang data widget setiap data keuangan, jurnal, status PIN,
+/// bahasa, atau tema berubah. Hanya aktif di Android.
 final homeWidgetSyncProvider = Provider<void>((ref) {
   if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return;
 
@@ -113,6 +114,9 @@ final homeWidgetSyncProvider = Provider<void>((ref) {
       hide: lock.pinEnabled,
       now: DateTime.now(),
     );
+    // Tema widget mengikuti Pengaturan › Tampilan: system / light / dark.
+    data['nw_theme'] =
+        ref.read(themeModeProvider).value?.name ?? ThemeMode.system.name;
     try {
       for (final e in data.entries) {
         await HomeWidget.saveWidgetData<String>(e.key, e.value);
@@ -137,6 +141,7 @@ final homeWidgetSyncProvider = Provider<void>((ref) {
     (_, _) => schedule(),
   );
   ref.listen(localeProvider, (_, _) => schedule());
+  ref.listen(themeModeProvider, (_, _) => schedule());
   ref.onDispose(() => debounce?.cancel());
   schedule();
 });

@@ -10,6 +10,7 @@ import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
+import 'categories_screen.dart';
 import 'wallet_form_sheet.dart';
 
 /// Form catat / edit transaksi (pengeluaran, pemasukan, atau transfer antar
@@ -173,7 +174,9 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.expense),
+            style: TextButton.styleFrom(
+              foregroundColor: context.colors.expense,
+            ),
             child: Text(l.delete),
           ),
         ],
@@ -196,7 +199,14 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-    final cats = snap.categories.where((c) => c.kind == _type).toList();
+    // Kategori aktif, plus kategori tersembunyi yang dipakai transaksi yang
+    // sedang diedit supaya tetap terpilih.
+    final current = snap.categoryById[widget.existing?.categoryId];
+    final cats = [
+      ...snap.categories.where((c) => c.kind == _type),
+      if (current != null && current.isArchived && current.kind == _type)
+        current,
+    ];
     // Kategori terpilih harus sesuai jenis (pengeluaran/pemasukan).
     if (_categoryId == null || !cats.any((c) => c.id == _categoryId)) {
       _categoryId = cats.isEmpty ? null : cats.first.id;
@@ -230,7 +240,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
       style: t.bodySmall?.copyWith(
         fontSize: 13,
         fontWeight: FontWeight.w600,
-        color: AppColors.muted,
+        color: context.colors.muted,
       ),
     );
 
@@ -256,7 +266,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           Container(
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
-              color: AppColors.track,
+              color: context.colors.track,
               borderRadius: BorderRadius.circular(14),
             ),
             child: Row(
@@ -285,7 +295,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               Text(
                 'Rp',
                 style: t.headlineSmall?.copyWith(
-                  color: AppColors.muted,
+                  color: context.colors.muted,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -309,24 +319,24 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: _showAmountError
-                            ? AppColors.expense
-                            : AppColors.primary,
+                            ? context.colors.expense
+                            : context.colors.primary,
                         width: 2,
                       ),
                     ),
                     enabledBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: _showAmountError
-                            ? AppColors.expense
-                            : AppColors.line,
+                            ? context.colors.expense
+                            : context.colors.line,
                         width: 2,
                       ),
                     ),
                     focusedBorder: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: _showAmountError
-                            ? AppColors.expense
-                            : AppColors.primary,
+                            ? context.colors.expense
+                            : context.colors.primary,
                         width: 2,
                       ),
                     ),
@@ -340,7 +350,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               padding: const EdgeInsets.only(top: 4),
               child: Text(
                 l.amountRequired,
-                style: t.bodySmall?.copyWith(color: AppColors.expense),
+                style: t.bodySmall?.copyWith(color: context.colors.expense),
               ),
             ),
           const SizedBox(height: 20),
@@ -364,8 +374,18 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               }),
             )
           else ...[
-            label(l.category),
-            const SizedBox(height: 8),
+            Row(
+              children: [
+                Expanded(child: label(l.category)),
+                TextButton(
+                  onPressed: () => CategoriesScreen.open(context, kind: _type),
+                  style: TextButton.styleFrom(
+                    visualDensity: VisualDensity.compact,
+                  ),
+                  child: Text(l.manage),
+                ),
+              ],
+            ),
             GridView.count(
               crossAxisCount: 3,
               shrinkWrap: true,
@@ -393,10 +413,10 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           ],
           const SizedBox(height: 20),
           Material(
-            color: AppColors.surface,
+            color: context.colors.surface,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(14),
-              side: const BorderSide(color: AppColors.line),
+              side: BorderSide(color: context.colors.line),
             ),
             child: InkWell(
               borderRadius: BorderRadius.circular(14),
@@ -417,10 +437,10 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                       ),
                     ),
                     const SizedBox(width: 4),
-                    const Icon(
+                    Icon(
                       Icons.chevron_right,
                       size: 20,
-                      color: AppColors.muted,
+                      color: context.colors.muted,
                     ),
                   ],
                 ),
@@ -446,9 +466,9 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           20,
           12 + MediaQuery.paddingOf(context).bottom,
         ),
-        decoration: const BoxDecoration(
-          color: AppColors.background,
-          border: Border(top: BorderSide(color: AppColors.line)),
+        decoration: BoxDecoration(
+          color: context.colors.background,
+          border: Border(top: BorderSide(color: context.colors.line)),
         ),
         child: FilledButton(
           onPressed: _saving || !canSave ? null : () => _save(cats, wallets),
@@ -494,14 +514,14 @@ class _Segment extends StatelessWidget {
           height: 40,
           alignment: Alignment.center,
           decoration: BoxDecoration(
-            color: selected ? AppColors.surface : Colors.transparent,
+            color: selected ? context.colors.raised : Colors.transparent,
             borderRadius: BorderRadius.circular(10),
             boxShadow: selected
-                ? const [
+                ? [
                     BoxShadow(
-                      color: Color(0x1F1B1F1D),
+                      color: context.colors.shadow.withValues(alpha: 0.12),
                       blurRadius: 4,
-                      offset: Offset(0, 1),
+                      offset: const Offset(0, 1),
                     ),
                   ]
                 : null,
@@ -510,7 +530,7 @@ class _Segment extends StatelessWidget {
             label,
             style: TextStyle(
               fontWeight: FontWeight.w600,
-              color: selected ? AppColors.ink : AppColors.muted,
+              color: selected ? context.colors.ink : context.colors.muted,
             ),
           ),
         ),
@@ -533,11 +553,11 @@ class _CategoryChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: selected ? AppColors.primarySoft : AppColors.surface,
+      color: selected ? context.colors.primarySoft : context.colors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(14),
         side: BorderSide(
-          color: selected ? AppColors.primary : AppColors.line,
+          color: selected ? context.colors.primary : context.colors.line,
           width: 2,
         ),
       ),
@@ -589,20 +609,22 @@ class _WalletChips extends StatelessWidget {
             selected: w.id == selectedId,
             showCheckmark: false,
             onSelected: w.id == disabledId ? null : (_) => onSelect(w.id),
-            selectedColor: AppColors.primary,
-            backgroundColor: AppColors.surface,
-            disabledColor: AppColors.track,
+            selectedColor: context.colors.primary,
+            backgroundColor: context.colors.surface,
+            disabledColor: context.colors.track,
             side: BorderSide(
-              color: w.id == selectedId ? AppColors.primary : AppColors.line,
+              color: w.id == selectedId
+                  ? context.colors.primary
+                  : context.colors.line,
             ),
             shape: const StadiumBorder(),
             labelStyle: TextStyle(
               fontWeight: FontWeight.w600,
               color: w.id == disabledId
-                  ? AppColors.muted
+                  ? context.colors.muted
                   : w.id == selectedId
-                  ? Colors.white
-                  : AppColors.ink,
+                  ? context.colors.onPrimary
+                  : context.colors.ink,
               decoration: w.id == disabledId
                   ? TextDecoration.lineThrough
                   : null,
@@ -643,7 +665,7 @@ class _TransferWallets extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final small = Theme.of(context).textTheme.bodySmall
-        ?.copyWith(color: AppColors.muted);
+        ?.copyWith(color: context.colors.muted);
     final from = wallets.where((w) => w.id == fromId).firstOrNull;
     final hasTo = toId != null;
 
@@ -665,9 +687,9 @@ class _TransferWallets extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
       decoration: BoxDecoration(
-        color: AppColors.surface,
+        color: context.colors.surface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: AppColors.line),
+        border: Border.all(color: context.colors.line),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -680,7 +702,7 @@ class _TransferWallets extends StatelessWidget {
               padding: const EdgeInsets.only(top: 8),
               child: Text(
                 l.transferOverdraw(from.name),
-                style: small?.copyWith(color: const Color(0xFF9A5B12)),
+                style: small?.copyWith(color: context.colors.warning),
               ),
             ),
           SizedBox(
@@ -688,17 +710,17 @@ class _TransferWallets extends StatelessWidget {
             child: Stack(
               alignment: Alignment.center,
               children: [
-                const Divider(height: 1, color: AppColors.divider),
+                Divider(height: 1, color: context.colors.divider),
                 Material(
-                  color: AppColors.primarySoft,
-                  shape: const CircleBorder(
-                    side: BorderSide(color: AppColors.line),
+                  color: context.colors.primarySoft,
+                  shape: CircleBorder(
+                    side: BorderSide(color: context.colors.line),
                   ),
                   child: IconButton(
                     tooltip: l.swapWallets,
                     onPressed: hasTo ? onSwap : null,
                     icon: const Icon(Icons.swap_vert),
-                    color: AppColors.primary,
+                    color: context.colors.primary,
                   ),
                 ),
               ],
@@ -717,7 +739,7 @@ class _TransferWallets extends StatelessWidget {
             Container(
               padding: const EdgeInsets.fromLTRB(12, 6, 6, 6),
               decoration: BoxDecoration(
-                color: const Color(0xFFFBF3D6),
+                color: context.colors.warnSoft,
                 borderRadius: BorderRadius.circular(14),
               ),
               child: Row(
@@ -725,7 +747,7 @@ class _TransferWallets extends StatelessWidget {
                   Expanded(
                     child: Text(
                       l.transferNeedsTwoWallets,
-                      style: small?.copyWith(color: const Color(0xFF5B4A12)),
+                      style: small?.copyWith(color: context.colors.onWarnSoft),
                     ),
                   ),
                   TextButton(

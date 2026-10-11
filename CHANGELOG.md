@@ -1,5 +1,20 @@
 # Changelog
 
+## Belum dirilis
+
+## 0.4.0 — 2026-10-11
+
+**Baru**
+- **Mode gelap**: Pengaturan › Tampilan › Sistem / Terang / Gelap. Bawaannya "Sistem" (ikut pengaturan HP). Semua layar, warna kategori, dan maskot punya versi gelap; kartu Total saldo dan layar PIN tetap hijau tua.
+  - Splash saat app dibuka ikut gelap (latar gelap, kucing sama). Di Android 12 ke atas splash mengikuti pilihan di app; di versi lebih lama mengikuti pengaturan HP.
+  - Widget layar utama (Ringkas, Hari ini, Jurnal cepat) ikut tema yang dipilih.
+- **Pencarian** (ikon cari di Hari Ini, Jurnal, Keuangan): cari jurnal dan transaksi (judul, isi, tag, catatan, kategori, dompet, nominal), saring jenis dan periode, kata yang cocok disorot, ringkasan total, dan pencarian terakhir.
+- Halaman **Kelola kategori** (Pengaturan › Data › Kelola kategori, atau "Atur" di form catat transaksi): urutkan kategori dengan tahan & geser (urutan ini dipakai di form), ubah nama dan warna, **sembunyikan** kategori dari form (transaksi lamanya tetap), **gabungkan** ke kategori lain (transaksi dan budget ikut pindah), hapus kategori yang belum dipakai, dan tambah kategori baru.
+- **Ikon kategori** (opsional): pilih dari 19 ikon saat membuat atau mengubah kategori; dipakai di semua badge kategori.
+
+**Lainnya**
+- Nama paket `dev.nyawtat.app` dan kunci rilisnya sudah didaftarkan di Android Developer Console. Sejak aturan verifikasi developer Android berlaku di Indonesia (30 September 2026), APK Nyawtat bisa dipasang di HP yang sudah diizinkan, tanpa diblokir Play Protect.
+
 ## 0.3.0 — 2026-10-11
 
 **Baru**

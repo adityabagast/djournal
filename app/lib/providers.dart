@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -79,6 +80,20 @@ final moneySnapshotProvider = Provider<AsyncValue<MoneySnapshot>>((ref) {
 });
 
 /// Bahasa aplikasi: 'id' (default) atau 'en'.
+/// Tema pilihan di Pengaturan › Tampilan: 'system' (bawaan), 'light', 'dark'.
+final themeModeProvider = StreamProvider<ThemeMode>(
+  (ref) => ref
+      .watch(settingsRepositoryProvider)
+      .watch('theme_mode')
+      .map(
+        (v) => switch (v) {
+          'light' => ThemeMode.light,
+          'dark' => ThemeMode.dark,
+          _ => ThemeMode.system,
+        },
+      ),
+);
+
 final localeProvider = StreamProvider<Locale>(
   (ref) => ref
       .watch(settingsRepositoryProvider)

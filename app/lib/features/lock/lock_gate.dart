@@ -46,7 +46,7 @@ class _LockGateState extends ConsumerState<LockGate> {
         // Tetap di tree supaya posisi layar tidak hilang, tapi tidak
         // digambar dan tidak terbaca pembaca layar selama terkunci.
         Offstage(offstage: hide, child: widget.child),
-        if (lock.loading) const ColoredBox(color: AppColors.primary),
+        if (lock.loading) const ColoredBox(color: AppColors.hero),
         if (!lock.loading && lock.locked)
           // Navigator sendiri supaya dialog (mis. "Lupa PIN") bisa tampil.
           // HeroController milik MaterialApp hanya boleh dipakai satu

@@ -11,6 +11,7 @@ import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
 import '../../ui/mood.dart';
+import '../search/search_screen.dart';
 import 'entry_form_screen.dart';
 import 'entry_rows.dart';
 
@@ -65,11 +66,17 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
             ScreenHeader(
               overline: DateFormat('MMMM y', context.localeTag).format(now),
               title: l.navJournal,
-              trailing: FilledButton.icon(
-                onPressed: () =>
-                    EntryFormScreen.open(context, initialDate: _selected),
-                icon: const Icon(Icons.add, size: 18),
-                label: Text(l.write),
+              trailing: Row(
+                spacing: 8,
+                children: [
+                  const SearchButton(),
+                  FilledButton.icon(
+                    onPressed: () =>
+                        EntryFormScreen.open(context, initialDate: _selected),
+                    icon: const Icon(Icons.add, size: 18),
+                    label: Text(l.write),
+                  ),
+                ],
               ),
             ),
             const SizedBox(height: 16),
@@ -191,10 +198,10 @@ class _WeekStrip extends StatelessWidget {
                 child: Text(
                   range,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w600,
-                    color: AppColors.muted,
+                    color: context.colors.muted,
                   ),
                 ),
               ),
@@ -227,20 +234,20 @@ class _WeekStrip extends StatelessWidget {
                         children: [
                           Text(
                             dayName.format(day),
-                            style: const TextStyle(
+                            style: TextStyle(
                               fontSize: 12,
-                              color: AppColors.muted,
+                              color: context.colors.muted,
                             ),
                           ),
                           const SizedBox(height: 4),
                           Material(
                             color: isSelected
-                                ? AppColors.primary
+                                ? context.colors.primary
                                 : Colors.transparent,
                             shape: CircleBorder(
                               side: isToday && !isSelected
-                                  ? const BorderSide(
-                                      color: AppColors.primary,
+                                  ? BorderSide(
+                                      color: context.colors.primary,
                                       width: 1.5,
                                     )
                                   : BorderSide.none,
@@ -258,12 +265,12 @@ class _WeekStrip extends StatelessWidget {
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: isSelected
-                                          ? Colors.white
+                                          ? context.colors.onPrimary
                                           : isToday
-                                          ? AppColors.primary
+                                          ? context.colors.primary
                                           : (isFuture
-                                                ? AppColors.muted
-                                                : AppColors.ink),
+                                                ? context.colors.muted
+                                                : context.colors.ink),
                                     ),
                                   ),
                                 ),
@@ -277,7 +284,7 @@ class _WeekStrip extends StatelessWidget {
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: withEntries.contains(date)
-                                  ? AppColors.primary
+                                  ? context.colors.primary
                                   : Colors.transparent,
                             ),
                           ),
@@ -307,12 +314,12 @@ class _FilterBar extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
       child: Row(
         children: [
-          const Icon(Icons.filter_list, size: 18, color: AppColors.muted),
+          Icon(Icons.filter_list, size: 18, color: context.colors.muted),
           const SizedBox(width: 6),
           Expanded(
             child: Text(
               dayLabel(context, date),
-              style: const TextStyle(fontSize: 13, color: AppColors.muted),
+              style: TextStyle(fontSize: 13, color: context.colors.muted),
             ),
           ),
           TextButton(
@@ -363,7 +370,7 @@ class _DayHeader extends StatelessWidget {
           ),
           Text(
             summary,
-            style: const TextStyle(fontSize: 12, color: AppColors.muted),
+            style: TextStyle(fontSize: 12, color: context.colors.muted),
           ),
         ],
       ),

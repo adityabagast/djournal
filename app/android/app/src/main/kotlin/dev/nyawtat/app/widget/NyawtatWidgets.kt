@@ -40,6 +40,17 @@ private class WidgetData(private val prefs: SharedPreferences) {
 
     val balance get() = text("nw_balance", "—")
 
+    /**
+     * Layout sesuai Pengaturan › Tampilan. "system" memakai alias di
+     * res/values(-night)/widget_layouts.xml, jadi launcher memilih sendiri
+     * sesuai mode gelap HP, termasuk saat mode HP berganti.
+     */
+    fun layout(system: Int, light: Int, dark: Int): Int = when (text("nw_theme", "system")) {
+        "light" -> light
+        "dark" -> dark
+        else -> system
+    }
+
     /** Data dari kemarin = belum ada transaksi hari ini. */
     val todayOut
         get() = when {
@@ -74,7 +85,10 @@ class RingkasWidget : HomeWidgetProvider() {
     ) {
         val d = WidgetData(widgetData)
         for (id in appWidgetIds) {
-            val views = RemoteViews(context.packageName, R.layout.widget_ringkas).apply {
+            val views = RemoteViews(
+                context.packageName,
+                d.layout(R.layout.widget_ringkas, R.layout.widget_ringkas_light, R.layout.widget_ringkas_dark),
+            ).apply {
                 setTextViewText(R.id.label_balance, d.text("nw_l_balance", "Saldo"))
                 setTextViewText(R.id.balance, d.balance)
                 setTextViewText(R.id.label_today_out, d.text("nw_l_today_out", "Keluar hari ini"))
@@ -98,7 +112,10 @@ class HariIniWidget : HomeWidgetProvider() {
         val d = WidgetData(widgetData)
         val over = d.hasBudget && d.budgetOver
         for (id in appWidgetIds) {
-            val views = RemoteViews(context.packageName, R.layout.widget_hari_ini).apply {
+            val views = RemoteViews(
+                context.packageName,
+                d.layout(R.layout.widget_hari_ini, R.layout.widget_hari_ini_light, R.layout.widget_hari_ini_dark),
+            ).apply {
                 setTextViewText(
                     R.id.header,
                     d.dateLabel + " · " + d.text("nw_l_today_suffix", "keluar hari ini"),
@@ -135,7 +152,10 @@ class CepatWidget : HomeWidgetProvider() {
         val d = WidgetData(widgetData)
         val written = d.journalCount > 0
         for (id in appWidgetIds) {
-            val views = RemoteViews(context.packageName, R.layout.widget_cepat).apply {
+            val views = RemoteViews(
+                context.packageName,
+                d.layout(R.layout.widget_cepat, R.layout.widget_cepat_light, R.layout.widget_cepat_dark),
+            ).apply {
                 setImageViewResource(
                     R.id.mascot,
                     if (written) R.drawable.widget_kucing_senang else R.drawable.widget_kucing_menulis,

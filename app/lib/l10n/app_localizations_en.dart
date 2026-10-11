@@ -188,6 +188,30 @@ class AppLocalizationsEn extends AppLocalizations {
   String get language => 'Language';
 
   @override
+  String get appearance => 'Appearance';
+
+  @override
+  String get themeSystem => 'System';
+
+  @override
+  String get themeLight => 'Light';
+
+  @override
+  String get themeDark => 'Dark';
+
+  @override
+  String get themeSystemHint =>
+      'Follows your phone\'s dark mode setting. Home screen widgets follow too.';
+
+  @override
+  String get themeLightHint =>
+      'Always light, whatever your phone\'s setting. Home screen widgets follow too.';
+
+  @override
+  String get themeDarkHint =>
+      'Always dark, whatever your phone\'s setting. Home screen widgets follow too.';
+
+  @override
   String get currency => 'Currency';
 
   @override
@@ -934,4 +958,249 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get unarchiveShort => 'Restore';
+
+  @override
+  String get manageCategories => 'Manage categories';
+
+  @override
+  String get categoriesSub => 'Reorder, hide, or merge categories';
+
+  @override
+  String get categoryReorderHint =>
+      'Hold the handle on the left and drag to reorder. The same order is used when recording a transaction.';
+
+  @override
+  String get categorySystemBadge => 'built-in';
+
+  @override
+  String categoryBudgetMeta(String amount) {
+    return 'budget $amount';
+  }
+
+  @override
+  String hiddenCategoriesTitle(int count) {
+    return 'Hidden ($count)';
+  }
+
+  @override
+  String get hiddenCategoriesHint =>
+      'Not shown when recording a transaction. Older transactions keep this category.';
+
+  @override
+  String get noHiddenCategories => 'No hidden categories yet.';
+
+  @override
+  String get showCategory => 'Show';
+
+  @override
+  String get newExpenseCategory => 'New expense category';
+
+  @override
+  String get newIncomeCategory => 'New income category';
+
+  @override
+  String get editCategory => 'Edit category';
+
+  @override
+  String get categoryName => 'Category name';
+
+  @override
+  String get categoryNameHint => 'e.g. Mobile data, Bank fees';
+
+  @override
+  String get categoryNameRequired => 'Please enter a category name.';
+
+  @override
+  String get systemCategoryNameNote =>
+      'Built-in category names follow the app language.';
+
+  @override
+  String get categoryColor => 'Color';
+
+  @override
+  String get hideFromForm => 'Hide from the form';
+
+  @override
+  String get showInForm => 'Show in the form again';
+
+  @override
+  String get mergeCategory => 'Merge into another category…';
+
+  @override
+  String mergeCategoryTitle(String name) {
+    return 'Merge $name into…';
+  }
+
+  @override
+  String mergeCategoryHint(int count, String name) {
+    return '$count transactions will be moved, then $name is deleted.';
+  }
+
+  @override
+  String get mergeConfirmTitle => 'Merge categories?';
+
+  @override
+  String mergeConfirmBody(int count, String from, String to) {
+    return '$count transactions in $from will be moved to $to, then $from is deleted. This can\'t be undone.';
+  }
+
+  @override
+  String get mergeAction => 'Merge';
+
+  @override
+  String get deleteCategory => 'Delete category';
+
+  @override
+  String get deleteSystemCategoryHint =>
+      'Built-in categories can\'t be deleted, but they can be hidden.';
+
+  @override
+  String deleteUsedCategoryHint(int count) {
+    return 'Still used by $count transactions. Merge it into another category first.';
+  }
+
+  @override
+  String get toastCategorySaved => 'Category saved';
+
+  @override
+  String toastCategoryHidden(String name) {
+    return '$name hidden';
+  }
+
+  @override
+  String toastCategoryShown(String name) {
+    return '$name shown again';
+  }
+
+  @override
+  String toastCategoryMerged(String from, String to) {
+    return '$from merged into $to';
+  }
+
+  @override
+  String get toastCategoryDeleted => 'Category deleted';
+
+  @override
+  String get categoryIcon => 'Icon';
+
+  @override
+  String get categoryIconNone => 'No icon (first letter)';
+
+  @override
+  String get iconFood => 'Food';
+
+  @override
+  String get iconCoffee => 'Coffee';
+
+  @override
+  String get iconCar => 'Car';
+
+  @override
+  String get iconMotorbike => 'Motorbike';
+
+  @override
+  String get iconShopping => 'Shopping';
+
+  @override
+  String get iconBills => 'Bills';
+
+  @override
+  String get iconData => 'Mobile data';
+
+  @override
+  String get iconEntertainment => 'Entertainment';
+
+  @override
+  String get iconHealth => 'Health';
+
+  @override
+  String get iconEducation => 'Education';
+
+  @override
+  String get iconGift => 'Gift';
+
+  @override
+  String get iconClothes => 'Clothes';
+
+  @override
+  String get iconHome => 'Home';
+
+  @override
+  String get iconFriends => 'Friends';
+
+  @override
+  String get iconCharity => 'Charity';
+
+  @override
+  String get iconSalary => 'Salary';
+
+  @override
+  String get iconSavings => 'Savings';
+
+  @override
+  String get iconInvestment => 'Investment';
+
+  @override
+  String get iconTravel => 'Travel';
+
+  @override
+  String get search => 'Search';
+
+  @override
+  String get searchHint => 'Search journal, notes, categories, amounts…';
+
+  @override
+  String get clearText => 'Clear text';
+
+  @override
+  String get searchScopeAll => 'All';
+
+  @override
+  String get searchScopeTx => 'Transactions';
+
+  @override
+  String get periodAll => 'All time';
+
+  @override
+  String get periodThisMonth => 'This month';
+
+  @override
+  String get periodThreeMonths => '3 months';
+
+  @override
+  String get recentSearches => 'Recent searches';
+
+  @override
+  String get clearRecentSearches => 'Clear';
+
+  @override
+  String get trySearching => 'Try searching';
+
+  @override
+  String searchCountEntries(int count) {
+    return '$count journal entries';
+  }
+
+  @override
+  String searchSumOut(String amount) {
+    return 'spent $amount';
+  }
+
+  @override
+  String searchSumIn(String amount) {
+    return 'received $amount';
+  }
+
+  @override
+  String get searchNotFound => 'Nothing found';
+
+  @override
+  String searchNotFoundBody(String query) {
+    return 'No journal entries or transactions match \"$query\".';
+  }
+
+  @override
+  String searchNotFoundPeriodBody(String query) {
+    return 'No journal entries or transactions match \"$query\" in this period.';
+  }
 }

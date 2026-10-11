@@ -1,85 +1,269 @@
 import 'package:flutter/material.dart';
 
-/// Token warna dari canvas desain.
+/// Warna merek yang sama di mode terang dan gelap: kartu Total saldo,
+/// layar kunci, dan splash.
 abstract final class AppColors {
-  static const primary = Color(0xFF1F5F4E);
-  static const primarySoft = Color(0xFFDCEBE4);
-  static const primaryOnDark = Color(0xFFD3E6DE);
-  static const background = Color(0xFFF6F5F1);
-  static const surface = Color(0xFFFFFFFF);
-  static const ink = Color(0xFF1B1F1D);
-  static const muted = Color(0xFF5C625F);
-  static const line = Color(0xFFE4E1D9);
-  static const divider = Color(0xFFEFEDE7);
-  static const track = Color(0xFFECEAE4);
-  static const expense = Color(0xFFA3401C);
-  static const income = Color(0xFF17624A);
+  static const hero = Color(0xFF1F5F4E);
+  static const onHero = Color(0xFFFFFFFF);
+  static const onHeroMuted = Color(0xFFD3E6DE);
+}
+
+/// Token warna yang ikut tema (canvas: baris "Mode gelap").
+/// Ambil lewat `context.colors`.
+@immutable
+class AppPalette extends ThemeExtension<AppPalette> {
+  const AppPalette({
+    required this.isDark,
+    required this.background,
+    required this.surface,
+    required this.ink,
+    required this.muted,
+    required this.faint,
+    required this.line,
+    required this.divider,
+    required this.track,
+    required this.handle,
+    required this.subtle,
+    required this.primary,
+    required this.onPrimary,
+    required this.primarySoft,
+    required this.onPrimarySoft,
+    required this.expense,
+    required this.income,
+    required this.warning,
+    required this.warnSoft,
+    required this.onWarnSoft,
+    required this.highlight,
+    required this.shadow,
+  });
+
+  final bool isDark;
+  final Color background;
+  final Color surface;
+  final Color ink;
+  final Color muted;
+
+  /// Abu-abu paling pucat: ikon seret, panah kecil.
+  final Color faint;
+  final Color line;
+  final Color divider;
+  final Color track;
+
+  /// Pegangan bottom sheet dan garis putus-putus.
+  final Color handle;
+
+  /// Latar kotak info yang sedikit beda dari halaman.
+  final Color subtle;
+
+  /// Aksen: tombol utama, ikon aktif, bar progres.
+  final Color primary;
+  final Color onPrimary;
+  final Color primarySoft;
+  final Color onPrimarySoft;
+  final Color expense;
+  final Color income;
+  final Color warning;
+  final Color warnSoft;
+  final Color onWarnSoft;
+
+  /// Sorotan kata yang cocok di pencarian.
+  final Color highlight;
+  final Color shadow;
+
+  static const light = AppPalette(
+    isDark: false,
+    background: Color(0xFFF6F5F1),
+    surface: Color(0xFFFFFFFF),
+    ink: Color(0xFF1B1F1D),
+    muted: Color(0xFF5C625F),
+    faint: Color(0xFFA6AAA7),
+    line: Color(0xFFE4E1D9),
+    divider: Color(0xFFEFEDE7),
+    track: Color(0xFFECEAE4),
+    handle: Color(0xFFD9D6CD),
+    subtle: Color(0xFFFAF9F6),
+    primary: Color(0xFF1F5F4E),
+    onPrimary: Color(0xFFFFFFFF),
+    primarySoft: Color(0xFFDCEBE4),
+    onPrimarySoft: Color(0xFF1F5F4E),
+    expense: Color(0xFFA3401C),
+    income: Color(0xFF17624A),
+    warning: Color(0xFF9A5B12),
+    warnSoft: Color(0xFFFBF3D6),
+    onWarnSoft: Color(0xFF5B4A12),
+    highlight: Color(0xFFFDE9A8),
+    shadow: Color(0xFF1B1F1D),
+  );
+
+  static const dark = AppPalette(
+    isDark: true,
+    background: Color(0xFF111513),
+    surface: Color(0xFF1A1F1D),
+    ink: Color(0xFFE6EBE8),
+    muted: Color(0xFFA0A8A4),
+    faint: Color(0xFF6C7470),
+    line: Color(0xFF2C3330),
+    divider: Color(0xFF252B28),
+    track: Color(0xFF2B322F),
+    handle: Color(0xFF3A423E),
+    subtle: Color(0xFF161A18),
+    primary: Color(0xFF7CC7A8),
+    onPrimary: Color(0xFF0D2A20),
+    primarySoft: Color(0xFF1F3A31),
+    onPrimarySoft: Color(0xFFA6DBC4),
+    expense: Color(0xFFF2A285),
+    income: Color(0xFF7DD3AE),
+    warning: Color(0xFFE8B46A),
+    warnSoft: Color(0xFF3A3019),
+    onWarnSoft: Color(0xFFE8D29A),
+    highlight: Color(0xFF5A4A16),
+    shadow: Color(0xFF000000),
+  );
+
+  /// Warna teks/ikon kategori. Di mode gelap dinaikkan terangnya supaya
+  /// terbaca di atas latar gelap.
+  Color fg(Color c) {
+    if (!isDark) return c;
+    final hsl = HSLColor.fromColor(c);
+    return hsl.lightness >= 0.72 ? c : hsl.withLightness(0.74).toColor();
+  }
+
+  /// Latar lembut untuk chip kategori, diturunkan dari warna utamanya.
+  Color soft(Color c) => isDark
+      ? Color.lerp(c, surface, 0.78)!
+      : Color.lerp(c, Colors.white, 0.86)!;
+
+  /// Lingkaran pastel di belakang maskot; di mode gelap jadi versi redupnya.
+  Color tint(Color pastel) {
+    if (!isDark) return pastel;
+    final hsl = HSLColor.fromColor(pastel);
+    return hsl
+        .withSaturation(hsl.saturation.clamp(0, 0.24))
+        .withLightness(0.17)
+        .toColor();
+  }
+
+  /// Segmen terpilih di atas track: putih di mode terang, sedikit lebih
+  /// terang dari track di mode gelap.
+  Color get raised => isDark ? handle : surface;
+
+  @override
+  AppPalette copyWith() => this;
+
+  @override
+  AppPalette lerp(AppPalette? other, double t) =>
+      other == null || t < 0.5 ? this : other;
+}
+
+extension AppPaletteContext on BuildContext {
+  /// Tanpa [buildTheme] (mis. MaterialApp polos di tes) jatuh ke palet
+  /// sesuai kecerahan tema.
+  AppPalette get colors {
+    final theme = Theme.of(this);
+    return theme.extension<AppPalette>() ??
+        (theme.brightness == Brightness.dark
+            ? AppPalette.dark
+            : AppPalette.light);
+  }
 }
 
 Color hexColor(String hex) =>
     Color(int.parse('FF${hex.replaceFirst('#', '')}', radix: 16));
-
-/// Latar lembut untuk chip kategori, diturunkan dari warna utamanya.
-Color softOf(Color c) => Color.lerp(c, Colors.white, 0.86)!;
 
 /// Gaya teks tombol berbasis tema. `textStyle` di ButtonStyle MENGGANTIKAN
 /// gaya tema (tidak digabung), jadi tanpa ini label tombol kehilangan Poppins.
 TextStyle buttonTextStyle(BuildContext context, TextStyle overrides) =>
     Theme.of(context).textTheme.labelLarge!.merge(overrides);
 
-ThemeData buildTheme() {
+ThemeData buildTheme(Brightness brightness) {
+  final c = brightness == Brightness.dark ? AppPalette.dark : AppPalette.light;
+  final scheme =
+      ColorScheme.fromSeed(
+        seedColor: AppColors.hero,
+        brightness: brightness,
+      ).copyWith(
+        primary: c.primary,
+        onPrimary: c.onPrimary,
+        primaryContainer: c.primarySoft,
+        onPrimaryContainer: c.onPrimarySoft,
+        secondaryContainer: c.primarySoft,
+        onSecondaryContainer: c.onPrimarySoft,
+        surface: c.background,
+        onSurface: c.ink,
+        onSurfaceVariant: c.muted,
+        surfaceContainerLowest: c.surface,
+        surfaceContainerLow: c.surface,
+        surfaceContainer: c.surface,
+        surfaceContainerHigh: c.surface,
+        surfaceContainerHighest: c.track,
+        outline: c.line,
+        outlineVariant: c.divider,
+        error: c.expense,
+      );
   final base = ThemeData(
     useMaterial3: true,
+    brightness: brightness,
     // Didaftarkan di pubspec.yaml (flutter > fonts) dengan 4 ketebalan.
     fontFamily: 'Poppins',
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: AppColors.primary,
-      primary: AppColors.primary,
-      surface: AppColors.background,
-      onSurface: AppColors.ink,
-    ),
-    scaffoldBackgroundColor: AppColors.background,
+    colorScheme: scheme,
+    scaffoldBackgroundColor: c.background,
+    extensions: [c],
   );
-  final text = base.textTheme.apply(
-    bodyColor: AppColors.ink,
-    displayColor: AppColors.ink,
-  );
-  const inputBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(12)),
-    borderSide: BorderSide(color: AppColors.line),
+  final text = base.textTheme.apply(bodyColor: c.ink, displayColor: c.ink);
+  final inputBorder = OutlineInputBorder(
+    borderRadius: const BorderRadius.all(Radius.circular(12)),
+    borderSide: BorderSide(color: c.line),
   );
   return base.copyWith(
     textTheme: text,
-    appBarTheme: const AppBarTheme(
-      backgroundColor: AppColors.background,
+    appBarTheme: AppBarTheme(
+      backgroundColor: c.background,
       surfaceTintColor: Colors.transparent,
-      foregroundColor: AppColors.ink,
+      foregroundColor: c.ink,
       elevation: 0,
     ),
-    inputDecorationTheme: const InputDecorationTheme(
+    dividerTheme: DividerThemeData(color: c.divider),
+    dialogTheme: DialogThemeData(backgroundColor: c.surface),
+    bottomSheetTheme: BottomSheetThemeData(
+      backgroundColor: c.surface,
+      surfaceTintColor: Colors.transparent,
+    ),
+    popupMenuTheme: PopupMenuThemeData(
+      color: c.surface,
+      surfaceTintColor: Colors.transparent,
+    ),
+    inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: AppColors.surface,
+      fillColor: c.surface,
       border: inputBorder,
       enabledBorder: inputBorder,
       focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.all(Radius.circular(12)),
-        borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderSide: BorderSide(color: c.primary, width: 1.5),
       ),
-      contentPadding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
+        backgroundColor: c.primary,
+        foregroundColor: c.onPrimary,
         minimumSize: const Size(0, 44),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         textStyle: text.labelLarge?.copyWith(fontWeight: FontWeight.w600),
       ),
     ),
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith(
+        (s) => s.contains(WidgetState.selected) ? c.onPrimary : null,
+      ),
+      trackColor: WidgetStateProperty.resolveWith(
+        (s) => s.contains(WidgetState.selected) ? c.primary : null,
+      ),
+    ),
   );
 }
 
-/// Kartu putih bergaris tipis, dipakai di hampir semua layar.
+/// Kartu bergaris tipis, dipakai di hampir semua layar.
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
@@ -92,12 +276,13 @@ class AppCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.colors;
     return Container(
       width: double.infinity,
       padding: padding,
       decoration: BoxDecoration(
-        color: AppColors.surface,
-        border: Border.all(color: AppColors.line),
+        color: c.surface,
+        border: Border.all(color: c.line),
         borderRadius: BorderRadius.circular(18),
       ),
       child: child,

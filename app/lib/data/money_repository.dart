@@ -19,9 +19,11 @@ class MoneyRepository {
     return q.watch();
   }
 
+  /// Semua kategori yang belum dihapus, termasuk yang disembunyikan
+  /// (MoneySnapshot memisahkannya).
   Stream<List<Category>> watchCategories() {
     final q = _db.select(_db.categories)
-      ..where((c) => c.deletedAt.isNull() & c.isArchived.equals(false))
+      ..where((c) => c.deletedAt.isNull())
       ..orderBy([(c) => OrderingTerm(expression: c.sortOrder)]);
     return q.watch();
   }
@@ -195,6 +197,159 @@ class MoneyRepository {
         isDirty: const Value(true),
       ),
     );
+  }
+
+  Future<void> addCategory({
+    required String kind,
+    required String name,
+    required String color,
+    String? icon,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final maxOrder = _db.categories.sortOrder.max();
+    final row =
+        await (_db.selectOnly(_db.categories)
+              ..addColumns([maxOrder])
+              ..where(_db.categories.kind.equals(kind)))
+            .getSingle();
+    await _db
+        .into(_db.categories)
+        .insert(
+          CategoriesCompanion.insert(
+            id: newId(),
+            createdAt: now,
+            updatedAt: now,
+            name: name.trim(),
+            kind: kind,
+            color: color,
+            icon: Value(icon),
+            sortOrder: Value((row.read(maxOrder) ?? -1) + 1),
+          ),
+        );
+  }
+
+  /// [name] null = nama tidak diubah (kategori bawaan). [icon] null = tanpa
+  /// ikon (badge memakai huruf awal).
+  Future<void> updateCategory({
+    required String id,
+    String? name,
+    required String color,
+    required String? icon,
+  }) async {
+    await (_db.update(_db.categories)..where((c) => c.id.equals(id))).write(
+      CategoriesCompanion(
+        name: name == null ? const Value.absent() : Value(name.trim()),
+        color: Value(color),
+        icon: Value(icon),
+        updatedAt: Value(DateTime.now().toUtc()),
+        isDirty: const Value(true),
+      ),
+    );
+  }
+
+  /// Sembunyikan kategori dari form catat transaksi; transaksi lamanya tetap.
+  Future<void> setCategoryHidden(String id, bool hidden) async {
+    await (_db.update(_db.categories)..where((c) => c.id.equals(id))).write(
+      CategoriesCompanion(
+        isArchived: Value(hidden),
+        updatedAt: Value(DateTime.now().toUtc()),
+        isDirty: const Value(true),
+      ),
+    );
+  }
+
+  /// Simpan urutan baru: [ids] dari atas ke bawah.
+  Future<void> reorderCategories(List<String> ids) async {
+    final now = DateTime.now().toUtc();
+    await _db.transaction(() async {
+      for (final (i, id) in ids.indexed) {
+        await (_db.update(
+          _db.categories,
+        )..where((c) => c.id.equals(id) & c.sortOrder.equals(i).not())).write(
+          CategoriesCompanion(
+            sortOrder: Value(i),
+            updatedAt: Value(now),
+            isDirty: const Value(true),
+          ),
+        );
+      }
+    });
+  }
+
+  /// Hapus kategori yang belum dipakai transaksi (budget-nya ikut dihapus).
+  Future<void> deleteCategory(String id) async {
+    final now = DateTime.now().toUtc();
+    await _db.transaction(() async {
+      await (_db.update(
+        _db.budgets,
+      )..where((b) => b.categoryId.equals(id) & b.deletedAt.isNull())).write(
+        BudgetsCompanion(
+          deletedAt: Value(now),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+      await (_db.update(_db.categories)..where((c) => c.id.equals(id))).write(
+        CategoriesCompanion(
+          deletedAt: Value(now),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+    });
+  }
+
+  /// Pindahkan semua transaksi dan budget [fromId] ke [toId], lalu hapus
+  /// [fromId]. Kalau [toId] sudah punya budget di bulan yang sama, budget
+  /// [toId] yang dipertahankan.
+  Future<void> mergeCategory({
+    required String fromId,
+    required String toId,
+  }) async {
+    final now = DateTime.now().toUtc();
+    await _db.transaction(() async {
+      await (_db.update(
+        _db.transactions,
+      )..where((t) => t.categoryId.equals(fromId))).write(
+        TransactionsCompanion(
+          categoryId: Value(toId),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+      final targetMonths =
+          (await (_db.select(_db.budgets)..where(
+                    (b) => b.categoryId.equals(toId) & b.deletedAt.isNull(),
+                  ))
+                  .get())
+              .map((b) => b.startMonth)
+              .toSet();
+      final moving =
+          await (_db.select(_db.budgets)..where(
+                (b) => b.categoryId.equals(fromId) & b.deletedAt.isNull(),
+              ))
+              .get();
+      for (final b in moving) {
+        final keepTarget = targetMonths.contains(b.startMonth);
+        await (_db.update(_db.budgets)..where((x) => x.id.equals(b.id))).write(
+          BudgetsCompanion(
+            categoryId: keepTarget ? const Value.absent() : Value(toId),
+            deletedAt: keepTarget ? Value(now) : const Value.absent(),
+            updatedAt: Value(now),
+            isDirty: const Value(true),
+          ),
+        );
+      }
+      await (_db.update(
+        _db.categories,
+      )..where((c) => c.id.equals(fromId))).write(
+        CategoriesCompanion(
+          deletedAt: Value(now),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+    });
   }
 
   /// Samakan saldo dompet dengan [targetBalance] lewat satu transaksi

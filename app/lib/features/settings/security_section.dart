@@ -15,9 +15,9 @@ class SecuritySection extends ConsumerWidget {
     final l = context.l10n;
     final lock = ref.watch(lockProvider);
     final controller = ref.read(lockProvider.notifier);
-    const divider = Divider(height: 1, color: AppColors.divider);
+    final divider = Divider(height: 1, color: context.colors.divider);
     const titleStyle = TextStyle(fontWeight: FontWeight.w500);
-    const subStyle = TextStyle(fontSize: 12, color: AppColors.muted);
+    final subStyle = TextStyle(fontSize: 12, color: context.colors.muted);
 
     Future<void> togglePin(bool on) async {
       if (on) {
@@ -44,8 +44,8 @@ class SecuritySection extends ConsumerWidget {
             onChanged: lock.loading ? null : togglePin,
             title: Text(l.lockWithPin, style: titleStyle),
             subtitle: Text(l.lockWithPinSub, style: subStyle),
-            activeThumbColor: Colors.white,
-            activeTrackColor: AppColors.primary,
+            activeThumbColor: context.colors.onPrimary,
+            activeTrackColor: context.colors.primary,
           ),
           divider,
           SwitchListTile(
@@ -60,19 +60,19 @@ class SecuritySection extends ConsumerWidget {
                   : l.biometricUnavailable,
               style: subStyle,
             ),
-            activeThumbColor: Colors.white,
-            activeTrackColor: AppColors.primary,
+            activeThumbColor: context.colors.onPrimary,
+            activeTrackColor: context.colors.primary,
           ),
           if (lock.pinEnabled) ...[
             divider,
             ListTile(
               onTap: controller.lockNow,
-              leading: const Icon(Icons.lock_outline, color: AppColors.primary),
+              leading: Icon(Icons.lock_outline, color: context.colors.primary),
               title: Text(
                 l.lockNow,
-                style: const TextStyle(
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
+                  color: context.colors.primary,
                 ),
               ),
             ),

@@ -15,6 +15,7 @@ import '../../data/import/money_manager_import.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../money/budget_screen.dart';
+import '../money/categories_screen.dart';
 
 /// Bagian "Data" di Pengaturan: budget, ekspor, impor, dan impor dari
 /// Money Manager.
@@ -28,18 +29,22 @@ class DataSection extends ConsumerWidget {
     Widget tile(String title, String sub, IconData icon, VoidCallback onTap) =>
         ListTile(
           onTap: onTap,
-          leading: Icon(icon, color: AppColors.primary),
+          leading: Icon(icon, color: context.colors.primary),
           title: Text(
             title,
             style: const TextStyle(fontWeight: FontWeight.w500),
           ),
           subtitle: Text(
             sub,
-            style: const TextStyle(fontSize: 12, color: AppColors.muted),
+            style: TextStyle(fontSize: 12, color: context.colors.muted),
           ),
-          trailing: const Icon(Icons.chevron_right, color: AppColors.muted),
+          trailing: Icon(Icons.chevron_right, color: context.colors.muted),
         );
-    const divider = Divider(height: 1, indent: 56, color: AppColors.divider);
+    final divider = Divider(
+      height: 1,
+      indent: 56,
+      color: context.colors.divider,
+    );
 
     return AppCard(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -50,6 +55,13 @@ class DataSection extends ConsumerWidget {
             l.budgetSubtitle,
             Icons.pie_chart_outline,
             () => BudgetScreen.open(context),
+          ),
+          divider,
+          tile(
+            l.manageCategories,
+            l.categoriesSub,
+            Icons.category_outlined,
+            () => CategoriesScreen.open(context),
           ),
           divider,
           tile(
@@ -273,7 +285,7 @@ class _MmPreviewDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
-    final muted = t.bodySmall?.copyWith(color: AppColors.muted);
+    final muted = t.bodySmall?.copyWith(color: context.colors.muted);
     final date = DateFormat('d MMM y', context.localeTag);
 
     Widget heading(String text) => Padding(
@@ -328,14 +340,14 @@ class _MmPreviewDialog extends StatelessWidget {
                   TextSpan(
                     children: [
                       TextSpan(text: w.sourceName),
-                      const WidgetSpan(
+                      WidgetSpan(
                         alignment: PlaceholderAlignment.middle,
                         child: Padding(
                           padding: EdgeInsets.symmetric(horizontal: 6),
                           child: Icon(
                             Icons.arrow_forward,
                             size: 14,
-                            color: AppColors.muted,
+                            color: context.colors.muted,
                           ),
                         ),
                       ),
@@ -343,13 +355,15 @@ class _MmPreviewDialog extends StatelessWidget {
                         text: w.existing ? w.name : l.importMmNewWallet,
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
-                          color: w.existing ? AppColors.ink : AppColors.primary,
+                          color: w.existing
+                              ? context.colors.ink
+                              : context.colors.primary,
                         ),
                       ),
                       if (w.archive)
                         TextSpan(
                           text: ' · ${l.importMmArchived}',
-                          style: const TextStyle(color: AppColors.muted),
+                          style: TextStyle(color: context.colors.muted),
                         ),
                     ],
                   ),
@@ -366,7 +380,7 @@ class _MmPreviewDialog extends StatelessWidget {
             const SizedBox(height: 16),
             Text(
               l.importMmOverlap,
-              style: muted?.copyWith(color: const Color(0xFF9A5B12)),
+              style: muted?.copyWith(color: context.colors.warning),
             ),
           ],
         ),

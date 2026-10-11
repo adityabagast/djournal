@@ -34,15 +34,16 @@ class ReportScreen extends ConsumerWidget {
         // Kategori yang punya pengeluaran atau budget bulan ini.
         final budgetRows =
             [
-              for (final c in snap.categories.where((c) => c.kind == 'expense'))
-                (
-                  c,
-                  snap.spentIn(c.id, monthKey),
-                  snap.budgetFor(c.id, monthKey),
-                ),
-            ].where((r) => r.$2 > 0 || r.$3 > 0).toList()..sort(
-              (a, b) => b.$2.compareTo(a.$2),
-            );
+                for (final c in snap.allCategories.where(
+                  (c) => c.kind == 'expense',
+                ))
+                  (
+                    c,
+                    snap.spentIn(c.id, monthKey),
+                    snap.budgetFor(c.id, monthKey),
+                  ),
+              ].where((r) => r.$2 > 0 || r.$3 > 0).toList()
+              ..sort((a, b) => b.$2.compareTo(a.$2));
         final insight = moodSpending(entries, snap);
 
         Widget row(
@@ -56,7 +57,7 @@ class ReportScreen extends ConsumerWidget {
           decoration: BoxDecoration(
             border: last
                 ? null
-                : const Border(bottom: BorderSide(color: AppColors.divider)),
+                : Border(bottom: BorderSide(color: context.colors.divider)),
           ),
           child: Row(
             children: [
@@ -64,7 +65,7 @@ class ReportScreen extends ConsumerWidget {
                 child: Text(
                   label,
                   style: TextStyle(
-                    color: bold ? AppColors.ink : AppColors.muted,
+                    color: bold ? context.colors.ink : context.colors.muted,
                     fontWeight: bold ? FontWeight.w600 : null,
                   ),
                 ),
@@ -98,8 +99,12 @@ class ReportScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: Column(
                 children: [
-                  row(l.income, rupiah(monthIn), color: AppColors.income),
-                  row(l.expense, rupiah(monthOut), color: AppColors.expense),
+                  row(l.income, rupiah(monthIn), color: context.colors.income),
+                  row(
+                    l.expense,
+                    rupiah(monthOut),
+                    color: context.colors.expense,
+                  ),
                   row(
                     l.net,
                     '${net < 0 ? '−' : ''}${rupiah(net)}',
@@ -164,7 +169,9 @@ class _MoodSpendingCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
-    const deep = Color(0xFF143F34);
+    final deep = context.colors.isDark
+        ? context.colors.onPrimarySoft
+        : const Color(0xFF143F34);
 
     final text = switch ((good, low)) {
       (final g?, final b?) when b > g => l.insightSpendWhenLow,
@@ -176,13 +183,16 @@ class _MoodSpendingCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: context.colors.surface,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: t.bodySmall?.copyWith(color: AppColors.muted)),
+            Text(
+              label,
+              style: t.bodySmall?.copyWith(color: context.colors.muted),
+            ),
             Text(
               value == null ? l.noData : rupiah(value),
               style: const TextStyle(fontWeight: FontWeight.w700),
@@ -195,7 +205,7 @@ class _MoodSpendingCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: AppColors.primarySoft,
+        color: context.colors.primarySoft,
         borderRadius: BorderRadius.circular(18),
       ),
       child: Column(
@@ -276,7 +286,7 @@ class _BudgetMood extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.fromLTRB(8, 10, 16, 10),
       decoration: BoxDecoration(
-        color: tint,
+        color: context.colors.tint(tint),
         borderRadius: BorderRadius.circular(18),
       ),
       child: Row(
@@ -292,7 +302,10 @@ class _BudgetMood extends StatelessWidget {
                   style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 2),
-                Text(body, style: t.bodySmall?.copyWith(color: AppColors.ink)),
+                Text(
+                  body,
+                  style: t.bodySmall?.copyWith(color: context.colors.ink),
+                ),
               ],
             ),
           ),

@@ -145,7 +145,7 @@ List<int> buildExcelReport({
     [l.category, l.budgetLimit, l.spent, l.remaining],
     [18, 18, 18, 18],
   );
-  for (final c in money.categories.where((c) => c.kind == 'expense')) {
+  for (final c in money.allCategories.where((c) => c.kind == 'expense')) {
     final limit = money.budgetFor(c.id, monthKey);
     final spent = money.spentIn(c.id, monthKey);
     if (limit == 0 && spent == 0) continue;

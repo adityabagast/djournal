@@ -144,7 +144,9 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.expense),
+            style: TextButton.styleFrom(
+              foregroundColor: context.colors.expense,
+            ),
             child: Text(l.delete),
           ),
         ],
@@ -175,15 +177,15 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
       style: t.bodySmall?.copyWith(
         fontSize: 13,
         fontWeight: FontWeight.w600,
-        color: AppColors.muted,
+        color: context.colors.muted,
       ),
     );
 
     final outlined = OutlinedButton.styleFrom(
       minimumSize: const Size(0, 44),
-      backgroundColor: AppColors.surface,
-      foregroundColor: AppColors.primary,
-      side: const BorderSide(color: AppColors.line),
+      backgroundColor: context.colors.surface,
+      foregroundColor: context.colors.primary,
+      side: BorderSide(color: context.colors.line),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       textStyle: buttonTextStyle(
         context,
@@ -223,7 +225,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
             child: TextButton.icon(
               onPressed: _pickDate,
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.muted,
+                foregroundColor: context.colors.muted,
                 padding: EdgeInsets.zero,
                 minimumSize: const Size(0, 36),
               ),
@@ -240,7 +242,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                 onPressed: _pickTime,
                 style: outlined.copyWith(
                   foregroundColor: WidgetStatePropertyAll(
-                    _time == null ? AppColors.muted : AppColors.ink,
+                    _time == null ? context.colors.muted : context.colors.ink,
                   ),
                 ),
                 icon: const Icon(Icons.schedule, size: 18),
@@ -263,7 +265,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                 TextButton(
                   onPressed: () => setState(() => _time = null),
                   style: TextButton.styleFrom(
-                    foregroundColor: AppColors.muted,
+                    foregroundColor: context.colors.muted,
                     textStyle: buttonTextStyle(
                       context,
                       const TextStyle(
@@ -353,7 +355,7 @@ class _MoodChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = selected ? AppColors.primary : AppColors.muted;
+    final color = selected ? context.colors.primary : context.colors.muted;
     final text = moodLabel(context.l10n, mood);
     return Semantics(
       selected: selected,
@@ -361,11 +363,11 @@ class _MoodChoice extends StatelessWidget {
       label: text,
       excludeSemantics: true,
       child: Material(
-        color: selected ? AppColors.primarySoft : AppColors.surface,
+        color: selected ? context.colors.primarySoft : context.colors.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(14),
           side: BorderSide(
-            color: selected ? AppColors.primary : AppColors.line,
+            color: selected ? context.colors.primary : context.colors.line,
           ),
         ),
         child: InkWell(
@@ -434,7 +436,7 @@ class _DayTransactions extends StatelessWidget {
           ),
           Text(
             l.linkedByDate,
-            style: t.bodySmall?.copyWith(color: AppColors.muted),
+            style: t.bodySmall?.copyWith(color: context.colors.muted),
           ),
           if (txs.isEmpty) EmptyNote(l.noTransactions),
           for (var i = 0; i < txs.length; i++)

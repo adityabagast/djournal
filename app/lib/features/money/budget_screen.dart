@@ -38,7 +38,7 @@ class BudgetScreen extends ConsumerWidget {
               children: [
                 Text(
                   l.budgetSubtitle,
-                  style: t.bodyMedium?.copyWith(color: AppColors.muted),
+                  style: t.bodyMedium?.copyWith(color: context.colors.muted),
                 ),
                 const SizedBox(height: 12),
                 AppCard(
@@ -80,10 +80,10 @@ class BudgetScreen extends ConsumerWidget {
                               category: c,
                               spent: snap.spentIn(c.id, monthKey),
                               budget: snap.budgetFor(c.id, monthKey),
-                              trailing: const Icon(
+                              trailing: Icon(
                                 Icons.chevron_right,
                                 size: 20,
-                                color: AppColors.muted,
+                                color: context.colors.muted,
                               ),
                             ),
                           ),
@@ -136,7 +136,7 @@ class BudgetScreen extends ConsumerWidget {
             const SizedBox(height: 8),
             Text(
               l.budgetAppliesFrom(monthName),
-              style: const TextStyle(fontSize: 12, color: AppColors.muted),
+              style: TextStyle(fontSize: 12, color: context.colors.muted),
             ),
           ],
         ),
@@ -186,7 +186,7 @@ class BudgetRow extends StatelessWidget {
     final hasBudget = budget > 0;
     final over = hasBudget && spent > budget;
     final pct = hasBudget ? (spent * 100 / budget).round() : 0;
-    final catColor = hexColor(category.color);
+    final catColor = context.colors.fg(hexColor(category.color));
 
     final note = over
         ? l.overBudget(rupiah(spent - budget))
@@ -210,10 +210,7 @@ class BudgetRow extends StatelessWidget {
                     hasBudget
                         ? '${rupiah(spent)} / ${rupiah(budget)}'
                         : rupiah(spent),
-                    style: const TextStyle(
-                      fontSize: 13,
-                      color: AppColors.muted,
-                    ),
+                    style: TextStyle(fontSize: 13, color: context.colors.muted),
                   ),
                 ],
               ),
@@ -225,8 +222,8 @@ class BudgetRow extends StatelessWidget {
                       ? (spent / budget).clamp(0, 1).toDouble()
                       : (spent > 0 ? 1 : 0),
                   minHeight: 8,
-                  backgroundColor: AppColors.track,
-                  color: over ? AppColors.expense : catColor,
+                  backgroundColor: context.colors.track,
+                  color: over ? context.colors.expense : catColor,
                 ),
               ),
               const SizedBox(height: 4),
@@ -234,7 +231,7 @@ class BudgetRow extends StatelessWidget {
                 note,
                 style: TextStyle(
                   fontSize: 12,
-                  color: over ? AppColors.expense : AppColors.muted,
+                  color: over ? context.colors.expense : context.colors.muted,
                 ),
               ),
             ],

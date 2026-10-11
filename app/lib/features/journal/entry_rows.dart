@@ -36,7 +36,7 @@ class EntryTimelineRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           border: showDivider
-              ? const Border(bottom: BorderSide(color: AppColors.divider))
+              ? Border(bottom: BorderSide(color: context.colors.divider))
               : null,
         ),
         child: Row(
@@ -48,7 +48,7 @@ class EntryTimelineRow extends StatelessWidget {
                 entry.entryTime ?? '',
                 style: t.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
-                  color: AppColors.muted,
+                  color: context.colors.muted,
                 ),
               ),
             ),
@@ -56,13 +56,13 @@ class EntryTimelineRow extends StatelessWidget {
               width: 36,
               height: 36,
               decoration: BoxDecoration(
-                color: AppColors.primarySoft,
+                color: context.colors.primarySoft,
                 borderRadius: BorderRadius.circular(11),
               ),
-              child: const Icon(
+              child: Icon(
                 Icons.menu_book_outlined,
                 size: 18,
-                color: AppColors.primary,
+                color: context.colors.primary,
               ),
             ),
             const SizedBox(width: 12),
@@ -81,7 +81,7 @@ class EntryTimelineRow extends StatelessWidget {
                       sub,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: t.bodySmall?.copyWith(color: AppColors.muted),
+                      style: t.bodySmall?.copyWith(color: context.colors.muted),
                     ),
                 ],
               ),
@@ -117,7 +117,7 @@ class EntryListRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           border: showDivider
-              ? const Border(bottom: BorderSide(color: AppColors.divider))
+              ? Border(bottom: BorderSide(color: context.colors.divider))
               : null,
         ),
         child: Row(
@@ -131,7 +131,7 @@ class EntryListRow extends StatelessWidget {
                   entry.entryTime ?? '',
                   style: t.bodySmall?.copyWith(
                     fontWeight: FontWeight.w600,
-                    color: AppColors.muted,
+                    color: context.colors.muted,
                   ),
                 ),
               ),
@@ -153,7 +153,9 @@ class EntryListRow extends StatelessWidget {
                       entry.body!,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: t.bodyMedium?.copyWith(color: AppColors.muted),
+                      style: t.bodyMedium?.copyWith(
+                        color: context.colors.muted,
+                      ),
                     ),
                   ],
                   if (entry.mood != null || tags.isNotEmpty) ...[
@@ -169,17 +171,17 @@ class EntryListRow extends StatelessWidget {
                             children: [
                               MoodFace(
                                 mood: entry.mood!,
-                                color: AppColors.primary,
+                                color: context.colors.primary,
                                 size: 16,
                                 strokeWidth: 1.8,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 moodLabel(context.l10n, entry.mood!),
-                                style: const TextStyle(
+                                style: TextStyle(
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
-                                  color: AppColors.primary,
+                                  color: context.colors.primary,
                                 ),
                               ),
                             ],
@@ -191,15 +193,17 @@ class EntryListRow extends StatelessWidget {
                               vertical: 2,
                             ),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFEEF5F1),
+                              color: context.colors.isDark
+                                  ? context.colors.primarySoft
+                                  : const Color(0xFFEEF5F1),
                               borderRadius: BorderRadius.circular(8),
                             ),
                             child: Text(
                               '#$tag',
-                              style: const TextStyle(
+                              style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w600,
-                                color: AppColors.primary,
+                                color: context.colors.primary,
                               ),
                             ),
                           ),

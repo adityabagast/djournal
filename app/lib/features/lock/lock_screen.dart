@@ -98,7 +98,9 @@ class _LockScreenState extends ConsumerState<LockScreen> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.expense),
+            style: TextButton.styleFrom(
+              foregroundColor: context.colors.expense,
+            ),
             child: Text(l.resetPin),
           ),
         ],

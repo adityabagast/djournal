@@ -36,7 +36,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
       text.toUpperCase(),
       style: t.bodySmall?.copyWith(
         fontWeight: FontWeight.w600,
-        color: AppColors.muted,
+        color: context.colors.muted,
         fontSize: 13,
       ),
     );
@@ -74,7 +74,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                       Text(
                         l.walletsTotal(snap.wallets.length),
                         style: t.bodySmall?.copyWith(
-                          color: AppColors.muted,
+                          color: context.colors.muted,
                           fontSize: 13,
                         ),
                       ),
@@ -127,9 +127,9 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                           AnimatedRotation(
                             turns: _archiveOpen ? 0.5 : 0,
                             duration: const Duration(milliseconds: 150),
-                            child: const Icon(
+                            child: Icon(
                               Icons.expand_more,
-                              color: AppColors.muted,
+                              color: context.colors.muted,
                             ),
                           ),
                         ],
@@ -141,15 +141,17 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                       padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
                       child: Text(
                         l.archiveWalletHint,
-                        style: t.bodySmall?.copyWith(color: AppColors.muted),
+                        style: t.bodySmall?.copyWith(
+                          color: context.colors.muted,
+                        ),
                       ),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFAF9F6),
+                        color: context.colors.subtle,
                         borderRadius: BorderRadius.circular(18),
-                        border: Border.all(color: const Color(0xFFD9D6CD)),
+                        border: Border.all(color: context.colors.handle),
                       ),
                       child: Column(
                         children: [
@@ -193,12 +195,13 @@ class _WalletRow extends StatelessWidget {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
     final balance = snapshot.balanceOf(wallet.id);
-    final (icon, fg) = switch (wallet.type) {
-      'cash' => (Icons.payments_outlined, AppColors.primary),
+    final (icon, raw) = switch (wallet.type) {
+      'cash' => (Icons.payments_outlined, AppColors.hero),
       'ewallet' => (Icons.phone_iphone, const Color(0xFF6B2C7A)),
       'bank' => (Icons.account_balance_outlined, const Color(0xFF1E4E79)),
       _ => (Icons.account_balance_wallet_outlined, const Color(0xFF4A4E4C)),
     };
+    final fg = context.colors.fg(raw);
     final typeLabel = switch (wallet.type) {
       'cash' => l.walletTypeCash,
       'bank' => l.walletTypeBank,
@@ -212,7 +215,7 @@ class _WalletRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
           border: showDivider
-              ? const Border(bottom: BorderSide(color: AppColors.divider))
+              ? Border(bottom: BorderSide(color: context.colors.divider))
               : null,
         ),
         child: Row(
@@ -221,7 +224,7 @@ class _WalletRow extends StatelessWidget {
               width: 40,
               height: 40,
               decoration: BoxDecoration(
-                color: softOf(fg),
+                color: context.colors.soft(raw),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: fg, size: 22),
@@ -239,7 +242,7 @@ class _WalletRow extends StatelessWidget {
                   ),
                   Text(
                     '$typeLabel · ${l.walletTxCount(_txCount(snapshot, wallet.id))}',
-                    style: t.bodySmall?.copyWith(color: AppColors.muted),
+                    style: t.bodySmall?.copyWith(color: context.colors.muted),
                   ),
                 ],
               ),
@@ -249,7 +252,9 @@ class _WalletRow extends StatelessWidget {
               _signed(balance),
               style: t.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: balance < 0 ? AppColors.expense : AppColors.ink,
+                color: balance < 0
+                    ? context.colors.expense
+                    : context.colors.ink,
               ),
             ),
           ],
@@ -279,7 +284,7 @@ class _ArchivedRow extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         border: showDivider
-            ? const Border(bottom: BorderSide(color: AppColors.divider))
+            ? Border(bottom: BorderSide(color: context.colors.divider))
             : null,
       ),
       child: Row(
@@ -298,7 +303,7 @@ class _ArchivedRow extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                       style: t.bodyMedium?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: AppColors.muted,
+                        color: context.colors.muted,
                       ),
                     ),
                     Text(
@@ -306,7 +311,7 @@ class _ArchivedRow extends ConsumerWidget {
                         _txCount(snapshot, wallet.id),
                         _signed(snapshot.balanceOf(wallet.id)),
                       ),
-                      style: t.bodySmall?.copyWith(color: AppColors.muted),
+                      style: t.bodySmall?.copyWith(color: context.colors.muted),
                     ),
                   ],
                 ),

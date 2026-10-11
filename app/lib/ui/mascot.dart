@@ -54,10 +54,14 @@ class MascotBadge extends StatelessWidget {
     super.key,
     required this.tint,
     this.size = 150,
+    this.adaptive = true,
   });
 
   final MascotPose pose;
   final Color tint;
+
+  /// false = tetap pastel di mode gelap (mis. di layar kunci yang hijau).
+  final bool adaptive;
 
   /// Diameter lingkaran.
   final double size;
@@ -68,7 +72,10 @@ class MascotBadge extends StatelessWidget {
       width: size,
       height: size,
       alignment: Alignment.center,
-      decoration: BoxDecoration(color: tint, shape: BoxShape.circle),
+      decoration: BoxDecoration(
+        color: adaptive ? context.colors.tint(tint) : tint,
+        shape: BoxShape.circle,
+      ),
       child: Mascot(pose, size: size * 0.75),
     );
   }
@@ -115,7 +122,7 @@ class MascotEmpty extends StatelessWidget {
             child: Text(
               message,
               textAlign: TextAlign.center,
-              style: t.bodyMedium?.copyWith(color: AppColors.muted),
+              style: t.bodyMedium?.copyWith(color: context.colors.muted),
             ),
           ),
           if (action != null) ...[const SizedBox(height: 14), action!],
@@ -141,11 +148,11 @@ void showMascotSnackBar(
         behavior: SnackBarBehavior.floating,
         margin: EdgeInsets.fromLTRB(16, 0, 16, bottom),
         padding: const EdgeInsets.fromLTRB(8, 4, 16, 4),
-        backgroundColor: AppColors.surface,
+        backgroundColor: context.colors.surface,
         elevation: 4,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: AppColors.line),
+          side: BorderSide(color: context.colors.line),
         ),
         content: Row(
           children: [
@@ -154,8 +161,8 @@ void showMascotSnackBar(
             Expanded(
               child: Text(
                 text,
-                style: const TextStyle(
-                  color: AppColors.ink,
+                style: TextStyle(
+                  color: context.colors.ink,
                   fontWeight: FontWeight.w600,
                 ),
               ),

@@ -19,7 +19,7 @@ class WalletFormSheet extends ConsumerStatefulWidget {
     return showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: AppColors.surface,
+      backgroundColor: context.colors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -127,7 +127,9 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx, true),
-            style: TextButton.styleFrom(foregroundColor: AppColors.expense),
+            style: TextButton.styleFrom(
+              foregroundColor: context.colors.expense,
+            ),
             child: Text(l.delete),
           ),
         ],
@@ -179,7 +181,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
               width: 40,
               height: 4,
               decoration: BoxDecoration(
-                color: const Color(0xFFD9D6CD),
+                color: context.colors.handle,
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -208,7 +210,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
             l.walletType,
             style: t.bodySmall?.copyWith(
               fontWeight: FontWeight.w600,
-              color: AppColors.muted,
+              color: context.colors.muted,
             ),
           ),
           const SizedBox(height: 6),
@@ -263,7 +265,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                 child: Text(
                   l.archiveWalletHint,
                   textAlign: TextAlign.center,
-                  style: t.bodySmall?.copyWith(color: AppColors.muted),
+                  style: t.bodySmall?.copyWith(color: context.colors.muted),
                 ),
               ),
           ],
@@ -272,7 +274,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
             TextButton.icon(
               onPressed: () => _delete(txCount),
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.expense,
+                foregroundColor: context.colors.expense,
                 minimumSize: const Size.fromHeight(44),
               ),
               icon: const Icon(Icons.delete_outline, size: 20),
@@ -283,7 +285,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
             Text(
               l.lastWalletCantDelete,
               textAlign: TextAlign.center,
-              style: t.bodySmall?.copyWith(color: AppColors.muted),
+              style: t.bodySmall?.copyWith(color: context.colors.muted),
             ),
           ],
         ],

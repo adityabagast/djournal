@@ -5,8 +5,10 @@ import '../../core/theme.dart';
 import '../../ui/common.dart';
 
 /// Warna latar splash, sama dengan latar icon dan splash bawaan Android
-/// (lihat flutter_native_splash di pubspec.yaml).
+/// (lihat flutter_native_splash di pubspec.yaml). Mode gelap memakai latar
+/// halaman gelap supaya pudarnya menyambung ke app.
 const splashColor = Color(0xFFCDEBDD);
+const splashColorDark = Color(0xFF111513);
 
 /// Sisi kanvas kucing (dp). Sama dengan ukuran icon splash Android 12 dan
 /// tool/icon/out/splash.png, jadi frame pertama menyambung tanpa lompatan.
@@ -163,12 +165,14 @@ class _SplashOverlayState extends ConsumerState<SplashOverlay>
 
   Widget _frame(BuildContext context, Widget? _) {
     final font = Theme.of(context).textTheme.bodyMedium?.fontFamily;
+    final c = context.colors;
+    final accent = c.isDark ? c.primary : AppColors.hero;
     return Opacity(
       opacity: _exitOpacity.value,
       // Material, bukan ColoredBox: overlay ada di atas Navigator, jadi
       // tanpa ini teks tidak punya gaya dasar (garis bawah kuning).
       child: Material(
-        color: splashColor,
+        color: c.isDark ? splashColorDark : splashColor,
         child: Transform.scale(
           scale: _exitScale.value,
           child: LayoutBuilder(
@@ -185,6 +189,7 @@ class _SplashOverlayState extends ConsumerState<SplashOverlay>
                       blink: _blink.value,
                       sparkScale: _sparkScale.value,
                       sparkOpacity: _sparkOpacity.value,
+                      sparkColor: accent,
                     ),
                   ),
                 ),
@@ -206,7 +211,7 @@ class _SplashOverlayState extends ConsumerState<SplashOverlay>
                               fontSize: 30,
                               fontWeight: FontWeight.w700,
                               letterSpacing: -0.5,
-                              color: AppColors.primary,
+                              color: accent,
                             ),
                           ),
                           Text(
@@ -215,7 +220,9 @@ class _SplashOverlayState extends ConsumerState<SplashOverlay>
                               fontFamily: font,
                               fontSize: 13,
                               fontWeight: FontWeight.w500,
-                              color: const Color(0xFF2F5A4C),
+                              color: c.isDark
+                                  ? c.muted
+                                  : const Color(0xFF2F5A4C),
                             ),
                           ),
                         ],
@@ -245,6 +252,7 @@ class _CatPainter extends CustomPainter {
     required this.blink,
     required this.sparkScale,
     required this.sparkOpacity,
+    required this.sparkColor,
   });
 
   final double jumpY;
@@ -254,6 +262,7 @@ class _CatPainter extends CustomPainter {
   final double blink;
   final double sparkScale;
   final double sparkOpacity;
+  final Color sparkColor;
 
   static const _ink = Color(0xFF4A5A54);
   static const _paper = Color(0xFFFFF9F0);
@@ -382,7 +391,7 @@ class _CatPainter extends CustomPainter {
       ..restore();
 
     if (sparkOpacity > 0) {
-      _spark(canvas, const Offset(27, 38), 4, AppColors.primary);
+      _spark(canvas, const Offset(27, 38), 4, sparkColor);
       _spark(canvas, const Offset(83, 31), 3, const Color(0xFFE59A5C));
     }
   }
@@ -432,5 +441,6 @@ class _CatPainter extends CustomPainter {
       old.earDegrees != earDegrees ||
       old.blink != blink ||
       old.sparkScale != sparkScale ||
+      old.sparkColor != sparkColor ||
       old.sparkOpacity != sparkOpacity;
 }

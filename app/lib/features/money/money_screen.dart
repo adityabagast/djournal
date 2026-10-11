@@ -9,6 +9,7 @@ import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
+import '../search/search_screen.dart';
 import 'tx_form_screen.dart';
 import 'wallet_form_sheet.dart';
 import 'wallets_screen.dart';
@@ -51,6 +52,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
             ScreenHeader(
               overline: DateFormat('MMMM y', context.localeTag).format(now),
               title: l.navMoney,
+              trailing: const SearchButton(),
             ),
             const SizedBox(height: 16),
             _BalanceCard(
@@ -203,7 +205,7 @@ class _BalanceCard extends StatelessWidget {
           children: [
             Text(
               label,
-              style: t.bodySmall?.copyWith(color: AppColors.primaryOnDark),
+              style: t.bodySmall?.copyWith(color: AppColors.onHeroMuted),
             ),
             FittedBox(
               fit: BoxFit.scaleDown,
@@ -223,7 +225,7 @@ class _BalanceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.primary,
+        color: AppColors.hero,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -231,7 +233,7 @@ class _BalanceCard extends StatelessWidget {
         children: [
           Text(
             l.totalBalance,
-            style: t.bodySmall?.copyWith(color: AppColors.primaryOnDark),
+            style: t.bodySmall?.copyWith(color: AppColors.onHeroMuted),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
@@ -273,10 +275,10 @@ class _WalletCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
     return Material(
-      color: AppColors.surface,
+      color: context.colors.surface,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: AppColors.line),
+        side: BorderSide(color: context.colors.line),
       ),
       child: InkWell(
         onTap: onTap,
@@ -293,7 +295,7 @@ class _WalletCard extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: t.bodySmall?.copyWith(
-                  color: AppColors.muted,
+                  color: context.colors.muted,
                   fontSize: 13,
                 ),
               ),
@@ -330,14 +332,16 @@ class _FilterChip extends StatelessWidget {
       selected: selected,
       showCheckmark: false,
       onSelected: (_) => onTap(),
-      selectedColor: AppColors.primary,
-      backgroundColor: AppColors.surface,
-      side: BorderSide(color: selected ? AppColors.primary : AppColors.line),
+      selectedColor: context.colors.primary,
+      backgroundColor: context.colors.surface,
+      side: BorderSide(
+        color: selected ? context.colors.primary : context.colors.line,
+      ),
       shape: const StadiumBorder(),
       labelStyle: TextStyle(
         fontSize: 13,
         fontWeight: FontWeight.w600,
-        color: selected ? Colors.white : AppColors.ink,
+        color: selected ? context.colors.onPrimary : context.colors.ink,
       ),
     );
   }
@@ -352,7 +356,7 @@ class _DayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.bodySmall
-        ?.copyWith(color: AppColors.muted, fontSize: 13);
+        ?.copyWith(color: context.colors.muted, fontSize: 13);
     return Padding(
       padding: const EdgeInsets.fromLTRB(4, 0, 4, 6),
       child: Row(

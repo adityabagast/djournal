@@ -89,7 +89,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
           children: [
             Text(
               l.signInPrompt,
-              style: t.bodyMedium?.copyWith(color: AppColors.muted),
+              style: t.bodyMedium?.copyWith(color: context.colors.muted),
             ),
             const SizedBox(height: 20),
             TextField(
@@ -127,7 +127,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               const SizedBox(height: 8),
               Text(
                 _error!,
-                style: t.bodyMedium?.copyWith(color: AppColors.expense),
+                style: t.bodyMedium?.copyWith(color: context.colors.expense),
               ),
             ],
             const SizedBox(height: 20),
@@ -137,12 +137,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 minimumSize: const Size.fromHeight(52),
               ),
               child: _busy
-                  ? const SizedBox(
+                  ? SizedBox(
                       width: 22,
                       height: 22,
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
-                        color: Colors.white,
+                        color: context.colors.onPrimary,
                       ),
                     )
                   : Text(_register ? l.register : l.signIn),
