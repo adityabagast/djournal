@@ -2,6 +2,7 @@
 // yang asli, diisi data contoh (bukan data pribadi). Hasil: docs/screenshots/.
 // Jalankan dari folder app/:
 //   flutter test tool/screenshots_test.dart
+import 'dart:async';
 import 'dart:io';
 import 'dart:ui' as ui;
 
@@ -13,9 +14,12 @@ import 'package:djournal/data/journal_repository.dart';
 import 'package:djournal/data/money_repository.dart';
 import 'package:djournal/data/money_snapshot.dart';
 import 'package:djournal/data/security/lock_controller.dart';
+import 'package:djournal/data/settings_repository.dart';
 import 'package:djournal/data/sync/account_controller.dart';
 import 'package:djournal/features/journal/entry_form_screen.dart';
 import 'package:djournal/features/lock/lock_screen.dart';
+import 'package:djournal/features/money/categories_screen.dart';
+import 'package:djournal/features/search/search_screen.dart';
 import 'package:djournal/features/shell/home_shell.dart';
 import 'package:djournal/l10n/app_localizations.dart';
 import 'package:djournal/providers.dart';
@@ -51,6 +55,33 @@ class _FakeLock extends LockController {
 
   @override
   Future<bool> unlockWithBiometric(String reason) async => false;
+}
+
+/// Pengganti tabel app_settings (pencarian terakhir): database drift asli
+/// macet di testWidgets.
+class _FakeSettings implements SettingsRepository {
+  final _values = <String, String>{};
+  final _changes = StreamController<void>.broadcast();
+
+  @override
+  Stream<String?> watch(String key) async* {
+    yield _values[key];
+    await for (final _ in _changes.stream) {
+      yield _values[key];
+    }
+  }
+
+  @override
+  Future<void> set(String key, String value) async {
+    _values[key] = value;
+    _changes.add(null);
+  }
+
+  @override
+  Future<void> remove(String key) async {
+    _values.remove(key);
+    _changes.add(null);
+  }
 }
 
 late MoneySnapshot _snap;
@@ -244,7 +275,11 @@ void main() {
     await _buildDemoData();
   });
 
-  Future<void> pumpApp(WidgetTester tester, Widget home) async {
+  Future<void> pumpApp(
+    WidgetTester tester,
+    Widget home, {
+    Brightness brightness = Brightness.light,
+  }) async {
     tester.view.physicalSize = _size * _pixelRatio;
     tester.view.devicePixelRatio = _pixelRatio;
     addTearDown(tester.view.reset);
@@ -256,12 +291,13 @@ void main() {
           accountProvider.overrideWith(_FakeAccount.new),
           lockProvider.overrideWith(_FakeLock.new),
           homeWidgetSyncProvider.overrideWithValue(null),
+          settingsRepositoryProvider.overrideWithValue(_FakeSettings()),
         ],
         child: RepaintBoundary(
           key: shotKey,
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            theme: buildTheme(Brightness.light),
+            theme: buildTheme(brightness),
             locale: const Locale('id'),
             supportedLocales: AppLocalizations.supportedLocales,
             localizationsDelegates: AppLocalizations.localizationsDelegates,
@@ -317,6 +353,41 @@ void main() {
       await shoot(tester, 'keuangan');
       await tapDock(tester, 'Laporan');
       await shoot(tester, 'laporan');
+    });
+  });
+
+  testWidgets('mode gelap', (tester) async {
+    await withShadows(() async {
+      await pumpApp(tester, const HomeShell(), brightness: Brightness.dark);
+      await shoot(tester, 'hari-ini-gelap');
+    });
+  });
+
+  /// Buka layar di atas HomeShell, seperti dari app (ada tombol kembali).
+  Future<void> pushOverHome(WidgetTester tester, Widget screen) async {
+    await pumpApp(tester, const HomeShell());
+    unawaited(
+      Navigator.of(tester.element(find.byType(HomeShell)))
+          .push(MaterialPageRoute<void>(builder: (_) => screen)),
+    );
+    await settle(tester);
+  }
+
+  testWidgets('pencarian', (tester) async {
+    await withShadows(() async {
+      await pushOverHome(tester, const SearchScreen());
+      await tester.enterText(find.byType(TextField), 'makan');
+      await settle(tester);
+      // Sembunyikan kursor teks supaya gambar rapi.
+      FocusManager.instance.primaryFocus?.unfocus();
+      await shoot(tester, 'cari');
+    });
+  });
+
+  testWidgets('kelola kategori', (tester) async {
+    await withShadows(() async {
+      await pushOverHome(tester, const CategoriesScreen());
+      await shoot(tester, 'kelola-kategori');
     });
   });
 

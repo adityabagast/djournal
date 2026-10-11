@@ -15,9 +15,21 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
     <td align="center"><img src="docs/screenshots/tulis-jurnal.png" width="240" alt="Form entri jurnal: jam, mood, judul, cerita, tag, dan transaksi di hari yang sama"><br><b>Tulis jurnal</b></td>
     <td align="center"><img src="docs/screenshots/kunci.png" width="240" alt="Layar kunci PIN dengan maskot kucing"><br><b>Kunci PIN</b></td>
   </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/hari-ini-gelap.png" width="240" alt="Layar Hari Ini dalam mode gelap"><br><b>Mode gelap</b></td>
+    <td align="center"><img src="docs/screenshots/cari.png" width="240" alt="Pencarian &quot;makan&quot;: transaksi yang cocok dikelompokkan per hari, kata yang cocok disorot"><br><b>Pencarian</b></td>
+    <td align="center"><img src="docs/screenshots/kelola-kategori.png" width="240" alt="Kelola kategori: daftar kategori pengeluaran dengan pegangan geser, jumlah transaksi, dan budget"><br><b>Kelola kategori</b></td>
+  </tr>
 </table>
 
 <sub>Screenshot memakai data contoh dan dibuat otomatis dengan <code>flutter test tool/screenshots_test.dart</code>.</sub>
+
+## Pasang
+
+1. Unduh **`app-arm64-v8a-release.apk`** dari [Releases](../../releases/latest). HP lama yang gagal memasangnya: pakai `app-armeabi-v7a-release.apk`.
+2. Buka file itu di HP lalu pilih **Instal**. Versi baru bisa langsung dipasang di atas versi lama; data tetap aman.
+
+> Sejak 30 September 2026, Android di Indonesia hanya mau memasang app dari developer yang terverifikasi. Nyawtat sudah terdaftar di Android Developer Console dengan distribusi terbatas, jadi HP harus **diizinkan developer dulu** (maksimal 20 HP). Tanpa itu muncul pesan "Aplikasi diblokir untuk melindungi perangkat Anda".
 
 ## Fitur
 
