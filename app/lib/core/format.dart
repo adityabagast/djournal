@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 String rupiah(int amount) => 'Rp ${thousands(amount.abs())}';
 
 String thousands(int n) {
+  if (n < 0) return '-${thousands(-n)}';
   final s = n.toString();
   final buf = StringBuffer();
   for (var i = 0; i < s.length; i++) {
@@ -33,17 +34,30 @@ DateTime parseLocalDate(String ymd) {
 String hhmm(DateTime dt) => DateFormat.Hm().format(dt.toLocal());
 
 /// Input nominal: hanya angka, otomatis diberi titik ribuan saat mengetik.
+/// [allowNegative] mengizinkan tanda minus di depan (mis. saldo dompet).
 class ThousandsInputFormatter extends TextInputFormatter {
+  ThousandsInputFormatter({this.allowNegative = false});
+
+  final bool allowNegative;
+
   @override
   TextEditingValue formatEditUpdate(
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
+    final negative = allowNegative && newValue.text.trimLeft().startsWith('-');
     final digits = newValue.text.replaceAll(RegExp(r'[^0-9]'), '');
-    if (digits.isEmpty) return const TextEditingValue();
+    if (digits.isEmpty) {
+      return negative
+          ? const TextEditingValue(
+              text: '-',
+              selection: TextSelection.collapsed(offset: 1),
+            )
+          : const TextEditingValue();
+    }
     // Batasi 15 digit supaya tetap aman di int 64-bit.
     final trimmed = digits.length > 15 ? digits.substring(0, 15) : digits;
-    final text = thousands(int.parse(trimmed));
+    final text = '${negative ? '-' : ''}${thousands(int.parse(trimmed))}';
     return TextEditingValue(
       text: text,
       selection: TextSelection.collapsed(offset: text.length),
@@ -51,5 +65,8 @@ class ThousandsInputFormatter extends TextInputFormatter {
   }
 }
 
-int parseAmount(String text) =>
-    int.tryParse(text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+/// Kebalikan dari [thousands]; tanda minus di depan dipertahankan.
+int parseAmount(String text) {
+  final value = int.tryParse(text.replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
+  return text.trimLeft().startsWith('-') ? -value : value;
+}

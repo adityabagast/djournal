@@ -150,7 +150,7 @@ Kategori bawaan (seed saat onboarding):
 
 Index: `(local_date)`, `(wallet_id)`, `(category_id)`.
 
-> Transfer antar dompet (BCA → GoPay) sudah didukung di skema. UI-nya bisa menyusul setelah MVP.
+> Transfer antar dompet (BCA → GoPay): satu baris `transfer` dengan `wallet_id` = asal dan `to_wallet_id` = tujuan. Tidak dihitung sebagai pemasukan/pengeluaran di laporan dan budget. Biaya admin dicatat manual sebagai pengeluaran terpisah.
 
 ### 4.4 `budgets` — Budget bulanan per kategori
 

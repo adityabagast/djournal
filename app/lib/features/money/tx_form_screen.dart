@@ -6,11 +6,14 @@ import 'package:intl/intl.dart';
 import '../../core/format.dart';
 import '../../core/theme.dart';
 import '../../data/db/app_database.dart';
+import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
+import 'wallet_form_sheet.dart';
 
-/// Form catat / edit transaksi. [existing] null = transaksi baru.
+/// Form catat / edit transaksi (pengeluaran, pemasukan, atau transfer antar
+/// dompet). [existing] null = transaksi baru.
 class TxFormScreen extends ConsumerStatefulWidget {
   const TxFormScreen({super.key, this.existing});
 
@@ -31,7 +34,12 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
   final _note = TextEditingController();
   late String _type;
   String? _categoryId;
+
+  /// Dompet transaksi; untuk transfer = dompet asal.
   String? _walletId;
+
+  /// Dompet tujuan, hanya untuk transfer.
+  String? _toWalletId;
   late DateTime _occurredAt;
   bool _showAmountError = false;
   bool _saving = false;
@@ -45,6 +53,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     _type = e?.type ?? 'expense';
     _categoryId = e?.categoryId;
     _walletId = e?.walletId;
+    _toWalletId = e?.toWalletId;
     _occurredAt = e?.occurredAt.toLocal() ?? DateTime.now();
     if (e != null) {
       _amount.text = thousands(e.amount);
@@ -85,8 +94,9 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
       return;
     }
     setState(() => _saving = true);
-    final categoryId = _categoryId ?? cats.first.id;
-    final overBudget = _exceedsBudget(categoryId, amount);
+    final isTransfer = _type == 'transfer';
+    final categoryId = isTransfer ? null : (_categoryId ?? cats.first.id);
+    final overBudget = categoryId != null && _exceedsBudget(categoryId, amount);
     await ref
         .read(moneyRepositoryProvider)
         .saveTransaction(
@@ -94,6 +104,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           type: _type,
           amount: amount,
           walletId: _walletId ?? wallets.first.id,
+          toWalletId: isTransfer ? _toWalletId : null,
           categoryId: categoryId,
           note: _note.text,
           occurredAt: _occurredAt,
@@ -108,7 +119,11 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
         l.toastBudgetOver(categoryLabel(l, cat)),
       );
     } else {
-      showMascotSnackBar(context, MascotPose.senang, l.toastTxSaved);
+      showMascotSnackBar(
+        context,
+        MascotPose.senang,
+        isTransfer ? l.toastTransferSaved : l.toastTxSaved,
+      );
     }
     Navigator.of(context).pop();
   }
@@ -130,6 +145,19 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
         ? old.amount
         : 0;
     return snap.spentIn(categoryId, month) - oldAmount + amount > budget;
+  }
+
+  /// Saldo [walletId] tanpa pengaruh transaksi yang sedang diedit, supaya
+  /// peringatan saldo kurang tidak menghitung nominal lamanya dua kali.
+  int _balanceExcludingThis(MoneySnapshot snap, String walletId) {
+    var balance = snap.balanceOf(walletId);
+    final e = widget.existing;
+    if (e == null) return balance;
+    if (e.walletId == walletId) {
+      balance += e.type == 'income' ? -e.amount : e.amount;
+    }
+    if (e.type == 'transfer' && e.toWalletId == walletId) balance -= e.amount;
+    return balance;
   }
 
   Future<void> _delete() async {
@@ -173,7 +201,23 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     if (_categoryId == null || !cats.any((c) => c.id == _categoryId)) {
       _categoryId = cats.isEmpty ? null : cats.first.id;
     }
-    _walletId ??= snap.wallets.isEmpty ? null : snap.wallets.first.id;
+    // Dompet aktif, plus dompet arsip yang dipakai transaksi yang sedang
+    // diedit supaya pilihannya tetap terlihat.
+    final e = widget.existing;
+    final wallets = [
+      ...snap.wallets,
+      for (final id in {e?.walletId, e?.toWalletId})
+        if (snap.walletById[id]?.isArchived ?? false) snap.walletById[id]!,
+    ];
+    _walletId ??= wallets.isEmpty ? null : wallets.first.id;
+    final isTransfer = _type == 'transfer';
+    // Tujuan transfer harus dompet lain yang masih ada.
+    if (isTransfer &&
+        (_toWalletId == _walletId ||
+            !wallets.any((w) => w.id == _toWalletId))) {
+      _toWalletId = wallets.where((w) => w.id != _walletId).firstOrNull?.id;
+    }
+    final canSave = !isTransfer || _toWalletId != null;
 
     final now = DateTime.now();
     final sameDay = toLocalDate(_occurredAt) == toLocalDate(now);
@@ -220,6 +264,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                 for (final (type, text) in [
                   ('expense', l.expense),
                   ('income', l.income),
+                  ('transfer', l.transfer),
                 ])
                   Expanded(
                     child: _Segment(
@@ -251,11 +296,8 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                   autofocus: !_isEdit,
                   keyboardType: TextInputType.number,
                   inputFormatters: [ThousandsInputFormatter()],
-                  onChanged: (_) {
-                    if (_showAmountError) {
-                      setState(() => _showAmountError = false);
-                    }
-                  },
+                  // Rebuild tiap ketikan: peringatan saldo transfer ikut nominal.
+                  onChanged: (_) => setState(() => _showAmountError = false),
                   style: t.headlineLarge?.copyWith(
                     fontWeight: FontWeight.w700,
                     fontSize: 34,
@@ -302,52 +344,53 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               ),
             ),
           const SizedBox(height: 20),
-          label(l.category),
-          const SizedBox(height: 8),
-          GridView.count(
-            crossAxisCount: 3,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            mainAxisSpacing: 8,
-            crossAxisSpacing: 8,
-            childAspectRatio: 1.45,
-            children: [
-              for (final c in cats)
-                _CategoryChoice(
-                  category: c,
-                  selected: c.id == _categoryId,
-                  onTap: () => setState(() => _categoryId = c.id),
-                ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          label(l.wallet),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: [
-              for (final w in snap.wallets)
-                ChoiceChip(
-                  label: Text(w.name),
-                  selected: w.id == _walletId,
-                  showCheckmark: false,
-                  onSelected: (_) => setState(() => _walletId = w.id),
-                  selectedColor: AppColors.primary,
-                  backgroundColor: AppColors.surface,
-                  side: BorderSide(
-                    color: w.id == _walletId
-                        ? AppColors.primary
-                        : AppColors.line,
+          if (isTransfer)
+            _TransferWallets(
+              wallets: wallets,
+              fromId: _walletId,
+              toId: _toWalletId,
+              balanceOf: (id) => _balanceExcludingThis(snap, id),
+              amount: parseAmount(_amount.text),
+              label: label,
+              onFrom: (id) => setState(() {
+                if (id == _toWalletId) _toWalletId = _walletId;
+                _walletId = id;
+              }),
+              onTo: (id) => setState(() => _toWalletId = id),
+              onSwap: () => setState(() {
+                final from = _walletId;
+                _walletId = _toWalletId;
+                _toWalletId = from;
+              }),
+            )
+          else ...[
+            label(l.category),
+            const SizedBox(height: 8),
+            GridView.count(
+              crossAxisCount: 3,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              childAspectRatio: 1.45,
+              children: [
+                for (final c in cats)
+                  _CategoryChoice(
+                    category: c,
+                    selected: c.id == _categoryId,
+                    onTap: () => setState(() => _categoryId = c.id),
                   ),
-                  shape: const StadiumBorder(),
-                  labelStyle: TextStyle(
-                    fontWeight: FontWeight.w600,
-                    color: w.id == _walletId ? Colors.white : AppColors.ink,
-                  ),
-                ),
-            ],
-          ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            label(l.wallet),
+            const SizedBox(height: 8),
+            _WalletChips(
+              wallets: wallets,
+              selectedId: _walletId,
+              onSelect: (id) => setState(() => _walletId = id),
+            ),
+          ],
           const SizedBox(height: 20),
           Material(
             color: AppColors.surface,
@@ -390,7 +433,9 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           TextField(
             controller: _note,
             textCapitalization: TextCapitalization.sentences,
-            decoration: InputDecoration(hintText: l.noteHint),
+            decoration: InputDecoration(
+              hintText: isTransfer ? l.transferNoteHint : l.noteHint,
+            ),
           ),
         ],
       ),
@@ -406,7 +451,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           border: Border(top: BorderSide(color: AppColors.line)),
         ),
         child: FilledButton(
-          onPressed: _saving ? null : () => _save(cats, snap.wallets),
+          onPressed: _saving || !canSave ? null : () => _save(cats, wallets),
           style: FilledButton.styleFrom(
             minimumSize: const Size.fromHeight(52),
             shape: RoundedRectangleBorder(
@@ -414,7 +459,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
             ),
           ),
           child: Text(
-            l.saveTx,
+            isTransfer ? l.saveTransfer : l.saveTx,
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
           ),
         ),
@@ -512,6 +557,185 @@ class _CategoryChoice extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Pilihan dompet berbentuk chip. [disabledId] tidak bisa dipilih (dompet
+/// asal di baris tujuan transfer).
+class _WalletChips extends StatelessWidget {
+  const _WalletChips({
+    required this.wallets,
+    required this.selectedId,
+    required this.onSelect,
+    this.disabledId,
+  });
+
+  final List<Wallet> wallets;
+  final String? selectedId;
+  final ValueChanged<String> onSelect;
+  final String? disabledId;
+
+  @override
+  Widget build(BuildContext context) {
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: [
+        for (final w in wallets)
+          ChoiceChip(
+            label: Text(w.name),
+            selected: w.id == selectedId,
+            showCheckmark: false,
+            onSelected: w.id == disabledId ? null : (_) => onSelect(w.id),
+            selectedColor: AppColors.primary,
+            backgroundColor: AppColors.surface,
+            disabledColor: AppColors.track,
+            side: BorderSide(
+              color: w.id == selectedId ? AppColors.primary : AppColors.line,
+            ),
+            shape: const StadiumBorder(),
+            labelStyle: TextStyle(
+              fontWeight: FontWeight.w600,
+              color: w.id == disabledId
+                  ? AppColors.muted
+                  : w.id == selectedId
+                  ? Colors.white
+                  : AppColors.ink,
+              decoration: w.id == disabledId
+                  ? TextDecoration.lineThrough
+                  : null,
+            ),
+          ),
+      ],
+    );
+  }
+}
+
+/// Kartu "Dari → Ke" untuk transfer: pilih dompet asal dan tujuan, tukar
+/// keduanya, dan peringatan kalau saldo asal kurang. Tetap boleh disimpan,
+/// karena saldo di app belum tentu sama persis dengan saldo sungguhan.
+class _TransferWallets extends StatelessWidget {
+  const _TransferWallets({
+    required this.wallets,
+    required this.fromId,
+    required this.toId,
+    required this.balanceOf,
+    required this.amount,
+    required this.label,
+    required this.onFrom,
+    required this.onTo,
+    required this.onSwap,
+  });
+
+  final List<Wallet> wallets;
+  final String? fromId;
+  final String? toId;
+  final int Function(String walletId) balanceOf;
+  final int amount;
+  final Widget Function(String text) label;
+  final ValueChanged<String> onFrom;
+  final ValueChanged<String> onTo;
+  final VoidCallback onSwap;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final small = Theme.of(context).textTheme.bodySmall
+        ?.copyWith(color: AppColors.muted);
+    final from = wallets.where((w) => w.id == fromId).firstOrNull;
+    final hasTo = toId != null;
+
+    Widget header(String title, String? walletId) => Row(
+      children: [
+        label(title),
+        const Spacer(),
+        if (walletId != null)
+          Text(
+            l.walletBalance(
+              '${balanceOf(walletId) < 0 ? '−' : ''}'
+              '${rupiah(balanceOf(walletId))}',
+            ),
+            style: small,
+          ),
+      ],
+    );
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+      decoration: BoxDecoration(
+        color: AppColors.surface,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppColors.line),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          header(l.transferFrom, fromId),
+          const SizedBox(height: 8),
+          _WalletChips(wallets: wallets, selectedId: fromId, onSelect: onFrom),
+          if (from != null && hasTo && amount > balanceOf(from.id))
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                l.transferOverdraw(from.name),
+                style: small?.copyWith(color: const Color(0xFF9A5B12)),
+              ),
+            ),
+          SizedBox(
+            height: 56,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                const Divider(height: 1, color: AppColors.divider),
+                Material(
+                  color: AppColors.primarySoft,
+                  shape: const CircleBorder(
+                    side: BorderSide(color: AppColors.line),
+                  ),
+                  child: IconButton(
+                    tooltip: l.swapWallets,
+                    onPressed: hasTo ? onSwap : null,
+                    icon: const Icon(Icons.swap_vert),
+                    color: AppColors.primary,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          header(l.transferTo, toId),
+          const SizedBox(height: 8),
+          if (wallets.length >= 2)
+            _WalletChips(
+              wallets: wallets,
+              selectedId: toId,
+              onSelect: onTo,
+              disabledId: fromId,
+            )
+          else
+            Container(
+              padding: const EdgeInsets.fromLTRB(12, 6, 6, 6),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFBF3D6),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l.transferNeedsTwoWallets,
+                      style: small?.copyWith(color: const Color(0xFF5B4A12)),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => WalletFormSheet.open(context),
+                    child: Text(l.addWallet),
+                  ),
+                ],
+              ),
+            ),
+        ],
       ),
     );
   }

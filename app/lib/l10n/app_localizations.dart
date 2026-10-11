@@ -104,6 +104,12 @@ abstract class AppLocalizations {
   /// **'Nyawtat'**
   String get appName;
 
+  /// No description provided for @splashTagline.
+  ///
+  /// In id, this message translates to:
+  /// **'jurnal & catatan uang'**
+  String get splashTagline;
+
   /// No description provided for @navToday.
   ///
   /// In id, this message translates to:
@@ -320,6 +326,60 @@ abstract class AppLocalizations {
   /// **'Simpan transaksi'**
   String get saveTx;
 
+  /// No description provided for @transferFrom.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari'**
+  String get transferFrom;
+
+  /// No description provided for @transferTo.
+  ///
+  /// In id, this message translates to:
+  /// **'Ke'**
+  String get transferTo;
+
+  /// No description provided for @walletBalance.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo {amount}'**
+  String walletBalance(String amount);
+
+  /// No description provided for @swapWallets.
+  ///
+  /// In id, this message translates to:
+  /// **'Tukar dompet asal dan tujuan'**
+  String get swapWallets;
+
+  /// No description provided for @transferOverdraw.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo {wallet} kurang dari nominal. Tetap bisa disimpan.'**
+  String transferOverdraw(String wallet);
+
+  /// No description provided for @transferNeedsTwoWallets.
+  ///
+  /// In id, this message translates to:
+  /// **'Transfer butuh minimal 2 dompet.'**
+  String get transferNeedsTwoWallets;
+
+  /// No description provided for @saveTransfer.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan transfer'**
+  String get saveTransfer;
+
+  /// No description provided for @transferNoteHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Contoh: tarik tunai di ATM'**
+  String get transferNoteHint;
+
+  /// No description provided for @toastTransferSaved.
+  ///
+  /// In id, this message translates to:
+  /// **'Transfer tersimpan'**
+  String get toastTransferSaved;
+
   /// No description provided for @deleteTxConfirm.
   ///
   /// In id, this message translates to:
@@ -341,7 +401,7 @@ abstract class AppLocalizations {
   /// No description provided for @quickAddTxSub.
   ///
   /// In id, this message translates to:
-  /// **'Pengeluaran atau pemasukan'**
+  /// **'Pengeluaran, pemasukan, atau transfer'**
   String get quickAddTxSub;
 
   /// No description provided for @quickAddJournal.
@@ -1465,6 +1525,216 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Sinkron selesai'**
   String get toastSynced;
+
+  /// No description provided for @importMm.
+  ///
+  /// In id, this message translates to:
+  /// **'Impor dari Money Manager'**
+  String get importMm;
+
+  /// No description provided for @importMmSub.
+  ///
+  /// In id, this message translates to:
+  /// **'File cadangan .mmbak atau ekspor .xlsx dari Money Manager (Realbyte)'**
+  String get importMmSub;
+
+  /// No description provided for @importMmReading.
+  ///
+  /// In id, this message translates to:
+  /// **'Membaca file…'**
+  String get importMmReading;
+
+  /// No description provided for @importMmNew.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi baru'**
+  String importMmNew(int count);
+
+  /// No description provided for @importMmBreakdown.
+  ///
+  /// In id, this message translates to:
+  /// **'{expense} pengeluaran · {income} pemasukan · {transfer} transfer'**
+  String importMmBreakdown(int expense, int income, int transfer);
+
+  /// No description provided for @importMmPeriod.
+  ///
+  /// In id, this message translates to:
+  /// **'Periode: {from} – {to}'**
+  String importMmPeriod(String from, String to);
+
+  /// No description provided for @importMmAlready.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi sudah pernah diimpor, dilewati.'**
+  String importMmAlready(int count);
+
+  /// No description provided for @importMmSkipped.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transfer ke dompet yang sama dilewati.'**
+  String importMmSkipped(int count);
+
+  /// No description provided for @importMmAdjust.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} baris \"Edit saldo\" dimasukkan ke saldo awal dompet.'**
+  String importMmAdjust(int count);
+
+  /// No description provided for @importMmWallets.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet'**
+  String get importMmWallets;
+
+  /// No description provided for @importMmNewWallet.
+  ///
+  /// In id, this message translates to:
+  /// **'dompet baru'**
+  String get importMmNewWallet;
+
+  /// No description provided for @importMmNewCategories.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori baru ({count})'**
+  String importMmNewCategories(int count);
+
+  /// No description provided for @importMmOverlap.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi yang kamu catat sendiri di Nyawtat tidak dicocokkan. Setelah impor, cek tanggal yang tumpang tindih supaya tidak dobel.'**
+  String get importMmOverlap;
+
+  /// No description provided for @importMmNothing.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada data baru di file ini.'**
+  String get importMmNothing;
+
+  /// No description provided for @importMmDone.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi diimpor'**
+  String importMmDone(int count);
+
+  /// No description provided for @importMmInvalid.
+  ///
+  /// In id, this message translates to:
+  /// **'File tidak dikenali sebagai data Money Manager.'**
+  String get importMmInvalid;
+
+  /// No description provided for @archiveWallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsipkan dompet'**
+  String get archiveWallet;
+
+  /// No description provided for @unarchiveWallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluarkan dari arsip'**
+  String get unarchiveWallet;
+
+  /// No description provided for @archiveWalletHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet arsip tidak tampil di daftar dan total saldo, tapi transaksinya tetap ada di riwayat dan laporan.'**
+  String get archiveWalletHint;
+
+  /// No description provided for @archivedWalletsCard.
+  ///
+  /// In id, this message translates to:
+  /// **'Arsip ({count})'**
+  String archivedWalletsCard(int count);
+
+  /// No description provided for @archivedWalletsTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet diarsipkan'**
+  String get archivedWalletsTitle;
+
+  /// No description provided for @walletArchivedBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Diarsipkan'**
+  String get walletArchivedBadge;
+
+  /// No description provided for @toastWalletArchived.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet diarsipkan'**
+  String get toastWalletArchived;
+
+  /// No description provided for @toastWalletUnarchived.
+  ///
+  /// In id, this message translates to:
+  /// **'Dompet dikeluarkan dari arsip'**
+  String get toastWalletUnarchived;
+
+  /// No description provided for @importMmArchived.
+  ///
+  /// In id, this message translates to:
+  /// **'diarsipkan'**
+  String get importMmArchived;
+
+  /// No description provided for @importMmMoved.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi yang sudah diimpor dipindah ke dompet yang benar.'**
+  String importMmMoved(int count);
+
+  /// No description provided for @currentBalanceHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau saldo diubah, selisihnya dicatat sebagai transaksi Lainnya.'**
+  String get currentBalanceHint;
+
+  /// No description provided for @balanceAdjustmentNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Penyesuaian saldo'**
+  String get balanceAdjustmentNote;
+
+  /// No description provided for @manageWallets.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelola dompet'**
+  String get manageWallets;
+
+  /// No description provided for @manageAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Kelola'**
+  String get manageAction;
+
+  /// No description provided for @activeWallets.
+  ///
+  /// In id, this message translates to:
+  /// **'Aktif'**
+  String get activeWallets;
+
+  /// No description provided for @walletsTotal.
+  ///
+  /// In id, this message translates to:
+  /// **'Total saldo {count} dompet aktif'**
+  String walletsTotal(int count);
+
+  /// No description provided for @walletTxCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi'**
+  String walletTxCount(int count);
+
+  /// No description provided for @archivedWalletLine.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi · saldo {amount}'**
+  String archivedWalletLine(int count, String amount);
+
+  /// No description provided for @unarchiveShort.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluarkan'**
+  String get unarchiveShort;
 }
 
 class _AppLocalizationsDelegate

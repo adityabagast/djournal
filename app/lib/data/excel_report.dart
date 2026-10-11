@@ -122,7 +122,7 @@ List<int> buildExcelReport({
     [l.walletName, l.walletType, l.openingBalance, l.currentBalance],
     [20, 12, 18, 18],
   );
-  for (final w in money.wallets) {
+  for (final w in [...money.wallets, ...money.archivedWallets]) {
     walletSheet.appendRow([
       text(w.name),
       text(switch (w.type) {

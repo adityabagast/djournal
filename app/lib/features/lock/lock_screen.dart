@@ -8,6 +8,7 @@ import '../../data/security/lock_controller.dart';
 import '../../data/sync/account_controller.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../splash/splash_overlay.dart';
 import 'pin_pad.dart';
 
 /// Layar kunci yang menutupi seluruh app selama terkunci.
@@ -25,8 +26,15 @@ class _LockScreenState extends ConsumerState<LockScreen> {
   @override
   void initState() {
     super.initState();
-    // Langsung tawarkan biometrik kalau aktif.
-    WidgetsBinding.instance.addPostFrameCallback((_) => _biometric());
+    // Langsung tawarkan biometrik kalau aktif, tapi setelah animasi
+    // pembuka selesai supaya dialognya tidak menutupi splash.
+    if (ref.read(splashDoneProvider)) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => _biometric());
+    } else {
+      ref.listenManual(splashDoneProvider, (_, done) {
+        if (done) _biometric();
+      });
+    }
     _startTickerIfLockedOut();
   }
 

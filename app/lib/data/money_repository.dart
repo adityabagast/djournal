@@ -10,9 +10,11 @@ class MoneyRepository {
 
   final AppDatabase _db;
 
+  /// Semua dompet yang belum dihapus, termasuk yang diarsipkan
+  /// (MoneySnapshot memisahkannya).
   Stream<List<Wallet>> watchWallets() {
     final q = _db.select(_db.wallets)
-      ..where((w) => w.deletedAt.isNull() & w.isArchived.equals(false))
+      ..where((w) => w.deletedAt.isNull())
       ..orderBy([(w) => OrderingTerm(expression: w.sortOrder)]);
     return q.watch();
   }
@@ -83,11 +85,15 @@ class MoneyRepository {
     }
   }
 
+  /// Transfer: [walletId] = dompet asal, [toWalletId] = dompet tujuan, dan
+  /// [categoryId] null (aturan yang sama dicek server). Selain transfer,
+  /// [toWalletId] selalu null.
   Future<void> saveTransaction({
     String? id,
     required String type,
     required int amount,
     required String walletId,
+    String? toWalletId,
     required String? categoryId,
     required String? note,
     required DateTime occurredAt,
@@ -96,6 +102,10 @@ class MoneyRepository {
     final cleanNote = (note == null || note.trim().isEmpty)
         ? null
         : note.trim();
+    final isTransfer = type == 'transfer';
+    assert(!isTransfer || (toWalletId != null && toWalletId != walletId));
+    final to = isTransfer ? toWalletId : null;
+    final category = isTransfer ? null : categoryId;
 
     if (id == null) {
       await _db
@@ -108,7 +118,8 @@ class MoneyRepository {
               type: type,
               amount: amount,
               walletId: walletId,
-              categoryId: Value(categoryId),
+              toWalletId: Value(to),
+              categoryId: Value(category),
               note: Value(cleanNote),
               occurredAt: occurredAt.toUtc(),
               localDate: toLocalDate(occurredAt),
@@ -122,7 +133,8 @@ class MoneyRepository {
           type: Value(type),
           amount: Value(amount),
           walletId: Value(walletId),
-          categoryId: Value(categoryId),
+          toWalletId: Value(to),
+          categoryId: Value(category),
           note: Value(cleanNote),
           occurredAt: Value(occurredAt.toUtc()),
           localDate: Value(toLocalDate(occurredAt)),
@@ -179,6 +191,51 @@ class MoneyRepository {
         name: Value(name.trim()),
         type: Value(type),
         openingBalance: Value(openingBalance),
+        updatedAt: Value(DateTime.now().toUtc()),
+        isDirty: const Value(true),
+      ),
+    );
+  }
+
+  /// Samakan saldo dompet dengan [targetBalance] lewat satu transaksi
+  /// kategori Lainnya (pemasukan kalau naik, pengeluaran kalau turun),
+  /// seperti "Edit saldo" di aplikasi lain. Saldo awal tidak diubah supaya
+  /// riwayatnya tetap terlihat.
+  Future<void> adjustWalletBalance({
+    required String walletId,
+    required int currentBalance,
+    required int targetBalance,
+    required String note,
+    DateTime? at,
+  }) async {
+    final diff = targetBalance - currentBalance;
+    if (diff == 0) return;
+    final kind = diff > 0 ? 'income' : 'expense';
+    final systemKey = diff > 0 ? 'other_income' : 'other';
+    final categories =
+        await (_db.select(_db.categories)
+              ..where((c) => c.deletedAt.isNull() & c.kind.equals(kind))
+              ..orderBy([(c) => OrderingTerm(expression: c.sortOrder)]))
+            .get();
+    final category =
+        categories.where((c) => c.systemKey == systemKey).firstOrNull ??
+        categories.firstOrNull;
+    await saveTransaction(
+      type: kind,
+      amount: diff.abs(),
+      walletId: walletId,
+      categoryId: category?.id,
+      note: note,
+      occurredAt: at ?? DateTime.now(),
+    );
+  }
+
+  /// Arsip = dompet disembunyikan dari daftar, pilihan dompet, dan total
+  /// saldo, tapi transaksinya tetap ada (mis. rekening yang sudah ditutup).
+  Future<void> setWalletArchived(String id, bool archived) async {
+    await (_db.update(_db.wallets)..where((w) => w.id.equals(id))).write(
+      WalletsCompanion(
+        isArchived: Value(archived),
         updatedAt: Value(DateTime.now().toUtc()),
         isDirty: const Value(true),
       ),

@@ -17,7 +17,8 @@ import '../money/tx_form_screen.dart';
 import '../report/report_screen.dart';
 import '../today/today_screen.dart';
 
-/// Kerangka utama: 4 tab + floating dock dengan tombol tambah di tengah.
+/// Kerangka utama: 4 tab yang bisa digeser + floating dock dengan tombol
+/// tambah di tengah.
 class HomeShell extends ConsumerStatefulWidget {
   const HomeShell({super.key});
 
@@ -27,6 +28,7 @@ class HomeShell extends ConsumerStatefulWidget {
 
 class _HomeShellState extends ConsumerState<HomeShell> {
   int _index = 0;
+  final _pages = PageController();
   late final AppLifecycleListener _lifecycle;
   StreamSubscription<Uri?>? _widgetClicks;
 
@@ -50,6 +52,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   void dispose() {
     _lifecycle.dispose();
     _widgetClicks?.cancel();
+    _pages.dispose();
     super.dispose();
   }
 
@@ -60,11 +63,25 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final nav = Navigator.of(context)..popUntil((r) => r.isFirst);
     switch (uri.host) {
       case 'tx':
-        setState(() => _index = 2);
+        _goTo(2);
         TxFormScreen.open(nav.context);
       case 'write':
-        setState(() => _index = 1);
+        _goTo(1);
         EntryFormScreen.open(nav.context);
+    }
+  }
+
+  /// Tap di dock langsung lompat (tanpa animasi melewati tab lain);
+  /// animasi geser hanya saat jari menggeser halaman.
+  void _goTo(int i) {
+    setState(() => _index = i);
+    if (_pages.hasClients) {
+      _pages.jumpToPage(i);
+    } else {
+      // Dibuka dari widget layar utama sebelum PageView sempat dibangun.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_pages.hasClients) _pages.jumpToPage(i);
+      });
     }
   }
 
@@ -146,7 +163,11 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         children: [
           SafeArea(
             bottom: false,
-            child: IndexedStack(index: _index, children: _tabs),
+            child: PageView(
+              controller: _pages,
+              onPageChanged: (i) => setState(() => _index = i),
+              children: [for (final tab in _tabs) _KeepAlive(child: tab)],
+            ),
           ),
           Positioned(
             left: 16,
@@ -154,7 +175,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             bottom: 16 + MediaQuery.paddingOf(context).bottom,
             child: _Dock(
               index: _index,
-              onSelect: (i) => setState(() => _index = i),
+              onSelect: _goTo,
               onAdd: _openQuickAdd,
               items: [
                 (Icons.home_outlined, l.navToday),
@@ -168,6 +189,29 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         ],
       ),
     );
+  }
+}
+
+/// Menjaga tab tetap hidup setelah digeser keluar layar, supaya posisi
+/// scroll dan filternya tidak hilang (seperti IndexedStack dulu).
+class _KeepAlive extends StatefulWidget {
+  const _KeepAlive({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_KeepAlive> createState() => _KeepAliveState();
+}
+
+class _KeepAliveState extends State<_KeepAlive>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    return widget.child;
   }
 }
 

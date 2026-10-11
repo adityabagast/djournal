@@ -118,6 +118,29 @@ class CategoryBadge extends StatelessWidget {
   }
 }
 
+/// Badge transfer antar dompet: panah bolak-balik biru, sebentuk dengan
+/// [CategoryBadge].
+class TransferBadge extends StatelessWidget {
+  const TransferBadge({super.key, this.size = 40});
+
+  final double size;
+
+  static const _fg = Color(0xFF2F5D8A);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: const Color(0xFFE3EDF8),
+        borderRadius: BorderRadius.circular(size * 0.3),
+      ),
+      child: Icon(Icons.swap_horiz, color: _fg, size: size * 0.55),
+    );
+  }
+}
+
 /// Satu baris transaksi: badge, catatan, meta, nominal.
 class TxRow extends StatelessWidget {
   const TxRow({
@@ -146,13 +169,46 @@ class TxRow extends StatelessWidget {
         : snapshot.categoryById[tx.categoryId];
     final wallet = snapshot.walletById[tx.walletId];
     final catName = cat == null ? '' : categoryLabel(l, cat);
+    final isTransfer = tx.type == 'transfer';
     final isOut = tx.type == 'expense';
     final time = hhmm(tx.occurredAt);
-    final meta = [
-      if (!leadingTime) time,
-      if (catName.isNotEmpty) catName,
-      ?wallet?.name,
-    ].join(' · ');
+    final toWallet = snapshot.walletById[tx.toWalletId];
+    final metaStyle = t.bodySmall?.copyWith(color: AppColors.muted);
+    // Panah transfer berupa icon: Poppins tidak punya karakter "→".
+    final meta = <InlineSpan>[
+      if (!leadingTime) TextSpan(text: time),
+      if (catName.isNotEmpty) TextSpan(text: catName),
+      if (isTransfer)
+        TextSpan(
+          children: [
+            TextSpan(text: wallet?.name ?? '?'),
+            WidgetSpan(
+              alignment: PlaceholderAlignment.middle,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: Icon(
+                  Icons.arrow_forward,
+                  size: 12,
+                  color: AppColors.muted,
+                  semanticLabel: l.transferTo.toLowerCase(),
+                ),
+              ),
+            ),
+            TextSpan(text: toWallet?.name ?? '?'),
+          ],
+        )
+      else if (wallet != null)
+        TextSpan(text: wallet.name),
+    ];
+    // Transfer hanya memindahkan uang: tanpa tanda +/−, warna netral.
+    final amountText = isTransfer
+        ? rupiah(tx.amount)
+        : '${isOut ? '−' : '+'}${rupiah(tx.amount)}';
+    final amountColor = isTransfer
+        ? AppColors.ink
+        : isOut
+        ? AppColors.expense
+        : AppColors.income;
 
     return InkWell(
       onTap: onTap,
@@ -176,33 +232,43 @@ class TxRow extends StatelessWidget {
                   ),
                 ),
               ),
-            CategoryBadge(category: cat, size: leadingTime ? 36 : 40),
+            if (isTransfer)
+              TransferBadge(size: leadingTime ? 36 : 40)
+            else
+              CategoryBadge(category: cat, size: leadingTime ? 36 : 40),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    tx.note ?? catName,
+                    tx.note ?? (isTransfer ? l.transfer : catName),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
-                  Text(
-                    meta,
+                  Text.rich(
+                    TextSpan(
+                      children: [
+                        for (var i = 0; i < meta.length; i++) ...[
+                          if (i > 0) const TextSpan(text: ' · '),
+                          meta[i],
+                        ],
+                      ],
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: t.bodySmall?.copyWith(color: AppColors.muted),
+                    style: metaStyle,
                   ),
                 ],
               ),
             ),
             const SizedBox(width: 8),
             Text(
-              '${isOut ? '−' : '+'}${rupiah(tx.amount)}',
+              amountText,
               style: t.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: isOut ? AppColors.expense : AppColors.income,
+                color: amountColor,
               ),
             ),
           ],

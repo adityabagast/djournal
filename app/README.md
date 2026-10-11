@@ -72,7 +72,7 @@ lib/data/home_widget_sync.dart        →  SharedPreferences (home_widget)  → 
 
 ## Font
 
-Poppins dibundel di `assets/google_fonts/Poppins-Regular.ttf` (lisensi OFL, lihat `OFL.txt` di folder yang sama) dan `GoogleFonts.config.allowRuntimeFetching = false` di `main.dart`, jadi app tidak mengunduh font dari internet.
+Poppins dibundel di `assets/fonts/` dalam 4 ketebalan (Regular 400, Medium 500, SemiBold 600, Bold 700; lisensi OFL, lihat `OFL.txt` di folder yang sama) dan didaftarkan sebagai family `Poppins` di `pubspec.yaml`. App tidak mengunduh font dari internet. Kalau butuh ketebalan lain (mis. 800), tambahkan file-nya dulu; tanpa file, Flutter membuat tebal tiruan.
 
 Di `ButtonStyle`, `textStyle` **menggantikan** gaya teks tema, tidak digabung. Pakai `buttonTextStyle(context, …)` dari `core/theme.dart` supaya label tombol tetap Poppins.
 

@@ -4,15 +4,24 @@ import 'db/app_database.dart';
 /// Saldo tidak pernah disimpan: selalu dihitung dari transaksi
 /// (docs/data-model.md §4.1).
 class MoneySnapshot {
+  /// [wallets] berisi semua dompet yang belum dihapus, termasuk yang
+  /// diarsipkan; snapshot memisahkannya sendiri.
   MoneySnapshot({
-    required this.wallets,
+    required List<Wallet> wallets,
     required this.categories,
     required this.transactions,
     this.budgets = const [],
-  }) : walletById = {for (final w in wallets) w.id: w},
+  }) : wallets = wallets.where((w) => !w.isArchived).toList(),
+       archivedWallets = wallets.where((w) => w.isArchived).toList(),
+       walletById = {for (final w in wallets) w.id: w},
        categoryById = {for (final c in categories) c.id: c};
 
+  /// Dompet aktif: tampil di daftar, pilihan dompet, dan total saldo.
   final List<Wallet> wallets;
+
+  /// Dompet arsip: disembunyikan, tapi transaksinya tetap ada di riwayat
+  /// dan laporan.
+  final List<Wallet> archivedWallets;
   final List<Category> categories;
   final List<Budget> budgets;
 

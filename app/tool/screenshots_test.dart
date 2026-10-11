@@ -25,7 +25,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
 const _outDir = '../docs/screenshots';
@@ -133,6 +132,15 @@ Future<void> _buildDemoData() async {
       occurredAt: occurredAt,
     );
   }
+  await money.saveTransaction(
+    type: 'transfer',
+    amount: 300000,
+    walletId: wallets['BCA']!.id,
+    toWalletId: wallets['Tunai']!.id,
+    categoryId: null,
+    note: 'Tarik tunai',
+    occurredAt: at(0, 8, 0),
+  );
 
   final entries = [
     (
@@ -197,11 +205,15 @@ Future<void> _buildDemoData() async {
   await db.close();
 }
 
-Future<void> _loadFont(String family, String path) async {
-  final bytes = File(path).readAsBytesSync();
-  await (FontLoader(
-    family,
-  )..addFont(Future.value(ByteData.sublistView(bytes)))).load();
+/// Ketebalan tiap file dibaca dari isi font-nya sendiri.
+Future<void> _loadFont(String family, List<String> paths) async {
+  final loader = FontLoader(family);
+  for (final path in paths) {
+    loader.addFont(
+      Future.value(ByteData.sublistView(File(path).readAsBytesSync())),
+    );
+  }
+  await loader.load();
 }
 
 void main() {
@@ -210,18 +222,16 @@ void main() {
 
   setUpAll(() async {
     await initializeDateFormatting();
-    GoogleFonts.config.allowRuntimeFetching = false;
     // Di flutter test font default berupa kotak-kotak; muat font asli.
-    await _loadFont(
-      'Poppins_regular',
-      'assets/google_fonts/Poppins-Regular.ttf',
-    );
+    await _loadFont('Poppins', [
+      for (final w in ['Regular', 'Medium', 'SemiBold', 'Bold'])
+        'assets/fonts/Poppins-$w.ttf',
+    ]);
     final flutterRoot =
         Platform.environment['FLUTTER_ROOT'] ?? 'C:/dev/flutter';
-    await _loadFont(
-      'MaterialIcons',
+    await _loadFont('MaterialIcons', [
       '$flutterRoot/bin/cache/artifacts/material_fonts/MaterialIcons-Regular.otf',
-    );
+    ]);
     // Tombol widget layar utama tidak ada di test.
     final messenger =
         TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;

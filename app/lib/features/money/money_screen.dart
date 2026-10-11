@@ -11,6 +11,7 @@ import '../../ui/common.dart';
 import '../../ui/mascot.dart';
 import 'tx_form_screen.dart';
 import 'wallet_form_sheet.dart';
+import 'wallets_screen.dart';
 
 class MoneyScreen extends ConsumerStatefulWidget {
   const MoneyScreen({super.key});
@@ -20,7 +21,7 @@ class MoneyScreen extends ConsumerStatefulWidget {
 }
 
 class _MoneyScreenState extends ConsumerState<MoneyScreen> {
-  /// null = semua, 'expense', 'income'
+  /// null = semua, 'expense', 'income', 'transfer'
   String? _filter;
 
   @override
@@ -58,43 +59,66 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
               monthOut: MoneySnapshot.sumOf(month, 'expense'),
             ),
             const SizedBox(height: 16),
-            Text(
-              l.wallets,
-              style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    l.wallets,
+                    style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                ),
+                TextButton(
+                  onPressed: () => WalletsScreen.open(context),
+                  style: TextButton.styleFrom(
+                    padding: const EdgeInsets.only(left: 8, right: 0),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(l.manageAction),
+                      const Icon(Icons.chevron_right, size: 20),
+                    ],
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 4),
             SizedBox(
               height: 64,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
-                  for (final w in snap.wallets) ...[
+                  for (final (i, w) in snap.wallets.indexed) ...[
+                    if (i > 0) const SizedBox(width: 10),
                     _WalletCard(
                       name: w.name,
                       balance: snap.balanceOf(w.id),
                       onTap: () => WalletFormSheet.open(context, existing: w),
                     ),
-                    const SizedBox(width: 10),
                   ],
-                  _AddWalletCard(onTap: () => WalletFormSheet.open(context)),
                 ],
               ),
             ),
             const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              children: [
-                for (final (key, text) in [
-                  (null, l.filterAll),
-                  ('expense', l.expense),
-                  ('income', l.income),
-                ])
-                  _FilterChip(
-                    label: text,
-                    selected: _filter == key,
-                    onTap: () => setState(() => _filter = key),
-                  ),
-              ],
+            // Empat chip tidak muat satu baris di HP: geser ke samping.
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                spacing: 8,
+                children: [
+                  for (final (key, text) in [
+                    (null, l.filterAll),
+                    ('expense', l.expense),
+                    ('income', l.income),
+                    ('transfer', l.transfer),
+                  ])
+                    _FilterChip(
+                      label: text,
+                      selected: _filter == key,
+                      onTap: () => setState(() => _filter = key),
+                    ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             if (snap.transactions.isEmpty)
@@ -278,43 +302,6 @@ class _WalletCard extends StatelessWidget {
                 child: Text(
                   '${balance < 0 ? '−' : ''}${rupiah(balance)}',
                   style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _AddWalletCard extends StatelessWidget {
-  const _AddWalletCard({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
-        side: const BorderSide(color: Color(0xFFC9C6BD), width: 1.5),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Row(
-            children: [
-              const Icon(Icons.add, size: 18, color: AppColors.primary),
-              const SizedBox(width: 6),
-              Text(
-                context.l10n.addWallet,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.primary,
                 ),
               ),
             ],

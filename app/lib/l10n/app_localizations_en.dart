@@ -13,6 +13,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get appName => 'Nyawtat';
 
   @override
+  String get splashTagline => 'journal & money notes';
+
+  @override
   String get navToday => 'Today';
 
   @override
@@ -124,6 +127,37 @@ class AppLocalizationsEn extends AppLocalizations {
   String get saveTx => 'Save transaction';
 
   @override
+  String get transferFrom => 'From';
+
+  @override
+  String get transferTo => 'To';
+
+  @override
+  String walletBalance(String amount) {
+    return 'Balance $amount';
+  }
+
+  @override
+  String get swapWallets => 'Swap source and destination wallets';
+
+  @override
+  String transferOverdraw(String wallet) {
+    return '$wallet balance is lower than the amount. You can still save.';
+  }
+
+  @override
+  String get transferNeedsTwoWallets => 'Transfers need at least 2 wallets.';
+
+  @override
+  String get saveTransfer => 'Save transfer';
+
+  @override
+  String get transferNoteHint => 'e.g. ATM cash withdrawal';
+
+  @override
+  String get toastTransferSaved => 'Transfer saved';
+
+  @override
   String get deleteTxConfirm => 'Delete this transaction?';
 
   @override
@@ -133,7 +167,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get quickAddTx => 'Add transaction';
 
   @override
-  String get quickAddTxSub => 'Expense or income';
+  String get quickAddTxSub => 'Expense, income, or transfer';
 
   @override
   String get quickAddJournal => 'Write journal';
@@ -764,4 +798,140 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get toastSynced => 'Sync complete';
+
+  @override
+  String get importMm => 'Import from Money Manager';
+
+  @override
+  String get importMmSub =>
+      'Backup .mmbak or .xlsx export from Money Manager (Realbyte)';
+
+  @override
+  String get importMmReading => 'Reading file…';
+
+  @override
+  String importMmNew(int count) {
+    return '$count new transactions';
+  }
+
+  @override
+  String importMmBreakdown(int expense, int income, int transfer) {
+    return '$expense expenses · $income income · $transfer transfers';
+  }
+
+  @override
+  String importMmPeriod(String from, String to) {
+    return 'Period: $from – $to';
+  }
+
+  @override
+  String importMmAlready(int count) {
+    return '$count transactions were imported before and are skipped.';
+  }
+
+  @override
+  String importMmSkipped(int count) {
+    return '$count transfers to the same wallet are skipped.';
+  }
+
+  @override
+  String importMmAdjust(int count) {
+    return '$count \"Modified balance\" rows are added to the wallets\' opening balance.';
+  }
+
+  @override
+  String get importMmWallets => 'Wallets';
+
+  @override
+  String get importMmNewWallet => 'new wallet';
+
+  @override
+  String importMmNewCategories(int count) {
+    return 'New categories ($count)';
+  }
+
+  @override
+  String get importMmOverlap =>
+      'Transactions you recorded yourself in Nyawtat are not matched. After importing, check overlapping dates for duplicates.';
+
+  @override
+  String get importMmNothing => 'Nothing new to import in this file.';
+
+  @override
+  String importMmDone(int count) {
+    return '$count transactions imported';
+  }
+
+  @override
+  String get importMmInvalid =>
+      'This file is not recognized as Money Manager data.';
+
+  @override
+  String get archiveWallet => 'Archive wallet';
+
+  @override
+  String get unarchiveWallet => 'Unarchive';
+
+  @override
+  String get archiveWalletHint =>
+      'Archived wallets are hidden from the list and total balance, but their transactions stay in history and reports.';
+
+  @override
+  String archivedWalletsCard(int count) {
+    return 'Archive ($count)';
+  }
+
+  @override
+  String get archivedWalletsTitle => 'Archived wallets';
+
+  @override
+  String get walletArchivedBadge => 'Archived';
+
+  @override
+  String get toastWalletArchived => 'Wallet archived';
+
+  @override
+  String get toastWalletUnarchived => 'Wallet unarchived';
+
+  @override
+  String get importMmArchived => 'archived';
+
+  @override
+  String importMmMoved(int count) {
+    return '$count previously imported transactions are moved to the right wallet.';
+  }
+
+  @override
+  String get currentBalanceHint =>
+      'If you change the balance, the difference is recorded as an Other transaction.';
+
+  @override
+  String get balanceAdjustmentNote => 'Balance adjustment';
+
+  @override
+  String get manageWallets => 'Manage wallets';
+
+  @override
+  String get manageAction => 'Manage';
+
+  @override
+  String get activeWallets => 'Active';
+
+  @override
+  String walletsTotal(int count) {
+    return 'Total balance of $count active wallets';
+  }
+
+  @override
+  String walletTxCount(int count) {
+    return '$count transactions';
+  }
+
+  @override
+  String archivedWalletLine(int count, String amount) {
+    return '$count transactions · balance $amount';
+  }
+
+  @override
+  String get unarchiveShort => 'Restore';
 }

@@ -6,9 +6,10 @@ import '../../core/theme.dart';
 import '../../data/db/app_database.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 
-/// Bottom sheet untuk menambah dompet baru, atau mengubah/menghapus
-/// dompet [existing].
+/// Bottom sheet untuk menambah dompet baru, atau mengubah, mengarsipkan,
+/// atau menghapus dompet [existing].
 class WalletFormSheet extends ConsumerStatefulWidget {
   const WalletFormSheet({super.key, this.existing});
 
@@ -32,7 +33,10 @@ class WalletFormSheet extends ConsumerStatefulWidget {
 
 class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
   final _name = TextEditingController();
-  final _opening = TextEditingController();
+
+  /// Dompet baru: saldo awal. Dompet lama: saldo sekarang, karena itu yang
+  /// user lihat dan cocokkan dengan rekening; saldo awal dihitung mundur.
+  final _balance = TextEditingController();
   String _type = 'bank';
   bool _showNameError = false;
 
@@ -45,14 +49,16 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
     if (e != null) {
       _name.text = e.name;
       _type = e.type;
-      if (e.openingBalance != 0) _opening.text = thousands(e.openingBalance);
+      final snap = ref.read(moneySnapshotProvider).value;
+      final balance = snap?.balanceOf(e.id) ?? e.openingBalance;
+      if (balance != 0) _balance.text = thousands(balance);
     }
   }
 
   @override
   void dispose() {
     _name.dispose();
-    _opening.dispose();
+    _balance.dispose();
     super.dispose();
   }
 
@@ -62,21 +68,48 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
       return;
     }
     final repo = ref.read(moneyRepositoryProvider);
+    final typed = parseAmount(_balance.text);
+    final adjustmentNote = context.l10n.balanceAdjustmentNote;
     if (_isEdit) {
+      final w = widget.existing!;
+      final current =
+          ref.read(moneySnapshotProvider).value?.balanceOf(w.id) ??
+          w.openingBalance;
       await repo.updateWallet(
-        id: widget.existing!.id,
+        id: w.id,
         name: _name.text,
         type: _type,
-        openingBalance: parseAmount(_opening.text),
+        openingBalance: w.openingBalance,
+      );
+      // Saldo diubah langsung: selisihnya jadi transaksi Lainnya.
+      await repo.adjustWalletBalance(
+        walletId: w.id,
+        currentBalance: current,
+        targetBalance: typed,
+        note: adjustmentNote,
       );
     } else {
       await repo.addWallet(
         name: _name.text,
         type: _type,
-        openingBalance: parseAmount(_opening.text),
+        openingBalance: typed,
       );
     }
     if (mounted) Navigator.of(context).pop();
+  }
+
+  Future<void> _setArchived(bool archived) async {
+    final l = context.l10n;
+    await ref
+        .read(moneyRepositoryProvider)
+        .setWalletArchived(widget.existing!.id, archived);
+    if (!mounted) return;
+    Navigator.of(context).pop();
+    showMascotSnackBar(
+      context,
+      MascotPose.senang,
+      archived ? l.toastWalletArchived : l.toastWalletUnarchived,
+    );
   }
 
   Future<void> _delete(int txCount) async {
@@ -110,8 +143,10 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
     final snap = ref.watch(moneySnapshotProvider).value;
-    // Minimal satu dompet harus ada supaya transaksi baru punya tempat.
-    final canDelete = _isEdit && (snap?.wallets.length ?? 0) > 1;
+    final archived = widget.existing?.isArchived ?? false;
+    // Minimal satu dompet aktif harus ada supaya transaksi baru punya tempat.
+    final lastActive = !archived && (snap?.wallets.length ?? 0) <= 1;
+    final canDelete = _isEdit && !lastActive;
     final txCount = !_isEdit || snap == null
         ? 0
         : snap.transactions
@@ -191,11 +226,13 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
           ),
           const SizedBox(height: 12),
           TextField(
-            controller: _opening,
-            keyboardType: TextInputType.number,
-            inputFormatters: [ThousandsInputFormatter()],
+            controller: _balance,
+            keyboardType: const TextInputType.numberWithOptions(signed: true),
+            inputFormatters: [ThousandsInputFormatter(allowNegative: true)],
             decoration: InputDecoration(
-              labelText: l.openingBalance,
+              labelText: _isEdit ? l.currentBalance : l.openingBalance,
+              helperText: _isEdit ? l.currentBalanceHint : null,
+              helperMaxLines: 2,
               prefixText: 'Rp ',
             ),
           ),
@@ -207,6 +244,29 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
             ),
             child: Text(l.save),
           ),
+          if (_isEdit && !lastActive) ...[
+            const SizedBox(height: 8),
+            OutlinedButton.icon(
+              onPressed: () => _setArchived(!archived),
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(44),
+              ),
+              icon: Icon(
+                archived ? Icons.unarchive_outlined : Icons.archive_outlined,
+                size: 20,
+              ),
+              label: Text(archived ? l.unarchiveWallet : l.archiveWallet),
+            ),
+            if (!archived)
+              Padding(
+                padding: const EdgeInsets.only(top: 4),
+                child: Text(
+                  l.archiveWalletHint,
+                  textAlign: TextAlign.center,
+                  style: t.bodySmall?.copyWith(color: AppColors.muted),
+                ),
+              ),
+          ],
           if (canDelete) ...[
             const SizedBox(height: 8),
             TextButton.icon(

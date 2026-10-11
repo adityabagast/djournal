@@ -68,6 +68,56 @@ void main() {
     expect(snap.expenseByCategory('2026-10').single.$2, 25000);
   });
 
+  test(
+    'transfer memindahkan saldo tanpa dihitung pemasukan/pengeluaran',
+    () async {
+      await repo.addWallet(name: 'BCA', type: 'bank', openingBalance: 1000000);
+      var snap = await snapshot();
+      final cash = snap.wallets.firstWhere((w) => w.name == 'Tunai');
+      final bca = snap.wallets.firstWhere((w) => w.name == 'BCA');
+      final food = snap.categories.firstWhere((c) => c.systemKey == 'food');
+      final at = DateTime(2026, 10, 11, 8, 15);
+
+      // Kategori yang terbawa dari form diabaikan untuk transfer.
+      await repo.saveTransaction(
+        type: 'transfer',
+        amount: 300000,
+        walletId: bca.id,
+        toWalletId: cash.id,
+        categoryId: food.id,
+        note: 'Tarik tunai',
+        occurredAt: at,
+      );
+
+      snap = await snapshot();
+      final tx = snap.transactions.single;
+      expect(tx.categoryId, isNull);
+      expect(tx.toWalletId, cash.id);
+      expect(snap.balanceOf(bca.id), 700000);
+      expect(snap.balanceOf(cash.id), 300000);
+      expect(snap.totalBalance, 1000000);
+      expect(MoneySnapshot.sumOf(snap.transactions, 'expense'), 0);
+      expect(MoneySnapshot.sumOf(snap.transactions, 'income'), 0);
+      expect(snap.spentIn(food.id, '2026-10'), 0);
+
+      // Diubah jadi pengeluaran: dompet tujuan dibuang, kategori wajib ada.
+      await repo.saveTransaction(
+        id: tx.id,
+        type: 'expense',
+        amount: 300000,
+        walletId: bca.id,
+        toWalletId: cash.id,
+        categoryId: food.id,
+        note: null,
+        occurredAt: at,
+      );
+      snap = await snapshot();
+      expect(snap.transactions.single.toWalletId, isNull);
+      expect(snap.transactions.single.categoryId, food.id);
+      expect(snap.balanceOf(cash.id), 0);
+    },
+  );
+
   test('edit dan soft delete transaksi', () async {
     var snap = await snapshot();
     final cash = snap.wallets.single;
@@ -188,11 +238,75 @@ void main() {
     },
   );
 
+  test('ubah saldo dompet dicatat sebagai transaksi Lainnya', () async {
+    var snap = await snapshot();
+    final cash = snap.wallets.single;
+
+    // Naik: pemasukan Lainnya.
+    await repo.adjustWalletBalance(
+      walletId: cash.id,
+      currentBalance: 0,
+      targetBalance: 50000,
+      note: 'Penyesuaian saldo',
+    );
+    // Turun: pengeluaran Lainnya. Sama dengan saldo sekarang: tidak ada apa-apa.
+    await repo.adjustWalletBalance(
+      walletId: cash.id,
+      currentBalance: 50000,
+      targetBalance: 2700,
+      note: 'Penyesuaian saldo',
+    );
+    await repo.adjustWalletBalance(
+      walletId: cash.id,
+      currentBalance: 2700,
+      targetBalance: 2700,
+      note: 'Penyesuaian saldo',
+    );
+
+    snap = await snapshot();
+    expect(snap.balanceOf(cash.id), 2700);
+    expect(snap.wallets.single.openingBalance, 0);
+    final txs = snap.transactions;
+    expect(txs, hasLength(2));
+    expect(
+      txs.map(
+        (t) => (t.type, t.amount, snap.categoryById[t.categoryId]!.systemKey),
+      ),
+      containsAll([
+        ('income', 50000, 'other_income'),
+        ('expense', 47300, 'other'),
+      ]),
+    );
+    expect(txs.every((t) => t.note == 'Penyesuaian saldo'), isTrue);
+  });
+
   test('format rupiah dan input nominal', () {
     expect(rupiah(0), 'Rp 0');
     expect(rupiah(1250000), 'Rp 1.250.000');
     expect(rupiah(-999), 'Rp 999');
     expect(parseAmount('1.250.000'), 1250000);
+    // Saldo dompet boleh negatif (mis. hasil impor).
+    expect(thousands(-636593), '-636.593');
+    expect(parseAmount('-1.636.593'), -1636593);
+    final f = ThousandsInputFormatter(allowNegative: true);
+    expect(
+      f
+          .formatEditUpdate(
+            TextEditingValue.empty,
+            const TextEditingValue(text: '-2700'),
+          )
+          .text,
+      '-2.700',
+    );
+    expect(
+      ThousandsInputFormatter()
+          .formatEditUpdate(
+            TextEditingValue.empty,
+            const TextEditingValue(text: '-2700'),
+          )
+          .text,
+      '2.700',
+    );
     expect(toLocalDate(DateTime(2026, 1, 5, 23, 59)), '2026-01-05');
   });
 }

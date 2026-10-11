@@ -1,7 +1,7 @@
 name: djournal
 description: "Jurnal harian dan catatan keuangan"
 publish_to: 'none'
-version: 0.2.0+2
+version: 0.3.0+3
 
 environment:
   sdk: ^3.13.5
@@ -19,13 +19,13 @@ dependencies:
   flutter_riverpod: ^3.4.3
   flutter_secure_storage: ^11.2.0
   flutter_svg: ^2.3.0
-  google_fonts: ^9.0.0
   home_widget: ^0.10.0
   http: ^1.6.0
   intl: ^0.20.3
   local_auth: ^3.0.2
   path_provider: ^2.1.6
   share_plus: ^13.3.1
+  sqlite3: ^3.5.2
   supabase_flutter: ^2.18.0
   uuid: ^4.6.0
 
@@ -36,15 +36,25 @@ dev_dependencies:
   drift_dev: ^2.35.1
   build_runner: ^2.16.2
   flutter_launcher_icons: ^0.14.4
+  flutter_native_splash: ^2.4.4
 
 flutter:
   uses-material-design: true
   generate: true
   assets:
     - assets/mascot/
-    # Poppins dibundel supaya tidak diunduh dari Google saat runtime
-    # (google_fonts mencari file ini berdasarkan namanya).
-    - assets/google_fonts/
+  # Poppins dibundel (lisensi OFL, assets/fonts/OFL.txt): tanpa internet,
+  # dan tiap ketebalan memakai file aslinya, bukan tebal tiruan.
+  fonts:
+    - family: Poppins
+      fonts:
+        - asset: assets/fonts/Poppins-Regular.ttf
+        - asset: assets/fonts/Poppins-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Poppins-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Poppins-Bold.ttf
+          weight: 700
 
 # Icon app. Sumbernya SVG di tool/icon/; cara membuat ulang ada di
 # tool/render_icons_test.dart.
@@ -63,3 +73,16 @@ flutter_launcher_icons:
     image_path: tool/icon/out/icon.png
     background_color: "#CDEBDD"
     theme_color: "#1F5F4E"
+
+# Splash bawaan Android (tampil selama app loading). Animasinya dilanjutkan
+# oleh SplashOverlay di Flutter dengan warna dan posisi kucing yang sama.
+# Buat ulang: dart run flutter_native_splash:create
+flutter_native_splash:
+  color: "#CDEBDD"
+  image: tool/icon/out/splash.png
+  android_12:
+    color: "#CDEBDD"
+    image: tool/icon/out/splash.png
+  android: true
+  ios: false
+  web: false

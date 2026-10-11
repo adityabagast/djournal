@@ -13,6 +13,9 @@ class AppLocalizationsId extends AppLocalizations {
   String get appName => 'Nyawtat';
 
   @override
+  String get splashTagline => 'jurnal & catatan uang';
+
+  @override
   String get navToday => 'Hari Ini';
 
   @override
@@ -124,6 +127,37 @@ class AppLocalizationsId extends AppLocalizations {
   String get saveTx => 'Simpan transaksi';
 
   @override
+  String get transferFrom => 'Dari';
+
+  @override
+  String get transferTo => 'Ke';
+
+  @override
+  String walletBalance(String amount) {
+    return 'Saldo $amount';
+  }
+
+  @override
+  String get swapWallets => 'Tukar dompet asal dan tujuan';
+
+  @override
+  String transferOverdraw(String wallet) {
+    return 'Saldo $wallet kurang dari nominal. Tetap bisa disimpan.';
+  }
+
+  @override
+  String get transferNeedsTwoWallets => 'Transfer butuh minimal 2 dompet.';
+
+  @override
+  String get saveTransfer => 'Simpan transfer';
+
+  @override
+  String get transferNoteHint => 'Contoh: tarik tunai di ATM';
+
+  @override
+  String get toastTransferSaved => 'Transfer tersimpan';
+
+  @override
   String get deleteTxConfirm => 'Hapus transaksi ini?';
 
   @override
@@ -133,7 +167,7 @@ class AppLocalizationsId extends AppLocalizations {
   String get quickAddTx => 'Catat transaksi';
 
   @override
-  String get quickAddTxSub => 'Pengeluaran atau pemasukan';
+  String get quickAddTxSub => 'Pengeluaran, pemasukan, atau transfer';
 
   @override
   String get quickAddJournal => 'Tulis jurnal';
@@ -745,4 +779,140 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get toastSynced => 'Sinkron selesai';
+
+  @override
+  String get importMm => 'Impor dari Money Manager';
+
+  @override
+  String get importMmSub =>
+      'File cadangan .mmbak atau ekspor .xlsx dari Money Manager (Realbyte)';
+
+  @override
+  String get importMmReading => 'Membaca file…';
+
+  @override
+  String importMmNew(int count) {
+    return '$count transaksi baru';
+  }
+
+  @override
+  String importMmBreakdown(int expense, int income, int transfer) {
+    return '$expense pengeluaran · $income pemasukan · $transfer transfer';
+  }
+
+  @override
+  String importMmPeriod(String from, String to) {
+    return 'Periode: $from – $to';
+  }
+
+  @override
+  String importMmAlready(int count) {
+    return '$count transaksi sudah pernah diimpor, dilewati.';
+  }
+
+  @override
+  String importMmSkipped(int count) {
+    return '$count transfer ke dompet yang sama dilewati.';
+  }
+
+  @override
+  String importMmAdjust(int count) {
+    return '$count baris \"Edit saldo\" dimasukkan ke saldo awal dompet.';
+  }
+
+  @override
+  String get importMmWallets => 'Dompet';
+
+  @override
+  String get importMmNewWallet => 'dompet baru';
+
+  @override
+  String importMmNewCategories(int count) {
+    return 'Kategori baru ($count)';
+  }
+
+  @override
+  String get importMmOverlap =>
+      'Transaksi yang kamu catat sendiri di Nyawtat tidak dicocokkan. Setelah impor, cek tanggal yang tumpang tindih supaya tidak dobel.';
+
+  @override
+  String get importMmNothing => 'Tidak ada data baru di file ini.';
+
+  @override
+  String importMmDone(int count) {
+    return '$count transaksi diimpor';
+  }
+
+  @override
+  String get importMmInvalid =>
+      'File tidak dikenali sebagai data Money Manager.';
+
+  @override
+  String get archiveWallet => 'Arsipkan dompet';
+
+  @override
+  String get unarchiveWallet => 'Keluarkan dari arsip';
+
+  @override
+  String get archiveWalletHint =>
+      'Dompet arsip tidak tampil di daftar dan total saldo, tapi transaksinya tetap ada di riwayat dan laporan.';
+
+  @override
+  String archivedWalletsCard(int count) {
+    return 'Arsip ($count)';
+  }
+
+  @override
+  String get archivedWalletsTitle => 'Dompet diarsipkan';
+
+  @override
+  String get walletArchivedBadge => 'Diarsipkan';
+
+  @override
+  String get toastWalletArchived => 'Dompet diarsipkan';
+
+  @override
+  String get toastWalletUnarchived => 'Dompet dikeluarkan dari arsip';
+
+  @override
+  String get importMmArchived => 'diarsipkan';
+
+  @override
+  String importMmMoved(int count) {
+    return '$count transaksi yang sudah diimpor dipindah ke dompet yang benar.';
+  }
+
+  @override
+  String get currentBalanceHint =>
+      'Kalau saldo diubah, selisihnya dicatat sebagai transaksi Lainnya.';
+
+  @override
+  String get balanceAdjustmentNote => 'Penyesuaian saldo';
+
+  @override
+  String get manageWallets => 'Kelola dompet';
+
+  @override
+  String get manageAction => 'Kelola';
+
+  @override
+  String get activeWallets => 'Aktif';
+
+  @override
+  String walletsTotal(int count) {
+    return 'Total saldo $count dompet aktif';
+  }
+
+  @override
+  String walletTxCount(int count) {
+    return '$count transaksi';
+  }
+
+  @override
+  String archivedWalletLine(int count, String amount) {
+    return '$count transaksi · saldo $amount';
+  }
+
+  @override
+  String get unarchiveShort => 'Keluarkan';
 }

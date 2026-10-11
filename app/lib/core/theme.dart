@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 /// Token warna dari canvas desain.
 abstract final class AppColors {
@@ -31,10 +30,8 @@ TextStyle buttonTextStyle(BuildContext context, TextStyle overrides) =>
 ThemeData buildTheme() {
   final base = ThemeData(
     useMaterial3: true,
-    // google_fonts 9 memakai TextTheme dari package material_ui, jadi
-    // ambil nama font-nya saja (sekaligus memuat Poppins dari
-    // assets/google_fonts/).
-    fontFamily: GoogleFonts.poppins().fontFamily,
+    // Didaftarkan di pubspec.yaml (flutter > fonts) dengan 4 ketebalan.
+    fontFamily: 'Poppins',
     colorScheme: ColorScheme.fromSeed(
       seedColor: AppColors.primary,
       primary: AppColors.primary,
