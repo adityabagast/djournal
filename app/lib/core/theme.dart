@@ -427,15 +427,17 @@ class AppCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    return Container(
-      width: double.infinity,
-      padding: padding,
-      decoration: BoxDecoration(
-        color: c.surface,
-        border: Border.all(color: c.line),
+    return Material(
+      color: c.surface,
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(18),
+        side: BorderSide(color: c.line),
       ),
-      child: child,
+      child: Container(
+        width: double.infinity,
+        padding: padding,
+        child: child,
+      ),
     );
   }
 }

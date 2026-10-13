@@ -333,7 +333,7 @@ class _FilterBar extends StatelessWidget {
 }
 
 /// Label tanggal + ringkasan "Mood baik · Rp 192.000" (sekali per tanggal).
-class _DayHeader extends StatelessWidget {
+class _DayHeader extends ConsumerWidget {
   const _DayHeader({
     required this.date,
     required this.entries,
@@ -345,15 +345,16 @@ class _DayHeader extends StatelessWidget {
   final MoneySnapshot? snapshot;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final mood = dayMood(entries, date);
     final out = snapshot == null
         ? 0
         : MoneySnapshot.sumOf(snapshot!.onDate(date), 'expense');
     final summary = [
       if (mood != null) l.dayMoodSummary(moodLabel(l, mood).toLowerCase()),
-      out > 0 ? rupiah(out) : l.noSpending,
+      out > 0 ? rupiah(out, hide: hideAmounts) : l.noSpending,
     ].join(' · ');
 
     return Padding(

@@ -30,6 +30,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
     final snapAsync = ref.watch(moneySnapshotProvider);
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final now = DateTime.now();
     final monthKey = toMonthKey(now);
 
@@ -59,6 +60,10 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
               total: snap.totalBalance,
               monthIn: MoneySnapshot.sumOf(month, 'income'),
               monthOut: MoneySnapshot.sumOf(month, 'expense'),
+              hideAmounts: hideAmounts,
+              onToggleHide: () => ref
+                  .read(settingsRepositoryProvider)
+                  .set('hide_amounts', (!hideAmounts).toString()),
             ),
             const SizedBox(height: 16),
             Row(
@@ -95,6 +100,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                     _WalletCard(
                       name: w.name,
                       balance: snap.balanceOf(w.id),
+                      hideAmounts: hideAmounts,
                       onTap: () => WalletFormSheet.open(context, existing: w),
                     ),
                   ],
@@ -182,11 +188,15 @@ class _BalanceCard extends StatelessWidget {
     required this.total,
     required this.monthIn,
     required this.monthOut,
+    required this.hideAmounts,
+    required this.onToggleHide,
   });
 
   final int total;
   final int monthIn;
   final int monthOut;
+  final bool hideAmounts;
+  final VoidCallback onToggleHide;
 
   @override
   Widget build(BuildContext context) {
@@ -210,7 +220,7 @@ class _BalanceCard extends StatelessWidget {
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
-                rupiah(value),
+                rupiah(value, hide: hideAmounts),
                 style: t.bodyMedium?.copyWith(
                   color: context.colors.onHero,
                   fontWeight: FontWeight.w700,
@@ -231,14 +241,33 @@ class _BalanceCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            l.totalBalance,
-            style: t.bodySmall?.copyWith(color: context.colors.onHeroMuted),
+          Row(
+            children: [
+              Text(
+                l.totalBalance,
+                style: t.bodySmall?.copyWith(color: context.colors.onHeroMuted),
+              ),
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: onToggleHide,
+                borderRadius: BorderRadius.circular(10),
+                child: Padding(
+                  padding: const EdgeInsets.all(2),
+                  child: Icon(
+                    hideAmounts
+                        ? Icons.visibility_off_outlined
+                        : Icons.visibility_outlined,
+                    size: 16,
+                    color: context.colors.onHeroMuted,
+                  ),
+                ),
+              ),
+            ],
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
-              '${total < 0 ? '−' : ''}${rupiah(total)}',
+              signedRupiah(total, hide: hideAmounts),
               style: t.headlineMedium?.copyWith(
                 color: context.colors.onHero,
                 fontWeight: FontWeight.w700,
@@ -264,11 +293,13 @@ class _WalletCard extends StatelessWidget {
   const _WalletCard({
     required this.name,
     required this.balance,
+    required this.hideAmounts,
     required this.onTap,
   });
 
   final String name;
   final int balance;
+  final bool hideAmounts;
   final VoidCallback onTap;
 
   @override
@@ -302,7 +333,7 @@ class _WalletCard extends StatelessWidget {
               FittedBox(
                 fit: BoxFit.scaleDown,
                 child: Text(
-                  '${balance < 0 ? '−' : ''}${rupiah(balance)}',
+                  signedRupiah(balance, hide: hideAmounts),
                   style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
               ),

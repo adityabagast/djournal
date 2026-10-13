@@ -1,8 +1,20 @@
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
-/// "Rp 1.250.000". Selalu tanpa tanda; tanda +/− ditambahkan pemanggil.
-String rupiah(int amount) => 'Rp ${thousands(amount.abs())}';
+const maskedRupiah = 'Rp •••••';
+
+/// "Rp 1.250.000" atau "Rp •••••" saat [hide] = true.
+/// Selalu tanpa tanda; tanda +/− ditambahkan pemanggil.
+String rupiah(int amount, {bool hide = false}) =>
+    hide ? maskedRupiah : 'Rp ${thousands(amount.abs())}';
+
+/// Format nominal dengan tanda minus/plus atau masking:
+/// "Rp 1.250.000", "−Rp 25.000", "+Rp 50.000", atau "Rp •••••" saat [hide] = true.
+String signedRupiah(int amount, {bool hide = false, bool explicitPlus = false}) {
+  if (hide) return maskedRupiah;
+  final sign = amount < 0 ? '−' : (explicitPlus && amount > 0 ? '+' : '');
+  return '$sign${rupiah(amount)}';
+}
 
 String thousands(int n) {
   if (n < 0) return '-${thousands(-n)}';

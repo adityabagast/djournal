@@ -222,6 +222,8 @@
   "unlockWithBiometricSub": "Sidik jari atau wajah",
   "biometricUnavailable": "Tidak tersedia di perangkat ini",
   "lockNow": "Kunci aplikasi sekarang",
+  "hideAmounts": "Sembunyikan nominal",
+  "hideAmountsSub": "Samarkan saldo dan nominal uang di seluruh aplikasi",
   "enterPin": "Masukkan PIN untuk membuka",
   "wrongPin": "PIN salah",
   "tooManyAttempts": "Terlalu banyak percobaan. Coba lagi dalam {seconds} detik.",

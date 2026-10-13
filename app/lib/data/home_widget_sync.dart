@@ -110,8 +110,8 @@ final homeWidgetSyncProvider = Provider<void>((ref) {
       entries: entries,
       l: lookupAppLocalizations(locale),
       localeTag: locale.languageCode,
-      // Saat PIN aktif, nominal tidak boleh terlihat di layar utama.
-      hide: lock.pinEnabled,
+      // Saat PIN aktif atau mode privasi aktif, nominal tidak boleh terlihat di layar utama.
+      hide: lock.pinEnabled || (ref.read(hideAmountsProvider).value ?? false),
       now: DateTime.now(),
     );
     // Tema widget mengikuti Pengaturan › Tampilan: system / light / dark.
@@ -142,6 +142,7 @@ final homeWidgetSyncProvider = Provider<void>((ref) {
   );
   ref.listen(localeProvider, (_, _) => schedule());
   ref.listen(themeModeProvider, (_, _) => schedule());
+  ref.listen(hideAmountsProvider, (_, _) => schedule());
   ref.onDispose(() => debounce?.cancel());
   schedule();
 });

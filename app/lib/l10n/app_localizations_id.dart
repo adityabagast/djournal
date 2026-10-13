@@ -632,6 +632,13 @@ class AppLocalizationsId extends AppLocalizations {
   String get lockNow => 'Kunci aplikasi sekarang';
 
   @override
+  String get hideAmounts => 'Sembunyikan nominal';
+
+  @override
+  String get hideAmountsSub =>
+      'Samarkan saldo dan nominal uang di seluruh aplikasi';
+
+  @override
   String get enterPin => 'Masukkan PIN untuk membuka';
 
   @override

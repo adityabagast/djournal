@@ -24,6 +24,7 @@ class TodayScreen extends ConsumerWidget {
     final t = Theme.of(context).textTheme;
     final snapAsync = ref.watch(moneySnapshotProvider);
     final entries = ref.watch(journalEntriesProvider).value ?? const [];
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final now = DateTime.now();
     final today = toLocalDate(now);
 
@@ -105,17 +106,38 @@ class TodayScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(
-                              l.todaySpent,
-                              style: t.bodySmall?.copyWith(
-                                color: context.colors.muted,
-                                fontSize: 13,
-                              ),
+                            Row(
+                              children: [
+                                Text(
+                                  l.todaySpent,
+                                  style: t.bodySmall?.copyWith(
+                                    color: context.colors.muted,
+                                    fontSize: 13,
+                                  ),
+                                ),
+                                const SizedBox(width: 6),
+                                InkWell(
+                                  onTap: () => ref
+                                      .read(settingsRepositoryProvider)
+                                      .set('hide_amounts', (!hideAmounts).toString()),
+                                  borderRadius: BorderRadius.circular(10),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(2),
+                                    child: Icon(
+                                      hideAmounts
+                                          ? Icons.visibility_off_outlined
+                                          : Icons.visibility_outlined,
+                                      size: 16,
+                                      color: context.colors.muted,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                             FittedBox(
                               fit: BoxFit.scaleDown,
                               child: Text(
-                                rupiah(todayOut),
+                                rupiah(todayOut, hide: hideAmounts),
                                 style: t.headlineSmall?.copyWith(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 26,
@@ -124,7 +146,7 @@ class TodayScreen extends ConsumerWidget {
                             ),
                             if (budget == 0)
                               Text(
-                                l.monthSpent(rupiah(monthOut)),
+                                l.monthSpent(rupiah(monthOut, hide: hideAmounts)),
                                 style: t.bodySmall?.copyWith(
                                   color: context.colors.muted,
                                   fontSize: 13,
@@ -157,7 +179,7 @@ class TodayScreen extends ConsumerWidget {
                       l.budgetUsage(
                         DateFormat('MMMM', context.localeTag).format(now),
                         (monthOut * 100 / budget).round(),
-                        rupiah((budget - monthOut).clamp(0, budget)),
+                        rupiah((budget - monthOut).clamp(0, budget), hide: hideAmounts),
                       ),
                       style: t.bodySmall?.copyWith(
                         color: context.colors.muted,

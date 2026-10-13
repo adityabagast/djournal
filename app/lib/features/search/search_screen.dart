@@ -379,7 +379,7 @@ class _StartView extends ConsumerWidget {
   }
 }
 
-class _Results extends StatelessWidget {
+class _Results extends ConsumerWidget {
   const _Results({
     required this.results,
     required this.money,
@@ -393,16 +393,17 @@ class _Results extends StatelessWidget {
   final ValueChanged<SearchHit> onOpen;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final count = [
       if (results.entryCount > 0) l.searchCountEntries(results.entryCount),
       if (results.txCount > 0) l.walletTxCount(results.txCount),
     ].join(' · ');
     final sums = [
-      if (results.expense > 0) l.searchSumOut(rupiah(results.expense)),
-      if (results.income > 0) l.searchSumIn(rupiah(results.income)),
+      if (results.expense > 0) l.searchSumOut(rupiah(results.expense, hide: hideAmounts)),
+      if (results.income > 0) l.searchSumIn(rupiah(results.income, hide: hideAmounts)),
     ].join(' · ');
 
     final groups = <String, List<SearchHit>>{};
@@ -513,7 +514,7 @@ String _snippet(String body, List<String> terms) {
   return '…${flat.substring(from < 0 ? hit - 30 : from + 1)}';
 }
 
-class _HitRow extends StatelessWidget {
+class _HitRow extends ConsumerWidget {
   const _HitRow({
     required this.hit,
     required this.money,
@@ -529,9 +530,10 @@ class _HitRow extends StatelessWidget {
   final VoidCallback onTap;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final titleStyle = t.bodyMedium?.copyWith(fontWeight: FontWeight.w600);
     final metaStyle = t.bodySmall?.copyWith(color: context.colors.muted);
 
@@ -589,9 +591,11 @@ class _HitRow extends StatelessWidget {
           wallet,
       ].join(' · ');
       trailing = Text(
-        isTransfer
-            ? rupiah(tx.amount)
-            : '${isOut ? '−' : '+'}${rupiah(tx.amount)}',
+        hideAmounts
+            ? maskedRupiah
+            : (isTransfer
+                ? rupiah(tx.amount)
+                : '${isOut ? '−' : '+'}${rupiah(tx.amount)}'),
         style: titleStyle?.copyWith(
           color: isTransfer
               ? context.colors.ink

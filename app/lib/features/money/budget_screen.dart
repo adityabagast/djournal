@@ -166,7 +166,7 @@ class BudgetScreen extends ConsumerWidget {
 
 /// Nama kategori, "terpakai / budget", progress bar, dan catatan status.
 /// Dipakai di layar Budget dan Laporan.
-class BudgetRow extends StatelessWidget {
+class BudgetRow extends ConsumerWidget {
   const BudgetRow({
     super.key,
     required this.category,
@@ -181,15 +181,16 @@ class BudgetRow extends StatelessWidget {
   final Widget? trailing;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final hasBudget = budget > 0;
     final over = hasBudget && spent > budget;
     final pct = hasBudget ? (spent * 100 / budget).round() : 0;
     final catColor = context.colors.fg(hexColor(category.color));
 
     final note = over
-        ? l.overBudget(rupiah(spent - budget))
+        ? l.overBudget(rupiah(spent - budget, hide: hideAmounts))
         : (hasBudget ? l.budgetUsedPct(pct) : l.noBudget);
 
     return Row(
@@ -208,8 +209,8 @@ class BudgetRow extends StatelessWidget {
                   ),
                   Text(
                     hasBudget
-                        ? '${rupiah(spent)} / ${rupiah(budget)}'
-                        : rupiah(spent),
+                        ? '${rupiah(spent, hide: hideAmounts)} / ${rupiah(budget, hide: hideAmounts)}'
+                        : rupiah(spent, hide: hideAmounts),
                     style: TextStyle(fontSize: 13, color: context.colors.muted),
                   ),
                 ],

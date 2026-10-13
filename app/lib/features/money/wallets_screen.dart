@@ -31,6 +31,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
     final snap = ref.watch(moneySnapshotProvider).value;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
 
     Widget sectionTitle(String text) => Text(
       text.toUpperCase(),
@@ -79,7 +80,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                         ),
                       ),
                       Text(
-                        _signed(snap.totalBalance),
+                        signedRupiah(snap.totalBalance, hide: hideAmounts),
                         style: t.headlineSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),
@@ -172,14 +173,11 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
   }
 }
 
-/// "Rp 1.250" atau "−Rp 36.588" (saldo dompet bisa minus).
-String _signed(int amount) => '${amount < 0 ? '−' : ''}${rupiah(amount)}';
-
 int _txCount(MoneySnapshot snap, String walletId) => snap.transactions
     .where((t) => t.walletId == walletId || t.toWalletId == walletId)
     .length;
 
-class _WalletRow extends StatelessWidget {
+class _WalletRow extends ConsumerWidget {
   const _WalletRow({
     required this.wallet,
     required this.snapshot,
@@ -191,9 +189,10 @@ class _WalletRow extends StatelessWidget {
   final bool showDivider;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final balance = snapshot.balanceOf(wallet.id);
     final (icon, raw) = switch (wallet.type) {
       'cash' => (Icons.payments_outlined, context.colors.hero),
@@ -249,7 +248,7 @@ class _WalletRow extends StatelessWidget {
             ),
             const SizedBox(width: 8),
             Text(
-              _signed(balance),
+              signedRupiah(balance, hide: hideAmounts),
               style: t.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: balance < 0
@@ -279,6 +278,7 @@ class _ArchivedRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 6),
@@ -309,7 +309,7 @@ class _ArchivedRow extends ConsumerWidget {
                     Text(
                       l.archivedWalletLine(
                         _txCount(snapshot, wallet.id),
-                        _signed(snapshot.balanceOf(wallet.id)),
+                        signedRupiah(snapshot.balanceOf(wallet.id), hide: hideAmounts),
                       ),
                       style: t.bodySmall?.copyWith(color: context.colors.muted),
                     ),

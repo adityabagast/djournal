@@ -3,6 +3,10 @@
 ## Belum dirilis
 
 **Baru**
+- **Sembunyikan nominal (Mode privasi)**: Opsi untuk menyembunyikan semua angka nominal uang (`Rp •••••`) di seluruh aplikasi demi privasi saat membuka aplikasi di tempat umum.
+  - Ikon mata (buka/tutup) di kartu **Total saldo** (Keuangan) dan kartu **Hari ini** (pengeluaran harian) untuk menyembunyikan/menampilkan nominal secara instan.
+  - Sakelar permanen di **Pengaturan › Keamanan › Sembunyikan nominal**.
+  - Mencakup total saldo, saldo tiap dompet, riwayat transaksi, laporan (pemasukan, pengeluaran, per kategori, budget), hasil pencarian, header pengeluaran di jurnal, dan otomatis disinkronkan ke widget layar utama Android.
 - **Warna aksen** (prototipe): Pengaturan › Tampilan › Warna aksen — pilih dari tujuh warna (Hijau sage bawaan, Biru laut, Ungu, Mawar, Pink, Amber, Teal). Tombol, ikon aktif, kartu Total saldo, layar PIN, dan splash ikut berubah, di mode terang maupun gelap. Pilihan tersimpan di app_settings ('accent_color') dan pratinjaunya ada di docs/screenshots/accent-preview.png.
 
 ## 0.4.0 — 2026-10-11

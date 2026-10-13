@@ -3,10 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme.dart';
 import '../../data/security/lock_controller.dart';
+import '../../providers.dart';
 import '../../ui/common.dart';
 import '../lock/pin_setup_screen.dart';
 
-/// Bagian "Keamanan" di Pengaturan: PIN, biometrik, kunci sekarang.
+/// Bagian "Keamanan" di Pengaturan: PIN, biometrik, kunci sekarang, sembunyikan nominal.
 class SecuritySection extends ConsumerWidget {
   const SecuritySection({super.key});
 
@@ -14,6 +15,7 @@ class SecuritySection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final lock = ref.watch(lockProvider);
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final controller = ref.read(lockProvider.notifier);
     final divider = Divider(height: 1, color: context.colors.divider);
     const titleStyle = TextStyle(fontWeight: FontWeight.w500);
@@ -60,6 +62,17 @@ class SecuritySection extends ConsumerWidget {
                   : l.biometricUnavailable,
               style: subStyle,
             ),
+            activeThumbColor: context.colors.onPrimary,
+            activeTrackColor: context.colors.primary,
+          ),
+          divider,
+          SwitchListTile(
+            value: hideAmounts,
+            onChanged: (on) => ref
+                .read(settingsRepositoryProvider)
+                .set('hide_amounts', on.toString()),
+            title: Text(l.hideAmounts, style: titleStyle),
+            subtitle: Text(l.hideAmountsSub, style: subStyle),
             activeThumbColor: context.colors.onPrimary,
             activeTrackColor: context.colors.primary,
           ),

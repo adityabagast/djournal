@@ -1256,6 +1256,18 @@ abstract class AppLocalizations {
   /// **'Kunci aplikasi sekarang'**
   String get lockNow;
 
+  /// No description provided for @hideAmounts.
+  ///
+  /// In id, this message translates to:
+  /// **'Sembunyikan nominal'**
+  String get hideAmounts;
+
+  /// No description provided for @hideAmountsSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Samarkan saldo dan nominal uang di seluruh aplikasi'**
+  String get hideAmountsSub;
+
   /// No description provided for @enterPin.
   ///
   /// In id, this message translates to:

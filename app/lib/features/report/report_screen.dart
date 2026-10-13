@@ -20,6 +20,7 @@ class ReportScreen extends ConsumerWidget {
     final t = Theme.of(context).textTheme;
     final snapAsync = ref.watch(moneySnapshotProvider);
     final entries = ref.watch(journalEntriesProvider).value ?? const [];
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final now = DateTime.now();
     final monthKey = toMonthKey(now);
 
@@ -99,15 +100,15 @@ class ReportScreen extends ConsumerWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
               child: Column(
                 children: [
-                  row(l.income, rupiah(monthIn), color: context.colors.income),
+                  row(l.income, rupiah(monthIn, hide: hideAmounts), color: context.colors.income),
                   row(
                     l.expense,
-                    rupiah(monthOut),
+                    rupiah(monthOut, hide: hideAmounts),
                     color: context.colors.expense,
                   ),
                   row(
                     l.net,
-                    '${net < 0 ? '−' : ''}${rupiah(net)}',
+                    signedRupiah(net, hide: hideAmounts),
                     last: true,
                     bold: true,
                   ),
@@ -159,16 +160,17 @@ class ReportScreen extends ConsumerWidget {
   }
 }
 
-class _MoodSpendingCard extends StatelessWidget {
+class _MoodSpendingCard extends ConsumerWidget {
   const _MoodSpendingCard({required this.good, required this.low});
 
   final int? good;
   final int? low;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final deep = context.colors.isDark
         ? context.colors.onPrimarySoft
         : const Color(0xFF143F34);
@@ -194,7 +196,7 @@ class _MoodSpendingCard extends StatelessWidget {
               style: t.bodySmall?.copyWith(color: context.colors.muted),
             ),
             Text(
-              value == null ? l.noData : rupiah(value),
+              value == null ? l.noData : rupiah(value, hide: hideAmounts),
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
           ],

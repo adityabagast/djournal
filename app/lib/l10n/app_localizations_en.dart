@@ -643,6 +643,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get lockNow => 'Lock app now';
 
   @override
+  String get hideAmounts => 'Hide amounts';
+
+  @override
+  String get hideAmountsSub =>
+      'Mask balances and monetary amounts across the app';
+
+  @override
   String get enterPin => 'Enter your PIN to unlock';
 
   @override

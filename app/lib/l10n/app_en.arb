@@ -207,6 +207,8 @@
   "unlockWithBiometricSub": "Fingerprint or face",
   "biometricUnavailable": "Not available on this device",
   "lockNow": "Lock app now",
+  "hideAmounts": "Hide amounts",
+  "hideAmountsSub": "Mask balances and monetary amounts across the app",
   "enterPin": "Enter your PIN to unlock",
   "wrongPin": "Wrong PIN",
   "tooManyAttempts": "Too many attempts. Try again in {seconds} seconds.",

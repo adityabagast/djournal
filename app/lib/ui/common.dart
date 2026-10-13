@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../core/format.dart';
 import '../core/theme.dart';
-import 'category_icons.dart';
 import '../data/db/app_database.dart';
 import '../data/money_snapshot.dart';
 import '../l10n/app_localizations.dart';
+import '../providers.dart';
+import 'category_icons.dart';
 
 extension L10nX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this);
@@ -154,7 +156,7 @@ class TransferBadge extends StatelessWidget {
 }
 
 /// Satu baris transaksi: badge, catatan, meta, nominal.
-class TxRow extends StatelessWidget {
+class TxRow extends ConsumerWidget {
   const TxRow({
     super.key,
     required this.tx,
@@ -173,9 +175,10 @@ class TxRow extends StatelessWidget {
   final bool showDivider;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
+    final hide = ref.watch(hideAmountsProvider).value ?? false;
     final cat = tx.categoryId == null
         ? null
         : snapshot.categoryById[tx.categoryId];
@@ -213,9 +216,11 @@ class TxRow extends StatelessWidget {
         TextSpan(text: wallet.name),
     ];
     // Transfer hanya memindahkan uang: tanpa tanda +/−, warna netral.
-    final amountText = isTransfer
-        ? rupiah(tx.amount)
-        : '${isOut ? '−' : '+'}${rupiah(tx.amount)}';
+    final amountText = hide
+        ? maskedRupiah
+        : (isTransfer
+            ? rupiah(tx.amount)
+            : '${isOut ? '−' : '+'}${rupiah(tx.amount)}');
     final amountColor = isTransfer
         ? context.colors.ink
         : isOut

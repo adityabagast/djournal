@@ -400,16 +400,17 @@ class _MoodChoice extends StatelessWidget {
 }
 
 /// Transaksi di tanggal yang sama, terhubung lewat local_date (tanpa FK).
-class _DayTransactions extends StatelessWidget {
+class _DayTransactions extends ConsumerWidget {
   const _DayTransactions({required this.date, required this.snapshot});
 
   final String date;
   final MoneySnapshot snapshot;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final txs = snapshot.onDate(date).toList()
       ..sort((a, b) => a.occurredAt.compareTo(b.occurredAt));
     final out = MoneySnapshot.sumOf(txs, 'expense');
@@ -429,7 +430,7 @@ class _DayTransactions extends StatelessWidget {
               ),
               if (out > 0)
                 Text(
-                  '−${rupiah(out)}',
+                  signedRupiah(-out, hide: hideAmounts),
                   style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
             ],

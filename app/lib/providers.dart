@@ -110,3 +110,12 @@ final accentIdProvider = StreamProvider<String>(
       .watch('accent_color')
       .map((v) => v ?? AccentPresets.sage.id),
 );
+
+/// Mode privasi: sembunyikan semua nominal uang di aplikasi (true = 'Rp •••••').
+final hideAmountsProvider = StreamProvider<bool>(
+  (ref) => ref
+      .watch(settingsRepositoryProvider)
+      .watch('hide_amounts')
+      .map((v) => v == 'true'),
+);
+
