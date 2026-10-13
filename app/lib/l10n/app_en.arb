@@ -376,5 +376,16 @@
   "searchSumIn": "received {amount}",
   "searchNotFound": "Nothing found",
   "searchNotFoundBody": "No journal entries or transactions match \"{query}\".",
-  "searchNotFoundPeriodBody": "No journal entries or transactions match \"{query}\" in this period."
+  "searchNotFoundPeriodBody": "No journal entries or transactions match \"{query}\" in this period.",
+  "voiceNote": "Voice note",
+  "recordVoice": "Record voice",
+  "recordAgain": "Record again",
+  "recordingVoice": "Recording voice...",
+  "transcription": "Speech transcription",
+  "copyToStory": "Copy to story",
+  "copiedToStory": "Transcription copied to story",
+  "deleteVoiceConfirm": "Delete this voice recording?",
+  "quickAddVoice": "Voice note",
+  "quickAddVoiceSub": "Record story & auto-transcribe",
+  "micPermissionRequired": "Microphone permission is required to record voice."
 }

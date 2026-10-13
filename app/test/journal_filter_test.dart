@@ -69,4 +69,55 @@ void main() {
     expect(find.text('Entri lama'), findsOneWidget);
     expect(find.text('Tampilkan semua'), findsNothing);
   });
+
+  testWidgets('entri pada hari yang sama diurutkan descending (jam terbaru di atas)', (
+    tester,
+  ) async {
+    final now = DateTime.now();
+    final today = toLocalDate(now);
+    final entries = [
+      JournalEntry(
+        id: '1',
+        createdAt: now,
+        updatedAt: now,
+        isDirty: false,
+        entryDate: today,
+        entryTime: '08:00',
+        title: 'Sarapan Pagi',
+      ),
+      JournalEntry(
+        id: '2',
+        createdAt: now,
+        updatedAt: now,
+        isDirty: false,
+        entryDate: today,
+        entryTime: '21:00',
+        title: 'Makan Malam',
+      ),
+    ];
+
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          journalEntriesProvider.overrideWith((ref) => Stream.value(entries)),
+          moneySnapshotProvider.overrideWithValue(
+            AsyncValue.data(
+              MoneySnapshot(wallets: [], categories: [], transactions: []),
+            ),
+          ),
+        ],
+        child: const MaterialApp(
+          locale: Locale('id'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: Scaffold(body: JournalScreen()),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    final malamY = tester.getTopLeft(find.text('Makan Malam')).dy;
+    final pagiY = tester.getTopLeft(find.text('Sarapan Pagi')).dy;
+    expect(malamY, lessThan(pagiY));
+  });
 }

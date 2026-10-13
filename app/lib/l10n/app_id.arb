@@ -423,5 +423,16 @@
   "searchNotFoundBody": "Tidak ada jurnal atau transaksi yang cocok dengan \"{query}\".",
   "@searchNotFoundBody": { "placeholders": { "query": { "type": "String" } } },
   "searchNotFoundPeriodBody": "Tidak ada jurnal atau transaksi yang cocok dengan \"{query}\" di periode ini.",
-  "@searchNotFoundPeriodBody": { "placeholders": { "query": { "type": "String" } } }
+  "@searchNotFoundPeriodBody": { "placeholders": { "query": { "type": "String" } } },
+  "voiceNote": "Catatan suara",
+  "recordVoice": "Rekam suara",
+  "recordAgain": "Rekam ulang",
+  "recordingVoice": "Merekam suara...",
+  "transcription": "Transkripsi suara",
+  "copyToStory": "Salin ke cerita",
+  "copiedToStory": "Transkripsi disalin ke cerita",
+  "deleteVoiceConfirm": "Hapus rekaman suara ini?",
+  "quickAddVoice": "Catatan suara",
+  "quickAddVoiceSub": "Rekam cerita & transkripsi otomatis",
+  "micPermissionRequired": "Izin mikrofon diperlukan untuk merekam suara."
 }

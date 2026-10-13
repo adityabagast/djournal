@@ -101,6 +101,15 @@ class JournalEntries extends Table with SyncColumns {
 
   /// JSON array string.
   TextColumn get tags => text().nullable()();
+
+  /// Path lokal file audio rekaman (.m4a).
+  TextColumn get audioPath => text().nullable()();
+
+  /// Durasi rekaman dalam milidetik.
+  IntColumn get audioDurationMs => integer().nullable()();
+
+  /// Teks hasil transkripsi speech-to-text.
+  TextColumn get audioTranscript => text().nullable()();
 }
 
 class Attachments extends Table with SyncColumns {

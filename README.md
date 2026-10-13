@@ -2,7 +2,7 @@
 
 Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** dalam satu timeline. Nama "Nyawtat" dari *nyaw* (suara kucing) + *catat*. Offline-first: semua data tersimpan di HP, lalu disinkronkan ke cloud kalau login.
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.4.0**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.5.0**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>
@@ -26,27 +26,37 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 
 ## Pasang
 
-1. Unduh **`app-arm64-v8a-release.apk`** dari [Releases](../../releases/latest). HP lama yang gagal memasangnya: pakai `app-armeabi-v7a-release.apk`.
+1. Unduh **`app-arm64-v8a-release.apk`** (~24 MB) dari [Releases](../../releases/latest). HP lama yang gagal memasangnya: pakai `app-armeabi-v7a-release.apk`.
 2. Buka file itu di HP lalu pilih **Instal**. Versi baru bisa langsung dipasang di atas versi lama; data tetap aman.
+
+> Untuk membangun APK rilis sendiri dengan ukuran teroptimasi (~24 MB, hemat 67% dibanding fat APK):
+> ```powershell
+> cd app
+> flutter build apk --release --split-per-abi --obfuscate --split-debug-info=build/app/outputs/symbols
+> ```
 
 > Sejak 30 September 2026, Android di Indonesia hanya mau memasang app dari developer yang terverifikasi. Nyawtat sudah terdaftar di Android Developer Console dengan distribusi terbatas, jadi HP harus **diizinkan developer dulu** (maksimal 20 HP). Tanpa itu muncul pesan "Aplikasi diblokir untuk melindungi perangkat Anda".
 
 ## Fitur
 
-**Jurnal**
+**Jurnal & Catatan Suara**
 - Beberapa entri per hari, masing-masing dengan jam (opsional), mood 1–5 (opsional), judul, isi, dan tag
+- **Catatan Suara (Voice Note)**: rekam suara asli (format AAC/M4A hemat ruang) dengan kartu pemutar interaktif (*seekable waveform*, tombol play/pause, dan kontrol kecepatan 1.0x, 1.5x, 2.0x)
+- **Dikte Suara**: bicara langsung dan ucapan diubah menjadi teks (*speech-to-text*) secara on-device ke dalam cerita entri jurnal
+- Teks transkripsi suara otomatis terindeks dan bisa dicari di Pencarian
 - Strip minggu yang bisa ditap untuk memfilter entri per tanggal, plus panah untuk pindah minggu
 - Mood harian = rata-rata mood entri hari itu
 
 **Keuangan**
-- Dompet (tunai, bank, e-wallet, lainnya): tambah, ubah, hapus
+- Dompet (tunai, bank, e-wallet, lainnya): tambah, ubah saldo (penyesuaian otomatis), arsipkan, hapus
+- **Mode Privasi**: sembunyikan semua nominal uang (`Rp •••••`) dengan ikon mata instan di kartu saldo/pengeluaran atau sakelar permanen di Pengaturan Keamanan
 - Transaksi pemasukan/pengeluaran per kategori; saldo selalu dihitung dari transaksi
 - Transfer antar dompet (mis. tarik tunai BCA → Tunai), tidak dihitung sebagai pemasukan/pengeluaran
 - Kelola kategori: urutkan, ubah nama/warna/ikon, sembunyikan, gabungkan, hapus
 - Budget bulanan per kategori yang berlanjut ke bulan berikutnya
 - Laporan: pengeluaran per kategori, budget, serta hubungan mood dan pengeluaran
 
-**Hari Ini**: satu timeline yang mencampur entri jurnal dan transaksi, plus bar budget bulan berjalan.
+**Hari Ini**: satu linimasa descending (terbaru di atas) yang mencampur entri jurnal dan transaksi, plus bar budget bulan berjalan.
 
 **Lainnya**
 - Pencarian jurnal dan transaksi (teks, tag, kategori, dompet, nominal) dengan filter jenis dan periode

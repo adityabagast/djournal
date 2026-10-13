@@ -1238,4 +1238,38 @@ class AppLocalizationsEn extends AppLocalizations {
   String searchNotFoundPeriodBody(String query) {
     return 'No journal entries or transactions match \"$query\" in this period.';
   }
+
+  @override
+  String get voiceNote => 'Voice note';
+
+  @override
+  String get recordVoice => 'Record voice';
+
+  @override
+  String get recordAgain => 'Record again';
+
+  @override
+  String get recordingVoice => 'Recording voice...';
+
+  @override
+  String get transcription => 'Speech transcription';
+
+  @override
+  String get copyToStory => 'Copy to story';
+
+  @override
+  String get copiedToStory => 'Transcription copied to story';
+
+  @override
+  String get deleteVoiceConfirm => 'Delete this voice recording?';
+
+  @override
+  String get quickAddVoice => 'Voice note';
+
+  @override
+  String get quickAddVoiceSub => 'Record story & auto-transcribe';
+
+  @override
+  String get micPermissionRequired =>
+      'Microphone permission is required to record voice.';
 }

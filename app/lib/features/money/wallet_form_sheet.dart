@@ -165,130 +165,135 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
       ('other', l.walletTypeOther),
     ];
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(
-        20,
-        12,
-        20,
-        24 + MediaQuery.viewInsetsOf(context).bottom,
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colors.handle,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            _isEdit ? l.editWallet : l.addWallet,
-            style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 16),
-          TextField(
-            controller: _name,
-            autofocus: !_isEdit,
-            textCapitalization: TextCapitalization.words,
-            onChanged: (_) {
-              if (_showNameError) setState(() => _showNameError = false);
-            },
-            decoration: InputDecoration(
-              labelText: l.walletName,
-              hintText: l.walletNameHint,
-              errorText: _showNameError ? l.walletNameRequired : null,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            l.walletType,
-            style: t.bodySmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: context.colors.muted,
-            ),
-          ),
-          const SizedBox(height: 6),
-          Wrap(
-            spacing: 8,
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          20,
+          12,
+          20,
+          24 + MediaQuery.viewInsetsOf(context).bottom,
+        ),
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              for (final (key, text) in types)
-                ChoiceChip(
-                  label: Text(text),
-                  selected: _type == key,
-                  showCheckmark: false,
-                  onSelected: (_) => setState(() => _type = key),
+              Center(
+                child: Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: context.colors.handle,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
                 ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _balance,
-            keyboardType: const TextInputType.numberWithOptions(signed: true),
-            inputFormatters: [ThousandsInputFormatter(allowNegative: true)],
-            decoration: InputDecoration(
-              labelText: _isEdit ? l.currentBalance : l.openingBalance,
-              helperText: _isEdit ? l.currentBalanceHint : null,
-              helperMaxLines: 2,
-              prefixText: 'Rp ',
-            ),
-          ),
-          const SizedBox(height: 20),
-          FilledButton(
-            onPressed: _save,
-            style: FilledButton.styleFrom(
-              minimumSize: const Size.fromHeight(48),
-            ),
-            child: Text(l.save),
-          ),
-          if (_isEdit && !lastActive) ...[
-            const SizedBox(height: 8),
-            OutlinedButton.icon(
-              onPressed: () => _setArchived(!archived),
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(44),
               ),
-              icon: Icon(
-                archived ? Icons.unarchive_outlined : Icons.archive_outlined,
-                size: 20,
+              const SizedBox(height: 16),
+              Text(
+                _isEdit ? l.editWallet : l.addWallet,
+                style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
-              label: Text(archived ? l.unarchiveWallet : l.archiveWallet),
-            ),
-            if (!archived)
-              Padding(
-                padding: const EdgeInsets.only(top: 4),
-                child: Text(
-                  l.archiveWalletHint,
+              const SizedBox(height: 16),
+              TextField(
+                controller: _name,
+                autofocus: !_isEdit,
+                textCapitalization: TextCapitalization.words,
+                onChanged: (_) {
+                  if (_showNameError) setState(() => _showNameError = false);
+                },
+                decoration: InputDecoration(
+                  labelText: l.walletName,
+                  hintText: l.walletNameHint,
+                  errorText: _showNameError ? l.walletNameRequired : null,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                l.walletType,
+                style: t.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: context.colors.muted,
+                ),
+              ),
+              const SizedBox(height: 6),
+              Wrap(
+                spacing: 8,
+                children: [
+                  for (final (key, text) in types)
+                    ChoiceChip(
+                      label: Text(text),
+                      selected: _type == key,
+                      showCheckmark: false,
+                      onSelected: (_) => setState(() => _type = key),
+                    ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: _balance,
+                keyboardType: const TextInputType.numberWithOptions(signed: true),
+                inputFormatters: [ThousandsInputFormatter(allowNegative: true)],
+                decoration: InputDecoration(
+                  labelText: _isEdit ? l.currentBalance : l.openingBalance,
+                  helperText: _isEdit ? l.currentBalanceHint : null,
+                  helperMaxLines: 2,
+                  prefixText: 'Rp ',
+                ),
+              ),
+              const SizedBox(height: 20),
+              FilledButton(
+                onPressed: _save,
+                style: FilledButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
+                ),
+                child: Text(l.save),
+              ),
+              if (_isEdit && !lastActive) ...[
+                const SizedBox(height: 8),
+                OutlinedButton.icon(
+                  onPressed: () => _setArchived(!archived),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(44),
+                  ),
+                  icon: Icon(
+                    archived ? Icons.unarchive_outlined : Icons.archive_outlined,
+                    size: 20,
+                  ),
+                  label: Text(archived ? l.unarchiveWallet : l.archiveWallet),
+                ),
+                if (!archived)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 4),
+                    child: Text(
+                      l.archiveWalletHint,
+                      textAlign: TextAlign.center,
+                      style: t.bodySmall?.copyWith(color: context.colors.muted),
+                    ),
+                  ),
+              ],
+              if (canDelete) ...[
+                const SizedBox(height: 8),
+                TextButton.icon(
+                  onPressed: () => _delete(txCount),
+                  style: TextButton.styleFrom(
+                    foregroundColor: context.colors.expense,
+                    minimumSize: const Size.fromHeight(44),
+                  ),
+                  icon: const Icon(Icons.delete_outline, size: 20),
+                  label: Text(l.deleteWallet),
+                ),
+              ] else if (_isEdit) ...[
+                const SizedBox(height: 12),
+                Text(
+                  l.lastWalletCantDelete,
                   textAlign: TextAlign.center,
                   style: t.bodySmall?.copyWith(color: context.colors.muted),
                 ),
-              ),
-          ],
-          if (canDelete) ...[
-            const SizedBox(height: 8),
-            TextButton.icon(
-              onPressed: () => _delete(txCount),
-              style: TextButton.styleFrom(
-                foregroundColor: context.colors.expense,
-                minimumSize: const Size.fromHeight(44),
-              ),
-              icon: const Icon(Icons.delete_outline, size: 20),
-              label: Text(l.deleteWallet),
-            ),
-          ] else if (_isEdit) ...[
-            const SizedBox(height: 12),
-            Text(
-              l.lastWalletCantDelete,
-              textAlign: TextAlign.center,
-              style: t.bodySmall?.copyWith(color: context.colors.muted),
-            ),
-          ],
-        ],
+              ],
+            ],
+          ),
+        ),
       ),
     );
   }

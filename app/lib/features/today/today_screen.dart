@@ -35,7 +35,7 @@ class TodayScreen extends ConsumerWidget {
         final todayTx = snap.onDate(today).toList();
         final todayOut = MoneySnapshot.sumOf(todayTx, 'expense');
 
-        // Timeline: entri jurnal dan transaksi hari ini, urut jam naik.
+        // Timeline: entri jurnal dan transaksi hari ini, urut jam terbaru dulu (descending).
         final timeline = <(String, Widget Function(bool divider))>[
           for (final e in entries.where((e) => e.entryDate == today))
             (
@@ -57,7 +57,7 @@ class TodayScreen extends ConsumerWidget {
                 onTap: () => TxFormScreen.open(context, existing: tx),
               ),
             ),
-        ]..sort((a, b) => a.$1.compareTo(b.$1));
+        ]..sort((a, b) => b.$1.compareTo(a.$1));
         final monthOut = MoneySnapshot.sumOf(
           snap.inMonth(toMonthKey(now)),
           'expense',

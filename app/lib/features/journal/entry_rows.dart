@@ -5,6 +5,7 @@ import '../../data/db/app_database.dart';
 import '../../data/journal_repository.dart';
 import '../../ui/common.dart';
 import '../../ui/mood.dart';
+import 'voice/voice_player_card.dart';
 
 String _titleOf(BuildContext context, JournalEntry e) =>
     e.title ?? context.l10n.untitled;
@@ -25,8 +26,10 @@ class EntryTimelineRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
+    final hasAudio = entry.audioPath != null && entry.audioPath!.isNotEmpty;
     final sub = [
       if (entry.mood != null) moodLabel(context.l10n, entry.mood!),
+      if (hasAudio) '🎙️ ${context.l10n.voiceNote}',
       ?entry.body,
     ].join(' · ');
 
@@ -60,7 +63,7 @@ class EntryTimelineRow extends StatelessWidget {
                 borderRadius: BorderRadius.circular(11),
               ),
               child: Icon(
-                Icons.menu_book_outlined,
+                hasAudio ? Icons.mic_rounded : Icons.menu_book_outlined,
                 size: 18,
                 color: context.colors.primary,
               ),
@@ -158,13 +161,55 @@ class EntryListRow extends StatelessWidget {
                       ),
                     ),
                   ],
-                  if (entry.mood != null || tags.isNotEmpty) ...[
-                    const SizedBox(height: 6),
+                  if (entry.audioPath != null &&
+                      entry.audioPath!.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    VoicePlayerCard(
+                      audioPath: entry.audioPath!,
+                      durationMs: entry.audioDurationMs,
+                      compact: true,
+                    ),
+                  ],
+                  if (entry.audioPath != null ||
+                      entry.mood != null ||
+                      tags.isNotEmpty) ...[
+                    const SizedBox(height: 8),
                     Wrap(
                       spacing: 6,
                       runSpacing: 4,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
+                        if (entry.audioPath != null &&
+                            entry.audioPath!.isNotEmpty)
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: context.colors.primarySoft,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.mic_rounded,
+                                  size: 12,
+                                  color: context.colors.primary,
+                                ),
+                                const SizedBox(width: 3),
+                                Text(
+                                  context.l10n.voiceNote,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w600,
+                                    color: context.colors.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         if (entry.mood != null)
                           Row(
                             mainAxisSize: MainAxisSize.min,

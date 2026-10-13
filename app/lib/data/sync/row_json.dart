@@ -126,6 +126,9 @@ Map<String, dynamic> entryToJson(JournalEntry e) => {
   'body': e.body,
   // Lokal disimpan sebagai string JSON, di API sebagai array.
   'tags': e.tags == null ? <String>[] : _decodeTags(e.tags!),
+  'audioPath': e.audioPath,
+  'audioDurationMs': e.audioDurationMs,
+  'audioTranscript': e.audioTranscript,
 };
 
 JournalEntry entryFromJson(Map<String, dynamic> j, {bool dirty = false}) {
@@ -142,6 +145,9 @@ JournalEntry entryFromJson(Map<String, dynamic> j, {bool dirty = false}) {
     title: j['title'] as String?,
     body: j['body'] as String?,
     tags: tags.isEmpty ? null : _encodeTags(tags),
+    audioPath: j['audioPath'] as String?,
+    audioDurationMs: (j['audioDurationMs'] as num?)?.toInt(),
+    audioTranscript: j['audioTranscript'] as String?,
   );
 }
 
