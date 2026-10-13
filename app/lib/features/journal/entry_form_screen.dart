@@ -11,24 +11,44 @@ import '../../ui/common.dart';
 import '../../ui/mascot.dart';
 import '../../ui/mood.dart';
 import '../money/tx_form_screen.dart';
+import 'voice/voice_player_card.dart';
+import 'voice/voice_record_sheet.dart';
 
 /// Form tulis / edit entri jurnal. [existing] null = entri baru;
 /// [initialDate] (YYYY-MM-DD) = tanggal awal entri baru, default hari ini.
 class EntryFormScreen extends ConsumerStatefulWidget {
-  const EntryFormScreen({super.key, this.existing, this.initialDate});
+  const EntryFormScreen({
+    super.key,
+    this.existing,
+    this.initialDate,
+    this.initialAudioPath,
+    this.initialAudioDurationMs,
+    this.initialAudioTranscript,
+  });
 
   final JournalEntry? existing;
   final String? initialDate;
+  final String? initialAudioPath;
+  final int? initialAudioDurationMs;
+  final String? initialAudioTranscript;
 
   static Future<void> open(
     BuildContext context, {
     JournalEntry? existing,
     String? initialDate,
+    String? initialAudioPath,
+    int? initialAudioDurationMs,
+    String? initialAudioTranscript,
   }) {
     return Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (_) =>
-            EntryFormScreen(existing: existing, initialDate: initialDate),
+        builder: (_) => EntryFormScreen(
+          existing: existing,
+          initialDate: initialDate,
+          initialAudioPath: initialAudioPath,
+          initialAudioDurationMs: initialAudioDurationMs,
+          initialAudioTranscript: initialAudioTranscript,
+        ),
       ),
     );
   }
@@ -46,6 +66,9 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
   /// "HH:mm" atau null.
   String? _time;
   int? _mood;
+  String? _audioPath;
+  int? _audioDurationMs;
+  String? _audioTranscript;
   bool _showEmptyError = false;
   bool _saving = false;
 
@@ -58,10 +81,15 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
     _date = e?.entryDate ?? widget.initialDate ?? toLocalDate(DateTime.now());
     _time = e?.entryTime;
     _mood = e?.mood;
+    _audioPath = e?.audioPath ?? widget.initialAudioPath;
+    _audioDurationMs = e?.audioDurationMs ?? widget.initialAudioDurationMs;
+    _audioTranscript = e?.audioTranscript ?? widget.initialAudioTranscript;
     if (e != null) {
       _title.text = e.title ?? '';
       _body.text = e.body ?? '';
       _tags.text = entryTags(e).join(', ');
+    } else if (_audioTranscript != null && _audioTranscript!.isNotEmpty) {
+      _body.text = _audioTranscript!;
     }
   }
 
@@ -104,8 +132,52 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
   static String _formatTime(TimeOfDay t) =>
       '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
+  Future<void> _recordVoice() async {
+    final result = await VoiceRecordSheet.show(
+      context,
+      initialMode: VoiceRecordMode.voiceOnly,
+    );
+    if (!mounted || result == null) return;
+    setState(() {
+      if (result.audioPath.isNotEmpty) {
+        _audioPath = result.audioPath;
+        _audioDurationMs = result.durationMs;
+      }
+      if (result.transcript.isNotEmpty) {
+        _audioTranscript = result.transcript;
+        if (_body.text.trim().isEmpty) {
+          _body.text = result.transcript;
+        }
+      }
+      if (_showEmptyError) _showEmptyError = false;
+    });
+  }
+
+  Future<void> _dictateStory() async {
+    final result = await VoiceRecordSheet.show(
+      context,
+      initialMode: VoiceRecordMode.textOnly,
+    );
+    if (!mounted || result == null) return;
+    setState(() {
+      if (result.audioPath.isNotEmpty) {
+        _audioPath = result.audioPath;
+        _audioDurationMs = result.durationMs;
+      }
+      if (result.transcript.isNotEmpty) {
+        if (_body.text.trim().isEmpty) {
+          _body.text = result.transcript;
+        } else {
+          _body.text += ' ${result.transcript}';
+        }
+      }
+      if (_showEmptyError) _showEmptyError = false;
+    });
+  }
+
   Future<void> _save() async {
-    if (_title.text.trim().isEmpty && _body.text.trim().isEmpty) {
+    final hasAudio = _audioPath != null && _audioPath!.trim().isNotEmpty;
+    if (_title.text.trim().isEmpty && _body.text.trim().isEmpty && !hasAudio) {
       setState(() => _showEmptyError = true);
       return;
     }
@@ -120,6 +192,9 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
           title: _title.text,
           body: _body.text,
           tags: parseTags(_tags.text),
+          audioPath: _audioPath,
+          audioDurationMs: _audioDurationMs,
+          audioTranscript: _audioTranscript,
         );
     if (!mounted) return;
     final l = context.l10n;
@@ -310,8 +385,85 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
             decoration: InputDecoration(hintText: l.entryTitleHint),
           ),
           const SizedBox(height: 16),
-          label(l.story),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              label(l.story),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextButton.icon(
+                    onPressed: _dictateStory,
+                    style: TextButton.styleFrom(
+                      foregroundColor: context.colors.primary,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    icon: const Icon(Icons.mode_comment_outlined, size: 14),
+                    label: const Text(
+                      'Dikte',
+                      style: TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 4),
+                  TextButton.icon(
+                    onPressed: _recordVoice,
+                    style: TextButton.styleFrom(
+                      foregroundColor: context.colors.primary,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      minimumSize: Size.zero,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    ),
+                    icon: Icon(
+                      _audioPath != null
+                          ? Icons.replay_rounded
+                          : Icons.mic_rounded,
+                      size: 15,
+                    ),
+                    label: Text(
+                      _audioPath != null ? l.recordAgain : l.recordVoice,
+                      style: const TextStyle(
+                        fontSize: 12.5,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
           const SizedBox(height: 6),
+          if (_audioPath != null) ...[
+            VoicePlayerCard(
+              audioPath: _audioPath!,
+              durationMs: _audioDurationMs,
+              transcript: _audioTranscript,
+              onDelete: () => setState(() {
+                _audioPath = null;
+                _audioDurationMs = null;
+                _audioTranscript = null;
+              }),
+              onCopyToNotes: (text) {
+                if (_body.text.trim().isEmpty) {
+                  _body.text = text;
+                } else {
+                  _body.text += '\n\n$text';
+                }
+                showMascotSnackBar(
+                  context,
+                  MascotPose.senang,
+                  l.copiedToStory,
+                );
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
           TextField(
             controller: _body,
             minLines: 6,
@@ -412,7 +564,7 @@ class _DayTransactions extends ConsumerWidget {
     final t = Theme.of(context).textTheme;
     final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final txs = snapshot.onDate(date).toList()
-      ..sort((a, b) => a.occurredAt.compareTo(b.occurredAt));
+      ..sort((a, b) => b.occurredAt.compareTo(a.occurredAt));
     final out = MoneySnapshot.sumOf(txs, 'expense');
 
     return AppCard(

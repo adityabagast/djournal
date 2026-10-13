@@ -1219,4 +1219,38 @@ class AppLocalizationsId extends AppLocalizations {
   String searchNotFoundPeriodBody(String query) {
     return 'Tidak ada jurnal atau transaksi yang cocok dengan \"$query\" di periode ini.';
   }
+
+  @override
+  String get voiceNote => 'Catatan suara';
+
+  @override
+  String get recordVoice => 'Rekam suara';
+
+  @override
+  String get recordAgain => 'Rekam ulang';
+
+  @override
+  String get recordingVoice => 'Merekam suara...';
+
+  @override
+  String get transcription => 'Transkripsi suara';
+
+  @override
+  String get copyToStory => 'Salin ke cerita';
+
+  @override
+  String get copiedToStory => 'Transkripsi disalin ke cerita';
+
+  @override
+  String get deleteVoiceConfirm => 'Hapus rekaman suara ini?';
+
+  @override
+  String get quickAddVoice => 'Catatan suara';
+
+  @override
+  String get quickAddVoiceSub => 'Rekam cerita & transkripsi otomatis';
+
+  @override
+  String get micPermissionRequired =>
+      'Izin mikrofon diperlukan untuk merekam suara.';
 }

@@ -12,6 +12,7 @@ import '../../data/sync/account_controller.dart';
 import '../../ui/common.dart';
 import '../journal/entry_form_screen.dart';
 import '../journal/journal_screen.dart';
+import '../journal/voice/voice_record_sheet.dart';
 import '../money/money_screen.dart';
 import '../money/tx_form_screen.dart';
 import '../report/report_screen.dart';
@@ -143,6 +144,15 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 subtitle: l.quickAddJournalSub,
                 onTap: () => Navigator.pop(ctx, 'journal'),
               ),
+              const SizedBox(height: 12),
+              _QuickAction(
+                icon: Icons.mic_rounded,
+                fg: context.colors.primary,
+                bg: context.colors.primarySoft,
+                title: l.quickAddVoice,
+                subtitle: l.quickAddVoiceSub,
+                onTap: () => Navigator.pop(ctx, 'voice'),
+              ),
             ],
           ),
         ),
@@ -154,6 +164,17 @@ class _HomeShellState extends ConsumerState<HomeShell> {
         TxFormScreen.open(context);
       case 'journal':
         EntryFormScreen.open(context);
+      case 'voice':
+        final rec = await VoiceRecordSheet.show(context);
+        if (rec != null && mounted) {
+          EntryFormScreen.open(
+            context,
+            initialAudioPath: rec.audioPath.isEmpty ? null : rec.audioPath,
+            initialAudioDurationMs: rec.durationMs,
+            initialAudioTranscript:
+                rec.transcript.isEmpty ? null : rec.transcript,
+          );
+        }
     }
   }
 

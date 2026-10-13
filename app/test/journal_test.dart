@@ -55,10 +55,11 @@ void main() {
     var list = await entries();
     expect(list.first.entryDate, '2026-10-08');
     final today = list.where((e) => e.entryDate == '2026-10-08').toList()
-      ..sort((a, b) => entrySortKey(a).compareTo(entrySortKey(b)));
-    expect(today.map((e) => e.title), ['Pagi', 'Malam']);
+      ..sort((a, b) => entrySortKey(b).compareTo(entrySortKey(a)));
+    expect(today.map((e) => e.title), ['Malam', 'Pagi']);
 
-    final pagi = today.first;
+    final pagi = today.firstWhere((e) => e.title == 'Pagi');
+    final malam = today.firstWhere((e) => e.title == 'Malam');
     await journal.saveEntry(
       id: pagi.id,
       entryDate: pagi.entryDate,
@@ -68,7 +69,7 @@ void main() {
       body: null,
       tags: const [],
     );
-    await journal.deleteEntry(today.last.id);
+    await journal.deleteEntry(malam.id);
 
     list = await entries();
     expect(list, hasLength(2));

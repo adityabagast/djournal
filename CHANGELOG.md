@@ -1,13 +1,24 @@
 # Changelog
 
-## Belum dirilis
+## 0.5.0 — 2026-10-14
 
 **Baru**
+- **Catatan suara (Voice Note & Transkripsi Suara)**: Merekam audio suara asli dan dikte ucapan menjadi teks (*speech-to-text*) secara on-device di entri jurnal.
+  - Pilihan 2 mode terdedikasi untuk kualitas maksimal dan mencegah konflik mikrofon Android: **🎙️ Catatan Suara** (rekam audio M4A/AAC jernih hemat ruang dengan kartu pemutar) dan **✍️ Dikte Suara** (ucapan langsung diubah jadi teks ke cerita jurnal secara *real-time*).
+  - Dilengkapi animasi detak mikrofon, visualisasi gelombang suara (*waveform*), dan transkripsi *real-time* saat berbicara.
+  - Kartu pemutar audio (*VoicePlayerCard*) dengan tombol play/pause, visual *waveform scrubber*, durasi, kontrol kecepatan (1.0x, 1.5x, 2.0x), serta tombol salin transkripsi ke cerita.
+  - Pemutar audio ringkas langsung di feed Jurnal dan badge `🎙️ Catatan suara` di timeline Hari Ini.
+  - Tombol aksi cepat Catatan Suara di menu tambah cepat (+) dock utama.
+  - Teks transkripsi suara otomatis terindeks dan bisa dicari lewat fitur Pencarian.
 - **Sembunyikan nominal (Mode privasi)**: Opsi untuk menyembunyikan semua angka nominal uang (`Rp •••••`) di seluruh aplikasi demi privasi saat membuka aplikasi di tempat umum.
   - Ikon mata (buka/tutup) di kartu **Total saldo** (Keuangan) dan kartu **Hari ini** (pengeluaran harian) untuk menyembunyikan/menampilkan nominal secara instan.
   - Sakelar permanen di **Pengaturan › Keamanan › Sembunyikan nominal**.
   - Mencakup total saldo, saldo tiap dompet, riwayat transaksi, laporan (pemasukan, pengeluaran, per kategori, budget), hasil pencarian, header pengeluaran di jurnal, dan otomatis disinkronkan ke widget layar utama Android.
 - **Warna aksen** (prototipe): Pengaturan › Tampilan › Warna aksen — pilih dari tujuh warna (Hijau sage bawaan, Biru laut, Ungu, Mawar, Pink, Amber, Teal). Tombol, ikon aktif, kartu Total saldo, layar PIN, dan splash ikut berubah, di mode terang maupun gelap. Pilihan tersimpan di app_settings ('accent_color') dan pratinjaunya ada di docs/screenshots/accent-preview.png.
+
+**Perbaikan**
+- **Formulir dompet (Penyesuaian saldo)**: Menambahkan scroll otomatis pada lembar tambah/ubah dompet agar tidak terjadi *bottom overflow* saat keyboard angka muncul.
+- **Urutan linimasa & entri (Descending)**: Linimasa aktivitas di tab **Hari Ini** dan daftar catatan dalam satu hari di tab **Jurnal** kini diurutkan menurun (*descending*) dengan jam terbaru tampil di paling atas, sehingga aktivitas/catatan yang baru saja dibuat langsung terlihat di atas.
 
 ## 0.4.0 — 2026-10-11
 

@@ -61,4 +61,46 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.text('BCA'), findsNothing);
   });
+
+  testWidgets('edit dompet / penyesuaian saldo tidak overflow saat keyboard muncul', (
+    tester,
+  ) async {
+    // Set ukuran layar kecil untuk mereproduksi skenario keyboard muncul
+    tester.view.physicalSize = const Size(360, 600);
+    tester.view.devicePixelRatio = 1.0;
+    addTearDown(() => tester.view.resetPhysicalSize());
+
+    final snap = MoneySnapshot(
+      wallets: [
+        _wallet('a', 'Mandiri', 50000),
+        _wallet('b', 'Krom bank', -2500),
+      ],
+      categories: const [],
+      transactions: const [],
+    );
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          moneySnapshotProvider.overrideWithValue(AsyncValue.data(snap)),
+        ],
+        child: MaterialApp(
+          locale: const Locale('id'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: const WalletsScreen(),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    // Tap dompet Mandiri untuk membuka form ubah dompet (penyesuaian saldo)
+    await tester.tap(find.text('Mandiri'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Ubah dompet'), findsOneWidget);
+    expect(find.text('Saldo sekarang'), findsOneWidget);
+
+    // Tidak ada exception / overflow yang dilempar
+    expect(tester.takeException(), isNull);
+  });
 }

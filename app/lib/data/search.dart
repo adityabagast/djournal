@@ -111,6 +111,7 @@ SearchResults searchAll({
       final haystack = [
         e.title ?? '',
         e.body ?? '',
+        e.audioTranscript ?? '',
         for (final tag in entryTags(e)) '#$tag',
       ].join(' ');
       if (!matches(haystack)) continue;

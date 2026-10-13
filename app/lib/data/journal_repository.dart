@@ -17,6 +17,7 @@ class JournalRepository {
       ..where((e) => e.deletedAt.isNull())
       ..orderBy([
         (e) => OrderingTerm(expression: e.entryDate, mode: OrderingMode.desc),
+        (e) => OrderingTerm(expression: e.createdAt, mode: OrderingMode.desc),
       ]);
     return q.watch();
   }
@@ -29,6 +30,9 @@ class JournalRepository {
     required String? title,
     required String? body,
     required List<String> tags,
+    String? audioPath,
+    int? audioDurationMs,
+    String? audioTranscript,
   }) async {
     final now = DateTime.now().toUtc();
     String? clean(String? s) =>
@@ -49,6 +53,9 @@ class JournalRepository {
               title: Value(clean(title)),
               body: Value(clean(body)),
               tags: Value(tagsJson),
+              audioPath: Value(audioPath),
+              audioDurationMs: Value(audioDurationMs),
+              audioTranscript: Value(clean(audioTranscript)),
             ),
           );
     } else {
@@ -64,6 +71,9 @@ class JournalRepository {
           title: Value(clean(title)),
           body: Value(clean(body)),
           tags: Value(tagsJson),
+          audioPath: Value(audioPath),
+          audioDurationMs: Value(audioDurationMs),
+          audioTranscript: Value(clean(audioTranscript)),
         ),
       );
     }

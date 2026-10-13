@@ -2269,6 +2269,72 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Tidak ada jurnal atau transaksi yang cocok dengan \"{query}\" di periode ini.'**
   String searchNotFoundPeriodBody(String query);
+
+  /// No description provided for @voiceNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan suara'**
+  String get voiceNote;
+
+  /// No description provided for @recordVoice.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam suara'**
+  String get recordVoice;
+
+  /// No description provided for @recordAgain.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam ulang'**
+  String get recordAgain;
+
+  /// No description provided for @recordingVoice.
+  ///
+  /// In id, this message translates to:
+  /// **'Merekam suara...'**
+  String get recordingVoice;
+
+  /// No description provided for @transcription.
+  ///
+  /// In id, this message translates to:
+  /// **'Transkripsi suara'**
+  String get transcription;
+
+  /// No description provided for @copyToStory.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin ke cerita'**
+  String get copyToStory;
+
+  /// No description provided for @copiedToStory.
+  ///
+  /// In id, this message translates to:
+  /// **'Transkripsi disalin ke cerita'**
+  String get copiedToStory;
+
+  /// No description provided for @deleteVoiceConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus rekaman suara ini?'**
+  String get deleteVoiceConfirm;
+
+  /// No description provided for @quickAddVoice.
+  ///
+  /// In id, this message translates to:
+  /// **'Catatan suara'**
+  String get quickAddVoice;
+
+  /// No description provided for @quickAddVoiceSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam cerita & transkripsi otomatis'**
+  String get quickAddVoiceSub;
+
+  /// No description provided for @micPermissionRequired.
+  ///
+  /// In id, this message translates to:
+  /// **'Izin mikrofon diperlukan untuk merekam suara.'**
+  String get micPermissionRequired;
 }
 
 class _AppLocalizationsDelegate

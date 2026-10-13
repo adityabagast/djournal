@@ -2785,6 +2785,39 @@ class $JournalEntriesTable extends JournalEntries
     type: DriftSqlType.string,
     requiredDuringInsert: false,
   );
+  static const VerificationMeta _audioPathMeta = const VerificationMeta(
+    'audioPath',
+  );
+  @override
+  late final GeneratedColumn<String> audioPath = GeneratedColumn<String>(
+    'audio_path',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _audioDurationMsMeta = const VerificationMeta(
+    'audioDurationMs',
+  );
+  @override
+  late final GeneratedColumn<int> audioDurationMs = GeneratedColumn<int>(
+    'audio_duration_ms',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _audioTranscriptMeta = const VerificationMeta(
+    'audioTranscript',
+  );
+  @override
+  late final GeneratedColumn<String> audioTranscript = GeneratedColumn<String>(
+    'audio_transcript',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -2798,6 +2831,9 @@ class $JournalEntriesTable extends JournalEntries
     title,
     body,
     tags,
+    audioPath,
+    audioDurationMs,
+    audioTranscript,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -2860,6 +2896,30 @@ class $JournalEntriesTable extends JournalEntries
         tags.isAcceptableOrUnknown(data['tags']!, _tagsMeta),
       );
     }
+    if (data.containsKey('audio_path')) {
+      context.handle(
+        _audioPathMeta,
+        audioPath.isAcceptableOrUnknown(data['audio_path']!, _audioPathMeta),
+      );
+    }
+    if (data.containsKey('audio_duration_ms')) {
+      context.handle(
+        _audioDurationMsMeta,
+        audioDurationMs.isAcceptableOrUnknown(
+          data['audio_duration_ms']!,
+          _audioDurationMsMeta,
+        ),
+      );
+    }
+    if (data.containsKey('audio_transcript')) {
+      context.handle(
+        _audioTranscriptMeta,
+        audioTranscript.isAcceptableOrUnknown(
+          data['audio_transcript']!,
+          _audioTranscriptMeta,
+        ),
+      );
+    }
     return context;
   }
 
@@ -2919,6 +2979,18 @@ class $JournalEntriesTable extends JournalEntries
         DriftSqlType.string,
         data['${effectivePrefix}tags'],
       ),
+      audioPath: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_path'],
+      ),
+      audioDurationMs: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}audio_duration_ms'],
+      ),
+      audioTranscript: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}audio_transcript'],
+      ),
     );
   }
 
@@ -2957,6 +3029,15 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
 
   /// JSON array string.
   final String? tags;
+
+  /// Path lokal file audio rekaman (.m4a).
+  final String? audioPath;
+
+  /// Durasi rekaman dalam milidetik.
+  final int? audioDurationMs;
+
+  /// Teks hasil transkripsi speech-to-text.
+  final String? audioTranscript;
   const JournalEntry({
     required this.id,
     required this.createdAt,
@@ -2969,6 +3050,9 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
     this.title,
     this.body,
     this.tags,
+    this.audioPath,
+    this.audioDurationMs,
+    this.audioTranscript,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -3006,6 +3090,15 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
     if (!nullToAbsent || tags != null) {
       map['tags'] = Variable<String>(tags);
     }
+    if (!nullToAbsent || audioPath != null) {
+      map['audio_path'] = Variable<String>(audioPath);
+    }
+    if (!nullToAbsent || audioDurationMs != null) {
+      map['audio_duration_ms'] = Variable<int>(audioDurationMs);
+    }
+    if (!nullToAbsent || audioTranscript != null) {
+      map['audio_transcript'] = Variable<String>(audioTranscript);
+    }
     return map;
   }
 
@@ -3028,6 +3121,15 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
           : Value(title),
       body: body == null && nullToAbsent ? const Value.absent() : Value(body),
       tags: tags == null && nullToAbsent ? const Value.absent() : Value(tags),
+      audioPath: audioPath == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioPath),
+      audioDurationMs: audioDurationMs == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioDurationMs),
+      audioTranscript: audioTranscript == null && nullToAbsent
+          ? const Value.absent()
+          : Value(audioTranscript),
     );
   }
 
@@ -3048,6 +3150,9 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
       title: serializer.fromJson<String?>(json['title']),
       body: serializer.fromJson<String?>(json['body']),
       tags: serializer.fromJson<String?>(json['tags']),
+      audioPath: serializer.fromJson<String?>(json['audioPath']),
+      audioDurationMs: serializer.fromJson<int?>(json['audioDurationMs']),
+      audioTranscript: serializer.fromJson<String?>(json['audioTranscript']),
     );
   }
   @override
@@ -3065,6 +3170,9 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
       'title': serializer.toJson<String?>(title),
       'body': serializer.toJson<String?>(body),
       'tags': serializer.toJson<String?>(tags),
+      'audioPath': serializer.toJson<String?>(audioPath),
+      'audioDurationMs': serializer.toJson<int?>(audioDurationMs),
+      'audioTranscript': serializer.toJson<String?>(audioTranscript),
     };
   }
 
@@ -3080,6 +3188,9 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
     Value<String?> title = const Value.absent(),
     Value<String?> body = const Value.absent(),
     Value<String?> tags = const Value.absent(),
+    Value<String?> audioPath = const Value.absent(),
+    Value<int?> audioDurationMs = const Value.absent(),
+    Value<String?> audioTranscript = const Value.absent(),
   }) => JournalEntry(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -3092,6 +3203,13 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
     title: title.present ? title.value : this.title,
     body: body.present ? body.value : this.body,
     tags: tags.present ? tags.value : this.tags,
+    audioPath: audioPath.present ? audioPath.value : this.audioPath,
+    audioDurationMs: audioDurationMs.present
+        ? audioDurationMs.value
+        : this.audioDurationMs,
+    audioTranscript: audioTranscript.present
+        ? audioTranscript.value
+        : this.audioTranscript,
   );
   JournalEntry copyWithCompanion(JournalEntriesCompanion data) {
     return JournalEntry(
@@ -3106,6 +3224,13 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
       title: data.title.present ? data.title.value : this.title,
       body: data.body.present ? data.body.value : this.body,
       tags: data.tags.present ? data.tags.value : this.tags,
+      audioPath: data.audioPath.present ? data.audioPath.value : this.audioPath,
+      audioDurationMs: data.audioDurationMs.present
+          ? data.audioDurationMs.value
+          : this.audioDurationMs,
+      audioTranscript: data.audioTranscript.present
+          ? data.audioTranscript.value
+          : this.audioTranscript,
     );
   }
 
@@ -3122,7 +3247,10 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
           ..write('mood: $mood, ')
           ..write('title: $title, ')
           ..write('body: $body, ')
-          ..write('tags: $tags')
+          ..write('tags: $tags, ')
+          ..write('audioPath: $audioPath, ')
+          ..write('audioDurationMs: $audioDurationMs, ')
+          ..write('audioTranscript: $audioTranscript')
           ..write(')'))
         .toString();
   }
@@ -3140,6 +3268,9 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
     title,
     body,
     tags,
+    audioPath,
+    audioDurationMs,
+    audioTranscript,
   );
   @override
   bool operator ==(Object other) =>
@@ -3155,7 +3286,10 @@ class JournalEntry extends DataClass implements Insertable<JournalEntry> {
           other.mood == this.mood &&
           other.title == this.title &&
           other.body == this.body &&
-          other.tags == this.tags);
+          other.tags == this.tags &&
+          other.audioPath == this.audioPath &&
+          other.audioDurationMs == this.audioDurationMs &&
+          other.audioTranscript == this.audioTranscript);
 }
 
 class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
@@ -3170,6 +3304,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
   final Value<String?> title;
   final Value<String?> body;
   final Value<String?> tags;
+  final Value<String?> audioPath;
+  final Value<int?> audioDurationMs;
+  final Value<String?> audioTranscript;
   final Value<int> rowid;
   const JournalEntriesCompanion({
     this.id = const Value.absent(),
@@ -3183,6 +3320,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
     this.title = const Value.absent(),
     this.body = const Value.absent(),
     this.tags = const Value.absent(),
+    this.audioPath = const Value.absent(),
+    this.audioDurationMs = const Value.absent(),
+    this.audioTranscript = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   JournalEntriesCompanion.insert({
@@ -3197,6 +3337,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
     this.title = const Value.absent(),
     this.body = const Value.absent(),
     this.tags = const Value.absent(),
+    this.audioPath = const Value.absent(),
+    this.audioDurationMs = const Value.absent(),
+    this.audioTranscript = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -3214,6 +3357,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
     Expression<String>? title,
     Expression<String>? body,
     Expression<String>? tags,
+    Expression<String>? audioPath,
+    Expression<int>? audioDurationMs,
+    Expression<String>? audioTranscript,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -3228,6 +3374,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
       if (title != null) 'title': title,
       if (body != null) 'body': body,
       if (tags != null) 'tags': tags,
+      if (audioPath != null) 'audio_path': audioPath,
+      if (audioDurationMs != null) 'audio_duration_ms': audioDurationMs,
+      if (audioTranscript != null) 'audio_transcript': audioTranscript,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -3244,6 +3393,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
     Value<String?>? title,
     Value<String?>? body,
     Value<String?>? tags,
+    Value<String?>? audioPath,
+    Value<int?>? audioDurationMs,
+    Value<String?>? audioTranscript,
     Value<int>? rowid,
   }) {
     return JournalEntriesCompanion(
@@ -3258,6 +3410,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
       title: title ?? this.title,
       body: body ?? this.body,
       tags: tags ?? this.tags,
+      audioPath: audioPath ?? this.audioPath,
+      audioDurationMs: audioDurationMs ?? this.audioDurationMs,
+      audioTranscript: audioTranscript ?? this.audioTranscript,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -3304,6 +3459,15 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
     if (tags.present) {
       map['tags'] = Variable<String>(tags.value);
     }
+    if (audioPath.present) {
+      map['audio_path'] = Variable<String>(audioPath.value);
+    }
+    if (audioDurationMs.present) {
+      map['audio_duration_ms'] = Variable<int>(audioDurationMs.value);
+    }
+    if (audioTranscript.present) {
+      map['audio_transcript'] = Variable<String>(audioTranscript.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -3324,6 +3488,9 @@ class JournalEntriesCompanion extends UpdateCompanion<JournalEntry> {
           ..write('title: $title, ')
           ..write('body: $body, ')
           ..write('tags: $tags, ')
+          ..write('audioPath: $audioPath, ')
+          ..write('audioDurationMs: $audioDurationMs, ')
+          ..write('audioTranscript: $audioTranscript, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6391,6 +6558,9 @@ typedef $$JournalEntriesTableCreateCompanionBuilder =
       Value<String?> title,
       Value<String?> body,
       Value<String?> tags,
+      Value<String?> audioPath,
+      Value<int?> audioDurationMs,
+      Value<String?> audioTranscript,
       Value<int> rowid,
     });
 typedef $$JournalEntriesTableUpdateCompanionBuilder =
@@ -6406,6 +6576,9 @@ typedef $$JournalEntriesTableUpdateCompanionBuilder =
       Value<String?> title,
       Value<String?> body,
       Value<String?> tags,
+      Value<String?> audioPath,
+      Value<int?> audioDurationMs,
+      Value<String?> audioTranscript,
       Value<int> rowid,
     });
 
@@ -6503,6 +6676,21 @@ class $$JournalEntriesTableFilterComposer
     builder: (column) => ColumnFilters(column),
   );
 
+  ColumnFilters<String> get audioPath => $composableBuilder(
+    column: $table.audioPath,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get audioDurationMs => $composableBuilder(
+    column: $table.audioDurationMs,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get audioTranscript => $composableBuilder(
+    column: $table.audioTranscript,
+    builder: (column) => ColumnFilters(column),
+  );
+
   Expression<bool> attachmentsRefs(
     Expression<bool> Function($$AttachmentsTableFilterComposer f) f,
   ) {
@@ -6592,6 +6780,21 @@ class $$JournalEntriesTableOrderingComposer
     column: $table.tags,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get audioPath => $composableBuilder(
+    column: $table.audioPath,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get audioDurationMs => $composableBuilder(
+    column: $table.audioDurationMs,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get audioTranscript => $composableBuilder(
+    column: $table.audioTranscript,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$JournalEntriesTableAnnotationComposer
@@ -6635,6 +6838,19 @@ class $$JournalEntriesTableAnnotationComposer
 
   GeneratedColumn<String> get tags =>
       $composableBuilder(column: $table.tags, builder: (column) => column);
+
+  GeneratedColumn<String> get audioPath =>
+      $composableBuilder(column: $table.audioPath, builder: (column) => column);
+
+  GeneratedColumn<int> get audioDurationMs => $composableBuilder(
+    column: $table.audioDurationMs,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get audioTranscript => $composableBuilder(
+    column: $table.audioTranscript,
+    builder: (column) => column,
+  );
 
   Expression<T> attachmentsRefs<T extends Object>(
     Expression<T> Function($$AttachmentsTableAnnotationComposer a) f,
@@ -6703,6 +6919,9 @@ class $$JournalEntriesTableTableManager
                 Value<String?> title = const Value.absent(),
                 Value<String?> body = const Value.absent(),
                 Value<String?> tags = const Value.absent(),
+                Value<String?> audioPath = const Value.absent(),
+                Value<int?> audioDurationMs = const Value.absent(),
+                Value<String?> audioTranscript = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => JournalEntriesCompanion(
                 id: id,
@@ -6716,6 +6935,9 @@ class $$JournalEntriesTableTableManager
                 title: title,
                 body: body,
                 tags: tags,
+                audioPath: audioPath,
+                audioDurationMs: audioDurationMs,
+                audioTranscript: audioTranscript,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -6731,6 +6953,9 @@ class $$JournalEntriesTableTableManager
                 Value<String?> title = const Value.absent(),
                 Value<String?> body = const Value.absent(),
                 Value<String?> tags = const Value.absent(),
+                Value<String?> audioPath = const Value.absent(),
+                Value<int?> audioDurationMs = const Value.absent(),
+                Value<String?> audioTranscript = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => JournalEntriesCompanion.insert(
                 id: id,
@@ -6744,6 +6969,9 @@ class $$JournalEntriesTableTableManager
                 title: title,
                 body: body,
                 tags: tags,
+                audioPath: audioPath,
+                audioDurationMs: audioDurationMs,
+                audioTranscript: audioTranscript,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

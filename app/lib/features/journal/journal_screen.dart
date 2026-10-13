@@ -50,14 +50,14 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
       error: (e, _) => Center(child: Text('$e')),
       data: (entries) {
         // Kelompokkan per tanggal (sudah terurut terbaru dulu), lalu urutkan
-        // entri di dalam hari berdasarkan jam.
+        // entri di dalam hari berdasarkan jam terbaru dulu (descending).
         final groups = <String, List<JournalEntry>>{};
         for (final e in entries) {
           if (_selected != null && e.entryDate != _selected) continue;
           groups.putIfAbsent(e.entryDate, () => []).add(e);
         }
         for (final list in groups.values) {
-          list.sort((a, b) => entrySortKey(a).compareTo(entrySortKey(b)));
+          list.sort((a, b) => entrySortKey(b).compareTo(entrySortKey(a)));
         }
 
         return ListView(
