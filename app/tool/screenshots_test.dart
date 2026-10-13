@@ -19,6 +19,7 @@ import 'package:djournal/data/sync/account_controller.dart';
 import 'package:djournal/features/journal/entry_form_screen.dart';
 import 'package:djournal/features/lock/lock_screen.dart';
 import 'package:djournal/features/money/categories_screen.dart';
+import 'package:djournal/features/money/wallets_screen.dart';
 import 'package:djournal/features/search/search_screen.dart';
 import 'package:djournal/features/shell/home_shell.dart';
 import 'package:djournal/l10n/app_localizations.dart';
@@ -176,11 +177,25 @@ Future<void> _buildDemoData() async {
   final entries = [
     (
       0,
+      '17:30',
+      5,
+      'Jalan sore di taman',
+      'Suara burung sore ini menenangkan sekali setelah seharian di depan laptop.',
+      ['santai', 'suara'],
+      'demo_voice.m4a',
+      42000,
+      'Suara burung sore ini menenangkan sekali setelah seharian di depan laptop.',
+    ),
+    (
+      0,
       '07:10',
       4,
       'Pagi yang tenang',
       'Bangun lebih awal, sempat jalan kaki sebentar sebelum kerja. Udara masih sejuk.',
       ['pagi', 'olahraga'],
+      null,
+      null,
+      null,
     ),
     (
       0,
@@ -189,6 +204,9 @@ Future<void> _buildDemoData() async {
       'Rapat panjang',
       'Capek, tapi rilis minggu ini akhirnya jalan. Besok mau tidur lebih cepat.',
       ['kerja'],
+      null,
+      null,
+      null,
     ),
     (
       1,
@@ -197,6 +215,9 @@ Future<void> _buildDemoData() async {
       'Masak bareng keluarga',
       'Coba resep soto ayam dari Ibu. Habis dalam sekejap!',
       ['keluarga'],
+      null,
+      null,
+      null,
     ),
     (
       2,
@@ -205,6 +226,9 @@ Future<void> _buildDemoData() async {
       'Nonton film',
       'Filmnya seru, popcorn-nya kemahalan.',
       <String>[],
+      null,
+      null,
+      null,
     ),
     (
       4,
@@ -213,9 +237,22 @@ Future<void> _buildDemoData() async {
       'Kurang tidur',
       'Begadang menyelesaikan tugas, seharian jadi lemas.',
       <String>[],
+      null,
+      null,
+      null,
     ),
   ];
-  for (final (daysAgo, time, mood, title, body, tags) in entries) {
+  for (final (
+        daysAgo,
+        time,
+        mood,
+        title,
+        body,
+        tags,
+        audioPath,
+        audioDurationMs,
+        audioTranscript
+      ) in entries) {
     await journal.saveEntry(
       entryDate: day(daysAgo),
       entryTime: time,
@@ -223,6 +260,9 @@ Future<void> _buildDemoData() async {
       title: title,
       body: body,
       tags: tags,
+      audioPath: audioPath,
+      audioDurationMs: audioDurationMs,
+      audioTranscript: audioTranscript,
     );
   }
 
@@ -279,6 +319,7 @@ void main() {
     WidgetTester tester,
     Widget home, {
     Brightness brightness = Brightness.light,
+    SettingsRepository? settings,
   }) async {
     tester.view.physicalSize = _size * _pixelRatio;
     tester.view.devicePixelRatio = _pixelRatio;
@@ -291,7 +332,7 @@ void main() {
           accountProvider.overrideWith(_FakeAccount.new),
           lockProvider.overrideWith(_FakeLock.new),
           homeWidgetSyncProvider.overrideWithValue(null),
-          settingsRepositoryProvider.overrideWithValue(_FakeSettings()),
+          settingsRepositoryProvider.overrideWithValue(settings ?? _FakeSettings()),
         ],
         child: RepaintBoundary(
           key: shotKey,
@@ -344,8 +385,9 @@ void main() {
       await shoot(tester, 'hari-ini');
       await tapDock(tester, 'Jurnal');
       await shoot(tester, 'jurnal');
-      await tester.tap(find.text('Masak bareng keluarga'));
+      await tester.tap(find.text('Jalan sore di taman'));
       await settle(tester);
+      await shoot(tester, 'catatan-suara');
       await shoot(tester, 'tulis-jurnal');
       Navigator.of(tester.element(find.byType(EntryFormScreen))).pop();
       await settle(tester);
@@ -388,6 +430,23 @@ void main() {
     await withShadows(() async {
       await pushOverHome(tester, const CategoriesScreen());
       await shoot(tester, 'kelola-kategori');
+    });
+  });
+
+  testWidgets('kelola dompet', (tester) async {
+    await withShadows(() async {
+      await pushOverHome(tester, const WalletsScreen());
+      await shoot(tester, 'kelola-dompet');
+    });
+  });
+
+  testWidgets('mode privasi', (tester) async {
+    await withShadows(() async {
+      final settings = _FakeSettings();
+      await settings.set('hide_amounts', 'true');
+      await pumpApp(tester, const HomeShell(), settings: settings);
+      await tapDock(tester, 'Keuangan');
+      await shoot(tester, 'mode-privasi');
     });
   });
 

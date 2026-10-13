@@ -20,6 +20,11 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
     <td align="center"><img src="docs/screenshots/cari.png" width="240" alt="Pencarian &quot;makan&quot;: transaksi yang cocok dikelompokkan per hari, kata yang cocok disorot"><br><b>Pencarian</b></td>
     <td align="center"><img src="docs/screenshots/kelola-kategori.png" width="240" alt="Kelola kategori: daftar kategori pengeluaran dengan pegangan geser, jumlah transaksi, dan budget"><br><b>Kelola kategori</b></td>
   </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/catatan-suara.png" width="240" alt="Form entri jurnal dengan pemutar rekaman suara dan transkripsi"><br><b>Catatan suara</b></td>
+    <td align="center"><img src="docs/screenshots/mode-privasi.png" width="240" alt="Layar Keuangan saat mode privasi aktif: semua nominal uang disembunyikan"><br><b>Mode privasi</b></td>
+    <td align="center"><img src="docs/screenshots/kelola-dompet.png" width="240" alt="Layar Kelola Dompet: daftar dompet aktif dan arsip"><br><b>Kelola dompet</b></td>
+  </tr>
 </table>
 
 <sub>Screenshot memakai data contoh dan dibuat otomatis dengan <code>flutter test tool/screenshots_test.dart</code>.</sub>

@@ -29,7 +29,7 @@ class VoicePlayerCard extends StatefulWidget {
 }
 
 class _VoicePlayerCardState extends State<VoicePlayerCard> {
-  late final AudioPlayer _player;
+  AudioPlayer? _player;
   bool _isPlaying = false;
   Duration _position = Duration.zero;
   Duration _duration = Duration.zero;
@@ -40,11 +40,19 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
   @override
   void initState() {
     super.initState();
-    _player = AudioPlayer();
+    if (!widget.audioPath.startsWith('demo')) {
+      _player = AudioPlayer();
+    }
     _initPlayer();
   }
 
   Future<void> _initPlayer() async {
+    if (widget.audioPath.startsWith('demo')) {
+      _duration = Duration(milliseconds: widget.durationMs ?? 42000);
+      _position = Duration(milliseconds: (widget.durationMs ?? 42000) ~/ 3);
+      if (mounted) setState(() => _isLoaded = true);
+      return;
+    }
     try {
       final file = File(widget.audioPath);
       if (!await file.exists()) {
@@ -52,32 +60,32 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
         return;
       }
 
-      final d = await _player.setFilePath(widget.audioPath);
+      final d = await _player!.setFilePath(widget.audioPath);
       if (d != null) {
         _duration = d;
       } else if (widget.durationMs != null) {
         _duration = Duration(milliseconds: widget.durationMs!);
       }
 
-      _player.playerStateStream.listen((state) {
+      _player!.playerStateStream.listen((state) {
         if (!mounted) return;
         setState(() {
           _isPlaying = state.playing &&
               state.processingState != ProcessingState.completed;
           if (state.processingState == ProcessingState.completed) {
             _position = Duration.zero;
-            _player.pause();
-            _player.seek(Duration.zero);
+            _player!.pause();
+            _player!.seek(Duration.zero);
           }
         });
       });
 
-      _player.positionStream.listen((pos) {
+      _player!.positionStream.listen((pos) {
         if (!mounted) return;
         setState(() => _position = pos);
       });
 
-      _player.durationStream.listen((dur) {
+      _player!.durationStream.listen((dur) {
         if (!mounted || dur == null) return;
         setState(() => _duration = dur);
       });
@@ -91,16 +99,20 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
 
   @override
   void dispose() {
-    _player.dispose();
+    _player?.dispose();
     super.dispose();
   }
 
   void _togglePlay() {
     if (!_isLoaded || _hasError) return;
+    if (_player == null) {
+      setState(() => _isPlaying = !_isPlaying);
+      return;
+    }
     if (_isPlaying) {
-      _player.pause();
+      _player!.pause();
     } else {
-      _player.play();
+      _player!.play();
     }
   }
 
@@ -111,13 +123,17 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
       _ => 1.0,
     };
     setState(() => _speed = next);
-    _player.setSpeed(next);
+    _player?.setSpeed(next);
   }
 
   void _seek(double ratio) {
     if (_duration == Duration.zero) return;
     final targetMs = (_duration.inMilliseconds * ratio).round();
-    _player.seek(Duration(milliseconds: targetMs));
+    if (_player == null) {
+      setState(() => _position = Duration(milliseconds: targetMs));
+      return;
+    }
+    _player!.seek(Duration(milliseconds: targetMs));
   }
 
   String _formatDuration(Duration d) {
