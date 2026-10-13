@@ -482,6 +482,60 @@ abstract class AppLocalizations {
   /// **'Selalu gelap, apa pun pengaturan HP. Widget layar utama ikut juga.'**
   String get themeDarkHint;
 
+  /// No description provided for @accentTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna aksen'**
+  String get accentTitle;
+
+  /// No description provided for @accentHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Dipakai untuk tombol, ikon aktif, dan kartu Total saldo. Berlaku di mode terang dan gelap.'**
+  String get accentHint;
+
+  /// No description provided for @accentSage.
+  ///
+  /// In id, this message translates to:
+  /// **'Hijau sage'**
+  String get accentSage;
+
+  /// No description provided for @accentOcean.
+  ///
+  /// In id, this message translates to:
+  /// **'Biru laut'**
+  String get accentOcean;
+
+  /// No description provided for @accentViolet.
+  ///
+  /// In id, this message translates to:
+  /// **'Ungu'**
+  String get accentViolet;
+
+  /// No description provided for @accentRose.
+  ///
+  /// In id, this message translates to:
+  /// **'Mawar'**
+  String get accentRose;
+
+  /// No description provided for @accentPink.
+  ///
+  /// In id, this message translates to:
+  /// **'Pink'**
+  String get accentPink;
+
+  /// No description provided for @accentAmber.
+  ///
+  /// In id, this message translates to:
+  /// **'Amber'**
+  String get accentAmber;
+
+  /// No description provided for @accentTeal.
+  ///
+  /// In id, this message translates to:
+  /// **'Teal'**
+  String get accentTeal;
+
   /// No description provided for @currency.
   ///
   /// In id, this message translates to:

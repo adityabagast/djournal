@@ -166,7 +166,7 @@ class _SplashOverlayState extends ConsumerState<SplashOverlay>
   Widget _frame(BuildContext context, Widget? _) {
     final font = Theme.of(context).textTheme.bodyMedium?.fontFamily;
     final c = context.colors;
-    final accent = c.isDark ? c.primary : AppColors.hero;
+    final accent = c.isDark ? c.primary : c.hero;
     return Opacity(
       opacity: _exitOpacity.value,
       // Material, bukan ColoredBox: overlay ada di atas Navigator, jadi

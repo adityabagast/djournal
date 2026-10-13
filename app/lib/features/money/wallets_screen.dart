@@ -196,7 +196,7 @@ class _WalletRow extends StatelessWidget {
     final t = Theme.of(context).textTheme;
     final balance = snapshot.balanceOf(wallet.id);
     final (icon, raw) = switch (wallet.type) {
-      'cash' => (Icons.payments_outlined, AppColors.hero),
+      'cash' => (Icons.payments_outlined, context.colors.hero),
       'ewallet' => (Icons.phone_iphone, const Color(0xFF6B2C7A)),
       'bank' => (Icons.account_balance_outlined, const Color(0xFF1E4E79)),
       _ => (Icons.account_balance_wallet_outlined, const Color(0xFF4A4E4C)),

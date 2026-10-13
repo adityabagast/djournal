@@ -197,7 +197,7 @@ class _BalanceCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.12),
+          color: context.colors.onHero.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
@@ -205,14 +205,14 @@ class _BalanceCard extends StatelessWidget {
           children: [
             Text(
               label,
-              style: t.bodySmall?.copyWith(color: AppColors.onHeroMuted),
+              style: t.bodySmall?.copyWith(color: context.colors.onHeroMuted),
             ),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
                 rupiah(value),
                 style: t.bodyMedium?.copyWith(
-                  color: Colors.white,
+                  color: context.colors.onHero,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -225,7 +225,7 @@ class _BalanceCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: AppColors.hero,
+        color: context.colors.hero,
         borderRadius: BorderRadius.circular(20),
       ),
       child: Column(
@@ -233,14 +233,14 @@ class _BalanceCard extends StatelessWidget {
         children: [
           Text(
             l.totalBalance,
-            style: t.bodySmall?.copyWith(color: AppColors.onHeroMuted),
+            style: t.bodySmall?.copyWith(color: context.colors.onHeroMuted),
           ),
           FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               '${total < 0 ? '−' : ''}${rupiah(total)}',
               style: t.headlineMedium?.copyWith(
-                color: Colors.white,
+                color: context.colors.onHero,
                 fontWeight: FontWeight.w700,
                 fontSize: 30,
               ),

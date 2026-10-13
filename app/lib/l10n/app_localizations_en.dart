@@ -212,6 +212,34 @@ class AppLocalizationsEn extends AppLocalizations {
       'Always dark, whatever your phone\'s setting. Home screen widgets follow too.';
 
   @override
+  String get accentTitle => 'Accent color';
+
+  @override
+  String get accentHint =>
+      'Used for buttons, active icons, and the Total balance card, in both light and dark mode.';
+
+  @override
+  String get accentSage => 'Sage green';
+
+  @override
+  String get accentOcean => 'Ocean blue';
+
+  @override
+  String get accentViolet => 'Violet';
+
+  @override
+  String get accentRose => 'Rose';
+
+  @override
+  String get accentPink => 'Pink';
+
+  @override
+  String get accentAmber => 'Amber';
+
+  @override
+  String get accentTeal => 'Teal';
+
+  @override
   String get currency => 'Currency';
 
   @override

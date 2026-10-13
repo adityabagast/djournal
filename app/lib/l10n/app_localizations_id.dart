@@ -212,6 +212,34 @@ class AppLocalizationsId extends AppLocalizations {
       'Selalu gelap, apa pun pengaturan HP. Widget layar utama ikut juga.';
 
   @override
+  String get accentTitle => 'Warna aksen';
+
+  @override
+  String get accentHint =>
+      'Dipakai untuk tombol, ikon aktif, dan kartu Total saldo. Berlaku di mode terang dan gelap.';
+
+  @override
+  String get accentSage => 'Hijau sage';
+
+  @override
+  String get accentOcean => 'Biru laut';
+
+  @override
+  String get accentViolet => 'Ungu';
+
+  @override
+  String get accentRose => 'Mawar';
+
+  @override
+  String get accentPink => 'Pink';
+
+  @override
+  String get accentAmber => 'Amber';
+
+  @override
+  String get accentTeal => 'Teal';
+
+  @override
   String get currency => 'Mata uang';
 
   @override

@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyawtat · Prototype Warna Aksen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== Kanvas halaman (desain, bukan bagian app) ===== */
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', system-ui, sans-serif;
+    background:
+      radial-gradient(1200px 600px at 20% -10%, #f3f1ec 0%, transparent 60%),
+      radial-gradient(1000px 500px at 110% 110%, #e6e9e4 0%, transparent 55%),
+      #ebe9e4;
+    color: #1b1f1d;
+    min-height: 100vh;
+    padding: 40px 24px 64px;
+  }
+  header { max-width: 1180px; margin: 0 auto 28px; }
+  header .kicker {
+    display: inline-block; font-size: 12px; font-weight: 600; letter-spacing: .08em;
+    text-transform: uppercase; color: #1f5f4e; background: rgba(31,95,78,.10);
+    padding: 6px 12px; border-radius: 999px; margin-bottom: 12px;
+  }
+  header h1 { font-size: 30px; font-weight: 700; letter-spacing: -.01em; }
+  header p { margin-top: 8px; color: #5c625f; font-size: 15px; max-width: 640px; }
+
+  main {
+    max-width: 1180px; margin: 0 auto;
+    display: flex; gap: 36px; flex-wrap: wrap; justify-content: center;
+    align-items: flex-start;
+  }
+
+  /* ===== Bodi ponsel: semua warna lewat CSS variable (mirror AppPalette) ===== */
+  .phone {
+    width: 390px; border-radius: 42px; padding: 10px;
+    background: #101413;
+    box-shadow: 0 30px 60px rgba(20, 26, 22, .28);
+    flex: 0 0 auto;
+  }
+  .screen {
+    border-radius: 34px; overflow: hidden;
+    background: var(--bg); color: var(--ink);
+    height: 812px; overflow-y: auto; position: relative;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+  .caption {
+    margin: 14px 6px 0; font-size: 13px; color: #5c625f; text-align: center;
+  }
+  .caption b { color: #1b1f1d; font-weight: 600; }
+
+  /* ===== Pengaturan › Tampilan (panel kontrol) ===== */
+  .pad { padding: 28px 20px 32px; }
+  .nav-row { display: flex; align-items: center; gap: 12px; margin-bottom: 18px; }
+  .icon-btn {
+    width: 40px; height: 40px; border-radius: 13px; border: 1px solid var(--line);
+    background: var(--surface); color: var(--ink);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .h-title { font-size: 22px; font-weight: 700; }
+  .section-title {
+    font-size: 13px; font-weight: 600; color: var(--muted);
+    margin: 22px 4px 10px;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 20px; padding: 14px;
+  }
+  .hint { font-size: 13px; color: var(--muted); margin: 8px 4px 0; line-height: 1.5; }
+
+  .modes { display: flex; gap: 10px; }
+  .mode-opt {
+    flex: 1; border: 1px solid var(--line); border-radius: 14px;
+    padding: 10px 4px 8px; cursor: pointer; background: transparent;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    transition: border-color .15s, background .15s;
+  }
+  .mode-opt.sel {
+    background: var(--primary-soft);
+    border: 2px solid var(--primary);
+    padding: 9px 3px 7px;
+  }
+  .radio {
+    width: 16px; height: 16px; border-radius: 50%;
+    border: 2px solid var(--muted);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .mode-opt.sel .radio { border-color: var(--primary); }
+  .radio .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--primary); display: none; }
+  .mode-opt.sel .radio .dot { display: block; }
+  .mode-label { font-size: 13px; font-weight: 600; }
+
+  /* Gambar mini layar (mirror _MiniScreen) */
+  .mini {
+    width: 64px; height: 92px; border-radius: 12px; overflow: hidden;
+    border: 1px solid var(--line); display: flex;
+  }
+  .mini .half { flex: 1; padding: 8px 0 0 7px; display: flex; flex-direction: column; gap: 5px; }
+  .mini .bar  { height: 5px; width: 22px; border-radius: 3px; background: var(--m-ink); }
+  .mini .blk  { height: 16px; border-radius: 5px; background: var(--m-surface); margin-right: 7px; }
+  .mini .blk.tall { height: 24px; }
+  .mini .half.l { --m-bg: #f6f5f1; --m-ink: #1b1f1d; --m-surface: #ffffff; background: var(--m-bg); }
+  .mini .half.d { --m-bg: #111513; --m-ink: #f1f4ef; --m-surface: #171d1a; background: var(--m-bg); padding-left: 0; }
+  .mini.split .half.l .blk { margin-right: 0; }
+
+  /* ===== Picker warna aksen (mirror _AccentOption) ===== */
+  .swatches { display: flex; flex-wrap: wrap; gap: 12px 8px; }
+  .swatch {
+    width: 88px; padding: 2px; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .swatch .ring {
+    width: 40px; height: 40px; border-radius: 50%; padding: 3px;
+    border: 2px solid var(--line);
+    display: flex; align-items: center; justify-content: center;
+    transition: border-color .15s;
+  }
+  .swatch.sel .ring { border-color: var(--primary); }
+  .swatch .fill {
+    width: 100%; height: 100%; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .swatch .fill svg { display: none; }
+  .swatch.sel .fill svg { display: block; }
+  .swatch .name {
+    font-size: 12px; font-weight: 500; text-align: center;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 84px;
+  }
+  .swatch.sel .name { font-weight: 600; }
+
+  /* ===== Preview: layar "Hari Ini" (mirror home_shell/home_screen) ===== */
+  .home { padding: 26px 20px 120px; }
+  .home-top { display: flex; justify-content: space-between; align-items: flex-start; }
+  .home-date { font-size: 13px; color: var(--muted); }
+  .home-title { font-size: 28px; font-weight: 700; letter-spacing: -.01em; }
+  .home-actions { display: flex; gap: 10px; }
+  .home-actions .icon-btn { box-shadow: 0 6px 16px rgba(15, 25, 18, .07); border: none; }
+
+  .stat-card {
+    margin-top: 18px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 20px; padding: 18px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .stat-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .stat-label { font-size: 13px; color: var(--muted); }
+  .stat-value { font-size: 26px; font-weight: 700; letter-spacing: -.01em; }
+  .btn-primary {
+    background: var(--primary); color: var(--on-primary);
+    font-size: 15px; font-weight: 600; border: none;
+    padding: 12px 22px; border-radius: 14px; cursor: pointer;
+    font-family: inherit;
+  }
+  .progress { height: 8px; border-radius: 4px; background: var(--track); overflow: hidden; }
+  .progress i { display: block; height: 100%; width: 25%; border-radius: 4px; background: var(--primary); }
+  .stat-note { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  .timeline-card {
+    margin-top: 16px; background: var(--surface); border: 1px solid var(--line);
+    border-radius: 20px; padding: 18px 16px 6px;
+  }
+  .tl-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .tl-title { font-size: 16px; font-weight: 700; }
+  .chip-btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--primary-soft); color: var(--on-primary-soft);
+    border: none; border-radius: 13px; padding: 10px 16px;
+    font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .tl-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 13px 0; border-bottom: 1px solid var(--line);
+  }
+  .tl-row:last-child { border-bottom: none; }
+  .tl-time { font-size: 12px; font-weight: 700; color: var(--muted); width: 38px; flex: 0 0 auto; }
+  .tl-icon {
+    width: 40px; height: 40px; border-radius: 12px; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; font-weight: 700;
+  }
+  .tl-icon.j { background: rgba(31, 95, 78, .13); color: #1f5f4e; }
+  :root[data-theme="dark"] .tl-icon.j { background: rgba(124, 199, 168, .16); color: #7cc7a8; }
+  .tl-icon.m { background: color-mix(in srgb, var(--expense) 14%, transparent); color: var(--expense); }
+  .tl-icon.t { background: color-mix(in srgb, var(--muted) 16%, transparent); color: var(--muted); }
+  .tl-body { flex: 1; min-width: 0; }
+  .tl-name { font-size: 15px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tl-sub  { font-size: 13px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .tl-amt  { font-size: 15px; font-weight: 700; white-space: nowrap; }
+  .tl-amt.neg { color: var(--expense); }
+
+  /* Bottom nav melayang (mirror home_shell) */
+  .bottom-nav {
+    position: absolute; left: 16px; right: 16px; bottom: 18px;
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 26px; padding: 10px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 14px 32px rgba(10, 18, 12, .18);
+  }
+  .nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 600; color: var(--muted);
+    padding: 6px 12px; border-radius: 14px;
+  }
+  .nav-item.sel { background: var(--primary-soft); color: var(--on-primary-soft); }
+  .nav-add {
+    width: 56px; height: 56px; border-radius: 18px;
+    background: var(--primary); color: var(--on-primary);
+    display: flex; align-items: center; justify-content: center;
+    margin: -22px 4px;
+    box-shadow: 0 10px 22px color-mix(in srgb, var(--primary) 45%, transparent);
+  }
+
+  /* ===== Strip token (turunan warna yang dipakai) ===== */
+  .tokens {
+    max-width: 1180px; margin: 34px auto 0;
+    background: rgba(255, 255, 255, .6); border: 1px solid rgba(27, 31, 29, .08);
+    border-radius: 18px; padding: 14px 18px;
+    display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center;
+    font-size: 12px; color: #5c625f;
+  }
+  .tokens b { color: #1b1f1d; font-weight: 600; }
+  .tok { display: inline-flex; align-items: center; gap: 7px; }
+  .tok i {
+    width: 14px; height: 14px; border-radius: 4px; display: inline-block;
+    border: 1px solid rgba(27, 31, 29, .15);
+  }
+  .tok code {
+    font-family: ui-monospace, Consolas, monospace; font-size: 11px;
+    color: #1b1f1d;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="kicker">Prototype · interaktif</span>
+  <h1>Warna aksen &amp; mode gelap</h1>
+  <p>Pengaturan › Tampilan. Pilih mode dan warna aksen di ponsel kiri —
+     ponsel kanan (layar <b>Hari Ini</b>) mengikuti secara langsung, persis
+     perilaku yang diimplementasikan di app Flutter.</p>
+</header>
+
+<main>
+  <!-- ===== Ponsel 1: Pengaturan › Tampilan ===== -->
+  <div>
+    <div class="phone">
+      <div class="screen">
+        <div class="pad">
+          <div class="nav-row">
+            <div class="icon-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            </div>
+            <div class="h-title">Tampilan</div>
+          </div>
+
+          <div class="section-title">Mode tema</div>
+          <div class="card">
+            <div class="modes" id="modes">
+              <button class="mode-opt" data-mode="system">
+                <div class="mini split">
+                  <div class="half l"><div class="bar"></div><div class="blk"></div><div class="blk tall"></div></div>
+                  <div class="half d"><div class="blk"></div><div class="blk tall"></div></div>
+                </div>
+                <div class="radio"><div class="dot"></div></div>
+                <div class="mode-label">Sistem</div>
+              </button>
+              <button class="mode-opt" data-mode="light">
+                <div class="mini"><div class="half l"><div class="bar"></div><div class="blk"></div><div class="blk tall"></div></div></div>
+                <div class="radio"><div class="dot"></div></div>
+                <div class="mode-label">Terang</div>
+              </button>
+              <button class="mode-opt" data-mode="dark">
+                <div class="mini"><div class="half d" style="padding-left:7px"><div class="bar"></div><div class="blk"></div><div class="blk tall"></div></div></div>
+                <div class="radio"><div class="dot"></div></div>
+                <div class="mode-label">Gelap</div>
+              </button>
+            </div>
+          </div>
+          <p class="hint" id="modeHint"></p>
+
+          <div class="section-title">Warna aksen</div>
+          <div class="card">
+            <div class="swatches" id="swatches"></div>
+          </div>
+          <p class="hint">Dipakai untuk tombol, ikon aktif, dan kartu Total saldo.
+            Berlaku di mode terang dan gelap.</p>
+        </div>
+      </div>
+    </div>
+    <p class="caption"><b>Ponsel kiri</b> — Pengaturan › Tampilan (panel kontrol prototype)</p>
+  </div>
+
+  <!-- ===== Ponsel 2: preview layar Hari Ini ===== -->
+  <div>
+    <div class="phone">
+      <div class="screen">
+        <div class="home">
+          <div class="home-top">
+            <div>
+              <div class="home-date">Minggu, 11 Oktober 2026</div>
+              <div class="home-title">Hari Ini</div>
+            </div>
+            <div class="home-actions">
+              <div class="icon-btn">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              </div>
+              <div class="icon-btn">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h11M4 17h7"/><circle cx="18" cy="7" r="2.4"/><circle cx="14" cy="17" r="2.4"/></svg>
+              </div>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-head">
+              <div>
+                <div class="stat-label">Pengeluaran hari ini</div>
+                <div class="stat-value">Rp 85.000</div>
+              </div>
+              <button class="btn-primary">Catat</button>
+            </div>
+            <div class="progress"><i></i></div>
+            <div class="stat-note">Budget Oktober terpakai 25% · sisa Rp 3.133.000</div>
+          </div>
+
+          <div class="timeline-card">
+            <div class="tl-head">
+              <div class="tl-title">Timeline hari ini</div>
+              <button class="chip-btn">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+                Tulis
+              </button>
+            </div>
+
+            <div class="tl-row">
+              <div class="tl-time">07:10</div>
+              <div class="tl-icon j">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 016.5 3H12v18H6.5A2.5 2.5 0 014 18.5z"/><path d="M20 5.5A2.5 2.5 0 0017.5 3H12v18h5.5A2.5 2.5 0 0020 18.5z"/></svg>
+              </div>
+              <div class="tl-body">
+                <div class="tl-name">Pagi yang tenang</div>
+                <div class="tl-sub">Baik · Bangun lebih awal, sempat …</div>
+              </div>
+            </div>
+
+            <div class="tl-row">
+              <div class="tl-time">07:30</div>
+              <div class="tl-icon m">M</div>
+              <div class="tl-body">
+                <div class="tl-name">Kopi susu</div>
+                <div class="tl-sub">Makan · GoPay</div>
+              </div>
+              <div class="tl-amt neg">-Rp 25.000</div>
+            </div>
+
+            <div class="tl-row">
+              <div class="tl-time">08:00</div>
+              <div class="tl-icon t">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg>
+              </div>
+              <div class="tl-body">
+                <div class="tl-name">Tarik tunai</div>
+                <div class="tl-sub">BCA → Tunai</div>
+              </div>
+              <div class="tl-amt">Rp 300.000</div>
+            </div>
+
+            <div class="tl-row">
+              <div class="tl-time">12:15</div>
+              <div class="tl-icon m">M</div>
+              <div class="tl-body">
+                <div class="tl-name">Makan siang</div>
+                <div class="tl-sub">Makan · Tunai</div>
+              </div>
+              <div class="tl-amt neg">-Rp 38.000</div>
+            </div>
+
+            <div class="tl-row">
+              <div class="tl-time">18:20</div>
+              <div class="tl-icon t">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 7h12l-3-3M17 17H5l3 3"/></svg>
+              </div>
+              <div class="tl-body">
+                <div class="tl-name">Ojek pulang</div>
+                <div class="tl-sub">Transport · GoPay</div>
+              </div>
+              <div class="tl-amt neg">-Rp 22.000</div>
+            </div>
+
+            <div class="tl-row">
+              <div class="tl-time">21:30</div>
+              <div class="tl-icon j">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 016.5 3H12v18H6.5A2.5 2.5 0 014 18.5z"/><path d="M20 5.5A2.5 2.5 0 0017.5 3H12v18h5.5A2.5 2.5 0 0020 18.5z"/></svg>
+              </div>
+              <div class="tl-body">
+                <div class="tl-name">Rapat panjang</div>
+                <div class="tl-sub">Biasa · Capek, tapi rilis minggu ini…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bottom-nav">
+          <div class="nav-item sel">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg>
+            Hari Ini
+          </div>
+          <div class="nav-item">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 016.5 3H12v18H6.5A2.5 2.5 0 014 18.5z"/><path d="M20 5.5A2.5 2.5 0 0017.5 3H12v18h5.5A2.5 2.5 0 0020 18.5z"/></svg>
+            Jurnal
+          </div>
+          <div class="nav-add">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          </div>
+          <div class="nav-item">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12h3"/></svg>
+            Keuangan
+          </div>
+          <div class="nav-item">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            Laporan
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="caption"><b>Ponsel kanan</b> — layar Hari Ini, warnanya mengikuti pilihan</p>
+  </div>
+</main>
+
+<div class="tokens" id="tokens"></div>
+
+<script>
+// ====== Math warna (mirror AppPalette.withAccent di app/lib/core/theme.dart) ======
+const hexToRgb = (hex) => {
+  const n = parseInt(hex.replace('#', ''), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+};
+const toHex = (r, g, b) =>
+  '#' + [r, g, b].map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
+
+function rgbToHsl(r, g, b) {
+  r /= 255; g /= 255; b /= 255;
+  const max = Math.max(r, g, b), min = Math.min(r, g, b);
+  const l = (max + min) / 2;
+  let h = 0, s = 0;
+  const d = max - min;
+  if (d !== 0) {
+    s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+    if (max === r) h = ((g - b) / d + (g < b ? 6 : 0));
+    else if (max === g) h = (b - r) / d + 2;
+    else h = (r - g) / d + 4;
+    h *= 60;
+  }
+  return [h, s, l];
+}
+function hslToHex(h, s, l) {
+  const c = (1 - Math.abs(2 * l - 1)) * s;
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1));
+  const m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+  if (h < 60) [r, g, b] = [c, x, 0];
+  else if (h < 120) [r, g, b] = [x, c, 0];
+  else if (h < 180) [r, g, b] = [0, c, x];
+  else if (h < 240) [r, g, b] = [0, x, c];
+  else if (h < 300) [r, g, b] = [x, 0, c];
+  else [r, g, b] = [c, 0, x];
+  return toHex((r + m) * 255, (g + m) * 255, (b + m) * 255);
+}
+const clamp = (v, lo, hi) => Math.min(Math.max(v, lo), hi);
+
+// Color.lerp: linear di ruang sRGB
+function lerpHex(a, b, t) {
+  const [r1, g1, b1] = hexToRgb(a), [r2, g2, b2] = hexToRgb(b);
+  return toHex(r1 + (r2 - r1) * t, g1 + (g2 - g1) * t, b1 + (b2 - b1) * t);
+}
+
+function relLum(hex) {
+  const f = (c) => {
+    c /= 255;
+    return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4);
+  };
+  const [r, g, b] = hexToRgb(hex);
+  return 0.2126 * f(r) + 0.7152 * f(g) + 0.0722 * f(b);
+}
+// readableOn(): pilih putih / tinta gelap berdasarkan rasio kontras
+function readableOn(bg) {
+  const l0 = relLum(bg);
+  const ct = (c) => {
+    const l1 = relLum(c);
+    const hi = Math.max(l0, l1), lo = Math.min(l0, l1);
+    return (hi + 0.05) / (lo + 0.05);
+  };
+  return ct('#ffffff') >= ct('#1b1f1d') ? '#ffffff' : '#1b1f1d';
+}
+
+// ====== Data (sinkron dengan theme.dart / app_settings 'accent_color') ======
+const NEUTRALS = {
+  light: {
+    bg: '#f6f5f1', surface: '#ffffff', ink: '#1b1f1d', muted: '#5c625f',
+    line: '#e8e5de', track: '#e5e2d9', expense: '#a3401c',
+  },
+  dark: {
+    bg: '#111513', surface: '#171d1a', ink: '#f1f4ef', muted: '#9ba59e',
+    line: '#273229', track: '#2a322c', expense: '#e58b6e',
+  },
+};
+const PRESETS = [
+  { id: 'sage',   name: 'Hijau sage', hex: '#1f5f4e' },
+  { id: 'ocean',  name: 'Biru laut',  hex: '#1d4e89' },
+  { id: 'violet', name: 'Ungu',       hex: '#5b3e9b' },
+  { id: 'rose',   name: 'Mawar',      hex: '#a83b62' },
+  { id: 'pink',   name: 'Pink',       hex: '#d8467e' },
+  { id: 'amber',  name: 'Amber',      hex: '#8a5a12' },
+  { id: 'teal',   name: 'Teal',       hex: '#116b72' },
+];
+const MODE_HINTS = {
+  system: 'Mengikuti mode gelap HP, otomatis berubah siang & malam.',
+  light: 'Selalu terang, apa pun pengaturan HP. Widget layar utama ikut juga.',
+  dark: 'Selalu gelap, apa pun pengaturan HP. Widget layar utama ikut juga.',
+};
+const state = { mode: 'system', accent: 'sage' };
+
+// ====== Turunan token aksen (mirror AppPalette.withAccent) ======
+function derive(base, isDark) {
+  const [h, s, l] = rgbToHsl(...hexToRgb(base));
+  const onHero = readableOn(base);
+  const onHeroMuted = lerpHex(onHero, base, 0.2);
+  if (!isDark) {
+    const primary = hslToHex(h, s, clamp(l, 0.22, 0.52));
+    return {
+      hero: base, onHero, onHeroMuted,
+      primary, onPrimary: readableOn(primary),
+      primarySoft: lerpHex(primary, '#ffffff', 0.86),
+      onPrimarySoft: base,
+    };
+  }
+  const sat = clamp(s, 0.3, 0.52);
+  const primary = hslToHex(h, sat, 0.64);
+  return {
+    hero: base, onHero, onHeroMuted,
+    primary,
+    onPrimary: hslToHex(h, s, 0.13),
+    primarySoft: lerpHex(primary, NEUTRALS.dark.surface, 0.78),
+    onPrimarySoft: hslToHex(h, sat, 0.76),
+  };
+}
+
+// ====== Render ======
+const root = document.documentElement;
+
+function resolvedMode() {
+  if (state.mode !== 'system') return state.mode;
+  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+}
+
+function buildSwatches() {
+  const wrap = document.getElementById('swatches');
+  wrap.innerHTML = PRESETS.map((p) => `
+    <div class="swatch" data-id="${p.id}" role="button" aria-label="${p.name}">
+      <div class="ring">
+        <div class="fill" style="background:${p.hex}">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="${readableOn(p.hex)}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+        </div>
+      </div>
+      <div class="name">${p.name}</div>
+    </div>`).join('');
+  wrap.querySelectorAll('.swatch').forEach((el) => {
+    el.addEventListener('click', () => {
+      state.accent = el.dataset.id;
+      apply();
+    });
+  });
+}
+
+function apply() {
+  const mode = resolvedMode();
+  const n = NEUTRALS[mode];
+  const preset = PRESETS.find((p) => p.id === state.accent);
+  const a = derive(preset.hex, mode === 'dark');
+  root.dataset.theme = mode;
+
+  const vars = { ...n, ...a };
+  for (const [k, v] of Object.entries(vars)) root.style.setProperty(`--${k.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase())}`, v);
+  root.style.setProperty('--on-primary-soft', a.onPrimarySoft);
+  root.style.setProperty('--primary-soft', a.primarySoft);
+  root.style.setProperty('--hero', a.hero);
+  root.style.setProperty('--on-hero', a.onHero);
+  root.style.setProperty('--on-hero-muted', a.onHeroMuted);
+
+  // Status pilihan
+  document.querySelectorAll('.mode-opt').forEach((el) =>
+    el.classList.toggle('sel', el.dataset.mode === state.mode));
+  document.querySelectorAll('.swatch').forEach((el) =>
+    el.classList.toggle('sel', el.dataset.id === state.accent));
+  document.getElementById('modeHint').textContent = MODE_HINTS[state.mode];
+
+  // Strip token
+  const tok = (label, color) =>
+    `<span class="tok"><i style="background:${color}"></i>${label} <code>${color}</code></span>`;
+  document.getElementById('tokens').innerHTML =
+    `<span><b>${preset.name}</b> · mode ${state.mode}${state.mode === 'system' ? ` → ${mode}` : ''}</span>` +
+    tok('hero', a.hero) + tok('primary', a.primary) +
+    tok('onPrimary', a.onPrimary) + tok('primarySoft', a.primarySoft) +
+    tok('onPrimarySoft', a.onPrimarySoft) +
+    `<span>diturunkan lewat <b>AppPalette.withAccent()</b> — sama persis dengan kode app</span>`;
+}
+
+document.querySelectorAll('.mode-opt').forEach((el) => {
+  el.addEventListener('click', () => {
+    state.mode = el.dataset.mode;
+    apply();
+  });
+});
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+  if (state.mode === 'system') apply();
+});
+
+buildSwatches();
+apply();
+</script>
+</body>
+</html>

@@ -17,6 +17,8 @@ class NyawtatApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final locale = ref.watch(localeProvider).value ?? const Locale('id');
     final themeMode = ref.watch(themeModeProvider).value ?? ThemeMode.system;
+    final accent =
+        AccentPresets.resolve(ref.watch(accentIdProvider).value);
     ref.listen(themeModeProvider, (_, next) {
       final mode = next.value;
       if (mode != null) _syncNativeNightMode(mode);
@@ -24,8 +26,8 @@ class NyawtatApp extends ConsumerWidget {
     return MaterialApp(
       title: 'Nyawtat',
       debugShowCheckedModeBanner: false,
-      theme: buildTheme(Brightness.light),
-      darkTheme: buildTheme(Brightness.dark),
+      theme: buildTheme(Brightness.light, accent: accent),
+      darkTheme: buildTheme(Brightness.dark, accent: accent),
       themeMode: themeMode,
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,

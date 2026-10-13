@@ -2,6 +2,9 @@
 
 ## Belum dirilis
 
+**Baru**
+- **Warna aksen** (prototipe): Pengaturan › Tampilan › Warna aksen — pilih dari tujuh warna (Hijau sage bawaan, Biru laut, Ungu, Mawar, Pink, Amber, Teal). Tombol, ikon aktif, kartu Total saldo, layar PIN, dan splash ikut berubah, di mode terang maupun gelap. Pilihan tersimpan di app_settings ('accent_color') dan pratinjaunya ada di docs/screenshots/accent-preview.png.
+
 ## 0.4.0 — 2026-10-11
 
 **Baru**

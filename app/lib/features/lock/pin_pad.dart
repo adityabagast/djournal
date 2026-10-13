@@ -67,15 +67,16 @@ class _PinPadState extends State<PinPad> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    const onDark = AppColors.onHeroMuted;
+    final onHero = context.colors.onHero;
+    final onDark = context.colors.onHeroMuted;
 
     Widget key(String digit) => _KeyButton(
       label: digit,
       onTap: widget.enabled ? () => _press(digit) : null,
       child: Text(
         digit,
-        style: const TextStyle(
-          color: Colors.white,
+        style: TextStyle(
+          color: onHero,
           fontSize: 26,
           fontWeight: FontWeight.w500,
         ),
@@ -83,7 +84,7 @@ class _PinPadState extends State<PinPad> {
     );
 
     return Material(
-      color: AppColors.hero,
+      color: context.colors.hero,
       child: SafeArea(
         child: LayoutBuilder(
           builder: (context, box) => SingleChildScrollView(
@@ -100,7 +101,7 @@ class _PinPadState extends State<PinPad> {
                           : IconButton(
                               tooltip: l.back,
                               onPressed: widget.onBack,
-                              color: Colors.white,
+                              color: onHero,
                               icon: const Icon(Icons.arrow_back),
                             ),
                     ),
@@ -115,8 +116,8 @@ class _PinPadState extends State<PinPad> {
                     Text(
                       widget.title,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: onHero,
                         fontSize: 28,
                         fontWeight: FontWeight.w600,
                       ),
@@ -125,7 +126,7 @@ class _PinPadState extends State<PinPad> {
                     Text(
                       widget.message,
                       textAlign: TextAlign.center,
-                      style: const TextStyle(color: onDark, fontSize: 15),
+                      style: TextStyle(color: onDark, fontSize: 15),
                     ),
                     const SizedBox(height: 28),
                     Semantics(
@@ -141,11 +142,11 @@ class _PinPadState extends State<PinPad> {
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.white,
+                                  color: onHero,
                                   width: 2,
                                 ),
                                 color: i < _pin.length
-                                    ? Colors.white
+                                    ? onHero
                                     : Colors.transparent,
                               ),
                             ),
@@ -193,9 +194,9 @@ class _PinPadState extends State<PinPad> {
                           label: l.deleteDigit,
                           filled: false,
                           onTap: _delete,
-                          child: const Icon(
+                          child: Icon(
                             Icons.backspace_outlined,
-                            color: Colors.white,
+                            color: onHero,
                             size: 26,
                           ),
                         ),
@@ -235,7 +236,7 @@ class _KeyButton extends StatelessWidget {
       excludeSemantics: true,
       child: Material(
         color: filled
-            ? Colors.white.withValues(alpha: 0.12)
+            ? context.colors.onHero.withValues(alpha: 0.12)
             : Colors.transparent,
         shape: const CircleBorder(),
         child: InkWell(
@@ -260,14 +261,14 @@ class PinFooterButton extends StatelessWidget {
     return TextButton(
       onPressed: onTap,
       style: TextButton.styleFrom(
-        foregroundColor: AppColors.onHeroMuted,
+        foregroundColor: context.colors.onHeroMuted,
         textStyle: buttonTextStyle(
           context,
-          const TextStyle(
+          TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w400,
             decoration: TextDecoration.underline,
-            decorationColor: AppColors.onHeroMuted,
+            decorationColor: context.colors.onHeroMuted,
           ),
         ),
       ),

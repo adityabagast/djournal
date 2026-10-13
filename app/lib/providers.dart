@@ -2,6 +2,7 @@ import 'package:flutter/material.dart' show ThemeMode;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import 'core/theme.dart';
 import 'data/db/app_database.dart';
 import 'data/journal_repository.dart';
 import 'data/money_repository.dart';
@@ -99,4 +100,13 @@ final localeProvider = StreamProvider<Locale>(
       .watch(settingsRepositoryProvider)
       .watch('language')
       .map((code) => Locale(code ?? 'id')),
+);
+
+/// Warna aksen pilihan di Pengaturan › Tampilan: id di [AccentPresets]
+/// ('sage' bawaan, atau '#RRGGBB' untuk warna kustom).
+final accentIdProvider = StreamProvider<String>(
+  (ref) => ref
+      .watch(settingsRepositoryProvider)
+      .watch('accent_color')
+      .map((v) => v ?? AccentPresets.sage.id),
 );
