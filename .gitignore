@@ -1,6 +1,9 @@
 # Pengaturan lokal Claude Code / editor per orang
 .claude/settings.local.json
 
+# Editor
+.vscode/
+
 # OS
 .DS_Store
 Thumbs.db

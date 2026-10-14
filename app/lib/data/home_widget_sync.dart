@@ -7,6 +7,7 @@ import 'package:home_widget/home_widget.dart';
 import 'package:intl/intl.dart';
 
 import '../core/format.dart';
+import '../core/platform/platform_info.dart';
 import '../l10n/app_localizations.dart';
 import '../providers.dart';
 import 'db/app_database.dart';
@@ -93,7 +94,7 @@ Map<String, String> buildHomeWidgetData({
 /// Menulis ulang data widget setiap data keuangan, jurnal, status PIN,
 /// bahasa, atau tema berubah. Hanya aktif di Android.
 final homeWidgetSyncProvider = Provider<void>((ref) {
-  if (kIsWeb || defaultTargetPlatform != TargetPlatform.android) return;
+  if (!PlatformInfo.isAndroid) return;
 
   Timer? debounce;
   Future<void> push() async {

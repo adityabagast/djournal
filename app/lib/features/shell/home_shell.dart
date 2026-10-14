@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
 
+import '../../core/platform/platform_info.dart';
 import '../../core/theme.dart';
 import '../../data/home_widget_sync.dart';
 import '../../data/sync/account_controller.dart';
@@ -42,7 +42,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     _lifecycle = AppLifecycleListener(
       onResume: () => ref.read(accountProvider.notifier).sync(),
     );
-    if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    if (PlatformInfo.isAndroid) {
       ref.read(homeWidgetSyncProvider);
       HomeWidget.initiallyLaunchedFromHomeWidget().then(_openFromWidget);
       _widgetClicks = HomeWidget.widgetClicked.listen(_openFromWidget);
@@ -196,17 +196,23 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             left: 16,
             right: 16,
             bottom: 16 + MediaQuery.paddingOf(context).bottom,
-            child: _Dock(
-              index: _index,
-              onSelect: _goTo,
-              onAdd: _openQuickAdd,
-              items: [
-                (Icons.home_outlined, l.navToday),
-                (Icons.menu_book_outlined, l.navJournal),
-                (Icons.account_balance_wallet_outlined, l.navMoney),
-                (Icons.bar_chart_rounded, l.navReport),
-              ],
-              addLabel: l.add,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(maxWidth: 520),
+                child: _Dock(
+                  index: _index,
+                  onSelect: _goTo,
+                  onAdd: _openQuickAdd,
+                  items: [
+                    (Icons.home_outlined, l.navToday),
+                    (Icons.menu_book_outlined, l.navJournal),
+                    (Icons.account_balance_wallet_outlined, l.navMoney),
+                    (Icons.bar_chart_rounded, l.navReport),
+                  ],
+                  addLabel: l.add,
+                ),
+              ),
             ),
           ),
         ],
