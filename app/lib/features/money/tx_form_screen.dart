@@ -199,6 +199,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
+    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     // Kategori aktif, plus kategori tersembunyi yang dipakai transaksi yang
     // sedang diedit supaya tetap terpilih.
     final current = snap.categoryById[widget.existing?.categoryId];
@@ -362,6 +363,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               balanceOf: (id) => _balanceExcludingThis(snap, id),
               amount: parseAmount(_amount.text),
               label: label,
+              hideAmounts: hideAmounts,
               onFrom: (id) => setState(() {
                 if (id == _toWalletId) _toWalletId = _walletId;
                 _walletId = id;
@@ -649,6 +651,7 @@ class _TransferWallets extends StatelessWidget {
     required this.onFrom,
     required this.onTo,
     required this.onSwap,
+    required this.hideAmounts,
   });
 
   final List<Wallet> wallets;
@@ -660,6 +663,7 @@ class _TransferWallets extends StatelessWidget {
   final ValueChanged<String> onFrom;
   final ValueChanged<String> onTo;
   final VoidCallback onSwap;
+  final bool hideAmounts;
 
   @override
   Widget build(BuildContext context) {
@@ -677,7 +681,7 @@ class _TransferWallets extends StatelessWidget {
           Text(
             l.walletBalance(
               '${balanceOf(walletId) < 0 ? '−' : ''}'
-              '${rupiah(balanceOf(walletId))}',
+              '${rupiah(balanceOf(walletId), hide: hideAmounts)}',
             ),
             style: small,
           ),

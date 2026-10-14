@@ -153,6 +153,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
               _DayHeader(
                 label: dayLabel(context, entry.key),
                 outTotal: MoneySnapshot.sumOf(entry.value, 'expense'),
+                hideAmounts: hideAmounts,
               ),
               AppCard(
                 padding: const EdgeInsets.symmetric(
@@ -379,10 +380,15 @@ class _FilterChip extends StatelessWidget {
 }
 
 class _DayHeader extends StatelessWidget {
-  const _DayHeader({required this.label, required this.outTotal});
+  const _DayHeader({
+    required this.label,
+    required this.outTotal,
+    required this.hideAmounts,
+  });
 
   final String label;
   final int outTotal;
+  final bool hideAmounts;
 
   @override
   Widget build(BuildContext context) {
@@ -395,7 +401,7 @@ class _DayHeader extends StatelessWidget {
           Expanded(child: Text(label, style: style)),
           if (outTotal > 0)
             Text(
-              '−${rupiah(outTotal)}',
+              '−${rupiah(outTotal, hide: hideAmounts)}',
               style: style?.copyWith(fontWeight: FontWeight.w600),
             ),
         ],
