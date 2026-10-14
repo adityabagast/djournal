@@ -1253,4 +1253,52 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get micPermissionRequired =>
       'Izin mikrofon diperlukan untuk merekam suara.';
+
+  @override
+  String get chartDistribution => 'Kategori';
+
+  @override
+  String get chartWeekly => 'Mingguan';
+
+  @override
+  String get chartExpenseAnalysis => 'Analisis Pengeluaran';
+
+  @override
+  String get chartExpenseByCategory => 'Distribusi Kategori';
+
+  @override
+  String get chartWeeklyTrend => 'Tren Mingguan';
+
+  @override
+  String chartAllCategories(int count) {
+    return 'Semua kategori ($count)';
+  }
+
+  @override
+  String get chartShowLess => 'Sembunyikan';
+
+  @override
+  String get chartAvgWeekly => 'Rata-rata/minggu';
+
+  @override
+  String chartHighestWeek(int week) {
+    return 'Tertinggi: M$week';
+  }
+
+  @override
+  String get prevMonth => 'Bulan sebelumnya';
+
+  @override
+  String get nextMonth => 'Bulan berikutnya';
+
+  @override
+  String get thisMonth => 'Bulan ini';
+
+  @override
+  String get totalExpense => 'Total Pengeluaran';
+
+  @override
+  String categoryCount(int count) {
+    return '$count kategori';
+  }
 }

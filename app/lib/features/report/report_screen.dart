@@ -11,18 +11,60 @@ import '../../ui/common.dart';
 import '../../ui/mascot.dart';
 import '../money/budget_screen.dart';
 
-class ReportScreen extends ConsumerWidget {
+import 'report_charts.dart';
+
+class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ReportScreen> createState() => _ReportScreenState();
+}
+
+class _ReportScreenState extends ConsumerState<ReportScreen> {
+  late DateTime _selectedMonth;
+  int _chartViewIndex = 0; // 0: Kategori, 1: Mingguan
+  String? _selectedCategoryId;
+
+  @override
+  void initState() {
+    super.initState();
+    final now = DateTime.now();
+    _selectedMonth = DateTime(now.year, now.month);
+  }
+
+  void _prevMonth() {
+    setState(() {
+      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month - 1);
+      _selectedCategoryId = null;
+    });
+  }
+
+  void _nextMonth() {
+    setState(() {
+      _selectedMonth = DateTime(_selectedMonth.year, _selectedMonth.month + 1);
+      _selectedCategoryId = null;
+    });
+  }
+
+  void _jumpToThisMonth() {
+    final now = DateTime.now();
+    setState(() {
+      _selectedMonth = DateTime(now.year, now.month);
+      _selectedCategoryId = null;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
     final snapAsync = ref.watch(moneySnapshotProvider);
     final entries = ref.watch(journalEntriesProvider).value ?? const [];
     final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final now = DateTime.now();
-    final monthKey = toMonthKey(now);
+    final isCurrentMonth =
+        _selectedMonth.year == now.year && _selectedMonth.month == now.month;
+    final monthKey = toMonthKey(_selectedMonth);
 
     return snapAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -79,12 +121,52 @@ class ReportScreen extends ConsumerWidget {
           ),
         );
 
+        final chartItems = [
+          for (final (c, spent, _) in budgetRows)
+            if (spent > 0)
+              CategorySpend(
+                category: c,
+                spent: spent,
+                percentage: (spent * 100.0 / monthOut),
+              ),
+        ];
+
         return ListView(
           padding: const EdgeInsets.fromLTRB(20, 24, 20, 124),
           children: [
             ScreenHeader(
-              overline: DateFormat('MMMM y', context.localeTag).format(now),
+              overline: DateFormat('MMMM y', context.localeTag).format(_selectedMonth),
               title: l.navReport,
+              trailing: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  if (!isCurrentMonth)
+                    Padding(
+                      padding: const EdgeInsets.only(right: 2),
+                      child: TextButton(
+                        onPressed: _jumpToThisMonth,
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          minimumSize: const Size(0, 32),
+                          textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                        ),
+                        child: Text(l.thisMonth),
+                      ),
+                    ),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_left),
+                    tooltip: l.prevMonth,
+                    visualDensity: VisualDensity.compact,
+                    onPressed: _prevMonth,
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.chevron_right),
+                    tooltip: l.nextMonth,
+                    visualDensity: VisualDensity.compact,
+                    onPressed: isCurrentMonth ? null : _nextMonth,
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
             _BudgetMood(
@@ -112,6 +194,77 @@ class ReportScreen extends ConsumerWidget {
                     last: true,
                     bold: true,
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Kartu Grafik Analisis Pengeluaran
+            AppCard(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          l.chartExpenseAnalysis,
+                          style: t.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      SegmentedButton<int>(
+                        segments: [
+                          ButtonSegment(
+                            value: 0,
+                            label: Text(
+                              l.chartDistribution,
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          ButtonSegment(
+                            value: 1,
+                            label: Text(
+                              l.chartWeekly,
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ],
+                        selected: {_chartViewIndex},
+                        onSelectionChanged: (set) =>
+                            setState(() => _chartViewIndex = set.first),
+                        showSelectedIcon: false,
+                        style: ButtonStyle(
+                          visualDensity: VisualDensity.compact,
+                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          padding: const WidgetStatePropertyAll(
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  if (monthOut == 0)
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 20),
+                      child: Center(child: EmptyNote(l.reportEmpty)),
+                    )
+                  else if (_chartViewIndex == 0)
+                    ExpenseDonutChart(
+                      items: chartItems,
+                      totalSpent: monthOut,
+                      hideAmounts: hideAmounts,
+                      selectedCategoryId: _selectedCategoryId,
+                      onSelectCategory: (id) =>
+                          setState(() => _selectedCategoryId = id),
+                    )
+                  else
+                    WeeklyBarChart(
+                      monthTransactions: month,
+                      month: _selectedMonth,
+                      hideAmounts: hideAmounts,
+                    ),
                 ],
               ),
             ),

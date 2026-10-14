@@ -1272,4 +1272,52 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get micPermissionRequired =>
       'Microphone permission is required to record voice.';
+
+  @override
+  String get chartDistribution => 'Categories';
+
+  @override
+  String get chartWeekly => 'Weekly';
+
+  @override
+  String get chartExpenseAnalysis => 'Expense Analysis';
+
+  @override
+  String get chartExpenseByCategory => 'Category Distribution';
+
+  @override
+  String get chartWeeklyTrend => 'Weekly Trend';
+
+  @override
+  String chartAllCategories(int count) {
+    return 'All categories ($count)';
+  }
+
+  @override
+  String get chartShowLess => 'Show less';
+
+  @override
+  String get chartAvgWeekly => 'Avg/week';
+
+  @override
+  String chartHighestWeek(int week) {
+    return 'Highest: W$week';
+  }
+
+  @override
+  String get prevMonth => 'Previous month';
+
+  @override
+  String get nextMonth => 'Next month';
+
+  @override
+  String get thisMonth => 'This month';
+
+  @override
+  String get totalExpense => 'Total Expense';
+
+  @override
+  String categoryCount(int count) {
+    return '$count categories';
+  }
 }

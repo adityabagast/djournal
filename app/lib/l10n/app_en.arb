@@ -387,5 +387,19 @@
   "deleteVoiceConfirm": "Delete this voice recording?",
   "quickAddVoice": "Voice note",
   "quickAddVoiceSub": "Record story & auto-transcribe",
-  "micPermissionRequired": "Microphone permission is required to record voice."
+  "micPermissionRequired": "Microphone permission is required to record voice.",
+  "chartDistribution": "Categories",
+  "chartWeekly": "Weekly",
+  "chartExpenseAnalysis": "Expense Analysis",
+  "chartExpenseByCategory": "Category Distribution",
+  "chartWeeklyTrend": "Weekly Trend",
+  "chartAllCategories": "All categories ({count})",
+  "chartShowLess": "Show less",
+  "chartAvgWeekly": "Avg/week",
+  "chartHighestWeek": "Highest: W{week}",
+  "prevMonth": "Previous month",
+  "nextMonth": "Next month",
+  "thisMonth": "This month",
+  "totalExpense": "Total Expense",
+  "categoryCount": "{count} categories"
 }

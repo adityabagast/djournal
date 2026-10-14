@@ -2335,6 +2335,90 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Izin mikrofon diperlukan untuk merekam suara.'**
   String get micPermissionRequired;
+
+  /// No description provided for @chartDistribution.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori'**
+  String get chartDistribution;
+
+  /// No description provided for @chartWeekly.
+  ///
+  /// In id, this message translates to:
+  /// **'Mingguan'**
+  String get chartWeekly;
+
+  /// No description provided for @chartExpenseAnalysis.
+  ///
+  /// In id, this message translates to:
+  /// **'Analisis Pengeluaran'**
+  String get chartExpenseAnalysis;
+
+  /// No description provided for @chartExpenseByCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Distribusi Kategori'**
+  String get chartExpenseByCategory;
+
+  /// No description provided for @chartWeeklyTrend.
+  ///
+  /// In id, this message translates to:
+  /// **'Tren Mingguan'**
+  String get chartWeeklyTrend;
+
+  /// No description provided for @chartAllCategories.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua kategori ({count})'**
+  String chartAllCategories(int count);
+
+  /// No description provided for @chartShowLess.
+  ///
+  /// In id, this message translates to:
+  /// **'Sembunyikan'**
+  String get chartShowLess;
+
+  /// No description provided for @chartAvgWeekly.
+  ///
+  /// In id, this message translates to:
+  /// **'Rata-rata/minggu'**
+  String get chartAvgWeekly;
+
+  /// No description provided for @chartHighestWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Tertinggi: M{week}'**
+  String chartHighestWeek(int week);
+
+  /// No description provided for @prevMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan sebelumnya'**
+  String get prevMonth;
+
+  /// No description provided for @nextMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan berikutnya'**
+  String get nextMonth;
+
+  /// No description provided for @thisMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan ini'**
+  String get thisMonth;
+
+  /// No description provided for @totalExpense.
+  ///
+  /// In id, this message translates to:
+  /// **'Total Pengeluaran'**
+  String get totalExpense;
+
+  /// No description provided for @categoryCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} kategori'**
+  String categoryCount(int count);
 }
 
 class _AppLocalizationsDelegate

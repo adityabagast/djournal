@@ -434,5 +434,22 @@
   "deleteVoiceConfirm": "Hapus rekaman suara ini?",
   "quickAddVoice": "Catatan suara",
   "quickAddVoiceSub": "Rekam cerita & transkripsi otomatis",
-  "micPermissionRequired": "Izin mikrofon diperlukan untuk merekam suara."
+  "micPermissionRequired": "Izin mikrofon diperlukan untuk merekam suara.",
+  "chartDistribution": "Kategori",
+  "chartWeekly": "Mingguan",
+  "chartExpenseAnalysis": "Analisis Pengeluaran",
+  "chartExpenseByCategory": "Distribusi Kategori",
+  "chartWeeklyTrend": "Tren Mingguan",
+  "chartAllCategories": "Semua kategori ({count})",
+  "@chartAllCategories": { "placeholders": { "count": { "type": "int" } } },
+  "chartShowLess": "Sembunyikan",
+  "chartAvgWeekly": "Rata-rata/minggu",
+  "chartHighestWeek": "Tertinggi: M{week}",
+  "@chartHighestWeek": { "placeholders": { "week": { "type": "int" } } },
+  "prevMonth": "Bulan sebelumnya",
+  "nextMonth": "Bulan berikutnya",
+  "thisMonth": "Bulan ini",
+  "totalExpense": "Total Pengeluaran",
+  "categoryCount": "{count} kategori",
+  "@categoryCount": { "placeholders": { "count": { "type": "int" } } }
 }

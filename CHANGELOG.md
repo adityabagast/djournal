@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.6.0 — 2026-10-14
+
+**Baru**
+- **Grafik Analisis Pengeluaran interaktif di Laporan**:
+  - **Donut Chart (Distribusi Kategori)**: Diagram lingkaran modern yang memvisualisasikan proporsi belanja per kategori secara proporsional dengan warna khas tiap kategori.
+    - Bagian tengah menampilkan total pengeluaran dan jumlah kategori; saat kategori atau diagram disentuh, menampilkan nama, nominal, dan persentase belanja kategori tersebut.
+    - Daftar peringkat kategori di bawah diagram dilengkapi ikon kategori, persentase, *progress bar* proporsional, nominal, dan penyorotan interaktif.
+  - **Bar Chart (Tren Mingguan)**: Diagram batang vertikal yang membagi pengeluaran sebulan ke dalam 4–5 minggu kalender.
+    - Memvisualisasikan perbandingan minggu hemat vs minggu boros dengan indikator minggu tertinggi.
+    - Dilengkapi ringkasan rata-rata pengeluaran per minggu dan nominal minggu tertinggi.
+  - **Navigasi Bulan di Laporan**: Tombol panah bulan sebelumnya (`<`) dan berikutnya (`>`) untuk melihat riwayat laporan dan grafik di bulan-bulan yang lalu, plus tombol pintas "Bulan ini" untuk kembali dengan cepat.
+
+**Perbaikan**
+- **Label versi Pengaturan**: Memperbaiki label versi di Pengaturan yang sebelumnya tertinggal.
+- **Mode Privasi**: Memperbaiki kebocoran nominal pada subtotal harian di layar Keuangan dan saldo dompet pada form Transfer saat mode privasi aktif.
+
 ## 0.5.0 — 2026-10-14
 
 **Baru**

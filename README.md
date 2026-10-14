@@ -2,7 +2,7 @@
 
 Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** dalam satu timeline. Nama "Nyawtat" dari *nyaw* (suara kucing) + *catat*. Offline-first: semua data tersimpan di HP, lalu disinkronkan ke cloud kalau login.
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.5.0**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.6.0**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>
@@ -11,7 +11,7 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
     <td align="center"><img src="docs/screenshots/keuangan.png" width="240" alt="Layar Keuangan: total saldo, dompet, dan daftar transaksi"><br><b>Keuangan</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/laporan.png" width="240" alt="Layar Laporan: ringkasan bulan dan budget per kategori"><br><b>Laporan</b></td>
+    <td align="center"><img src="docs/screenshots/laporan.png" width="240" alt="Layar Laporan: grafik analisis pengeluaran (donut & mingguan), navigasi bulan, dan budget"><br><b>Laporan</b></td>
     <td align="center"><img src="docs/screenshots/tulis-jurnal.png" width="240" alt="Form entri jurnal: jam, mood, judul, cerita, tag, dan transaksi di hari yang sama"><br><b>Tulis jurnal</b></td>
     <td align="center"><img src="docs/screenshots/kunci.png" width="240" alt="Layar kunci PIN dengan maskot kucing"><br><b>Kunci PIN</b></td>
   </tr>
