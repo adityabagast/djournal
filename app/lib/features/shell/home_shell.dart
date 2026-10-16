@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:home_widget/home_widget.dart';
 
@@ -10,12 +11,15 @@ import '../../core/theme.dart';
 import '../../data/home_widget_sync.dart';
 import '../../data/sync/account_controller.dart';
 import '../../ui/common.dart';
+import '../../ui/mascot.dart';
 import '../journal/entry_form_screen.dart';
 import '../journal/journal_screen.dart';
 import '../journal/voice/voice_record_sheet.dart';
 import '../money/money_screen.dart';
 import '../money/tx_form_screen.dart';
 import '../report/report_screen.dart';
+import '../search/search_screen.dart';
+import '../settings/settings_screen.dart';
 import '../today/today_screen.dart';
 
 /// Kerangka utama: 4 tab yang bisa digeser + floating dock dengan tombol
@@ -97,6 +101,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final l = context.l10n;
     final choice = await showModalBottomSheet<String>(
       context: context,
+      constraints: const BoxConstraints(maxWidth: 480),
       backgroundColor: context.colors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
@@ -181,42 +186,426 @@ class _HomeShellState extends ConsumerState<HomeShell> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    return Scaffold(
-      body: Stack(
-        children: [
-          SafeArea(
-            bottom: false,
-            child: PageView(
-              controller: _pages,
-              onPageChanged: (i) => setState(() => _index = i),
-              children: [for (final tab in _tabs) _KeepAlive(child: tab)],
-            ),
-          ),
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 16 + MediaQuery.paddingOf(context).bottom,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: ConstrainedBox(
-                constraints: const BoxConstraints(maxWidth: 520),
-                child: _Dock(
-                  index: _index,
-                  onSelect: _goTo,
-                  onAdd: _openQuickAdd,
-                  items: [
-                    (Icons.home_outlined, l.navToday),
-                    (Icons.menu_book_outlined, l.navJournal),
-                    (Icons.account_balance_wallet_outlined, l.navMoney),
-                    (Icons.bar_chart_rounded, l.navReport),
+    final account = ref.watch(accountProvider);
+
+    final navItems = [
+      (Icons.home_outlined, l.navToday, 'Ctrl+1'),
+      (Icons.menu_book_outlined, l.navJournal, 'Ctrl+2'),
+      (Icons.account_balance_wallet_outlined, l.navMoney, 'Ctrl+3'),
+      (Icons.bar_chart_rounded, l.navReport, 'Ctrl+4'),
+    ];
+
+    return CallbackShortcuts(
+      bindings: <ShortcutActivator, VoidCallback>{
+        const SingleActivator(LogicalKeyboardKey.keyN, control: true):
+            _openQuickAdd,
+        const SingleActivator(LogicalKeyboardKey.keyN, meta: true):
+            _openQuickAdd,
+        const SingleActivator(LogicalKeyboardKey.digit1, control: true): () =>
+            _goTo(0),
+        const SingleActivator(LogicalKeyboardKey.digit1, meta: true): () =>
+            _goTo(0),
+        const SingleActivator(LogicalKeyboardKey.digit2, control: true): () =>
+            _goTo(1),
+        const SingleActivator(LogicalKeyboardKey.digit2, meta: true): () =>
+            _goTo(1),
+        const SingleActivator(LogicalKeyboardKey.digit3, control: true): () =>
+            _goTo(2),
+        const SingleActivator(LogicalKeyboardKey.digit3, meta: true): () =>
+            _goTo(2),
+        const SingleActivator(LogicalKeyboardKey.digit4, control: true): () =>
+            _goTo(3),
+        const SingleActivator(LogicalKeyboardKey.digit4, meta: true): () =>
+            _goTo(3),
+        const SingleActivator(LogicalKeyboardKey.keyK, control: true): () =>
+            SearchScreen.open(context),
+        const SingleActivator(LogicalKeyboardKey.keyK, meta: true): () =>
+            SearchScreen.open(context),
+      },
+      child: Focus(
+        autofocus: true,
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final isWide = PlatformInfo.isWideScreen(constraints.maxWidth);
+
+            if (isWide) {
+              return Scaffold(
+                body: Row(
+                  children: [
+                    _DesktopSidebar(
+                      selectedIndex: _index,
+                      onSelect: _goTo,
+                      onAdd: _openQuickAdd,
+                      account: account,
+                      items: navItems,
+                    ),
+                    Expanded(
+                      child: IndexedStack(
+                        index: _index,
+                        children: _tabs,
+                      ),
+                    ),
                   ],
-                  addLabel: l.add,
+                ),
+              );
+            }
+
+            return Scaffold(
+              body: Stack(
+                children: [
+                  SafeArea(
+                    bottom: false,
+                    child: PageView(
+                      controller: _pages,
+                      onPageChanged: (i) => setState(() => _index = i),
+                      children: [
+                        for (final tab in _tabs) _KeepAlive(child: tab),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    left: 16,
+                    right: 16,
+                    bottom: 16 + MediaQuery.paddingOf(context).bottom,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 520),
+                        child: _Dock(
+                          index: _index,
+                          onSelect: _goTo,
+                          onAdd: _openQuickAdd,
+                          items: [
+                            for (final (icon, label, _) in navItems)
+                              (icon, label),
+                          ],
+                          addLabel: l.add,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _DesktopSidebar extends StatelessWidget {
+  const _DesktopSidebar({
+    required this.selectedIndex,
+    required this.onSelect,
+    required this.onAdd,
+    required this.account,
+    required this.items,
+  });
+
+  final int selectedIndex;
+  final ValueChanged<int> onSelect;
+  final VoidCallback onAdd;
+  final AccountState account;
+  final List<(IconData, String, String)> items;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final l = context.l10n;
+    final sidebarBg = c.isDark
+        ? const Color(0xFF141A17)
+        : const Color(0xFFEAEFEB);
+
+    return Container(
+      width: 260,
+      decoration: BoxDecoration(
+        color: sidebarBg,
+        border: Border(right: BorderSide(color: c.line)),
+      ),
+      padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 38,
+                height: 38,
+                decoration: BoxDecoration(
+                  color: const Color(0xFFFFF9F0),
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: c.line),
+                ),
+                child: const Center(
+                  child: Mascot(MascotPose.halo, size: 26),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Nyawtat',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: c.ink,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    _SyncStatusBadge(account: account),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 18),
+          Material(
+            color: c.primary,
+            borderRadius: BorderRadius.circular(12),
+            elevation: 2,
+            shadowColor: c.primary.withValues(alpha: 0.3),
+            child: InkWell(
+              onTap: onAdd,
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                child: Row(
+                  children: [
+                    Icon(Icons.add, color: c.onPrimary, size: 18),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        l.quickAdd,
+                        style: TextStyle(
+                          color: c.onPrimary,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.22),
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: Text(
+                        'Ctrl+N',
+                        style: TextStyle(
+                          color: c.onPrimary,
+                          fontSize: 10,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             ),
           ),
+          const SizedBox(height: 18),
+          for (var i = 0; i < items.length; i++) ...[
+            _DesktopNavItem(
+              icon: items[i].$1,
+              label: items[i].$2,
+              shortcut: items[i].$3,
+              selected: selectedIndex == i,
+              onTap: () => onSelect(i),
+            ),
+            const SizedBox(height: 4),
+          ],
+          const Spacer(),
+          Divider(color: c.line, height: 1),
+          const SizedBox(height: 8),
+          _DesktopNavItem(
+            icon: Icons.settings_outlined,
+            label: l.settings,
+            shortcut: '',
+            selected: false,
+            onTap: () => SettingsScreen.open(context),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class _DesktopNavItem extends StatelessWidget {
+  const _DesktopNavItem({
+    required this.icon,
+    required this.label,
+    required this.shortcut,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final String shortcut;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Material(
+      color: selected ? c.surface : Colors.transparent,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: selected ? c.line : Colors.transparent,
+            ),
+          ),
+          child: Row(
+            children: [
+              Icon(
+                icon,
+                size: 20,
+                color: selected ? c.primary : c.muted,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    color: selected ? c.primary : c.muted,
+                  ),
+                ),
+              ),
+              if (shortcut.isNotEmpty)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 1.5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: selected
+                        ? c.primarySoft
+                        : (c.isDark
+                            ? Colors.white10
+                            : Colors.black.withValues(alpha: 0.05)),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    shortcut,
+                    style: TextStyle(
+                      fontSize: 10,
+                      fontWeight: FontWeight.w500,
+                      color: selected ? c.onPrimarySoft : c.faint,
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SyncStatusBadge extends StatelessWidget {
+  const _SyncStatusBadge({required this.account});
+
+  final AccountState account;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    if (account.syncing) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            width: 8,
+            height: 8,
+            child: CircularProgressIndicator(
+              strokeWidth: 1.5,
+              color: c.primary,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Text(
+            'Menyinkronkan...',
+            style: TextStyle(
+              fontSize: 11,
+              color: c.muted,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      );
+    }
+    if (account.loggedIn) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(
+              color: c.income,
+              shape: BoxShape.circle,
+            ),
+          ),
+          const SizedBox(width: 5),
+          Flexible(
+            child: Text(
+              'Tersinkron',
+              style: TextStyle(
+                fontSize: 11,
+                color: c.income,
+                fontWeight: FontWeight.w600,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      );
+    }
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 6,
+          height: 6,
+          decoration: BoxDecoration(
+            color: c.faint,
+            shape: BoxShape.circle,
+          ),
+        ),
+        const SizedBox(width: 5),
+        Flexible(
+          child: Text(
+            'Offline (Lokal)',
+            style: TextStyle(
+              fontSize: 11,
+              color: c.muted,
+              fontWeight: FontWeight.w500,
+            ),
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
     );
   }
 }

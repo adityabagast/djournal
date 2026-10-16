@@ -47,48 +47,262 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
           groups.putIfAbsent(tx.localDate, () => []).add(tx);
         }
 
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 124),
+        final header = ScreenHeader(
+          overline: DateFormat('MMMM y', context.localeTag).format(now),
+          title: l.navMoney,
+          trailing: const SearchButton(),
+        );
+
+        final balanceCard = _BalanceCard(
+          total: snap.totalBalance,
+          monthIn: MoneySnapshot.sumOf(month, 'income'),
+          monthOut: MoneySnapshot.sumOf(month, 'expense'),
+          hideAmounts: hideAmounts,
+          onToggleHide: () => ref
+              .read(settingsRepositoryProvider)
+              .set('hide_amounts', (!hideAmounts).toString()),
+        );
+
+        final walletsHeader = Row(
           children: [
-            ScreenHeader(
-              overline: DateFormat('MMMM y', context.localeTag).format(now),
-              title: l.navMoney,
-              trailing: const SearchButton(),
+            Expanded(
+              child: Text(
+                l.wallets,
+                style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+              ),
             ),
-            const SizedBox(height: 16),
-            _BalanceCard(
-              total: snap.totalBalance,
-              monthIn: MoneySnapshot.sumOf(month, 'income'),
-              monthOut: MoneySnapshot.sumOf(month, 'expense'),
+            TextButton(
+              onPressed: () => WalletsScreen.open(context),
+              style: TextButton.styleFrom(
+                padding: const EdgeInsets.only(left: 8, right: 0),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(l.manageAction),
+                  const Icon(Icons.chevron_right, size: 20),
+                ],
+              ),
+            ),
+          ],
+        );
+
+        final filterChips = SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            spacing: 8,
+            children: [
+              for (final (key, text) in [
+                (null, l.filterAll),
+                ('expense', l.expense),
+                ('income', l.income),
+                ('transfer', l.transfer),
+              ])
+                _FilterChip(
+                  label: text,
+                  selected: _filter == key,
+                  onTap: () => setState(() => _filter = key),
+                ),
+            ],
+          ),
+        );
+
+        final txListWidgets = [
+          if (snap.transactions.isEmpty)
+            MascotEmpty(
+              pose: MascotPose.koin,
+              tint: MascotTint.lemon,
+              title: l.mascotTxEmptyTitle,
+              message: l.mascotTxEmptyBody,
+              size: 160,
+              action: FilledButton(
+                onPressed: () => TxFormScreen.open(context),
+                child: Text(l.mascotRecordTx),
+              ),
+            )
+          else if (groups.isEmpty)
+            MascotEmpty(
+              pose: MascotPose.mencari,
+              tint: MascotTint.sky,
+              title: l.mascotFilterEmptyTitle,
+              message: l.mascotFilterEmptyBody,
+              size: 140,
+            ),
+          for (final entry in groups.entries) ...[
+            _DayHeader(
+              label: dayLabel(context, entry.key),
+              outTotal: MoneySnapshot.sumOf(entry.value, 'expense'),
               hideAmounts: hideAmounts,
-              onToggleHide: () => ref
-                  .read(settingsRepositoryProvider)
-                  .set('hide_amounts', (!hideAmounts).toString()),
+            ),
+            AppCard(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+                vertical: 4,
+              ),
+              child: Column(
+                children: [
+                  for (var i = 0; i < entry.value.length; i++)
+                    TxRow(
+                      tx: entry.value[i],
+                      snapshot: snap,
+                      showDivider: i < entry.value.length - 1,
+                      onTap: () => TxFormScreen.open(
+                        context,
+                        existing: entry.value[i],
+                      ),
+                    ),
+                ],
+              ),
             ),
             const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    l.wallets,
-                    style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+          ],
+        ];
+
+        if (context.isWide) {
+          return ListView(
+            padding: context.screenPadding,
+            children: [
+              header,
+              const SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Left Column: Saldo & Dompet
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        balanceCard,
+                        const SizedBox(height: 16),
+                        AppCard(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              walletsHeader,
+                              const SizedBox(height: 10),
+                              for (final w in snap.wallets) ...[
+                                Container(
+                                  margin: const EdgeInsets.only(bottom: 8),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: context.colors.isDark
+                                        ? context.colors.subtle
+                                        : const Color(0xFFF7FAF8),
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: Border.all(
+                                      color: context.colors.line,
+                                    ),
+                                  ),
+                                  child: InkWell(
+                                    onTap: () => WalletFormSheet.open(
+                                      context,
+                                      existing: w,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        Container(
+                                          width: 32,
+                                          height: 32,
+                                          decoration: BoxDecoration(
+                                            color: context.colors.primarySoft,
+                                            borderRadius:
+                                                BorderRadius.circular(8),
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              w.type == 'cash'
+                                                  ? Icons.payments_outlined
+                                                  : (w.type == 'bank'
+                                                      ? Icons
+                                                          .account_balance_outlined
+                                                      : Icons
+                                                          .phone_android_outlined),
+                                              size: 18,
+                                              color:
+                                                  context.colors.onPrimarySoft,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 10),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                w.name,
+                                                style: const TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              Text(
+                                                w.type == 'cash'
+                                                    ? 'Tunai'
+                                                    : (w.type == 'bank'
+                                                        ? 'Rekening'
+                                                        : 'E-Wallet'),
+                                                style: TextStyle(
+                                                  fontSize: 11,
+                                                  color: context.colors.muted,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Text(
+                                          rupiah(
+                                            snap.balanceOf(w.id),
+                                            hide: hideAmounts,
+                                          ),
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                TextButton(
-                  onPressed: () => WalletsScreen.open(context),
-                  style: TextButton.styleFrom(
-                    padding: const EdgeInsets.only(left: 8, right: 0),
+                  const SizedBox(width: 18),
+                  // Right Column: Filter & Transaksi
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        filterChips,
+                        const SizedBox(height: 16),
+                        ...txListWidgets,
+                      ],
+                    ),
                   ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(l.manageAction),
-                      const Icon(Icons.chevron_right, size: 20),
-                    ],
-                  ),
-                ),
-              ],
-            ),
+                ],
+              ),
+            ],
+          );
+        }
+
+        return ListView(
+          padding: context.screenPadding,
+          children: [
+            header,
+            const SizedBox(height: 16),
+            balanceCard,
+            const SizedBox(height: 16),
+            walletsHeader,
             const SizedBox(height: 4),
             SizedBox(
               height: 64,
@@ -108,75 +322,9 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
               ),
             ),
             const SizedBox(height: 16),
-            // Empat chip tidak muat satu baris di HP: geser ke samping.
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                spacing: 8,
-                children: [
-                  for (final (key, text) in [
-                    (null, l.filterAll),
-                    ('expense', l.expense),
-                    ('income', l.income),
-                    ('transfer', l.transfer),
-                  ])
-                    _FilterChip(
-                      label: text,
-                      selected: _filter == key,
-                      onTap: () => setState(() => _filter = key),
-                    ),
-                ],
-              ),
-            ),
+            filterChips,
             const SizedBox(height: 16),
-            if (snap.transactions.isEmpty)
-              MascotEmpty(
-                pose: MascotPose.koin,
-                tint: MascotTint.lemon,
-                title: l.mascotTxEmptyTitle,
-                message: l.mascotTxEmptyBody,
-                size: 160,
-                action: FilledButton(
-                  onPressed: () => TxFormScreen.open(context),
-                  child: Text(l.mascotRecordTx),
-                ),
-              )
-            else if (groups.isEmpty)
-              MascotEmpty(
-                pose: MascotPose.mencari,
-                tint: MascotTint.sky,
-                title: l.mascotFilterEmptyTitle,
-                message: l.mascotFilterEmptyBody,
-                size: 140,
-              ),
-            for (final entry in groups.entries) ...[
-              _DayHeader(
-                label: dayLabel(context, entry.key),
-                outTotal: MoneySnapshot.sumOf(entry.value, 'expense'),
-                hideAmounts: hideAmounts,
-              ),
-              AppCard(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 4,
-                ),
-                child: Column(
-                  children: [
-                    for (var i = 0; i < entry.value.length; i++)
-                      TxRow(
-                        tx: entry.value[i],
-                        snapshot: snap,
-                        showDivider: i < entry.value.length - 1,
-                        onTap: () => TxFormScreen.open(
-                          context,
-                          existing: entry.value[i],
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 16),
-            ],
+            ...txListWidgets,
           ],
         );
       },

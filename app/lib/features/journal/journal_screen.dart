@@ -11,9 +11,11 @@ import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
 import '../../ui/mood.dart';
+import '../money/tx_form_screen.dart';
 import '../search/search_screen.dart';
 import 'entry_form_screen.dart';
 import 'entry_rows.dart';
+import 'voice/voice_player_card.dart';
 
 class JournalScreen extends ConsumerStatefulWidget {
   const JournalScreen({super.key});
@@ -25,6 +27,9 @@ class JournalScreen extends ConsumerStatefulWidget {
 class _JournalScreenState extends ConsumerState<JournalScreen> {
   /// Tanggal yang dipilih di strip minggu (YYYY-MM-DD); null = semua entri.
   String? _selected;
+
+  /// ID entri yang sedang dipilih di split-pane desktop.
+  String? _selectedEntryId;
 
   /// 0 = minggu ini, -1 = minggu lalu, dst.
   int _weekOffset = 0;
@@ -60,36 +65,143 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           list.sort((a, b) => entrySortKey(b).compareTo(entrySortKey(a)));
         }
 
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 124),
-          children: [
-            ScreenHeader(
-              overline: DateFormat('MMMM y', context.localeTag).format(now),
-              title: l.navJournal,
-              trailing: Row(
-                spacing: 8,
+        final filteredEntries = [for (final list in groups.values) ...list];
+        final activeEntry = filteredEntries
+                .where((e) => e.id == _selectedEntryId)
+                .firstOrNull ??
+            filteredEntries.firstOrNull;
+
+        final header = ScreenHeader(
+          overline: DateFormat('MMMM y', context.localeTag).format(now),
+          title: l.navJournal,
+          trailing: Row(
+            spacing: 8,
+            children: [
+              const SearchButton(),
+              FilledButton.icon(
+                onPressed: () =>
+                    EntryFormScreen.open(context, initialDate: _selected),
+                icon: const Icon(Icons.add, size: 18),
+                label: Text(l.write),
+              ),
+            ],
+          ),
+        );
+
+        final weekStripWidget = _WeekStrip(
+          monday: monday,
+          entries: entries,
+          selected: _selected,
+          onSelect: _toggleDay,
+          onPrev: () => setState(() => _weekOffset--),
+          onNext: _weekOffset < 0 ? () => setState(() => _weekOffset++) : null,
+        );
+
+        if (context.isWide) {
+          return ListView(
+            padding: context.screenPadding,
+            children: [
+              header,
+              const SizedBox(height: 16),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SearchButton(),
-                  FilledButton.icon(
-                    onPressed: () =>
-                        EntryFormScreen.open(context, initialDate: _selected),
-                    icon: const Icon(Icons.add, size: 18),
-                    label: Text(l.write),
+                  // Left Master Pane
+                  Expanded(
+                    flex: 5,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        weekStripWidget,
+                        const SizedBox(height: 14),
+                        if (_selected != null) ...[
+                          _FilterBar(
+                            date: _selected!,
+                            onClear: () => setState(() => _selected = null),
+                          ),
+                          const SizedBox(height: 14),
+                        ],
+                        if (entries.isEmpty)
+                          MascotEmpty(
+                            pose: MascotPose.menulis,
+                            tint: MascotTint.peach,
+                            title: l.mascotJournalEmptyTitle,
+                            message: l.mascotJournalEmptyBody,
+                            size: 150,
+                            action: FilledButton(
+                              onPressed: () => EntryFormScreen.open(context),
+                              child: Text(l.mascotWriteEntry),
+                            ),
+                          )
+                        else if (groups.isEmpty)
+                          MascotEmpty(
+                            pose: MascotPose.mencari,
+                            tint: MascotTint.sky,
+                            title: l.journalDayEmptyTitle,
+                            message: l.journalDayEmptyBody,
+                            size: 130,
+                            action: FilledButton(
+                              onPressed: () => EntryFormScreen.open(
+                                context,
+                                initialDate: _selected,
+                              ),
+                              child: Text(l.writeForThisDay),
+                            ),
+                          ),
+                        for (final MapEntry(key: date, value: items)
+                            in groups.entries) ...[
+                          _DayHeader(
+                            date: date,
+                            entries: entries,
+                            snapshot: snap,
+                          ),
+                          AppCard(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
+                            child: Column(
+                              children: [
+                                for (var i = 0; i < items.length; i++)
+                                  _MasterEntryItem(
+                                    entry: items[i],
+                                    isSelected: items[i].id == activeEntry?.id,
+                                    showDivider: i < items.length - 1,
+                                    onTap: () => setState(
+                                      () => _selectedEntryId = items[i].id,
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 14),
+                        ],
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 18),
+                  // Right Detail Reader Pane
+                  Expanded(
+                    flex: 7,
+                    child: _JournalDetailPane(
+                      entry: activeEntry,
+                      snapshot: snap,
+                      onDeleted: () =>
+                          setState(() => _selectedEntryId = null),
+                    ),
                   ),
                 ],
               ),
-            ),
+            ],
+          );
+        }
+
+        return ListView(
+          padding: context.screenPadding,
+          children: [
+            header,
             const SizedBox(height: 16),
-            _WeekStrip(
-              monday: monday,
-              entries: entries,
-              selected: _selected,
-              onSelect: _toggleDay,
-              onPrev: () => setState(() => _weekOffset--),
-              onNext: _weekOffset < 0
-                  ? () => setState(() => _weekOffset++)
-                  : null,
-            ),
+            weekStripWidget,
             const SizedBox(height: 16),
             if (_selected != null)
               _FilterBar(
@@ -145,6 +257,300 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           ],
         );
       },
+    );
+  }
+}
+
+class _MasterEntryItem extends StatelessWidget {
+  const _MasterEntryItem({
+    required this.entry,
+    required this.isSelected,
+    required this.showDivider,
+    required this.onTap,
+  });
+
+  final JournalEntry entry;
+  final bool isSelected;
+  final bool showDivider;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = Theme.of(context).textTheme;
+    final c = context.colors;
+    final hasAudio = entry.audioPath != null && entry.audioPath!.isNotEmpty;
+
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(10),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+        decoration: BoxDecoration(
+          color: isSelected ? c.primarySoft : Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
+          border: isSelected
+              ? Border.all(color: c.primary.withValues(alpha: 0.3))
+              : (showDivider
+                  ? Border(bottom: BorderSide(color: c.divider))
+                  : null),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                if (entry.mood != null) ...[
+                  MoodFace(
+                    mood: entry.mood!,
+                    color: isSelected ? c.primary : c.muted,
+                    size: 16,
+                  ),
+                  const SizedBox(width: 6),
+                ],
+                Text(
+                  entry.entryTime ?? '',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.w600,
+                    color: isSelected ? c.primary : c.muted,
+                  ),
+                ),
+                if (hasAudio) ...[
+                  const SizedBox(width: 6),
+                  Icon(
+                    Icons.mic_rounded,
+                    size: 14,
+                    color: isSelected ? c.primary : c.muted,
+                  ),
+                ],
+              ],
+            ),
+            const SizedBox(height: 4),
+            Text(
+              entry.title ?? context.l10n.untitled,
+              style: t.titleSmall?.copyWith(
+                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
+                fontSize: 14,
+                color: isSelected ? c.primary : c.ink,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            if (entry.body != null && entry.body!.trim().isNotEmpty) ...[
+              const SizedBox(height: 2),
+              Text(
+                entry.body!,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: c.muted,
+                  height: 1.3,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _JournalDetailPane extends ConsumerWidget {
+  const _JournalDetailPane({
+    required this.entry,
+    required this.snapshot,
+    required this.onDeleted,
+  });
+
+  final JournalEntry? entry;
+  final MoneySnapshot? snapshot;
+  final VoidCallback onDeleted;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final t = Theme.of(context).textTheme;
+    final c = context.colors;
+
+    if (entry == null) {
+      return AppCard(
+        padding: const EdgeInsets.all(32),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Mascot(MascotPose.menulis, size: 100),
+              const SizedBox(height: 16),
+              Text(
+                'Pilih Catatan',
+                style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                'Pilih catatan di sebelah kiri untuk membaca detailnya.',
+                textAlign: TextAlign.center,
+                style: TextStyle(color: c.muted, fontSize: 13),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final e = entry!;
+    final tags = entryTags(e);
+    final dayTx = snapshot?.onDate(e.entryDate).toList() ?? const [];
+
+    return AppCard(
+      padding: const EdgeInsets.all(22),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              if (e.mood != null) ...[
+                MoodFace(mood: e.mood!, color: c.primary, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  moodLabel(l, e.mood!),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w600,
+                    color: c.primary,
+                  ),
+                ),
+                Text(' · ', style: TextStyle(color: c.muted)),
+              ],
+              Text(
+                '${dayLabel(context, e.entryDate)}${e.entryTime != null ? ', ${e.entryTime}' : ''}',
+                style: TextStyle(
+                  fontSize: 13,
+                  fontWeight: FontWeight.w500,
+                  color: c.muted,
+                ),
+              ),
+              const Spacer(),
+              IconButton.outlined(
+                tooltip: l.editEntryTitle,
+                onPressed: () => EntryFormScreen.open(context, existing: e),
+                icon: const Icon(Icons.edit_outlined, size: 18),
+                visualDensity: VisualDensity.compact,
+              ),
+              const SizedBox(width: 6),
+              IconButton.outlined(
+                tooltip: l.delete,
+                onPressed: () async {
+                  final ok = await showDialog<bool>(
+                    context: context,
+                    builder: (ctx) => AlertDialog(
+                      title: Text(l.delete),
+                      content: Text(l.deleteEntryConfirm),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(ctx, false),
+                          child: Text(l.cancel),
+                        ),
+                        FilledButton(
+                          onPressed: () => Navigator.pop(ctx, true),
+                          style: FilledButton.styleFrom(
+                            backgroundColor: c.expense,
+                          ),
+                          child: Text(l.delete),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (ok == true) {
+                    await ref.read(journalRepositoryProvider).deleteEntry(e.id);
+                    onDeleted();
+                  }
+                },
+                icon: Icon(Icons.delete_outline, size: 18, color: c.expense),
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            e.title ?? l.untitled,
+            style: t.headlineSmall?.copyWith(
+              fontWeight: FontWeight.w700,
+              fontSize: 22,
+            ),
+          ),
+          if (e.audioPath != null && e.audioPath!.isNotEmpty) ...[
+            const SizedBox(height: 16),
+            VoicePlayerCard(
+              audioPath: e.audioPath!,
+              durationMs: e.audioDurationMs,
+              transcript: e.audioTranscript,
+            ),
+          ],
+          if (e.body != null && e.body!.trim().isNotEmpty) ...[
+            const SizedBox(height: 16),
+            Text(
+              e.body!,
+              style: t.bodyLarge?.copyWith(
+                height: 1.6,
+                fontSize: 15,
+                color: c.ink,
+              ),
+            ),
+          ],
+          if (tags.isNotEmpty) ...[
+            const SizedBox(height: 18),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                for (final tag in tags)
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 4,
+                    ),
+                    decoration: BoxDecoration(
+                      color: c.isDark
+                          ? c.subtle
+                          : const Color(0xFFF1F5F2),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: c.line),
+                    ),
+                    child: Text(
+                      '#$tag',
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                        color: c.primary,
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ],
+          if (dayTx.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            Divider(color: c.line),
+            const SizedBox(height: 10),
+            Text(
+              l.dayTransactions,
+              style: t.titleSmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: c.muted,
+              ),
+            ),
+            const SizedBox(height: 8),
+            for (final tx in dayTx)
+              TxRow(
+                tx: tx,
+                snapshot: snapshot!,
+                leadingTime: true,
+                onTap: () => TxFormScreen.open(context, existing: tx),
+              ),
+          ],
+        ],
+      ),
     );
   }
 }

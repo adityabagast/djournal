@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
 import '../core/format.dart';
+import '../core/platform/platform_info.dart';
 import '../core/theme.dart';
 import '../data/db/app_database.dart';
 import '../data/money_snapshot.dart';
@@ -13,6 +14,19 @@ import 'category_icons.dart';
 extension L10nX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this);
   String get localeTag => Localizations.localeOf(this).languageCode;
+}
+
+extension ResponsiveX on BuildContext {
+  /// True jika layar lebar (desktop / tablet >= 720dp).
+  bool get isWide => PlatformInfo.isWideScreen(MediaQuery.sizeOf(this).width);
+
+  /// Padding bawah daftar: 124dp untuk memberi ruang dock mengapung di HP,
+  /// atau 24dp di desktop/layar lebar karena navigasi ada di sidebar kiri.
+  double get bottomDockPadding => isWide ? 24.0 : 124.0;
+
+  /// Padding standar layar yang adaptif.
+  EdgeInsets get screenPadding =>
+      EdgeInsets.fromLTRB(20, 24, 20, bottomDockPadding);
 }
 
 /// Nama kategori bawaan diterjemahkan; kategori buatan user apa adanya.

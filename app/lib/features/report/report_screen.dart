@@ -131,181 +131,254 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               ),
         ];
 
-        return ListView(
-          padding: const EdgeInsets.fromLTRB(20, 24, 20, 124),
-          children: [
-            ScreenHeader(
-              overline: DateFormat('MMMM y', context.localeTag).format(_selectedMonth),
-              title: l.navReport,
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (!isCurrentMonth)
-                    Padding(
-                      padding: const EdgeInsets.only(right: 2),
-                      child: TextButton(
-                        onPressed: _jumpToThisMonth,
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                          minimumSize: const Size(0, 32),
-                          textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                        ),
-                        child: Text(l.thisMonth),
+        final header = ScreenHeader(
+          overline:
+              DateFormat('MMMM y', context.localeTag).format(_selectedMonth),
+          title: l.navReport,
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (!isCurrentMonth)
+                Padding(
+                  padding: const EdgeInsets.only(right: 2),
+                  child: TextButton(
+                    onPressed: _jumpToThisMonth,
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 4,
+                      ),
+                      minimumSize: const Size(0, 32),
+                      textStyle: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_left),
-                    tooltip: l.prevMonth,
-                    visualDensity: VisualDensity.compact,
-                    onPressed: _prevMonth,
+                    child: Text(l.thisMonth),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.chevron_right),
-                    tooltip: l.nextMonth,
-                    visualDensity: VisualDensity.compact,
-                    onPressed: isCurrentMonth ? null : _nextMonth,
+                ),
+              IconButton(
+                icon: const Icon(Icons.chevron_left),
+                tooltip: l.prevMonth,
+                visualDensity: VisualDensity.compact,
+                onPressed: _prevMonth,
+              ),
+              IconButton(
+                icon: const Icon(Icons.chevron_right),
+                tooltip: l.nextMonth,
+                visualDensity: VisualDensity.compact,
+                onPressed: isCurrentMonth ? null : _nextMonth,
+              ),
+            ],
+          ),
+        );
+
+        final budgetMoodCard = _BudgetMood(
+          hasSpending: monthOut > 0,
+          hasBudget: budgetRows.any((r) => r.$3 > 0),
+          overBudget: [
+            for (final (cat, spent, budget) in budgetRows)
+              if (budget > 0 && spent > budget) categoryLabel(l, cat),
+          ],
+        );
+
+        final overviewCard = AppCard(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          child: Column(
+            children: [
+              row(
+                l.income,
+                rupiah(monthIn, hide: hideAmounts),
+                color: context.colors.income,
+              ),
+              row(
+                l.expense,
+                rupiah(monthOut, hide: hideAmounts),
+                color: context.colors.expense,
+              ),
+              row(
+                l.net,
+                signedRupiah(net, hide: hideAmounts),
+                last: true,
+                bold: true,
+              ),
+            ],
+          ),
+        );
+
+        final chartsCard = AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l.chartExpenseAnalysis,
+                      style: t.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  SegmentedButton<int>(
+                    segments: [
+                      ButtonSegment(
+                        value: 0,
+                        label: Text(
+                          l.chartDistribution,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      ButtonSegment(
+                        value: 1,
+                        label: Text(
+                          l.chartWeekly,
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                    ],
+                    selected: {_chartViewIndex},
+                    onSelectionChanged: (set) =>
+                        setState(() => _chartViewIndex = set.first),
+                    showSelectedIcon: false,
+                    style: ButtonStyle(
+                      visualDensity: VisualDensity.compact,
+                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const WidgetStatePropertyAll(
+                        EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      ),
+                    ),
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 16),
-            _BudgetMood(
-              hasSpending: monthOut > 0,
-              hasBudget: budgetRows.any((r) => r.$3 > 0),
-              overBudget: [
-                for (final (cat, spent, budget) in budgetRows)
-                  if (budget > 0 && spent > budget) categoryLabel(l, cat),
+              const SizedBox(height: 16),
+              if (monthOut == 0)
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Center(child: EmptyNote(l.reportEmpty)),
+                )
+              else if (_chartViewIndex == 0)
+                ExpenseDonutChart(
+                  items: chartItems,
+                  totalSpent: monthOut,
+                  hideAmounts: hideAmounts,
+                  selectedCategoryId: _selectedCategoryId,
+                  onSelectCategory: (id) =>
+                      setState(() => _selectedCategoryId = id),
+                )
+              else
+                WeeklyBarChart(
+                  monthTransactions: month,
+                  month: _selectedMonth,
+                  hideAmounts: hideAmounts,
+                ),
+            ],
+          ),
+        );
+
+        final budgetCard = AppCard(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      l.budgetPerCategory,
+                      style: t.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => BudgetScreen.open(context),
+                    style: TextButton.styleFrom(
+                      minimumSize: const Size(0, 36),
+                      textStyle: buttonTextStyle(
+                        context,
+                        const TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    child: Text(l.manage),
+                  ),
+                ],
+              ),
+              if (budgetRows.isEmpty) EmptyNote(l.reportEmpty),
+              for (final (cat, spent, budget) in budgetRows) ...[
+                const SizedBox(height: 10),
+                BudgetRow(category: cat, spent: spent, budget: budget),
               ],
-            ),
-            const SizedBox(height: 16),
-            AppCard(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-              child: Column(
-                children: [
-                  row(l.income, rupiah(monthIn, hide: hideAmounts), color: context.colors.income),
-                  row(
-                    l.expense,
-                    rupiah(monthOut, hide: hideAmounts),
-                    color: context.colors.expense,
-                  ),
-                  row(
-                    l.net,
-                    signedRupiah(net, hide: hideAmounts),
-                    last: true,
-                    bold: true,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            // Kartu Grafik Analisis Pengeluaran
-            AppCard(
-              child: Column(
+            ],
+          ),
+        );
+
+        final moodSpendingCard = _MoodSpendingCard(
+          good: insight.good,
+          low: insight.low,
+        );
+
+        if (context.isWide) {
+          return ListView(
+            padding: context.screenPadding,
+            children: [
+              header,
+              const SizedBox(height: 16),
+              Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          l.chartExpenseAnalysis,
-                          style: t.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      SegmentedButton<int>(
-                        segments: [
-                          ButtonSegment(
-                            value: 0,
-                            label: Text(
-                              l.chartDistribution,
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                          ButtonSegment(
-                            value: 1,
-                            label: Text(
-                              l.chartWeekly,
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                            ),
-                          ),
-                        ],
-                        selected: {_chartViewIndex},
-                        onSelectionChanged: (set) =>
-                            setState(() => _chartViewIndex = set.first),
-                        showSelectedIcon: false,
-                        style: ButtonStyle(
-                          visualDensity: VisualDensity.compact,
-                          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          padding: const WidgetStatePropertyAll(
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16),
-                  if (monthOut == 0)
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 20),
-                      child: Center(child: EmptyNote(l.reportEmpty)),
-                    )
-                  else if (_chartViewIndex == 0)
-                    ExpenseDonutChart(
-                      items: chartItems,
-                      totalSpent: monthOut,
-                      hideAmounts: hideAmounts,
-                      selectedCategoryId: _selectedCategoryId,
-                      onSelectCategory: (id) =>
-                          setState(() => _selectedCategoryId = id),
-                    )
-                  else
-                    WeeklyBarChart(
-                      monthTransactions: month,
-                      month: _selectedMonth,
-                      hideAmounts: hideAmounts,
+                  // Left Column: Grafik & Budget per Kategori
+                  Expanded(
+                    flex: 6,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        chartsCard,
+                        const SizedBox(height: 16),
+                        budgetCard,
+                      ],
                     ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            AppCard(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          l.budgetPerCategory,
-                          style: t.titleSmall?.copyWith(
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ),
-                      TextButton(
-                        onPressed: () => BudgetScreen.open(context),
-                        style: TextButton.styleFrom(
-                          minimumSize: const Size(0, 36),
-                          textStyle: buttonTextStyle(
-                            context,
-                            const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        child: Text(l.manage),
-                      ),
-                    ],
                   ),
-                  if (budgetRows.isEmpty) EmptyNote(l.reportEmpty),
-                  for (final (cat, spent, budget) in budgetRows) ...[
-                    const SizedBox(height: 10),
-                    BudgetRow(category: cat, spent: spent, budget: budget),
-                  ],
+                  const SizedBox(width: 18),
+                  // Right Column: Ringkasan Saldo & Mood
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        overviewCard,
+                        const SizedBox(height: 16),
+                        budgetMoodCard,
+                        const SizedBox(height: 16),
+                        moodSpendingCard,
+                      ],
+                    ),
+                  ),
                 ],
               ),
-            ),
+            ],
+          );
+        }
+
+        return ListView(
+          padding: context.screenPadding,
+          children: [
+            header,
             const SizedBox(height: 16),
-            _MoodSpendingCard(good: insight.good, low: insight.low),
+            budgetMoodCard,
+            const SizedBox(height: 16),
+            overviewCard,
+            const SizedBox(height: 16),
+            chartsCard,
+            const SizedBox(height: 16),
+            budgetCard,
+            const SizedBox(height: 16),
+            moodSpendingCard,
           ],
         );
       },

@@ -1,0 +1,2063 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyawtat · Desktop UI Prototype (Windows)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ===== CSS Variables & Themes (Mirroring AppPalette in Flutter) ===== */
+  :root {
+    --primary: #1F5F4E;
+    --on-primary: #FFFFFF;
+    --primary-soft: rgba(31, 95, 78, 0.12);
+    --on-primary-soft: #1F5F4E;
+    --hero: #1F5F4E;
+    --on-hero: #FFFFFF;
+    --on-hero-muted: #D3E6DE;
+    --bg: #F5F7F6;
+    --surface: #FFFFFF;
+    --surface-elevated: #FFFFFF;
+    --sidebar-bg: #EAEFEB;
+    --ink: #1B1F1D;
+    --muted: #64706A;
+    --faint: #A6B0AB;
+    --line: #E1E6E3;
+    --track: #E4E9E6;
+    --expense: #C0392B;
+    --expense-soft: rgba(192, 57, 43, 0.12);
+    --income: #1E824C;
+    --income-soft: rgba(30, 130, 76, 0.12);
+    --shadow: rgba(20, 30, 25, 0.08);
+    --window-border: #D3DCD7;
+    --titlebar-bg: #E3E9E5;
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #111513;
+    --surface: #171D1A;
+    --surface-elevated: #1F2723;
+    --sidebar-bg: #141A17;
+    --ink: #F1F4EF;
+    --muted: #95A19B;
+    --faint: #56615C;
+    --line: #242D28;
+    --track: #202723;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --window-border: #2A352F;
+    --titlebar-bg: #151B18;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', system-ui, -apple-system, sans-serif;
+    background: radial-gradient(1200px 700px at 20% -10%, #e8f0ec 0%, transparent 60%),
+                radial-gradient(1000px 600px at 100% 100%, #dfeae4 0%, transparent 60%),
+                #e5ede8;
+    color: #1b1f1d;
+    min-height: 100vh;
+    padding: 24px 20px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ===== Top Control Toolbar ===== */
+  .control-bar {
+    width: 100%;
+    max-width: 1240px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(27, 31, 29, 0.1);
+    border-radius: 20px;
+    padding: 14px 24px;
+    margin-bottom: 22px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    box-shadow: 0 10px 30px rgba(25, 35, 30, 0.06);
+  }
+
+  .brand-group {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .brand-badge {
+    background: var(--primary);
+    color: var(--on-primary);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    padding: 4px 10px;
+    border-radius: 999px;
+  }
+  .brand-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1b1f1d;
+  }
+  .brand-sub {
+    font-size: 12px;
+    color: #64706a;
+  }
+
+  .controls-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .ctrl-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #64706a;
+  }
+
+  .pill-group {
+    display: flex;
+    background: #eef2ef;
+    border-radius: 12px;
+    padding: 3px;
+    border: 1px solid #dce4e0;
+  }
+  .pill-btn {
+    border: none;
+    background: transparent;
+    padding: 6px 12px;
+    border-radius: 9px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    color: #4a5450;
+    cursor: pointer;
+    transition: all .15s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pill-btn.active {
+    background: #ffffff;
+    color: #1b1f1d;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  }
+
+  .accent-swatches {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+  }
+  .accent-circle {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: transform .15s, border-color .15s;
+  }
+  .accent-circle.active {
+    transform: scale(1.18);
+    border-color: #1b1f1d;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+
+  .toggle-btn {
+    border: 1px solid #dce4e0;
+    background: #ffffff;
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .15s;
+  }
+  .toggle-btn:hover {
+    background: #f4f7f5;
+  }
+  .toggle-btn.active {
+    background: #1b1f1d;
+    color: #ffffff;
+    border-color: #1b1f1d;
+  }
+
+  /* ===== Canvas Preview Container ===== */
+  .canvas-wrapper {
+    width: 100%;
+    max-width: 1240px;
+    display: flex;
+    justify-content: center;
+    transition: all .3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  /* ===== Windows Desktop Mockup Frame ===== */
+  .windows-frame {
+    width: 1180px;
+    height: 760px;
+    background: var(--bg);
+    border-radius: 14px;
+    border: 1px solid var(--window-border);
+    box-shadow: 0 24px 70px rgba(15, 25, 20, 0.22);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+    transition: width .3s, height .3s, border-radius .3s;
+  }
+
+  /* Phone mode emulation */
+  .canvas-wrapper.mode-mobile .windows-frame {
+    width: 390px;
+    height: 800px;
+    border-radius: 42px;
+    border: 10px solid #141816;
+    box-shadow: 0 30px 65px rgba(10, 20, 15, 0.35);
+  }
+
+  /* Windows Titlebar */
+  .win-titlebar {
+    height: 38px;
+    background: var(--titlebar-bg);
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 14px;
+    user-select: none;
+    flex-shrink: 0;
+  }
+  .canvas-wrapper.mode-mobile .win-titlebar {
+    display: none;
+  }
+
+  .win-title-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+  }
+  .win-logo {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+  }
+  .win-search-box {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 3px 12px;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    width: 240px;
+  }
+  .win-search-box kbd {
+    margin-left: auto;
+    font-size: 10px;
+    background: var(--track);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .win-controls {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+  }
+  .win-btn {
+    width: 34px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: default;
+  }
+  .win-btn:hover {
+    background: rgba(0,0,0,0.06);
+    color: var(--ink);
+  }
+  .win-btn.close:hover {
+    background: #e81123;
+    color: #fff;
+  }
+
+  /* ===== App Body Layout (Desktop Sidebar + Main Content) ===== */
+  .app-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* Desktop Sidebar (Navigation Rail) */
+  .sidebar {
+    width: 240px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    padding: 18px 14px 16px;
+    flex-shrink: 0;
+    user-select: none;
+    transition: all .2s;
+  }
+  .canvas-wrapper.mode-mobile .sidebar {
+    display: none;
+  }
+
+  .sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    padding: 0 4px;
+  }
+  .mascot-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    background: #FFF9F0;
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .sidebar-brand-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .sidebar-sync-tag {
+    font-size: 10px;
+    color: var(--income);
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 600;
+  }
+  .sync-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--income);
+    display: inline-block;
+  }
+
+  /* Quick Add Big Button */
+  .btn-quick-add {
+    background: var(--primary);
+    color: var(--on-primary);
+    border: none;
+    border-radius: 14px;
+    padding: 12px 14px;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 6px 16px rgba(31, 95, 78, 0.25);
+    margin-bottom: 20px;
+    transition: transform .12s, box-shadow .12s;
+  }
+  .btn-quick-add:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(31, 95, 78, 0.32);
+  }
+  .btn-quick-add kbd {
+    background: rgba(255, 255, 255, 0.22);
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 6px;
+  }
+
+  /* Nav Items */
+  .nav-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background .12s, color .12s;
+    border: 1px solid transparent;
+  }
+  .nav-link:hover {
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--ink);
+  }
+  :root[data-theme="dark"] .nav-link:hover {
+    background: rgba(255, 255, 255, 0.04);
+  }
+  .nav-link.active {
+    background: var(--surface);
+    color: var(--primary);
+    border-color: var(--line);
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .nav-badge {
+    margin-left: auto;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    background: var(--track);
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .nav-link.active .nav-badge {
+    background: var(--primary-soft);
+    color: var(--on-primary-soft);
+  }
+
+  /* Sidebar Footer */
+  .sidebar-footer {
+    border-top: 1px solid var(--line);
+    padding-top: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .footer-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .footer-link:hover {
+    color: var(--ink);
+    background: rgba(0,0,0,0.03);
+  }
+
+  /* Main Workspace */
+  .workspace {
+    flex: 1;
+    overflow-y: auto;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  /* Mobile Bottom Dock (only visible in mobile mode) */
+  .mobile-dock {
+    display: none;
+  }
+  .canvas-wrapper.mode-mobile .mobile-dock {
+    display: flex;
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    padding: 8px 12px;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 100;
+  }
+  .dock-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 12px;
+  }
+  .dock-btn.active {
+    background: var(--primary-soft);
+    color: var(--on-primary-soft);
+  }
+  .dock-add {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    background: var(--primary);
+    color: var(--on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: -16px 0;
+    box-shadow: 0 6px 14px rgba(31, 95, 78, 0.35);
+  }
+
+  /* ===== Views & Screens Styling ===== */
+  .view-container {
+    padding: 24px 28px 48px;
+    display: none;
+    flex-direction: column;
+    gap: 20px;
+    animation: fadeIn .15s ease-out;
+  }
+  .view-container.active {
+    display: flex;
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* View Header */
+  .view-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .view-overline {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-transform: capitalize;
+  }
+  .view-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -.01em;
+  }
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .action-btn:hover {
+    border-color: var(--muted);
+  }
+
+  /* Cards & Grid */
+  .grid-2col {
+    display: grid;
+    grid-template-columns: 1.25fr 0.85fr;
+    gap: 20px;
+    align-items: flex-start;
+  }
+  .canvas-wrapper.mode-mobile .grid-2col {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  /* Stat Card (Today) */
+  .stat-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+  .stat-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .stat-amount {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -.02em;
+    margin-bottom: 8px;
+  }
+  .progress-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: var(--track);
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 35%;
+    border-radius: 4px;
+    background: var(--primary);
+  }
+  .stat-sub {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  /* Timeline List */
+  .timeline-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+  }
+  .section-heading {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .tl-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    transition: background .12s;
+  }
+  .tl-item:hover {
+    background: rgba(0, 0, 0, 0.015);
+  }
+  .tl-item:last-child {
+    border-bottom: none;
+  }
+  .tl-time {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    width: 40px;
+    flex-shrink: 0;
+  }
+  .tl-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .tl-icon.journal {
+    background: var(--primary-soft);
+    color: var(--primary);
+  }
+  .tl-icon.expense {
+    background: var(--expense-soft);
+    color: var(--expense);
+  }
+  .tl-icon.transfer {
+    background: rgba(100, 112, 106, 0.12);
+    color: var(--muted);
+  }
+  .tl-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .tl-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .tl-sub {
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .tl-val {
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+  }
+  .tl-val.neg { color: var(--expense); }
+  .tl-val.pos { color: var(--income); }
+
+  /* Wallet Cards */
+  .wallet-pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 14px;
+    border-radius: 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    margin-bottom: 8px;
+  }
+  .wallet-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .wallet-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    background: var(--surface);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    border: 1px solid var(--line);
+  }
+
+  /* ===== Split Master-Detail Layout (Journal) ===== */
+  .master-detail-container {
+    display: flex;
+    height: 600px;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .canvas-wrapper.mode-mobile .master-detail-container {
+    flex-direction: column;
+    height: auto;
+  }
+  .master-pane {
+    width: 320px;
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+  }
+  .canvas-wrapper.mode-mobile .master-pane {
+    width: 100%;
+  }
+  .master-search {
+    padding: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .search-input-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 6px 10px;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .master-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px;
+  }
+  .journal-card-item {
+    padding: 12px 14px;
+    border-radius: 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all .12s;
+  }
+  .journal-card-item:hover {
+    background: rgba(0,0,0,0.03);
+  }
+  .journal-card-item.selected {
+    background: var(--surface);
+    border-color: var(--line);
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .jc-date {
+    font-size: 10px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .jc-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 2px 0;
+  }
+  .jc-snippet {
+    font-size: 11px;
+    color: var(--muted);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+  }
+
+  .detail-pane {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 24px 28px;
+    overflow-y: auto;
+    background: var(--surface);
+  }
+  .detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 18px;
+  }
+  .detail-mood-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 8px;
+    background: var(--primary-soft);
+    color: var(--on-primary-soft);
+    font-size: 11px;
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .detail-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .audio-player-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 14px;
+    margin-bottom: 18px;
+  }
+  .audio-play-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .audio-waveform {
+    flex: 1;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+  }
+  .wave-bar {
+    flex: 1;
+    background: var(--track);
+    border-radius: 2px;
+    height: 12px;
+  }
+  .wave-bar.active {
+    background: var(--primary);
+  }
+  .detail-body-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--ink);
+    white-space: pre-line;
+  }
+
+  /* ===== Report Chart Widgets ===== */
+  .report-top-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-bottom: 18px;
+  }
+  .canvas-wrapper.mode-mobile .report-top-row {
+    grid-template-columns: 1fr;
+  }
+  .report-mini-stat {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 16px;
+  }
+  .rms-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; }
+  .rms-val { font-size: 18px; font-weight: 700; margin-top: 4px; }
+
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .canvas-wrapper.mode-mobile .chart-grid {
+    grid-template-columns: 1fr;
+  }
+  .chart-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .chart-title {
+    align-self: flex-start;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 14px;
+  }
+
+  /* Donut SVG */
+  .donut-wrap {
+    position: relative;
+    width: 170px;
+    height: 170px;
+  }
+  .donut-center-text {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  .dct-label { font-size: 10px; color: var(--muted); }
+  .dct-val { font-size: 14px; font-weight: 700; color: var(--ink); }
+
+  .category-legend {
+    width: 100%;
+    margin-top: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .leg-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+  }
+  .leg-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 3px;
+    display: inline-block;
+    margin-right: 6px;
+  }
+
+  /* Weekly Bars */
+  .bars-wrap {
+    width: 100%;
+    height: 160px;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    padding: 10px 0 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .bar-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .bar-rect {
+    width: 28px;
+    background: var(--primary-soft);
+    border-radius: 6px 6px 0 0;
+    border-top: 3px solid var(--primary);
+    transition: height .3s;
+  }
+  .bar-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 8px;
+    font-weight: 600;
+  }
+
+  /* Quick Add Popup Modal */
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+  }
+  .modal-overlay.active {
+    display: flex;
+  }
+  .modal-box {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    width: 440px;
+    max-width: 90%;
+    padding: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    animation: popIn .18s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .modal-title { font-size: 18px; font-weight: 700; color: var(--ink); margin-bottom: 16px; }
+  .modal-options { display: flex; flex-direction: column; gap: 10px; }
+  .modal-opt-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .modal-opt-card:hover {
+    background: var(--bg);
+    border-color: var(--primary);
+  }
+  .modal-opt-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+  }
+
+  /* Notes & Explanations under Canvas */
+  .prototype-notes {
+    width: 100%;
+    max-width: 1240px;
+    margin-top: 28px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  .note-card {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(27, 31, 29, 0.08);
+    border-radius: 16px;
+    padding: 18px;
+    font-size: 13px;
+    color: #4a5450;
+    line-height: 1.5;
+  }
+  .note-card b {
+    display: block;
+    color: #1b1f1d;
+    font-size: 14px;
+    margin-bottom: 6px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== Top Interactive Control Bar ===== -->
+<div class="control-bar">
+  <div class="brand-group">
+    <span class="brand-badge">PROTOTYPE</span>
+    <div>
+      <div class="brand-title">Nyawtat · Desktop UI (Windows 11)</div>
+      <div class="brand-sub">Adaptasi Layout Lebar, Nav Rail / Sidebar, &amp; Split Master-Detail</div>
+    </div>
+  </div>
+
+  <div class="controls-row">
+    <!-- Layout Switcher -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="ctrl-label">Layout:</span>
+      <div class="pill-group">
+        <button class="pill-btn active" id="btnLayoutDesktop" onclick="setLayoutMode('desktop')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+          Desktop Windows
+        </button>
+        <button class="pill-btn" id="btnLayoutMobile" onclick="setLayoutMode('mobile')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="5" y="2" width="14" height="20" rx="3"/><path d="M12 18h.01"/></svg>
+          Ponsel (Compact)
+        </button>
+      </div>
+    </div>
+
+    <!-- Theme Switcher -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="ctrl-label">Tema:</span>
+      <div class="pill-group">
+        <button class="pill-btn active" id="btnThemeLight" onclick="setTheme('light')">☀️ Terang</button>
+        <button class="pill-btn" id="btnThemeDark" onclick="setTheme('dark')">🌙 Gelap</button>
+      </div>
+    </div>
+
+    <!-- Accent Color Swatches -->
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <span class="ctrl-label">Aksen:</span>
+      <div class="accent-swatches" id="accentSwatches"></div>
+    </div>
+
+    <!-- Privacy Mode Toggle -->
+    <button class="toggle-btn" id="btnPrivacy" onclick="togglePrivacy()">
+      <span id="privacyIcon">👁️</span>
+      <span id="privacyText">Mode Privasi</span>
+    </button>
+  </div>
+</div>
+
+<!-- ===== Main Interactive Window Canvas ===== -->
+<div class="canvas-wrapper" id="canvasWrapper">
+  <div class="windows-frame" id="windowsFrame">
+    
+    <!-- Windows 11 Titlebar -->
+    <div class="win-titlebar">
+      <div class="win-title-left">
+        <div class="win-logo">🐾</div>
+        <span>Nyawtat — Jurnal &amp; Keuangan Pribadi</span>
+      </div>
+      <div class="win-search-box" onclick="alert('Pencarian cepat global (Ctrl+K) dapat memfilter catatan jurnal, transaksi, dan riwayat.')">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <span>Cari transaksi atau jurnal...</span>
+        <kbd>Ctrl+K</kbd>
+      </div>
+      <div class="win-controls">
+        <div class="win-btn" title="Minimize">─</div>
+        <div class="win-btn" title="Maximize">▢</div>
+        <div class="win-btn close" title="Close">✕</div>
+      </div>
+    </div>
+
+    <!-- App Body (Sidebar + Content) -->
+    <div class="app-body">
+      
+      <!-- Desktop Sidebar / Nav Rail -->
+      <aside class="sidebar">
+        <div class="sidebar-header">
+          <div class="mascot-avatar">
+            <!-- Mini SVG Mascot -->
+            <svg width="28" height="28" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+              <ellipse cx="78" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+              <ellipse cx="122" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+              <path d="M46 80 L54 26 Q57 17 65 23 L88 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+              <path d="M154 80 L146 26 Q143 17 135 23 L112 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+              <rect x="40" y="50" width="120" height="140" rx="28" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+              <ellipse cx="76" cy="94" rx="9" ry="11" fill="#3D4B46"/><circle cx="79.5" cy="89.5" r="3.6" fill="#FFFFFF"/>
+              <ellipse cx="124" cy="94" rx="9" ry="11" fill="#3D4B46"/><circle cx="127.5" cy="89.5" r="3.6" fill="#FFFFFF"/>
+              <ellipse cx="62" cy="112" rx="9" ry="5" fill="#F7B5B9"/><ellipse cx="138" cy="112" rx="9" ry="5" fill="#F7B5B9"/>
+              <path d="M91 111 Q95.5 117 100 111 Q104.5 117 109 111" fill="none" stroke="#4A5A54" stroke-width="4" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div class="sidebar-brand-name">Nyawtat</div>
+            <div class="sidebar-sync-tag">
+              <span class="sync-dot"></span> Tersinkronisasi
+            </div>
+          </div>
+        </div>
+
+        <!-- Big Quick Add Button -->
+        <button class="btn-quick-add" onclick="openQuickAdd()">
+          <span style="display: flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Catat Cepat
+          </span>
+          <kbd>Ctrl+N</kbd>
+        </button>
+
+        <!-- Main Navigation Links -->
+        <nav class="nav-menu">
+          <div class="nav-link active" id="nav-today" onclick="switchTab('today')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg>
+            <span>Hari Ini</span>
+            <span class="nav-badge">3</span>
+          </div>
+          <div class="nav-link" id="nav-journal" onclick="switchTab('journal')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 5.5A2.5 2.5 0 016.5 3H12v18H6.5A2.5 2.5 0 014 18.5z"/><path d="M20 5.5A2.5 2.5 0 0017.5 3H12v18h5.5A2.5 2.5 0 0020 18.5z"/></svg>
+            <span>Jurnal</span>
+            <span class="nav-badge">14</span>
+          </div>
+          <div class="nav-link" id="nav-money" onclick="switchTab('money')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12h3"/></svg>
+            <span>Keuangan</span>
+          </div>
+          <div class="nav-link" id="nav-report" onclick="switchTab('report')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+            <span>Laporan</span>
+          </div>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div class="sidebar-footer">
+          <div class="footer-link" onclick="togglePrivacy()">
+            <span id="sidePrivacyIcon">👁️</span>
+            <span id="sidePrivacyLabel">Sembunyikan Saldo</span>
+          </div>
+          <div class="footer-link" onclick="openSettingsModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+            <span>Pengaturan</span>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Workspace Area -->
+      <main class="workspace">
+        
+        <!-- ================= TAB 1: HARI INI ================= -->
+        <section class="view-container active" id="view-today">
+          <div class="view-header">
+            <div>
+              <div class="view-overline" id="todayDateStr">Jumat, 16 Oktober 2026</div>
+              <h1 class="view-title">Hari Ini</h1>
+            </div>
+            <div class="header-actions">
+              <button class="action-btn" title="Cari" onclick="alert('Buka pencarian')">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+              </button>
+              <button class="action-btn" title="Filter linimasa">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M7 12h10M10 18h4"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Left Column: Spending & Activity Timeline -->
+            <div style="display: flex; flex-direction: column; gap: 18px;">
+              <!-- Spending Card -->
+              <div class="card">
+                <div class="stat-card-head">
+                  <span class="stat-label">Pengeluaran Hari Ini</span>
+                  <button class="btn-quick-add" style="margin: 0; padding: 6px 14px; font-size: 12px;" onclick="openQuickAdd()">+ Catat</button>
+                </div>
+                <div class="stat-amount amt-masked" data-raw="85000">Rp 85.000</div>
+                <div class="progress-bar">
+                  <div class="progress-fill"></div>
+                </div>
+                <div class="stat-sub">Budget Oktober terpakai 25% · sisa <b class="amt-masked" data-raw="3133000">Rp 3.133.000</b></div>
+              </div>
+
+              <!-- Activity Timeline -->
+              <div class="card">
+                <div class="timeline-header">
+                  <span class="section-heading">Linimasa Aktivitas Hari Ini</span>
+                  <span style="font-size: 11px; color: var(--muted); font-weight: 600;">Terbaru di atas</span>
+                </div>
+
+                <div class="tl-item" onclick="switchTab('journal')">
+                  <span class="tl-time">21:30</span>
+                  <div class="tl-icon journal">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-title">Mempersiapkan Rilis Windows Desktop</div>
+                    <div class="tl-sub">Senang · Adaptasi antarmuka untuk layar lebar dan navigasi rail…</div>
+                  </div>
+                </div>
+
+                <div class="tl-item">
+                  <span class="tl-time">18:20</span>
+                  <div class="tl-icon expense">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-title">Ojek Pulang</div>
+                    <div class="tl-sub">Transportasi · GoPay</div>
+                  </div>
+                  <div class="tl-val neg amt-masked" data-raw="-22000">-Rp 22.000</div>
+                </div>
+
+                <div class="tl-item">
+                  <span class="tl-time">12:15</span>
+                  <div class="tl-icon expense">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-title">Makan Siang Soto Betawi</div>
+                    <div class="tl-sub">Makan · Tunai</div>
+                  </div>
+                  <div class="tl-val neg amt-masked" data-raw="-38000">-Rp 38.000</div>
+                </div>
+
+                <div class="tl-item">
+                  <span class="tl-time">08:00</span>
+                  <div class="tl-icon transfer">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 16V4m0 0L3 8m4-4l4 4m6 4v12m0 0l4-4m-4 4l-4-4"/></svg>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-title">Tarik Tunai ATM</div>
+                    <div class="tl-sub">BCA → Tunai</div>
+                  </div>
+                  <div class="tl-val amt-masked" data-raw="300000">Rp 300.000</div>
+                </div>
+
+                <div class="tl-item">
+                  <span class="tl-time">07:30</span>
+                  <div class="tl-icon expense">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  </div>
+                  <div class="tl-content">
+                    <div class="tl-title">Kopi Susu Pagi</div>
+                    <div class="tl-sub">Makan · GoPay</div>
+                  </div>
+                  <div class="tl-val neg amt-masked" data-raw="-25000">-Rp 25.000</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Wallet Cards & Mascot Card -->
+            <div style="display: flex; flex-direction: column; gap: 18px;">
+              <!-- Wallets Widget -->
+              <div class="card">
+                <div class="stat-card-head">
+                  <span class="section-heading">Dompet Saya</span>
+                  <span style="font-size: 11px; color: var(--primary); font-weight: 600; cursor: pointer;" onclick="switchTab('money')">Lihat Semua →</span>
+                </div>
+                
+                <div class="wallet-pill">
+                  <div class="wallet-info">
+                    <div class="wallet-circle">💵</div>
+                    <div>
+                      <div style="font-size: 12px; font-weight: 600; color: var(--ink);">Tunai</div>
+                      <div style="font-size: 10px; color: var(--muted);">Dompet Fisik</div>
+                    </div>
+                  </div>
+                  <div style="font-size: 13px; font-weight: 700;" class="amt-masked" data-raw="425000">Rp 425.000</div>
+                </div>
+
+                <div class="wallet-pill">
+                  <div class="wallet-info">
+                    <div class="wallet-circle">🏦</div>
+                    <div>
+                      <div style="font-size: 12px; font-weight: 600; color: var(--ink);">Bank BCA</div>
+                      <div style="font-size: 10px; color: var(--muted);">Rekening Utama</div>
+                    </div>
+                  </div>
+                  <div style="font-size: 13px; font-weight: 700;" class="amt-masked" data-raw="7850000">Rp 7.850.000</div>
+                </div>
+
+                <div class="wallet-pill">
+                  <div class="wallet-info">
+                    <div class="wallet-circle">📱</div>
+                    <div>
+                      <div style="font-size: 12px; font-weight: 600; color: var(--ink);">GoPay</div>
+                      <div style="font-size: 10px; color: var(--muted);">E-Wallet</div>
+                    </div>
+                  </div>
+                  <div style="font-size: 13px; font-weight: 700;" class="amt-masked" data-raw="342000">Rp 342.000</div>
+                </div>
+              </div>
+
+              <!-- Mascot Tip Card -->
+              <div class="card" style="background: var(--primary-soft); border-color: rgba(31,95,78,0.2); display: flex; gap: 14px; align-items: center;">
+                <div style="width: 50px; height: 50px; flex-shrink: 0;">
+                  <!-- Cute Mascot Icon -->
+                  <svg width="50" height="50" viewBox="0 0 200 220">
+                    <ellipse cx="78" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+                    <ellipse cx="122" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+                    <path d="M46 80 L54 26 Q57 17 65 23 L88 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+                    <path d="M154 80 L146 26 Q143 17 135 23 L112 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+                    <rect x="40" y="50" width="120" height="140" rx="28" fill="#FFF9F0" stroke="#4A5A54" stroke-width="6"/>
+                    <ellipse cx="76" cy="94" rx="9" ry="11" fill="#3D4B46"/><circle cx="79.5" cy="89.5" r="3.6" fill="#FFFFFF"/>
+                    <ellipse cx="124" cy="94" rx="9" ry="11" fill="#3D4B46"/><circle cx="127.5" cy="89.5" r="3.6" fill="#FFFFFF"/>
+                    <ellipse cx="62" cy="112" rx="9" ry="5" fill="#F7B5B9"/><ellipse cx="138" cy="112" rx="9" ry="5" fill="#F7B5B9"/>
+                    <path d="M91 111 Q95.5 117 100 111 Q104.5 117 109 111" fill="none" stroke="#4A5A54" stroke-width="4" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div>
+                  <div style="font-size: 13px; font-weight: 700; color: var(--on-primary-soft);">Tips Hari Ini</div>
+                  <div style="font-size: 11px; color: var(--muted); margin-top: 2px;">
+                    Pengeluaran hari ini masih terkendali dan di bawah rata-rata harian (Rp 120.000). Bagus sekali!
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB 2: JURNAL (MASTER-DETAIL SPLIT) ================= -->
+        <section class="view-container" id="view-journal">
+          <div class="view-header">
+            <div>
+              <div class="view-overline">Catatan Refleksi &amp; Audio</div>
+              <h1 class="view-title">Jurnal Pribadi</h1>
+            </div>
+            <div class="header-actions">
+              <button class="btn-quick-add" style="margin:0; padding:8px 16px; font-size:12px;" onclick="openQuickAdd('journal')">
+                + Tulis Jurnal Baru
+              </button>
+            </div>
+          </div>
+
+          <!-- Master-Detail 2-Pane Container -->
+          <div class="master-detail-container">
+            <!-- Left Master List -->
+            <div class="master-pane">
+              <div class="master-search">
+                <div class="search-input-wrap">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+                  <input type="text" placeholder="Cari entri atau mood..." style="border:none; outline:none; background:transparent; font-family:inherit; font-size:12px; width:100%; color:var(--ink);">
+                </div>
+              </div>
+              <div class="master-list">
+                <div class="journal-card-item selected" onclick="selectJournal(0, this)">
+                  <div class="jc-date">16 OKTOBER 2026 · 21:30</div>
+                  <div class="jc-title">Mempersiapkan Rilis Windows Desktop</div>
+                  <div class="jc-snippet">Hari ini mencoba menyiapkan adaptasi UI Nyawtat untuk desktop Windows. Layout split-pane terasa sangat intuitif…</div>
+                </div>
+
+                <div class="journal-card-item" onclick="selectJournal(1, this)">
+                  <div class="jc-date">15 OKTOBER 2026 · 14:10</div>
+                  <div class="jc-title">Kopi Sore dan Refleksi Mingguan</div>
+                  <div class="jc-snippet">Duduk di kafe dekat taman, mendengarkan suara hujan sambil menyusun target minggu depan. Terasa sangat menenangkan…</div>
+                </div>
+
+                <div class="journal-card-item" onclick="selectJournal(2, this)">
+                  <div class="jc-date">13 OKTOBER 2026 · 08:00</div>
+                  <div class="jc-title">Catatan Suara: Ide Fitur Donut Chart 🎙️</div>
+                  <div class="jc-snippet">[Audio 0:45] Merekam ide grafik donut untuk visualisasi kategori pengeluaran dan ringkasan mingguan di halaman Laporan…</div>
+                </div>
+
+                <div class="journal-card-item" onclick="selectJournal(3, this)">
+                  <div class="jc-date">11 OKTOBER 2026 · 22:15</div>
+                  <div class="jc-title">Akhir Pekan Bersama Keluarga</div>
+                  <div class="jc-snippet">Menghabiskan waktu jalan santai, makan es krim bersama keponakan. Kehangatan yang sederhana tapi berharga…</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Detail Pane -->
+            <div class="detail-pane" id="journalDetailPane">
+              <div class="detail-header">
+                <div>
+                  <div class="detail-mood-tag" id="jDetailMood">✨ Senang · 16 Oktober 2026, 21:30</div>
+                  <h2 class="detail-title" id="jDetailTitle">Mempersiapkan Rilis Windows Desktop</h2>
+                </div>
+                <div style="display: flex; gap: 8px;">
+                  <button class="action-btn" title="Edit" onclick="alert('Buka editor entri')">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                  </button>
+                  <button class="action-btn" title="Hapus">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Audio Player Bar (if voice note) -->
+              <div class="audio-player-bar" id="jAudioBar" style="display: flex;">
+                <div class="audio-play-circle" onclick="togglePlayAudio(this)">▶</div>
+                <div class="audio-waveform">
+                  <div class="wave-bar active" style="height: 8px;"></div>
+                  <div class="wave-bar active" style="height: 14px;"></div>
+                  <div class="wave-bar active" style="height: 10px;"></div>
+                  <div class="wave-bar active" style="height: 16px;"></div>
+                  <div class="wave-bar" style="height: 12px;"></div>
+                  <div class="wave-bar" style="height: 7px;"></div>
+                  <div class="wave-bar" style="height: 15px;"></div>
+                  <div class="wave-bar" style="height: 9px;"></div>
+                </div>
+                <span style="font-size: 11px; font-weight: 600; color: var(--muted);" id="jAudioTime">0:32 / 0:45</span>
+              </div>
+
+              <div class="detail-body-text" id="jDetailText">
+Hari ini mencoba menyiapkan adaptasi UI Nyawtat untuk desktop Windows. Layout split-pane terasa sangat intuitif karena memanfaatkan lebar layar monitor tanpa perlu pop-up yang menutupi seluruh layar.
+
+Beberapa hal yang dipelajari dan disesuaikan:
+1. Navigasi vertikal (sidebar) jauh lebih nyaman digunakan dengan mouse dibandingkan bottom navigation bar di bawah layar.
+2. Pintasan keyboard (Ctrl+N, Ctrl+1..4, Ctrl+K) membuat pengoperasian menjadi sangat gesit untuk pengguna desktop.
+3. Dukungan database lokal SQLite dan secure storage berjalan mulus di Windows.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB 3: KEUANGAN ================= -->
+        <section class="view-container" id="view-money">
+          <div class="view-header">
+            <div>
+              <div class="view-overline">Saldo &amp; Dompet</div>
+              <h1 class="view-title">Keuangan</h1>
+            </div>
+            <div class="header-actions">
+              <button class="btn-quick-add" style="margin:0; padding:8px 16px; font-size:12px;" onclick="openQuickAdd('tx')">
+                + Tambah Transaksi
+              </button>
+            </div>
+          </div>
+
+          <div class="grid-2col">
+            <!-- Left Side: Total Balance Card & Wallets Management -->
+            <div style="display:flex; flex-direction:column; gap: 18px;">
+              <!-- Hero Total Saldo Card -->
+              <div class="card" style="background: var(--hero); color: var(--on-hero); border: none; box-shadow: 0 10px 24px rgba(31,95,78,0.25);">
+                <div style="font-size: 12px; color: var(--on-hero-muted); text-transform: uppercase; font-weight: 600;">Total Saldo Tersedia</div>
+                <div class="stat-amount amt-masked" data-raw="8617000" style="color: #fff; margin: 8px 0 16px;">Rp 8.617.000</div>
+                <div style="display: flex; gap: 10px;">
+                  <button style="flex:1; border:none; background: rgba(255,255,255,0.2); color:#fff; border-radius:10px; padding:8px; font-family:inherit; font-size:12px; font-weight:600; cursor:pointer;" onclick="openQuickAdd('tx')">
+                    + Transaksi
+                  </button>
+                  <button style="flex:1; border:none; background: rgba(255,255,255,0.2); color:#fff; border-radius:10px; padding:8px; font-family:inherit; font-size:12px; font-weight:600; cursor:pointer;" onclick="alert('Buka dialog transfer')">
+                    ⇄ Transfer
+                  </button>
+                </div>
+              </div>
+
+              <!-- Dompet List -->
+              <div class="card">
+                <div class="stat-card-head">
+                  <span class="section-heading">Daftar Dompet Aktif</span>
+                  <button class="action-btn" style="width:28px; height:28px; font-size:11px;" title="Kelola Dompet">+</button>
+                </div>
+                <div class="wallet-pill">
+                  <div class="wallet-info">
+                    <div class="wallet-circle">💵</div>
+                    <div>
+                      <div style="font-size: 13px; font-weight: 600; color: var(--ink);">Tunai</div>
+                      <div style="font-size: 11px; color: var(--muted);">Dompet Fisik</div>
+                    </div>
+                  </div>
+                  <div class="amt-masked" data-raw="425000" style="font-weight:700;">Rp 425.000</div>
+                </div>
+                <div class="wallet-pill">
+                  <div class="wallet-info">
+                    <div class="wallet-circle">🏦</div>
+                    <div>
+                      <div style="font-size: 13px; font-weight: 600; color: var(--ink);">Bank BCA</div>
+                      <div style="font-size: 11px; color: var(--muted);">Tabungan Utama</div>
+                    </div>
+                  </div>
+                  <div class="amt-masked" data-raw="7850000" style="font-weight:700;">Rp 7.850.000</div>
+                </div>
+                <div class="wallet-pill">
+                  <div class="wallet-info">
+                    <div class="wallet-circle">📱</div>
+                    <div>
+                      <div style="font-size: 13px; font-weight: 600; color: var(--ink);">GoPay</div>
+                      <div style="font-size: 11px; color: var(--muted);">Saldo Digital</div>
+                    </div>
+                  </div>
+                  <div class="amt-masked" data-raw="342000" style="font-weight:700;">Rp 342.000</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Side: Transactions History -->
+            <div class="card">
+              <div class="stat-card-head">
+                <span class="section-heading">Riwayat Transaksi Bulan Ini</span>
+                <div style="display: flex; gap: 6px;">
+                  <button class="pill-btn active" style="font-size:11px; padding:4px 8px;">Semua</button>
+                  <button class="pill-btn" style="font-size:11px; padding:4px 8px;">Keluar</button>
+                  <button class="pill-btn" style="font-size:11px; padding:4px 8px;">Masuk</button>
+                </div>
+              </div>
+
+              <div class="tl-item">
+                <span class="tl-time">16 Okt</span>
+                <div class="tl-icon expense">🍴</div>
+                <div class="tl-content">
+                  <div class="tl-title">Makan Siang Soto Betawi</div>
+                  <div class="tl-sub">Makan · Tunai</div>
+                </div>
+                <div class="tl-val neg amt-masked" data-raw="-38000">-Rp 38.000</div>
+              </div>
+
+              <div class="tl-item">
+                <span class="tl-time">16 Okt</span>
+                <div class="tl-icon expense">☕</div>
+                <div class="tl-content">
+                  <div class="tl-title">Kopi Susu Pagi</div>
+                  <div class="tl-sub">Makan · GoPay</div>
+                </div>
+                <div class="tl-val neg amt-masked" data-raw="-25000">-Rp 25.000</div>
+              </div>
+
+              <div class="tl-item">
+                <span class="tl-time">15 Okt</span>
+                <div class="tl-icon expense">🛒</div>
+                <div class="tl-content">
+                  <div class="tl-title">Belanja Bulanan Supermarket</div>
+                  <div class="tl-sub">Belanja · BCA</div>
+                </div>
+                <div class="tl-val neg amt-masked" data-raw="-412000">-Rp 412.000</div>
+              </div>
+
+              <div class="tl-item">
+                <span class="tl-time">10 Okt</span>
+                <div class="tl-icon" style="background:var(--income-soft); color:var(--income);">💰</div>
+                <div class="tl-content">
+                  <div class="tl-title">Honor Freelance Proyek UI</div>
+                  <div class="tl-sub">Pemasukan · BCA</div>
+                </div>
+                <div class="tl-val pos amt-masked" data-raw="2500000">+Rp 2.500.000</div>
+              </div>
+
+              <div class="tl-item">
+                <span class="tl-time">01 Okt</span>
+                <div class="tl-icon" style="background:var(--income-soft); color:var(--income);">💼</div>
+                <div class="tl-content">
+                  <div class="tl-title">Gaji Bulanan Oktober</div>
+                  <div class="tl-sub">Gaji Pokok · BCA</div>
+                </div>
+                <div class="tl-val pos amt-masked" data-raw="8500000">+Rp 8.500.000</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ================= TAB 4: LAPORAN (CHARTS & ANALYTICS) ================= -->
+        <section class="view-container" id="view-report">
+          <div class="view-header">
+            <div>
+              <div class="view-overline">Analisis Keuangan &amp; Pola Mood</div>
+              <h1 class="view-title">Laporan Bulanan</h1>
+            </div>
+            <!-- Month Navigator -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <button class="action-btn" title="Bulan Sebelumnya">⟨</button>
+              <div style="font-size: 13px; font-weight: 700; padding: 6px 12px; background:var(--surface); border:1px solid var(--line); border-radius:10px;">
+                Oktober 2026
+              </div>
+              <button class="action-btn" title="Bulan Berikutnya">⟩</button>
+            </div>
+          </div>
+
+          <!-- Top 3 Stat Summary -->
+          <div class="report-top-row">
+            <div class="report-mini-stat">
+              <div class="rms-label">Total Pemasukan</div>
+              <div class="rms-val amt-masked" data-raw="11000000" style="color: var(--income);">+Rp 11.000.000</div>
+            </div>
+            <div class="report-mini-stat">
+              <div class="rms-label">Total Pengeluaran</div>
+              <div class="rms-val amt-masked" data-raw="2867000" style="color: var(--expense);">-Rp 2.867.000</div>
+            </div>
+            <div class="report-mini-stat">
+              <div class="rms-label">Tabungan Bersih</div>
+              <div class="rms-val amt-masked" data-raw="8133000" style="color: var(--ink);">Rp 8.133.000</div>
+            </div>
+          </div>
+
+          <!-- 2 Charts Grid -->
+          <div class="chart-grid">
+            <!-- Donut Chart: By Category -->
+            <div class="chart-box">
+              <div class="chart-title">Proporsi Pengeluaran per Kategori</div>
+              <div class="donut-wrap">
+                <svg width="170" height="170" viewBox="0 0 100 100">
+                  <!-- Donut Segments with stroke-dasharray -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#E4E9E6" stroke-width="14"/>
+                  <!-- Makan 45% (dash 107.4) -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#9A3412" stroke-width="14"
+                          stroke-dasharray="107.4 238.7" stroke-dashoffset="0" transform="rotate(-90 50 50)"/>
+                  <!-- Transport 20% (dash 47.7) -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#1E4E79" stroke-width="14"
+                          stroke-dasharray="47.7 238.7" stroke-dashoffset="-107.4" transform="rotate(-90 50 50)"/>
+                  <!-- Belanja 20% (dash 47.7) -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#6B2C7A" stroke-width="14"
+                          stroke-dasharray="47.7 238.7" stroke-dashoffset="-155.1" transform="rotate(-90 50 50)"/>
+                  <!-- Tagihan 15% (dash 35.8) -->
+                  <circle cx="50" cy="50" r="38" fill="none" stroke="#7A5A00" stroke-width="14"
+                          stroke-dasharray="35.8 238.7" stroke-dashoffset="-202.8" transform="rotate(-90 50 50)"/>
+                </svg>
+                <div class="donut-center-text">
+                  <span class="dct-label">Total Out</span>
+                  <span class="dct-val amt-masked" data-raw="2867000">Rp 2,86M</span>
+                </div>
+              </div>
+
+              <div class="category-legend">
+                <div class="leg-item">
+                  <span><i class="leg-dot" style="background:#9A3412;"></i> Makan &amp; Minum (45%)</span>
+                  <b class="amt-masked" data-raw="1290000">Rp 1.290.000</b>
+                </div>
+                <div class="leg-item">
+                  <span><i class="leg-dot" style="background:#1E4E79;"></i> Transportasi (20%)</span>
+                  <b class="amt-masked" data-raw="573000">Rp 573.000</b>
+                </div>
+                <div class="leg-item">
+                  <span><i class="leg-dot" style="background:#6B2C7A;"></i> Belanja (20%)</span>
+                  <b class="amt-masked" data-raw="573000">Rp 573.000</b>
+                </div>
+                <div class="leg-item">
+                  <span><i class="leg-dot" style="background:#7A5A00;"></i> Tagihan &amp; Rutin (15%)</span>
+                  <b class="amt-masked" data-raw="431000">Rp 431.000</b>
+                </div>
+              </div>
+            </div>
+
+            <!-- Weekly Trend Bar Chart -->
+            <div class="chart-box">
+              <div class="chart-title">Pengeluaran Mingguan (Oktober)</div>
+              <div class="bars-wrap">
+                <div class="bar-col">
+                  <div class="bar-rect" style="height: 60px;"></div>
+                  <span class="bar-label">M1</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-rect" style="height: 110px;"></div>
+                  <span class="bar-label">M2</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-rect" style="height: 85px;"></div>
+                  <span class="bar-label">M3</span>
+                </div>
+                <div class="bar-col">
+                  <div class="bar-rect" style="height: 35px; opacity: 0.5;"></div>
+                  <span class="bar-label">M4 (aktif)</span>
+                </div>
+              </div>
+              <div style="font-size: 11px; color: var(--muted); margin-top: 14px; text-align: center;">
+                Rata-rata pengeluaran mingguan: <b class="amt-masked" data-raw="716000">Rp 716.750</b>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <!-- Mobile Floating Dock (visible in mobile preview) -->
+      <nav class="mobile-dock">
+        <div class="dock-btn active" onclick="switchTab('today')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11l8-7 8 7"/><path d="M6 10v9h12v-9"/></svg>
+          <span>Hari Ini</span>
+        </div>
+        <div class="dock-btn" onclick="switchTab('journal')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 5.5A2.5 2.5 0 016.5 3H12v18H6.5A2.5 2.5 0 014 18.5z"/><path d="M20 5.5A2.5 2.5 0 0017.5 3H12v18h5.5A2.5 2.5 0 0020 18.5z"/></svg>
+          <span>Jurnal</span>
+        </div>
+        <div class="dock-add" onclick="openQuickAdd()">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+        </div>
+        <div class="dock-btn" onclick="switchTab('money')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="6" width="18" height="13" rx="3"/><path d="M16 12h3"/></svg>
+          <span>Keuangan</span>
+        </div>
+        <div class="dock-btn" onclick="switchTab('report')">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 20V10M12 20V4M19 20v-7"/></svg>
+          <span>Laporan</span>
+        </div>
+      </nav>
+
+    </div>
+  </div>
+</div>
+
+<!-- ===== Quick Add Modal Overlay ===== -->
+<div class="modal-overlay" id="quickAddModal" onclick="closeQuickAdd(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title">Catat Cepat</div>
+    <div class="modal-options">
+      <div class="modal-opt-card" onclick="closeQuickAdd(); switchTab('money');">
+        <div class="modal-opt-icon" style="background:#FCE9DD; color:#9A3412;">💳</div>
+        <div>
+          <div style="font-size:14px; font-weight:700; color:var(--ink);">Catat Transaksi Uang</div>
+          <div style="font-size:12px; color:var(--muted);">Pengeluaran atau pemasukan baru</div>
+        </div>
+      </div>
+      <div class="modal-opt-card" onclick="closeQuickAdd(); switchTab('journal');">
+        <div class="modal-opt-icon" style="background:var(--primary-soft); color:var(--primary);">📖</div>
+        <div>
+          <div style="font-size:14px; font-weight:700; color:var(--ink);">Tulis Catatan Jurnal</div>
+          <div style="font-size:12px; color:var(--muted);">Tulis refleksi pikiran dan pilih mood hari ini</div>
+        </div>
+      </div>
+      <div class="modal-opt-card" onclick="closeQuickAdd(); alert('Fitur rekam suara (didukung oleh package record_windows)');">
+        <div class="modal-opt-icon" style="background:var(--primary-soft); color:var(--primary);">🎙️</div>
+        <div>
+          <div style="font-size:14px; font-weight:700; color:var(--ink);">Rekam Catatan Suara</div>
+          <div style="font-size:12px; color:var(--muted);">Bicara langsung lewat mikrofon PC / laptop</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Prototype Design Principles & Notes ===== -->
+<div class="prototype-notes">
+  <div class="note-card">
+    <b>1. Navigasi Vertikal (Sidebar) vs Bottom Dock</b>
+    Pada layar lebar desktop (≥ 768px), navigasi berpindah ke sisi kiri (Navigation Rail / Sidebar) dengan tombol Catat Cepat lebar dan shortcut hint (Ctrl+N). Pada layar ponsel, tetap menggunakan floating bottom dock.
+  </div>
+  <div class="note-card">
+    <b>2. Split-Pane (Master-Detail) di Jurnal</b>
+    Daftar entri jurnal dan pembaca/editor berada berdampingan. Pengguna tidak perlu membuka modal penuh yang menutupi layar hanya untuk membaca satu entri.
+  </div>
+  <div class="note-card">
+    <b>3. Dashboard 2-Kolom &amp; Chart Grid</b>
+    Memanfaatkan ruang horizontal desktop: kartu ringkasan dan linimasa ditempatkan di sisi kiri, sementara dompet aktif dan tips maskot di sisi kanan. Pada Laporan, grafik donut dan mingguan tampil berdampingan.
+  </div>
+</div>
+
+<script>
+  // ===== State Management =====
+  let currentTab = 'today';
+  let isDarkMode = false;
+  let isPrivacyActive = false;
+  let currentAccent = 'sage';
+
+  const accents = [
+    { id: 'sage', name: 'Hijau Sage', color: '#1F5F4E' },
+    { id: 'ocean', name: 'Biru Samudra', color: '#1D4E89' },
+    { id: 'violet', name: 'Ungu Violet', color: '#5B3E9B' },
+    { id: 'rose', name: 'Merah Rose', color: '#A83B62' },
+    { id: 'pink', name: 'Merah Muda', color: '#D8467E' },
+    { id: 'amber', name: 'Kuning Amber', color: '#8A5A12' },
+    { id: 'teal', name: 'Biru Teal', color: '#116B72' },
+  ];
+
+  // Render Swatches
+  const swatchContainer = document.getElementById('accentSwatches');
+  accents.forEach(acc => {
+    const el = document.createElement('div');
+    el.className = `accent-circle ${acc.id === currentAccent ? 'active' : ''}`;
+    el.style.backgroundColor = acc.color;
+    el.title = acc.name;
+    el.onclick = () => setAccent(acc);
+    swatchContainer.appendChild(el);
+  });
+
+  function setAccent(acc) {
+    currentAccent = acc.id;
+    document.querySelectorAll('.accent-circle').forEach(c => c.classList.remove('active'));
+    event.target.classList.add('active');
+
+    const root = document.documentElement;
+    root.style.setProperty('--primary', acc.color);
+    root.style.setProperty('--hero', acc.color);
+    root.style.setProperty('--primary-soft', `${acc.color}1F`);
+    root.style.setProperty('--on-primary-soft', acc.color);
+  }
+
+  function setTheme(mode) {
+    isDarkMode = (mode === 'dark');
+    document.getElementById('btnThemeLight').classList.toggle('active', !isDarkMode);
+    document.getElementById('btnThemeDark').classList.toggle('active', isDarkMode);
+    if (isDarkMode) {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+  }
+
+  function setLayoutMode(mode) {
+    const wrapper = document.getElementById('canvasWrapper');
+    const btnD = document.getElementById('btnLayoutDesktop');
+    const btnM = document.getElementById('btnLayoutMobile');
+
+    if (mode === 'mobile') {
+      wrapper.classList.add('mode-mobile');
+      btnD.classList.remove('active');
+      btnM.classList.add('active');
+    } else {
+      wrapper.classList.remove('mode-mobile');
+      btnD.classList.add('active');
+      btnM.classList.remove('active');
+    }
+  }
+
+  function switchTab(tabId) {
+    currentTab = tabId;
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view-container').forEach(v => v.classList.remove('active'));
+
+    const navEl = document.getElementById(`nav-${tabId}`);
+    if (navEl) navEl.classList.add('active');
+
+    const viewEl = document.getElementById(`view-${tabId}`);
+    if (viewEl) viewEl.classList.add('active');
+
+    // Sync dock button
+    const dockBtns = document.querySelectorAll('.dock-btn');
+    const tabs = ['today', 'journal', 'money', 'report'];
+    const idx = tabs.indexOf(tabId);
+    if (idx !== -1 && dockBtns[idx]) dockBtns[idx].classList.add('active');
+  }
+
+  function togglePrivacy() {
+    isPrivacyActive = !isPrivacyActive;
+    const btn = document.getElementById('btnPrivacy');
+    const icon = document.getElementById('privacyIcon');
+    const text = document.getElementById('privacyText');
+    const sideIcon = document.getElementById('sidePrivacyIcon');
+    const sideLabel = document.getElementById('sidePrivacyLabel');
+
+    btn.classList.toggle('active', isPrivacyActive);
+    icon.textContent = isPrivacyActive ? '🔒' : '👁️';
+    text.textContent = isPrivacyActive ? 'Privasi Aktif' : 'Mode Privasi';
+    sideIcon.textContent = isPrivacyActive ? '🔒' : '👁️';
+    sideLabel.textContent = isPrivacyActive ? 'Tampilkan Saldo' : 'Sembunyikan Saldo';
+
+    document.querySelectorAll('.amt-masked').forEach(el => {
+      const raw = el.getAttribute('data-raw');
+      if (isPrivacyActive) {
+        el.textContent = 'Rp ••••••';
+      } else {
+        const num = Math.abs(parseInt(raw, 10));
+        const formatted = new Intl.NumberFormat('id-ID').format(num);
+        if (raw.startsWith('-')) {
+          el.textContent = `-Rp ${formatted}`;
+        } else if (raw.startsWith('+')) {
+          el.textContent = `+Rp ${formatted}`;
+        } else {
+          el.textContent = `Rp ${formatted}`;
+        }
+      }
+    });
+  }
+
+  function openQuickAdd(preferred) {
+    document.getElementById('quickAddModal').classList.add('active');
+  }
+
+  function closeQuickAdd(e) {
+    document.getElementById('quickAddModal').classList.remove('active');
+  }
+
+  function openSettingsModal() {
+    alert('Pengaturan Aplikasi Nyawtat: Cadangan lokal, Sinkronisasi server, Mode privasi, dan Bahasa.');
+  }
+
+  // Journal details selection
+  const journalData = [
+    {
+      title: "Mempersiapkan Rilis Windows Desktop",
+      date: "16 Oktober 2026, 21:30",
+      mood: "✨ Senang",
+      hasAudio: true,
+      audioDuration: "0:32 / 0:45",
+      body: `Hari ini mencoba menyiapkan adaptasi UI Nyawtat untuk desktop Windows. Layout split-pane terasa sangat intuitif karena memanfaatkan lebar layar monitor tanpa perlu pop-up yang menutupi seluruh layar.
+
+Beberapa hal yang dipelajari dan disesuaikan:
+1. Navigasi vertikal (sidebar) jauh lebih nyaman digunakan dengan mouse dibandingkan bottom navigation bar di bawah layar.
+2. Pintasan keyboard (Ctrl+N, Ctrl+1..4, Ctrl+K) membuat pengoperasian menjadi sangat gesit untuk pengguna desktop.
+3. Dukungan database lokal SQLite dan secure storage berjalan mulus di Windows.`
+    },
+    {
+      title: "Kopi Sore dan Refleksi Mingguan",
+      date: "15 Oktober 2026, 14:10",
+      mood: "🌿 Tenang",
+      hasAudio: false,
+      audioDuration: "",
+      body: `Duduk di kafe dekat taman, mendengarkan suara rintik hujan sambil membuka laptop untuk menyusun target minggu depan. Terasa sangat menenangkan.
+
+Bulan ini target pengeluaran makan di luar perlu sedikit ditekan karena minggu kemarin ada dua acara kumpul bareng teman kantor. Untungnya pos tabungan masih aman sesuai rencana.`
+    },
+    {
+      title: "Catatan Suara: Ide Fitur Donut Chart 🎙️",
+      date: "13 Oktober 2026, 08:00",
+      mood: "💡 Kreatif",
+      hasAudio: true,
+      audioDuration: "0:00 / 1:12",
+      body: `[Transkrip Catatan Suara]:
+"Ide untuk halaman laporan: tambahkan grafik donat yang membagi pengeluaran berdasarkan kategori. Lalu jika salah satu kategori di-klik, tampilkan perbandingan terhadap budget yang telah diatur bulan ini. Jangan lupa juga buat grafik batang mingguan agar kita tahu di minggu mana pengeluaran paling melonjak."`
+    },
+    {
+      title: "Akhir Pekan Bersama Keluarga",
+      date: "11 Oktober 2026, 22:15",
+      mood: "❤️ Bahagia",
+      hasAudio: false,
+      audioDuration: "",
+      body: `Menghabiskan waktu jalan santai sore hari, makan es krim bersama keponakan di taman kota. Kehangatan yang sederhana tapi selalu bisa mengisi ulang energi untuk menghadapi hari kerja berikutnya.`
+    }
+  ];
+
+  function selectJournal(idx, el) {
+    document.querySelectorAll('.journal-card-item').forEach(c => c.classList.remove('selected'));
+    if (el) el.classList.add('selected');
+
+    const item = journalData[idx];
+    document.getElementById('jDetailTitle').textContent = item.title;
+    document.getElementById('jDetailMood').textContent = `${item.mood} · ${item.date}`;
+    document.getElementById('jDetailText').textContent = item.body;
+
+    const audioBar = document.getElementById('jAudioBar');
+    if (item.hasAudio) {
+      audioBar.style.display = 'flex';
+      document.getElementById('jAudioTime').textContent = item.audioDuration;
+    } else {
+      audioBar.style.display = 'none';
+    }
+  }
+
+  function togglePlayAudio(btn) {
+    if (btn.textContent === '▶') {
+      btn.textContent = '⏸';
+    } else {
+      btn.textContent = '▶';
+    }
+  }
+
+  // Keyboard Shortcuts Support
+  window.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'n') {
+      e.preventDefault();
+      openQuickAdd();
+    } else if ((e.ctrlKey || e.metaKey) && e.key === '1') {
+      e.preventDefault();
+      switchTab('today');
+    } else if ((e.ctrlKey || e.metaKey) && e.key === '2') {
+      e.preventDefault();
+      switchTab('journal');
+    } else if ((e.ctrlKey || e.metaKey) && e.key === '3') {
+      e.preventDefault();
+      switchTab('money');
+    } else if ((e.ctrlKey || e.metaKey) && e.key === '4') {
+      e.preventDefault();
+      switchTab('report');
+    } else if (e.key === 'Escape') {
+      closeQuickAdd();
+    }
+  });
+</script>
+</body>
+</html>
+

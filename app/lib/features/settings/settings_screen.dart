@@ -12,6 +12,10 @@ import 'security_section.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
+  static Future<void> open(BuildContext context) => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => const SettingsScreen()),
+      );
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;

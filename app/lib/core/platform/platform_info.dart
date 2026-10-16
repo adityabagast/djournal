@@ -28,7 +28,7 @@ class PlatformInfo {
   /// True jika berjalan di Web.
   static bool get isWeb => kIsWeb;
 
-  /// True jika perangkat memiliki layar lebar (desktop / tablet / landscape).
-  static bool isWideScreen(double width) => width >= 720;
+  /// True jika berjalan di lingkungan desktop atau web dengan lebar >= 720dp.
+  static bool isWideScreen(double width) => (isDesktop || isWeb) && width >= 720;
 }
 
