@@ -2,7 +2,7 @@
 
 Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** dalam satu timeline. Nama "Nyawtat" dari *nyaw* (suara kucing) + *catat*. Offline-first: semua data tersimpan di HP, lalu disinkronkan ke cloud kalau login.
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.6.0**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.8.0**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>
@@ -27,7 +27,7 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
   </tr>
 </table>
 
-<sub>Screenshot memakai data contoh dan dibuat otomatis dengan <code>flutter test tool/screenshots_test.dart</code>.</sub>
+<sub>Screenshot memakai data contoh dan dibuat otomatis dengan <code>flutter test tool/screenshots_test.dart</code>. Prototipe interaktif tersedia di <code>docs/google-drive-prototype/</code>.</sub>
 
 ## Pasang
 
@@ -46,6 +46,8 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 
 **Jurnal & Catatan Suara**
 - Beberapa entri per hari, masing-masing dengan jam (opsional), mood 1–5 (opsional), judul, isi, dan tag
+- **Lampiran Gambar Jurnal**: lampirkan hingga 10 foto per entri dari kamera atau galeri, kompresi on-device (JPEG 80%, maks 1600px), grid pratinjau responsif, thumbnail di feed Jurnal, dan indikator foto di linimasa Hari Ini
+- **Fullscreen Image Viewer**: pratinjau gambar layar penuh dengan gestur cubit-zoom (*pinch-to-zoom*), geser (*pan & swipe* antar gambar)
 - **Catatan Suara (Voice Note)**: rekam suara asli (format AAC/M4A hemat ruang) dengan kartu pemutar interaktif (*seekable waveform*, tombol play/pause, dan kontrol kecepatan 1.0x, 1.5x, 2.0x)
 - **Dikte Suara**: bicara langsung dan ucapan diubah menjadi teks (*speech-to-text*) secara on-device ke dalam cerita entri jurnal
 - Teks transkripsi suara otomatis terindeks dan bisa dicari di Pencarian
@@ -54,12 +56,28 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 
 **Keuangan**
 - Dompet (tunai, bank, e-wallet, lainnya): tambah, ubah saldo (penyesuaian otomatis), arsipkan, hapus
+- **Foto Struk / Bukti Belanja**: lampirkan foto struk belanja di transaksi dengan pratinjau proporsional dan ikon nota `🧾` di linimasa Hari Ini & riwayat transaksi
 - **Mode Privasi**: sembunyikan semua nominal uang (`Rp •••••`) dengan ikon mata instan di kartu saldo/pengeluaran atau sakelar permanen di Pengaturan Keamanan
 - Transaksi pemasukan/pengeluaran per kategori; saldo selalu dihitung dari transaksi
 - Transfer antar dompet (mis. tarik tunai BCA → Tunai), tidak dihitung sebagai pemasukan/pengeluaran
 - Kelola kategori: urutkan, ubah nama/warna/ikon, sembunyikan, gabungkan, hapus
 - Budget bulanan per kategori yang berlanjut ke bulan berikutnya
-- Laporan: pengeluaran per kategori, budget, serta hubungan mood dan pengeluaran
+- Laporan & Grafik Pengeluaran: Donut Chart interaktif per kategori, Bar Chart tren mingguan (4–5 minggu), navigasi bulan sebelumnya/berikutnya, serta hubungan mood dan pengeluaran
+
+**Google Drive & Manajemen Data Pintar**
+- **Cadangan Google Drive Otomatis**: simpan riwayat aman langsung di Google Drive Anda sendiri
+- **Format Excel (.xlsx) Siap Google Sheets**: file cadangan diunggah sebagai spreadsheet Excel yang bisa langsung dibuka, dibaca, dan dianalisis di Google Sheets (4 lembar kerja: `📑 Transaksi`, `📖 Jurnal`, `💵 Dompet`, `🎯 Budget`)
+- **Buka di Google Sheets**: tombol cepat untuk membuka dan melihat spreadsheet langsung di browser atau app Google Sheets
+- **Pemulihan 100% Utuh**: data sistem cadangan tertanam di sheet sistem file Excel sehingga pemulihan dari Google Drive mengembalikan seluruh relasi database secara utuh
+- **Filter Rentang Waktu (Period Range Filter)**: pilihan rentang cadangan fleksibel:
+  - *Semua Riwayat*: seluruh riwayat dari awal pemakaian s.d. saat ini
+  - *Tahun Ini*: riwayat 1 tahun kalender penuh
+  - *Bulan Ini*: riwayat bulan berjalan
+  - *Rentang Kustom*: pemilih rentang tanggal bebas (*Date Range Picker*)
+- **Menu Data yang Disederhanakan**:
+  - **📤 Cadangkan Data (Ekspor)**: satu modal untuk memilih format (Excel `.xlsx` / Cadangan `.json`) dan rentang waktu
+  - **📥 Pulihkan / Impor Data**: satu pintu pemulihan dengan deteksi otomatis (*auto-detection*) untuk file `.json` Nyawtat, file `.xlsx` Nyawtat, maupun database Money Manager (`.mmbak`/`.sqlite`/`.xlsx`)
+- **Masuk dengan Google (Google Sign-In)**: otentikasi cepat satu ketukan
 
 **Hari Ini**: satu linimasa descending (terbaru di atas) yang mencampur entri jurnal dan transaksi, plus bar budget bulan berjalan.
 
@@ -68,8 +86,6 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 - Mode gelap (Sistem / Terang / Gelap), termasuk splash dan widget layar utama
 - Login dan sinkronisasi antar-device lewat Supabase (last-write-wins, soft delete)
 - Kunci PIN 4 digit + sidik jari/wajah; build rilis memblokir screenshot dan pratinjau di daftar app terbaru
-- Ekspor ke Excel (untuk dibaca) dan backup/impor JSON (untuk restore)
-- Impor riwayat dari Money Manager (Realbyte): file cadangan `.mmbak` atau ekspor `.xlsx`
 - Widget layar utama Android: **Ringkas** 2×2, **Hari ini** 4×2, **Jurnal cepat** 4×1. Nominal disembunyikan otomatis saat PIN aktif; widget jurnal tidak pernah menampilkan isi entri.
 - Bahasa Indonesia dan Inggris
 - Maskot kucing di layar kosong, layar PIN, dan notifikasi
