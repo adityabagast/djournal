@@ -8,6 +8,7 @@ import '../../data/journal_repository.dart';
 import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/image_viewer.dart';
 import '../../ui/mascot.dart';
 import '../../ui/mood.dart';
 import '../money/tx_form_screen.dart';
@@ -69,6 +70,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
   String? _audioPath;
   int? _audioDurationMs;
   String? _audioTranscript;
+  List<String> _imagePaths = [];
   bool _showEmptyError = false;
   bool _saving = false;
 
@@ -88,6 +90,16 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
       _title.text = e.title ?? '';
       _body.text = e.body ?? '';
       _tags.text = entryTags(e).join(', ');
+      ref.read(attachmentRepositoryProvider).getAttachmentsForEntry(e.id).then((atts) {
+        if (mounted) {
+          setState(() {
+            _imagePaths = atts
+                .map((a) => a.localPath)
+                .whereType<String>()
+                .toList();
+          });
+        }
+      });
     } else if (_audioTranscript != null && _audioTranscript!.isNotEmpty) {
       _body.text = _audioTranscript!;
     }
@@ -175,14 +187,38 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
     });
   }
 
+  Future<void> _pickImage() async {
+    final source = await showImageSourcePicker(context);
+    if (source == null || !mounted) return;
+    final path = await ref
+        .read(attachmentRepositoryProvider)
+        .pickAndStoreImage(source: source);
+    if (path != null && mounted) {
+      setState(() {
+        _imagePaths.add(path);
+        if (_showEmptyError) _showEmptyError = false;
+      });
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _imagePaths.removeAt(index);
+    });
+  }
+
   Future<void> _save() async {
     final hasAudio = _audioPath != null && _audioPath!.trim().isNotEmpty;
-    if (_title.text.trim().isEmpty && _body.text.trim().isEmpty && !hasAudio) {
+    final hasImages = _imagePaths.isNotEmpty;
+    if (_title.text.trim().isEmpty &&
+        _body.text.trim().isEmpty &&
+        !hasAudio &&
+        !hasImages) {
       setState(() => _showEmptyError = true);
       return;
     }
     setState(() => _saving = true);
-    await ref
+    final entryId = await ref
         .read(journalRepositoryProvider)
         .saveEntry(
           id: widget.existing?.id,
@@ -196,6 +232,10 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
           audioDurationMs: _audioDurationMs,
           audioTranscript: _audioTranscript,
         );
+    await ref
+        .read(attachmentRepositoryProvider)
+        .syncEntryAttachments(entryId, _imagePaths);
+
     if (!mounted) return;
     final l = context.l10n;
     showMascotSnackBar(
@@ -383,6 +423,14 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
             },
             style: t.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             decoration: InputDecoration(hintText: l.entryTitleHint),
+          ),
+          const SizedBox(height: 16),
+          label('Lampiran Gambar', optional: true),
+          const SizedBox(height: 8),
+          JournalImageGrid(
+            imagePaths: _imagePaths,
+            onAddImage: _pickImage,
+            onRemoveImage: _removeImage,
           ),
           const SizedBox(height: 16),
           Row(

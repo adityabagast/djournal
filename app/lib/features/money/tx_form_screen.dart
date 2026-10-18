@@ -9,6 +9,7 @@ import '../../data/db/app_database.dart';
 import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/image_viewer.dart';
 import '../../ui/mascot.dart';
 import 'categories_screen.dart';
 import 'wallet_form_sheet.dart';
@@ -42,6 +43,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
   /// Dompet tujuan, hanya untuk transfer.
   String? _toWalletId;
   late DateTime _occurredAt;
+  String? _receiptPath;
   bool _showAmountError = false;
   bool _saving = false;
 
@@ -59,6 +61,11 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     if (e != null) {
       _amount.text = thousands(e.amount);
       _note.text = e.note ?? '';
+      ref.read(attachmentRepositoryProvider).getAttachmentForTx(e.id).then((att) {
+        if (mounted && att != null && att.localPath != null) {
+          setState(() => _receiptPath = att.localPath);
+        }
+      });
     }
   }
 
@@ -88,6 +95,21 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     });
   }
 
+  Future<void> _pickReceipt() async {
+    final source = await showImageSourcePicker(context);
+    if (source == null || !mounted) return;
+    final path = await ref
+        .read(attachmentRepositoryProvider)
+        .pickAndStoreImage(source: source);
+    if (path != null && mounted) {
+      setState(() => _receiptPath = path);
+    }
+  }
+
+  void _removeReceipt() {
+    setState(() => _receiptPath = null);
+  }
+
   Future<void> _save(List<Category> cats, List<Wallet> wallets) async {
     final amount = parseAmount(_amount.text);
     if (amount <= 0) {
@@ -98,7 +120,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     final isTransfer = _type == 'transfer';
     final categoryId = isTransfer ? null : (_categoryId ?? cats.first.id);
     final overBudget = categoryId != null && _exceedsBudget(categoryId, amount);
-    await ref
+    final txId = await ref
         .read(moneyRepositoryProvider)
         .saveTransaction(
           id: widget.existing?.id,
@@ -110,6 +132,10 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           note: _note.text,
           occurredAt: _occurredAt,
         );
+    await ref
+        .read(attachmentRepositoryProvider)
+        .syncTxAttachment(txId, _receiptPath);
+
     if (!mounted) return;
     final l = context.l10n;
     if (overBudget) {
@@ -458,6 +484,14 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
             decoration: InputDecoration(
               hintText: isTransfer ? l.transferNoteHint : l.noteHint,
             ),
+          ),
+          const SizedBox(height: 20),
+          label('Foto Struk / Bukti Transaksi'),
+          const SizedBox(height: 8),
+          TxReceiptSection(
+            receiptPath: _receiptPath,
+            onPickReceipt: _pickReceipt,
+            onRemoveReceipt: _removeReceipt,
           ),
         ],
       ),

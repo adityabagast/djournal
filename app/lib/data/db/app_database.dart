@@ -24,7 +24,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -37,6 +37,9 @@ class AppDatabase extends _$AppDatabase {
         await m.addColumn(journalEntries, journalEntries.audioPath);
         await m.addColumn(journalEntries, journalEntries.audioDurationMs);
         await m.addColumn(journalEntries, journalEntries.audioTranscript);
+      }
+      if (from < 3) {
+        await m.addColumn(attachments, attachments.transactionId);
       }
     },
     beforeOpen: (details) async {

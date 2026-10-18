@@ -203,6 +203,7 @@ class TxRow extends ConsumerWidget {
     final time = hhmm(tx.occurredAt);
     final toWallet = snapshot.walletById[tx.toWalletId];
     final metaStyle = t.bodySmall?.copyWith(color: context.colors.muted);
+    final receipt = ref.watch(txAttachmentMapProvider)[tx.id];
     // Panah transfer berupa icon: Poppins tidak punya karakter "→".
     final meta = <InlineSpan>[
       if (!leadingTime) TextSpan(text: time),
@@ -272,11 +273,27 @@ class TxRow extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    tx.note ?? (isTransfer ? l.transfer : catName),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                  Row(
+                    children: [
+                      Flexible(
+                        child: Text(
+                          tx.note ?? (isTransfer ? l.transfer : catName),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: t.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ),
+                      if (receipt != null && receipt.localPath != null) ...[
+                        const SizedBox(width: 4),
+                        Icon(
+                          Icons.receipt_long_rounded,
+                          size: 14,
+                          color: context.colors.primary,
+                        ),
+                      ],
+                    ],
                   ),
                   Text.rich(
                     TextSpan(

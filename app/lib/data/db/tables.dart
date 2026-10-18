@@ -112,8 +112,13 @@ class JournalEntries extends Table with SyncColumns {
   TextColumn get audioTranscript => text().nullable()();
 }
 
+@TableIndex(name: 'idx_attachment_entry', columns: {#entryId})
+@TableIndex(name: 'idx_attachment_tx', columns: {#transactionId})
 class Attachments extends Table with SyncColumns {
-  TextColumn get entryId => text().references(JournalEntries, #id)();
+  TextColumn get entryId =>
+      text().nullable().references(JournalEntries, #id)();
+  TextColumn get transactionId =>
+      text().nullable().references(Transactions, #id)();
   TextColumn get localPath => text().nullable()();
   TextColumn get remoteKey => text().nullable()();
   TextColumn get mimeType => text()();

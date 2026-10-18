@@ -22,7 +22,7 @@ class JournalRepository {
     return q.watch();
   }
 
-  Future<void> saveEntry({
+  Future<String> saveEntry({
     String? id,
     required String entryDate,
     required String? entryTime,
@@ -38,13 +38,14 @@ class JournalRepository {
     String? clean(String? s) =>
         (s == null || s.trim().isEmpty) ? null : s.trim();
     final tagsJson = tags.isEmpty ? null : jsonEncode(tags);
+    final targetId = id ?? newId();
 
     if (id == null) {
       await _db
           .into(_db.journalEntries)
           .insert(
             JournalEntriesCompanion.insert(
-              id: newId(),
+              id: targetId,
               createdAt: now,
               updatedAt: now,
               entryDate: entryDate,
@@ -77,6 +78,7 @@ class JournalRepository {
         ),
       );
     }
+    return targetId;
   }
 
   Future<void> deleteEntry(String id) async {

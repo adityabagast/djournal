@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyawtat — Prototipe Fitur Gambar</title>
+<style>
+  :root {
+    --accent: #1F5F4E;
+    --accent-light: #2D8B6E;
+    --accent-soft: #E8F5EE;
+    --bg: #FAFAFA;
+    --surface: #FFFFFF;
+    --ink: #1A1A1A;
+    --muted: #6B7280;
+    --faint: #F3F4F6;
+    --line: #E5E7EB;
+    --divider: #F0F0F0;
+    --expense: #DC2626;
+    --income: #16A34A;
+    --shadow: rgba(0,0,0,0.08);
+    --font: 'Segoe UI', 'Poppins', -apple-system, sans-serif;
+  }
+  .dark {
+    --bg: #111111;
+    --surface: #1C1C1E;
+    --ink: #F5F5F5;
+    --muted: #9CA3AF;
+    --faint: #2A2A2C;
+    --line: #333336;
+    --divider: #2A2A2C;
+    --accent-soft: #1A3D2F;
+    --shadow: rgba(0,0,0,0.3);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font);
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
+  }
+
+  /* ── Layout ── */
+  .controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 16px 12px;
+    flex-wrap: wrap;
+  }
+  .controls h1 {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+    flex-basis: 100%;
+    text-align: center;
+    margin-bottom: 4px;
+  }
+  .controls .subtitle {
+    flex-basis: 100%;
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* ── Theme Toggle ── */
+  .theme-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .theme-btn:hover { background: var(--faint); }
+  .theme-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* ── Accent Swatches ── */
+  .accents {
+    display: flex; gap: 8px; align-items: center;
+  }
+  .accents span { font-size: 12px; color: var(--muted); }
+  .swatch {
+    width: 24px; height: 24px; border-radius: 50%;
+    cursor: pointer; border: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .swatch:hover { transform: scale(1.15); }
+  .swatch.active { border-color: var(--ink); box-shadow: 0 0 0 2px var(--bg), 0 0 0 4px var(--ink); }
+
+  /* ── Phones Container ── */
+  .phones {
+    display: flex;
+    justify-content: center;
+    gap: 28px;
+    padding: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ── Phone Frame ── */
+  .phone {
+    width: 375px;
+    height: 780px;
+    background: var(--surface);
+    border-radius: 40px;
+    border: 3px solid var(--line);
+    overflow: hidden;
+    box-shadow: 0 20px 50px var(--shadow);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: all 0.3s;
+  }
+  .phone-label {
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  /* ── Status Bar ── */
+  .status-bar {
+    height: 50px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    background: var(--surface);
+    flex-shrink: 0;
+  }
+  .status-bar .notch {
+    width: 100px; height: 28px;
+    background: var(--ink);
+    border-radius: 0 0 18px 18px;
+    opacity: 0.15;
+    position: absolute; top: 0;
+  }
+
+  /* ── App Bar ── */
+  .app-bar {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--divider);
+    flex-shrink: 0;
+  }
+  .app-bar .back {
+    width: 32px; height: 32px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; border-radius: 8px;
+    font-size: 18px; color: var(--ink);
+  }
+  .app-bar .back:hover { background: var(--faint); }
+  .app-bar .title {
+    flex: 1; text-align: center;
+    font-size: 16px; font-weight: 600;
+  }
+  .app-bar .save-btn {
+    padding: 6px 16px;
+    border-radius: 10px;
+    background: var(--accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .app-bar .save-btn:hover { opacity: 0.85; }
+
+  /* ── Scrollable Form ── */
+  .form-scroll {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+    scrollbar-width: thin;
+  }
+  .form-scroll::-webkit-scrollbar { width: 3px; }
+  .form-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 3px; }
+
+  /* ── Form Section ── */
+  .section { margin-bottom: 16px; }
+  .section-label {
+    font-size: 12px; font-weight: 600;
+    color: var(--muted); text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 8px;
+  }
+
+  /* ── Input Fields ── */
+  .field {
+    width: 100%; padding: 10px 14px;
+    border: 1px solid var(--line); border-radius: 12px;
+    background: var(--faint); color: var(--ink);
+    font-size: 14px; font-family: var(--font);
+    outline: none; transition: border-color 0.2s; resize: none;
+  }
+  .field:focus { border-color: var(--accent); }
+  .field::placeholder { color: var(--muted); opacity: 0.6; }
+
+  /* ── Date/Time Row ── */
+  .date-row { display: flex; gap: 8px; margin-bottom: 12px; }
+  .date-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px; border: 1px solid var(--line);
+    border-radius: 10px; background: var(--faint);
+    font-size: 13px; color: var(--ink);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .date-chip:hover { border-color: var(--accent); }
+  .date-chip .icon { font-size: 15px; }
+
+  /* ── Mood Row ── */
+  .mood-row { display: flex; gap: 8px; margin-bottom: 4px; }
+  .mood-btn {
+    width: 44px; height: 44px; border-radius: 12px;
+    border: 2px solid var(--line); background: var(--faint);
+    font-size: 22px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s;
+  }
+  .mood-btn:hover { border-color: var(--accent); transform: scale(1.08); }
+  .mood-btn.active { border-color: var(--accent); background: var(--accent-soft); }
+
+  /* ── Image Picker Button ── */
+  .image-actions { display: flex; gap: 8px; margin-bottom: 12px; }
+  .img-btn {
+    display: flex; align-items: center; gap: 6px;
+    padding: 10px 14px; border-radius: 12px;
+    border: 1.5px dashed var(--accent); background: var(--accent-soft);
+    color: var(--accent); font-size: 13px; font-weight: 500;
+    cursor: pointer; transition: all 0.2s; flex: 1; justify-content: center;
+  }
+  .img-btn:hover { background: var(--accent); color: #fff; border-style: solid; }
+  .img-btn .icon { font-size: 18px; }
+
+  /* ── Image Grid ── */
+  .image-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 12px;
+  }
+  .image-thumb {
+    aspect-ratio: 1; border-radius: 12px; overflow: hidden;
+    position: relative; cursor: pointer;
+    border: 1px solid var(--line); transition: all 0.2s;
+  }
+  .image-thumb:hover { border-color: var(--accent); }
+  .image-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .image-thumb .remove {
+    position: absolute; top: 4px; right: 4px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(0,0,0,0.6); color: #fff; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; opacity: 0; transition: opacity 0.2s;
+  }
+  .image-thumb:hover .remove { opacity: 1; }
+  .image-thumb .order-badge {
+    position: absolute; bottom: 4px; left: 4px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    font-size: 10px; font-weight: 700;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .add-image-cell {
+    aspect-ratio: 1; border-radius: 12px;
+    border: 2px dashed var(--line);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    cursor: pointer; color: var(--muted); font-size: 12px;
+    gap: 4px; transition: all 0.2s;
+  }
+  .add-image-cell:hover { border-color: var(--accent); color: var(--accent); }
+  .add-image-cell .plus { font-size: 24px; }
+
+  /* ── Action Row ── */
+  .action-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .action-chip {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px; border-radius: 10px;
+    border: 1px solid var(--line); background: var(--faint);
+    font-size: 13px; color: var(--ink);
+    cursor: pointer; transition: all 0.2s;
+  }
+  .action-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .action-chip .icon { font-size: 16px; }
+
+  /* ── Voice Card ── */
+  .voice-card {
+    padding: 12px; border-radius: 12px;
+    background: var(--faint); border: 1px solid var(--line);
+    margin-bottom: 12px; display: flex; align-items: center; gap: 10px;
+  }
+  .voice-card .play-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; cursor: pointer; flex-shrink: 0;
+  }
+  .voice-card .wave {
+    flex: 1; height: 28px;
+    background: linear-gradient(90deg, var(--accent-soft) 0%, var(--accent) 50%, var(--accent-soft) 100%);
+    border-radius: 4px; opacity: 0.4;
+  }
+  .voice-card .duration { font-size: 12px; color: var(--muted); flex-shrink: 0; }
+
+  /* ── Linked Transactions ── */
+  .linked-tx {
+    padding: 12px; border-radius: 12px;
+    background: var(--faint); border: 1px solid var(--line); margin-bottom: 12px;
+  }
+  .linked-tx .tx-header {
+    font-size: 12px; font-weight: 600;
+    color: var(--muted); margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tx-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; }
+  .tx-item + .tx-item { border-top: 1px solid var(--divider); }
+  .tx-cat-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .tx-item .tx-name { flex: 1; font-size: 13px; }
+  .tx-item .tx-amount { font-size: 13px; font-weight: 600; }
+  .tx-item .tx-amount.expense { color: var(--expense); }
+
+  /* ── Money Form Specific ── */
+  .amount-input {
+    text-align: center; font-size: 32px; font-weight: 700;
+    border: none; background: transparent; color: var(--ink);
+    width: 100%; padding: 16px 0; outline: none; font-family: var(--font);
+  }
+  .amount-prefix {
+    text-align: center; font-size: 14px;
+    color: var(--muted); font-weight: 500;
+  }
+
+  /* ── Segmented Control ── */
+  .segmented {
+    display: flex; background: var(--faint); border-radius: 12px;
+    padding: 3px; margin-bottom: 16px; border: 1px solid var(--line);
+  }
+  .seg-btn {
+    flex: 1; padding: 8px; border: none; border-radius: 10px;
+    background: transparent; color: var(--muted);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: all 0.2s; font-family: var(--font);
+  }
+  .seg-btn.active {
+    background: var(--surface); color: var(--ink); font-weight: 600;
+    box-shadow: 0 1px 3px var(--shadow);
+  }
+
+  /* ── Category Grid ── */
+  .cat-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; margin-bottom: 16px;
+  }
+  .cat-item {
+    display: flex; flex-direction: column; align-items: center;
+    gap: 4px; padding: 10px 4px; border-radius: 12px;
+    border: 1.5px solid var(--line); cursor: pointer;
+    transition: all 0.2s; font-size: 11px; color: var(--ink);
+  }
+  .cat-item:hover { border-color: var(--accent); }
+  .cat-item.active { border-color: var(--accent); background: var(--accent-soft); }
+  .cat-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; font-size: 16px;
+  }
+
+  /* ── Wallet Chip ── */
+  .wallet-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 16px; }
+  .wallet-chip {
+    padding: 8px 14px; border-radius: 10px;
+    border: 1.5px solid var(--line); background: var(--faint);
+    font-size: 13px; cursor: pointer; transition: all 0.2s; color: var(--ink);
+  }
+  .wallet-chip.active { border-color: var(--accent); background: var(--accent-soft); }
+
+  /* ── Receipt Image ── */
+  .receipt-btn {
+    width: 100%; padding: 32px 16px;
+    border: 2px dashed var(--accent); border-radius: 16px;
+    background: var(--accent-soft); color: var(--accent);
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    display: flex; flex-direction: column; align-items: center;
+    gap: 8px; transition: all 0.2s;
+  }
+  .receipt-btn:hover { background: var(--accent); color: #fff; border-style: solid; }
+  .receipt-btn .icon { font-size: 32px; }
+  .receipt-btn .hint { font-size: 12px; opacity: 0.7; }
+  .receipt-preview {
+    width: 100%; border-radius: 16px; overflow: hidden;
+    position: relative; border: 1px solid var(--line); display: none;
+  }
+  .receipt-preview.show { display: block; }
+  .receipt-preview .receipt-img-placeholder {
+    width: 100%; height: 200px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 48px;
+    background: linear-gradient(135deg, #F5F3FF, #DDD6FE);
+  }
+  .dark .receipt-preview .receipt-img-placeholder {
+    background: linear-gradient(135deg, #2E1065, #4C1D95);
+  }
+  .receipt-preview .remove-receipt {
+    position: absolute; top: 8px; right: 8px;
+    padding: 6px 12px; border-radius: 8px;
+    background: rgba(0,0,0,0.6); color: #fff;
+    font-size: 12px; cursor: pointer; border: none;
+  }
+
+  /* ── Placeholder images ── */
+  .placeholder-img {
+    width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    background: linear-gradient(135deg, #E0F2FE, #BFDBFE);
+  }
+  .dark .placeholder-img { background: linear-gradient(135deg, #1E3A5F, #1E293B); }
+  .placeholder-img.p2 { background: linear-gradient(135deg, #FEF3C7, #FDE68A); }
+  .dark .placeholder-img.p2 { background: linear-gradient(135deg, #451A03, #78350F); }
+  .placeholder-img.p3 { background: linear-gradient(135deg, #D1FAE5, #6EE7B7); }
+  .dark .placeholder-img.p3 { background: linear-gradient(135deg, #064E3B, #065F46); }
+
+  /* ── Home Indicator ── */
+  .home-indicator {
+    height: 28px; display: flex; align-items: center;
+    justify-content: center; flex-shrink: 0; background: var(--surface);
+  }
+  .home-indicator .bar {
+    width: 120px; height: 4px; border-radius: 2px;
+    background: var(--ink); opacity: 0.15;
+  }
+
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .fade-in { animation: fadeIn 0.3s ease-out; }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 40px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    padding: 10px 20px; border-radius: 12px;
+    background: var(--ink); color: var(--bg);
+    font-size: 13px; font-weight: 500;
+    opacity: 0; transition: all 0.3s; z-index: 100; pointer-events: none;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+  @media (max-width: 820px) {
+    .phones { flex-direction: column; align-items: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── Controls ── -->
+<div class="controls">
+  <h1>🐱 Nyawtat — Prototipe Fitur Gambar</h1>
+  <p class="subtitle">Klik tombol gambar untuk menambah foto. Klik ✕ pada preview untuk menghapus.</p>
+  <div style="display:flex; gap: 8px;">
+    <button class="theme-btn active" onclick="setTheme('light')" id="btn-light">☀️ Light</button>
+    <button class="theme-btn" onclick="setTheme('dark')" id="btn-dark">🌙 Dark</button>
+  </div>
+  <div class="accents">
+    <span>Aksen:</span>
+    <div class="swatch active" style="background:#1F5F4E" onclick="setAccent('#1F5F4E',this)" title="Sage"></div>
+    <div class="swatch" style="background:#1D4E89" onclick="setAccent('#1D4E89',this)" title="Ocean"></div>
+    <div class="swatch" style="background:#5B3E9B" onclick="setAccent('#5B3E9B',this)" title="Violet"></div>
+    <div class="swatch" style="background:#A83B62" onclick="setAccent('#A83B62',this)" title="Rose"></div>
+    <div class="swatch" style="background:#D8467E" onclick="setAccent('#D8467E',this)" title="Pink"></div>
+    <div class="swatch" style="background:#8A5A12" onclick="setAccent('#8A5A12',this)" title="Amber"></div>
+    <div class="swatch" style="background:#116B72" onclick="setAccent('#116B72',this)" title="Teal"></div>
+  </div>
+</div>
+
+<!-- ── Phones ── -->
+<div class="phones">
+
+  <!-- ══ Phone 1: Journal Form ══ -->
+  <div>
+    <div class="phone-label">Form Jurnal — dengan Lampiran Gambar</div>
+    <div class="phone">
+      <div class="status-bar"><div class="notch"></div></div>
+      <div class="app-bar">
+        <div class="back">←</div>
+        <div class="title">Tulis Jurnal</div>
+        <button class="save-btn">Simpan</button>
+      </div>
+      <div class="form-scroll">
+        <!-- Date & Time -->
+        <div class="date-row">
+          <div class="date-chip"><span class="icon">📅</span> 18 Okt 2026</div>
+          <div class="date-chip"><span class="icon">🕐</span> 21:30</div>
+        </div>
+
+        <!-- Mood -->
+        <div class="section">
+          <div class="section-label">Suasana Hati</div>
+          <div class="mood-row">
+            <div class="mood-btn" onclick="toggleMood(this)">😢</div>
+            <div class="mood-btn" onclick="toggleMood(this)">😕</div>
+            <div class="mood-btn active" onclick="toggleMood(this)">😊</div>
+            <div class="mood-btn" onclick="toggleMood(this)">😄</div>
+            <div class="mood-btn" onclick="toggleMood(this)">🤩</div>
+          </div>
+        </div>
+
+        <!-- Title -->
+        <div class="section">
+          <input class="field" placeholder="Judul catatan..." value="Jalan-jalan ke Braga">
+        </div>
+
+        <!-- ★ IMAGE PICKER ★ -->
+        <div class="section">
+          <div class="section-label">📷 Lampiran Gambar</div>
+          <div class="image-actions">
+            <div class="img-btn" onclick="addJournalImage()">
+              <span class="icon">🖼️</span> Galeri
+            </div>
+            <div class="img-btn" onclick="addJournalImage()">
+              <span class="icon">📸</span> Kamera
+            </div>
+          </div>
+          <div class="image-grid" id="journal-images">
+            <div class="image-thumb fade-in">
+              <div class="placeholder-img">🏙️</div>
+              <div class="remove" onclick="removeImage(this)">✕</div>
+              <div class="order-badge">1</div>
+            </div>
+            <div class="image-thumb fade-in">
+              <div class="placeholder-img p2">☕</div>
+              <div class="remove" onclick="removeImage(this)">✕</div>
+              <div class="order-badge">2</div>
+            </div>
+            <div class="add-image-cell" onclick="addJournalImage()">
+              <span class="plus">+</span>
+              <span>Tambah</span>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:-8px;margin-bottom:8px;">
+            Maks 10 gambar · JPEG dikompres ke 1600px
+          </div>
+        </div>
+
+        <!-- Action Row -->
+        <div class="action-row">
+          <div class="action-chip"><span class="icon">🎤</span> Dikte</div>
+          <div class="action-chip"><span class="icon">🎙️</span> Rekam Suara</div>
+        </div>
+
+        <!-- Voice Card -->
+        <div class="voice-card">
+          <div class="play-btn">▶</div>
+          <div class="wave"></div>
+          <div class="duration">1:24</div>
+        </div>
+
+        <!-- Story -->
+        <div class="section">
+          <textarea class="field" rows="5" placeholder="Ceritakan harimu...">Hari ini seru banget! Jalan-jalan ke Jalan Braga bareng teman-teman. Cuaca cerah, kopi enak, dan suasananya adem. Banyak foto yang keren 📸</textarea>
+        </div>
+
+        <!-- Tags -->
+        <div class="section">
+          <input class="field" placeholder="Tag (pisahkan dengan koma)" value="jalan-jalan, braga, teman">
+        </div>
+
+        <!-- Linked Transactions -->
+        <div class="linked-tx">
+          <div class="tx-header">💰 Transaksi Hari Ini</div>
+          <div class="tx-item">
+            <div class="tx-cat-dot" style="background:#F59E0B"></div>
+            <div class="tx-name">Kopi Braga</div>
+            <div class="tx-amount expense">−Rp 45.000</div>
+          </div>
+          <div class="tx-item">
+            <div class="tx-cat-dot" style="background:#3B82F6"></div>
+            <div class="tx-name">Parkir</div>
+            <div class="tx-amount expense">−Rp 10.000</div>
+          </div>
+        </div>
+      </div>
+      <div class="home-indicator"><div class="bar"></div></div>
+    </div>
+  </div>
+
+  <!-- ══ Phone 2: Transaction Form ══ -->
+  <div>
+    <div class="phone-label">Form Transaksi — dengan Foto Receipt</div>
+    <div class="phone">
+      <div class="status-bar"><div class="notch"></div></div>
+      <div class="app-bar">
+        <div class="back">←</div>
+        <div class="title">Catat Transaksi</div>
+        <button class="save-btn">Simpan</button>
+      </div>
+      <div class="form-scroll">
+        <!-- Segmented -->
+        <div class="segmented">
+          <button class="seg-btn active" onclick="setSeg(this)">Pengeluaran</button>
+          <button class="seg-btn" onclick="setSeg(this)">Pemasukan</button>
+          <button class="seg-btn" onclick="setSeg(this)">Transfer</button>
+        </div>
+
+        <!-- Amount -->
+        <div style="text-align:center;margin-bottom:12px;">
+          <div class="amount-prefix">Rp</div>
+          <input class="amount-input" value="125.000" placeholder="0">
+        </div>
+
+        <!-- Categories -->
+        <div class="section">
+          <div class="section-label">Kategori</div>
+          <div class="cat-grid">
+            <div class="cat-item active" onclick="setCat(this)">
+              <div class="cat-icon" style="background:#FEF3C7">🍔</div>
+              Makanan
+            </div>
+            <div class="cat-item" onclick="setCat(this)">
+              <div class="cat-icon" style="background:#DBEAFE">🚗</div>
+              Transport
+            </div>
+            <div class="cat-item" onclick="setCat(this)">
+              <div class="cat-icon" style="background:#D1FAE5">🛒</div>
+              Belanja
+            </div>
+            <div class="cat-item" onclick="setCat(this)">
+              <div class="cat-icon" style="background:#E0E7FF">💊</div>
+              Kesehatan
+            </div>
+            <div class="cat-item" onclick="setCat(this)">
+              <div class="cat-icon" style="background:#FEE2E2">🎮</div>
+              Hiburan
+            </div>
+            <div class="cat-item" onclick="setCat(this)">
+              <div class="cat-icon" style="background:#F3E8FF">📚</div>
+              Pendidikan
+            </div>
+          </div>
+        </div>
+
+        <!-- Wallet -->
+        <div class="section">
+          <div class="section-label">Dompet</div>
+          <div class="wallet-chips">
+            <div class="wallet-chip active" onclick="setWallet(this)">💵 Kas</div>
+            <div class="wallet-chip" onclick="setWallet(this)">🏦 BCA</div>
+            <div class="wallet-chip" onclick="setWallet(this)">📱 GoPay</div>
+          </div>
+        </div>
+
+        <!-- Date & Time -->
+        <div class="date-row">
+          <div class="date-chip"><span class="icon">📅</span> 18 Okt 2026</div>
+          <div class="date-chip"><span class="icon">🕐</span> 12:30</div>
+        </div>
+
+        <!-- Note -->
+        <div class="section">
+          <input class="field" placeholder="Catatan..." value="Makan siang di Braga">
+        </div>
+
+        <!-- ★ RECEIPT IMAGE ★ -->
+        <div class="section">
+          <div class="section-label">📋 Foto Struk / Receipt</div>
+          <div id="receipt-btn" class="receipt-btn" onclick="addReceipt()">
+            <span class="icon">📸</span>
+            <span>Foto Struk Belanja</span>
+            <span class="hint">Ambil dari kamera atau galeri</span>
+          </div>
+          <div id="receipt-preview" class="receipt-preview">
+            <div class="receipt-img-placeholder">🧾</div>
+            <button class="remove-receipt" onclick="removeReceipt()">✕ Hapus</button>
+          </div>
+        </div>
+      </div>
+      <div class="home-indicator"><div class="bar"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  function setTheme(mode) {
+    document.body.classList.toggle('dark', mode === 'dark');
+    document.getElementById('btn-light').classList.toggle('active', mode === 'light');
+    document.getElementById('btn-dark').classList.toggle('active', mode === 'dark');
+  }
+
+  function setAccent(hex, el) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    const lightR = Math.min(255, r+40), lightG = Math.min(255, g+40), lightB = Math.min(255, b+40);
+    const isDark = document.body.classList.contains('dark');
+    document.documentElement.style.setProperty('--accent', hex);
+    document.documentElement.style.setProperty('--accent-light', 'rgb('+lightR+','+lightG+','+lightB+')');
+    document.documentElement.style.setProperty('--accent-soft', isDark ? 'rgba('+r+','+g+','+b+',0.2)' : 'rgba('+r+','+g+','+b+',0.1)');
+    document.querySelectorAll('.swatch').forEach(function(s){s.classList.remove('active')});
+    el.classList.add('active');
+  }
+
+  function toggleMood(el) {
+    el.parentElement.querySelectorAll('.mood-btn').forEach(function(b){b.classList.remove('active')});
+    el.classList.add('active');
+  }
+
+  var placeholders = ['🌄','🌅','🌃','🌈','🏖️','🎨','🌸','🍜'];
+  var pClasses = ['', 'p2', 'p3', '', 'p2', 'p3', '', 'p2'];
+  var imgCount = 2;
+
+  function addJournalImage() {
+    if (imgCount >= 10) { showToast('Maksimal 10 gambar!'); return; }
+    var grid = document.getElementById('journal-images');
+    var addCell = grid.querySelector('.add-image-cell');
+    imgCount++;
+    var idx = (imgCount - 1) % placeholders.length;
+    var thumb = document.createElement('div');
+    thumb.className = 'image-thumb fade-in';
+    thumb.innerHTML = '<div class="placeholder-img '+pClasses[idx]+'">'+placeholders[idx]+'</div><div class="remove" onclick="removeImage(this)">✕</div><div class="order-badge">'+imgCount+'</div>';
+    grid.insertBefore(thumb, addCell);
+    if (imgCount >= 10) addCell.style.display = 'none';
+    reorderBadges();
+    showToast('📷 Gambar ditambahkan');
+  }
+
+  function removeImage(btn) {
+    var thumb = btn.parentElement;
+    thumb.style.transition = 'all 0.2s';
+    thumb.style.opacity = '0';
+    thumb.style.transform = 'scale(0.8)';
+    setTimeout(function() {
+      thumb.remove(); imgCount--;
+      var addCell = document.querySelector('.add-image-cell');
+      if (addCell) addCell.style.display = '';
+      reorderBadges();
+    }, 200);
+    showToast('Gambar dihapus');
+  }
+
+  function reorderBadges() {
+    document.getElementById('journal-images').querySelectorAll('.image-thumb').forEach(function(t, i) {
+      var badge = t.querySelector('.order-badge');
+      if (badge) badge.textContent = i + 1;
+    });
+  }
+
+  function addReceipt() {
+    document.getElementById('receipt-btn').style.display = 'none';
+    document.getElementById('receipt-preview').classList.add('show');
+    showToast('📋 Foto struk ditambahkan');
+  }
+
+  function removeReceipt() {
+    document.getElementById('receipt-preview').classList.remove('show');
+    document.getElementById('receipt-btn').style.display = '';
+    showToast('Foto struk dihapus');
+  }
+
+  function setSeg(el) {
+    el.parentElement.querySelectorAll('.seg-btn').forEach(function(b){b.classList.remove('active')});
+    el.classList.add('active');
+  }
+
+  function setCat(el) {
+    el.parentElement.querySelectorAll('.cat-item').forEach(function(b){b.classList.remove('active')});
+    el.classList.add('active');
+  }
+
+  function setWallet(el) {
+    el.parentElement.querySelectorAll('.wallet-chip').forEach(function(b){b.classList.remove('active')});
+    el.classList.add('active');
+  }
+
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function(){ t.classList.remove('show'); }, 2000);
+  }
+</script>
+</body>
+</html>
+

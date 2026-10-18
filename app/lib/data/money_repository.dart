@@ -90,7 +90,7 @@ class MoneyRepository {
   /// Transfer: [walletId] = dompet asal, [toWalletId] = dompet tujuan, dan
   /// [categoryId] null (aturan yang sama dicek server). Selain transfer,
   /// [toWalletId] selalu null.
-  Future<void> saveTransaction({
+  Future<String> saveTransaction({
     String? id,
     required String type,
     required int amount,
@@ -108,13 +108,14 @@ class MoneyRepository {
     assert(!isTransfer || (toWalletId != null && toWalletId != walletId));
     final to = isTransfer ? toWalletId : null;
     final category = isTransfer ? null : categoryId;
+    final targetId = id ?? newId();
 
     if (id == null) {
       await _db
           .into(_db.transactions)
           .insert(
             TransactionsCompanion.insert(
-              id: newId(),
+              id: targetId,
               createdAt: now,
               updatedAt: now,
               type: type,
@@ -143,6 +144,7 @@ class MoneyRepository {
         ),
       );
     }
+    return targetId;
   }
 
   /// Soft delete supaya penghapusan ikut tersinkron nanti.

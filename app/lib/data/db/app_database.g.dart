@@ -3561,11 +3561,25 @@ class $AttachmentsTable extends Attachments
   late final GeneratedColumn<String> entryId = GeneratedColumn<String>(
     'entry_id',
     aliasedName,
-    false,
+    true,
     type: DriftSqlType.string,
-    requiredDuringInsert: true,
+    requiredDuringInsert: false,
     defaultConstraints: GeneratedColumn.constraintIsAlways(
       'REFERENCES journal_entries (id)',
+    ),
+  );
+  static const VerificationMeta _transactionIdMeta = const VerificationMeta(
+    'transactionId',
+  );
+  @override
+  late final GeneratedColumn<String> transactionId = GeneratedColumn<String>(
+    'transaction_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES transactions (id)',
     ),
   );
   static const VerificationMeta _localPathMeta = const VerificationMeta(
@@ -3638,6 +3652,7 @@ class $AttachmentsTable extends Attachments
     deletedAt,
     isDirty,
     entryId,
+    transactionId,
     localPath,
     remoteKey,
     mimeType,
@@ -3673,8 +3688,15 @@ class $AttachmentsTable extends Attachments
         _entryIdMeta,
         entryId.isAcceptableOrUnknown(data['entry_id']!, _entryIdMeta),
       );
-    } else if (isInserting) {
-      context.missing(_entryIdMeta);
+    }
+    if (data.containsKey('transaction_id')) {
+      context.handle(
+        _transactionIdMeta,
+        transactionId.isAcceptableOrUnknown(
+          data['transaction_id']!,
+          _transactionIdMeta,
+        ),
+      );
     }
     if (data.containsKey('local_path')) {
       context.handle(
@@ -3754,7 +3776,11 @@ class $AttachmentsTable extends Attachments
       entryId: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}entry_id'],
-      )!,
+      ),
+      transactionId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}transaction_id'],
+      ),
       localPath: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}local_path'],
@@ -3803,7 +3829,8 @@ class Attachment extends DataClass implements Insertable<Attachment> {
   final DateTime updatedAt;
   final DateTime? deletedAt;
   final bool isDirty;
-  final String entryId;
+  final String? entryId;
+  final String? transactionId;
   final String? localPath;
   final String? remoteKey;
   final String mimeType;
@@ -3816,7 +3843,8 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     required this.updatedAt,
     this.deletedAt,
     required this.isDirty,
-    required this.entryId,
+    this.entryId,
+    this.transactionId,
     this.localPath,
     this.remoteKey,
     required this.mimeType,
@@ -3844,7 +3872,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       );
     }
     map['is_dirty'] = Variable<bool>(isDirty);
-    map['entry_id'] = Variable<String>(entryId);
+    if (!nullToAbsent || entryId != null) {
+      map['entry_id'] = Variable<String>(entryId);
+    }
+    if (!nullToAbsent || transactionId != null) {
+      map['transaction_id'] = Variable<String>(transactionId);
+    }
     if (!nullToAbsent || localPath != null) {
       map['local_path'] = Variable<String>(localPath);
     }
@@ -3871,7 +3904,12 @@ class Attachment extends DataClass implements Insertable<Attachment> {
           ? const Value.absent()
           : Value(deletedAt),
       isDirty: Value(isDirty),
-      entryId: Value(entryId),
+      entryId: entryId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(entryId),
+      transactionId: transactionId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(transactionId),
       localPath: localPath == null && nullToAbsent
           ? const Value.absent()
           : Value(localPath),
@@ -3900,7 +3938,8 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
       deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
       isDirty: serializer.fromJson<bool>(json['isDirty']),
-      entryId: serializer.fromJson<String>(json['entryId']),
+      entryId: serializer.fromJson<String?>(json['entryId']),
+      transactionId: serializer.fromJson<String?>(json['transactionId']),
       localPath: serializer.fromJson<String?>(json['localPath']),
       remoteKey: serializer.fromJson<String?>(json['remoteKey']),
       mimeType: serializer.fromJson<String>(json['mimeType']),
@@ -3918,7 +3957,8 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       'updatedAt': serializer.toJson<DateTime>(updatedAt),
       'deletedAt': serializer.toJson<DateTime?>(deletedAt),
       'isDirty': serializer.toJson<bool>(isDirty),
-      'entryId': serializer.toJson<String>(entryId),
+      'entryId': serializer.toJson<String?>(entryId),
+      'transactionId': serializer.toJson<String?>(transactionId),
       'localPath': serializer.toJson<String?>(localPath),
       'remoteKey': serializer.toJson<String?>(remoteKey),
       'mimeType': serializer.toJson<String>(mimeType),
@@ -3934,7 +3974,8 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     DateTime? updatedAt,
     Value<DateTime?> deletedAt = const Value.absent(),
     bool? isDirty,
-    String? entryId,
+    Value<String?> entryId = const Value.absent(),
+    Value<String?> transactionId = const Value.absent(),
     Value<String?> localPath = const Value.absent(),
     Value<String?> remoteKey = const Value.absent(),
     String? mimeType,
@@ -3947,7 +3988,10 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     updatedAt: updatedAt ?? this.updatedAt,
     deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
     isDirty: isDirty ?? this.isDirty,
-    entryId: entryId ?? this.entryId,
+    entryId: entryId.present ? entryId.value : this.entryId,
+    transactionId: transactionId.present
+        ? transactionId.value
+        : this.transactionId,
     localPath: localPath.present ? localPath.value : this.localPath,
     remoteKey: remoteKey.present ? remoteKey.value : this.remoteKey,
     mimeType: mimeType ?? this.mimeType,
@@ -3963,6 +4007,9 @@ class Attachment extends DataClass implements Insertable<Attachment> {
       deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
       isDirty: data.isDirty.present ? data.isDirty.value : this.isDirty,
       entryId: data.entryId.present ? data.entryId.value : this.entryId,
+      transactionId: data.transactionId.present
+          ? data.transactionId.value
+          : this.transactionId,
       localPath: data.localPath.present ? data.localPath.value : this.localPath,
       remoteKey: data.remoteKey.present ? data.remoteKey.value : this.remoteKey,
       mimeType: data.mimeType.present ? data.mimeType.value : this.mimeType,
@@ -3981,6 +4028,7 @@ class Attachment extends DataClass implements Insertable<Attachment> {
           ..write('deletedAt: $deletedAt, ')
           ..write('isDirty: $isDirty, ')
           ..write('entryId: $entryId, ')
+          ..write('transactionId: $transactionId, ')
           ..write('localPath: $localPath, ')
           ..write('remoteKey: $remoteKey, ')
           ..write('mimeType: $mimeType, ')
@@ -3999,6 +4047,7 @@ class Attachment extends DataClass implements Insertable<Attachment> {
     deletedAt,
     isDirty,
     entryId,
+    transactionId,
     localPath,
     remoteKey,
     mimeType,
@@ -4016,6 +4065,7 @@ class Attachment extends DataClass implements Insertable<Attachment> {
           other.deletedAt == this.deletedAt &&
           other.isDirty == this.isDirty &&
           other.entryId == this.entryId &&
+          other.transactionId == this.transactionId &&
           other.localPath == this.localPath &&
           other.remoteKey == this.remoteKey &&
           other.mimeType == this.mimeType &&
@@ -4030,7 +4080,8 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
   final Value<DateTime> updatedAt;
   final Value<DateTime?> deletedAt;
   final Value<bool> isDirty;
-  final Value<String> entryId;
+  final Value<String?> entryId;
+  final Value<String?> transactionId;
   final Value<String?> localPath;
   final Value<String?> remoteKey;
   final Value<String> mimeType;
@@ -4045,6 +4096,7 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     this.deletedAt = const Value.absent(),
     this.isDirty = const Value.absent(),
     this.entryId = const Value.absent(),
+    this.transactionId = const Value.absent(),
     this.localPath = const Value.absent(),
     this.remoteKey = const Value.absent(),
     this.mimeType = const Value.absent(),
@@ -4059,7 +4111,8 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     required DateTime updatedAt,
     this.deletedAt = const Value.absent(),
     this.isDirty = const Value.absent(),
-    required String entryId,
+    this.entryId = const Value.absent(),
+    this.transactionId = const Value.absent(),
     this.localPath = const Value.absent(),
     this.remoteKey = const Value.absent(),
     required String mimeType,
@@ -4070,7 +4123,6 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
   }) : id = Value(id),
        createdAt = Value(createdAt),
        updatedAt = Value(updatedAt),
-       entryId = Value(entryId),
        mimeType = Value(mimeType),
        sizeBytes = Value(sizeBytes);
   static Insertable<Attachment> custom({
@@ -4080,6 +4132,7 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     Expression<int>? deletedAt,
     Expression<bool>? isDirty,
     Expression<String>? entryId,
+    Expression<String>? transactionId,
     Expression<String>? localPath,
     Expression<String>? remoteKey,
     Expression<String>? mimeType,
@@ -4095,6 +4148,7 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
       if (deletedAt != null) 'deleted_at': deletedAt,
       if (isDirty != null) 'is_dirty': isDirty,
       if (entryId != null) 'entry_id': entryId,
+      if (transactionId != null) 'transaction_id': transactionId,
       if (localPath != null) 'local_path': localPath,
       if (remoteKey != null) 'remote_key': remoteKey,
       if (mimeType != null) 'mime_type': mimeType,
@@ -4111,7 +4165,8 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     Value<DateTime>? updatedAt,
     Value<DateTime?>? deletedAt,
     Value<bool>? isDirty,
-    Value<String>? entryId,
+    Value<String?>? entryId,
+    Value<String?>? transactionId,
     Value<String?>? localPath,
     Value<String?>? remoteKey,
     Value<String>? mimeType,
@@ -4127,6 +4182,7 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
       deletedAt: deletedAt ?? this.deletedAt,
       isDirty: isDirty ?? this.isDirty,
       entryId: entryId ?? this.entryId,
+      transactionId: transactionId ?? this.transactionId,
       localPath: localPath ?? this.localPath,
       remoteKey: remoteKey ?? this.remoteKey,
       mimeType: mimeType ?? this.mimeType,
@@ -4164,6 +4220,9 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
     if (entryId.present) {
       map['entry_id'] = Variable<String>(entryId.value);
     }
+    if (transactionId.present) {
+      map['transaction_id'] = Variable<String>(transactionId.value);
+    }
     if (localPath.present) {
       map['local_path'] = Variable<String>(localPath.value);
     }
@@ -4197,6 +4256,7 @@ class AttachmentsCompanion extends UpdateCompanion<Attachment> {
           ..write('deletedAt: $deletedAt, ')
           ..write('isDirty: $isDirty, ')
           ..write('entryId: $entryId, ')
+          ..write('transactionId: $transactionId, ')
           ..write('localPath: $localPath, ')
           ..write('remoteKey: $remoteKey, ')
           ..write('mimeType: $mimeType, ')
@@ -4447,6 +4507,14 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_entry_date_time',
     'CREATE INDEX idx_entry_date_time ON journal_entries (entry_date, entry_time)',
   );
+  late final Index idxAttachmentEntry = Index(
+    'idx_attachment_entry',
+    'CREATE INDEX idx_attachment_entry ON attachments (entry_id)',
+  );
+  late final Index idxAttachmentTx = Index(
+    'idx_attachment_tx',
+    'CREATE INDEX idx_attachment_tx ON attachments (transaction_id)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -4464,6 +4532,8 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxTxCategory,
     idxBudgetCategoryMonth,
     idxEntryDateTime,
+    idxAttachmentEntry,
+    idxAttachmentTx,
   ];
 }
 
@@ -5612,6 +5682,24 @@ final class $$TransactionsTableReferences
       manager.$state.copyWith(prefetchedData: [item]),
     );
   }
+
+  static MultiTypedResultKey<$AttachmentsTable, List<Attachment>>
+  _attachmentsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.attachments,
+    aliasName: 'transactions__id__attachments__transaction_id',
+  );
+
+  $$AttachmentsTableProcessedTableManager get attachmentsRefs {
+    final manager = $$AttachmentsTableTableManager(
+      $_db,
+      $_db.attachments,
+    ).filter((f) => f.transactionId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_attachmentsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
 }
 
 class $$TransactionsTableFilterComposer
@@ -5744,6 +5832,31 @@ class $$TransactionsTableFilterComposer
           ),
     );
     return composer;
+  }
+
+  Expression<bool> attachmentsRefs(
+    Expression<bool> Function($$AttachmentsTableFilterComposer f) f,
+  ) {
+    final $$AttachmentsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.attachments,
+      getReferencedColumn: (t) => t.transactionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AttachmentsTableFilterComposer(
+            $db: $db,
+            $table: $db.attachments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
   }
 }
 
@@ -5986,6 +6099,31 @@ class $$TransactionsTableAnnotationComposer
     );
     return composer;
   }
+
+  Expression<T> attachmentsRefs<T extends Object>(
+    Expression<T> Function($$AttachmentsTableAnnotationComposer a) f,
+  ) {
+    final $$AttachmentsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.attachments,
+      getReferencedColumn: (t) => t.transactionId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$AttachmentsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.attachments,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$TransactionsTableTableManager
@@ -6005,6 +6143,7 @@ class $$TransactionsTableTableManager
             bool walletId,
             bool toWalletId,
             bool categoryId,
+            bool attachmentsRefs,
           })
         > {
   $$TransactionsTableTableManager(_$AppDatabase db, $TransactionsTable table)
@@ -6091,10 +6230,17 @@ class $$TransactionsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({walletId = false, toWalletId = false, categoryId = false}) {
+              ({
+                walletId = false,
+                toWalletId = false,
+                categoryId = false,
+                attachmentsRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
-                  explicitlyWatchedTables: [],
+                  explicitlyWatchedTables: [
+                    if (attachmentsRefs) db.attachments,
+                  ],
                   addJoins:
                       <
                         T extends TableManagerState<
@@ -6148,7 +6294,29 @@ class $$TransactionsTableTableManager
                         return state;
                       },
                   getPrefetchedDataCallback: (items) async {
-                    return [];
+                    return [
+                      if (attachmentsRefs)
+                        await $_getPrefetchedData<
+                          MoneyTx,
+                          $TransactionsTable,
+                          Attachment
+                        >(
+                          currentTable: table,
+                          referencedTable: $$TransactionsTableReferences
+                              ._attachmentsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$TransactionsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).attachmentsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.transactionId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
                   },
                 );
               },
@@ -6168,7 +6336,12 @@ typedef $$TransactionsTableProcessedTableManager =
       $$TransactionsTableUpdateCompanionBuilder,
       (MoneyTx, $$TransactionsTableReferences),
       MoneyTx,
-      PrefetchHooks Function({bool walletId, bool toWalletId, bool categoryId})
+      PrefetchHooks Function({
+        bool walletId,
+        bool toWalletId,
+        bool categoryId,
+        bool attachmentsRefs,
+      })
     >;
 typedef $$BudgetsTableCreateCompanionBuilder = BudgetsCompanion Function({
   required String id,
@@ -7037,7 +7210,8 @@ typedef $$AttachmentsTableCreateCompanionBuilder =
       required DateTime updatedAt,
       Value<DateTime?> deletedAt,
       Value<bool> isDirty,
-      required String entryId,
+      Value<String?> entryId,
+      Value<String?> transactionId,
       Value<String?> localPath,
       Value<String?> remoteKey,
       required String mimeType,
@@ -7053,7 +7227,8 @@ typedef $$AttachmentsTableUpdateCompanionBuilder =
       Value<DateTime> updatedAt,
       Value<DateTime?> deletedAt,
       Value<bool> isDirty,
-      Value<String> entryId,
+      Value<String?> entryId,
+      Value<String?> transactionId,
       Value<String?> localPath,
       Value<String?> remoteKey,
       Value<String> mimeType,
@@ -7071,14 +7246,32 @@ final class $$AttachmentsTableReferences
       .journalEntries
       .createAlias('attachments__entry_id__journal_entries__id');
 
-  $$JournalEntriesTableProcessedTableManager get entryId {
-    final $_column = $_itemColumn<String>('entry_id')!;
-
+  $$JournalEntriesTableProcessedTableManager? get entryId {
+    final $_column = $_itemColumn<String>('entry_id');
+    if ($_column == null) return null;
     final manager = $$JournalEntriesTableTableManager(
       $_db,
       $_db.journalEntries,
     ).filter((f) => f.id.sqlEquals($_column));
     final item = $_typedResult.readTableOrNull(_entryIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+
+  static $TransactionsTable _transactionIdTable(_$AppDatabase db) => db
+      .transactions
+      .createAlias('attachments__transaction_id__transactions__id');
+
+  $$TransactionsTableProcessedTableManager? get transactionId {
+    final $_column = $_itemColumn<String>('transaction_id');
+    if ($_column == null) return null;
+    final manager = $$TransactionsTableTableManager(
+      $_db,
+      $_db.transactions,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_transactionIdTable($_db));
     if (item == null) return manager;
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: [item]),
@@ -7175,6 +7368,29 @@ class $$AttachmentsTableFilterComposer
     );
     return composer;
   }
+
+  $$TransactionsTableFilterComposer get transactionId {
+    final $$TransactionsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.transactionId,
+      referencedTable: $db.transactions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TransactionsTableFilterComposer(
+            $db: $db,
+            $table: $db.transactions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$AttachmentsTableOrderingComposer
@@ -7263,6 +7479,29 @@ class $$AttachmentsTableOrderingComposer
     );
     return composer;
   }
+
+  $$TransactionsTableOrderingComposer get transactionId {
+    final $$TransactionsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.transactionId,
+      referencedTable: $db.transactions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TransactionsTableOrderingComposer(
+            $db: $db,
+            $table: $db.transactions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$AttachmentsTableAnnotationComposer
@@ -7329,6 +7568,29 @@ class $$AttachmentsTableAnnotationComposer
     );
     return composer;
   }
+
+  $$TransactionsTableAnnotationComposer get transactionId {
+    final $$TransactionsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.transactionId,
+      referencedTable: $db.transactions,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$TransactionsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.transactions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
 }
 
 class $$AttachmentsTableTableManager
@@ -7344,7 +7606,7 @@ class $$AttachmentsTableTableManager
           $$AttachmentsTableUpdateCompanionBuilder,
           (Attachment, $$AttachmentsTableReferences),
           Attachment,
-          PrefetchHooks Function({bool entryId})
+          PrefetchHooks Function({bool entryId, bool transactionId})
         > {
   $$AttachmentsTableTableManager(_$AppDatabase db, $AttachmentsTable table)
     : super(
@@ -7364,7 +7626,8 @@ class $$AttachmentsTableTableManager
                 Value<DateTime> updatedAt = const Value.absent(),
                 Value<DateTime?> deletedAt = const Value.absent(),
                 Value<bool> isDirty = const Value.absent(),
-                Value<String> entryId = const Value.absent(),
+                Value<String?> entryId = const Value.absent(),
+                Value<String?> transactionId = const Value.absent(),
                 Value<String?> localPath = const Value.absent(),
                 Value<String?> remoteKey = const Value.absent(),
                 Value<String> mimeType = const Value.absent(),
@@ -7379,6 +7642,7 @@ class $$AttachmentsTableTableManager
                 deletedAt: deletedAt,
                 isDirty: isDirty,
                 entryId: entryId,
+                transactionId: transactionId,
                 localPath: localPath,
                 remoteKey: remoteKey,
                 mimeType: mimeType,
@@ -7394,7 +7658,8 @@ class $$AttachmentsTableTableManager
                 required DateTime updatedAt,
                 Value<DateTime?> deletedAt = const Value.absent(),
                 Value<bool> isDirty = const Value.absent(),
-                required String entryId,
+                Value<String?> entryId = const Value.absent(),
+                Value<String?> transactionId = const Value.absent(),
                 Value<String?> localPath = const Value.absent(),
                 Value<String?> remoteKey = const Value.absent(),
                 required String mimeType,
@@ -7409,6 +7674,7 @@ class $$AttachmentsTableTableManager
                 deletedAt: deletedAt,
                 isDirty: isDirty,
                 entryId: entryId,
+                transactionId: transactionId,
                 localPath: localPath,
                 remoteKey: remoteKey,
                 mimeType: mimeType,
@@ -7425,7 +7691,7 @@ class $$AttachmentsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({entryId = false}) {
+          prefetchHooksCallback: ({entryId = false, transactionId = false}) {
             return PrefetchHooks(
               db: db,
               explicitlyWatchedTables: [],
@@ -7456,6 +7722,17 @@ class $$AttachmentsTableTableManager
                             .id,
                       ) as T;
                     }
+                    if (transactionId) {
+                      state = state.withJoin(
+                        currentTable: table,
+                        currentColumn: table.transactionId,
+                        referencedTable: $$AttachmentsTableReferences
+                            ._transactionIdTable(db),
+                        referencedColumn: $$AttachmentsTableReferences
+                            ._transactionIdTable(db)
+                            .id,
+                      ) as T;
+                    }
 
                     return state;
                   },
@@ -7480,7 +7757,7 @@ typedef $$AttachmentsTableProcessedTableManager =
       $$AttachmentsTableUpdateCompanionBuilder,
       (Attachment, $$AttachmentsTableReferences),
       Attachment,
-      PrefetchHooks Function({bool entryId})
+      PrefetchHooks Function({bool entryId, bool transactionId})
     >;
 typedef $$AppSettingsTableCreateCompanionBuilder =
     AppSettingsCompanion Function({

@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.7.0 — 2026-10-18
+
+**Baru**
+- **Lampiran Gambar di Jurnal & Foto Struk di Transaksi Keuangan**:
+  - **Lampiran Gambar Jurnal**:
+    - Mendukung hingga 10 foto per entri jurnal, baik dari Kamera langsung maupun Galeri foto.
+    - Grid pratinjau thumbnail 3 kolom yang responsif dengan nomor urut foto dan tombol hapus instan.
+    - Kompresi gambar on-the-fly di perangkat (JPEG 80%, maks 1600px) menjaga efisiensi ruang penyimpanan dan performa ponsel.
+    - Strip pratinjau thumbnail foto mini di feed daftar Jurnal.
+    - Indikator `📷 X foto` pada linimasa Hari Ini.
+  - **Foto Struk / Nota Transaksi Keuangan**:
+    - Tombol khusus "Foto Struk Belanja" di form transaksi untuk melampirkan bukti pembayaran dari kamera atau galeri.
+    - Pratinjau struk proporsional dengan opsi ganti atau hapus foto struk.
+    - Ikon nota `🧾` otomatis muncul di samping nama transaksi pada daftar riwayat dan linimasa Hari Ini.
+  - **Fullscreen Image Viewer**:
+    - Pratinjau foto layar penuh dengan gestur *pinch-to-zoom*, geser (*swipe* antar gambar), dan tombol tutup.
+  - **Optimasi Mobile & Offline-First**:
+    - Penyimpanan file lokal persisten di sandbox aplikasi.
+    - Skema database Drift SQLite terindeks untuk lookup instan di linimasa tanpa lag scroll.
+
 ## 0.6.0 — 2026-10-14
 
 **Baru**

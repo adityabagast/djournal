@@ -1,9 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/theme.dart';
 import '../../data/db/app_database.dart';
 import '../../data/journal_repository.dart';
+import '../../providers.dart';
 import '../../ui/common.dart';
+import '../../ui/image_viewer.dart';
 import '../../ui/mood.dart';
 import 'voice/voice_player_card.dart';
 
@@ -11,7 +16,7 @@ String _titleOf(BuildContext context, JournalEntry e) =>
     e.title ?? context.l10n.untitled;
 
 /// Baris entri di timeline Hari Ini: jam, ikon buku, judul, mood · cerita.
-class EntryTimelineRow extends StatelessWidget {
+class EntryTimelineRow extends ConsumerWidget {
   const EntryTimelineRow({
     super.key,
     required this.entry,
@@ -24,12 +29,15 @@ class EntryTimelineRow extends StatelessWidget {
   final bool showDivider;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context).textTheme;
     final hasAudio = entry.audioPath != null && entry.audioPath!.isNotEmpty;
+    final attachments =
+        ref.watch(entryAttachmentsMapProvider)[entry.id] ?? const [];
     final sub = [
       if (entry.mood != null) moodLabel(context.l10n, entry.mood!),
       if (hasAudio) '🎙️ ${context.l10n.voiceNote}',
+      if (attachments.isNotEmpty) '📷 ${attachments.length} foto',
       ?entry.body,
     ].join(' · ');
 
@@ -96,8 +104,8 @@ class EntryTimelineRow extends StatelessWidget {
   }
 }
 
-/// Baris entri di daftar Jurnal: jam, judul, 2 baris cerita, mood dan tag.
-class EntryListRow extends StatelessWidget {
+/// Baris entri di daftar Jurnal: jam, judul, 2 baris cerita, mood, tag, dan foto.
+class EntryListRow extends ConsumerWidget {
   const EntryListRow({
     super.key,
     required this.entry,
@@ -110,9 +118,15 @@ class EntryListRow extends StatelessWidget {
   final bool showDivider;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context).textTheme;
     final tags = entryTags(entry);
+    final attachments =
+        ref.watch(entryAttachmentsMapProvider)[entry.id] ?? const [];
+    final imagePaths = attachments
+        .map((a) => a.localPath)
+        .whereType<String>()
+        .toList();
 
     return InkWell(
       onTap: onTap,
@@ -158,6 +172,57 @@ class EntryListRow extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       style: t.bodyMedium?.copyWith(
                         color: context.colors.muted,
+                      ),
+                    ),
+                  ],
+                  if (imagePaths.isNotEmpty) ...[
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      height: 58,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: imagePaths.length,
+                        separatorBuilder: (_, index) => const SizedBox(width: 6),
+                        itemBuilder: (context, i) {
+                          final f = File(imagePaths[i]);
+                          return GestureDetector(
+                            onTap: () => openImageViewer(
+                              context,
+                              paths: imagePaths,
+                              initialIndex: i,
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child: SizedBox(
+                                width: 58,
+                                height: 58,
+                                child: f.existsSync()
+                                    ? Image.file(
+                                        f,
+                                        fit: BoxFit.cover,
+                                        cacheWidth: 150,
+                                        errorBuilder: (_, err, stack) =>
+                                            Container(
+                                          color: context.colors.subtle,
+                                          child: Icon(
+                                            Icons.broken_image_rounded,
+                                            size: 20,
+                                            color: context.colors.muted,
+                                          ),
+                                        ),
+                                      )
+                                    : Container(
+                                        color: context.colors.subtle,
+                                        child: Icon(
+                                          Icons.broken_image_rounded,
+                                          size: 20,
+                                          color: context.colors.muted,
+                                        ),
+                                      ),
+                              ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

@@ -9,15 +9,18 @@ import 'package:djournal/features/journal/voice/voice_player_card.dart';
 import 'package:djournal/l10n/app_localizations.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 Widget wrapWithTheme(Widget child) {
-  return MaterialApp(
-    theme: buildTheme(Brightness.light),
-    locale: const Locale('id'),
-    supportedLocales: AppLocalizations.supportedLocales,
-    localizationsDelegates: AppLocalizations.localizationsDelegates,
-    home: Scaffold(body: child),
+  return ProviderScope(
+    child: MaterialApp(
+      theme: buildTheme(Brightness.light),
+      locale: const Locale('id'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      home: Scaffold(body: child),
+    ),
   );
 }
 

@@ -66,5 +66,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>Nyawtat memerlukan akses kamera untuk mengambil foto lampiran jurnal dan struk transaksi.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Nyawtat memerlukan akses galeri foto untuk memilih lampiran jurnal dan struk transaksi.</string>
 </dict>
 </plist>
