@@ -252,8 +252,20 @@ class _DataSectionState extends ConsumerState<DataSection> {
                   )
                 else
                   FilledButton.tonal(
-                    onPressed: () =>
-                        ref.read(googleDriveProvider.notifier).signIn(),
+                    onPressed: () async {
+                      try {
+                        await ref.read(googleDriveProvider.notifier).signIn();
+                      } catch (e) {
+                        if (context.mounted) {
+                          final msg = e.toString().contains('10')
+                              ? 'Gagal masuk (Kode 10: DEVELOPER_ERROR). SHA-1 aplikasi belum didaftarkan di Firebase Console.'
+                              : e.toString();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(msg)),
+                          );
+                        }
+                      }
+                    },
                     style: FilledButton.styleFrom(
                       padding: const EdgeInsets.symmetric(horizontal: 10),
                       minimumSize: const Size(0, 32),

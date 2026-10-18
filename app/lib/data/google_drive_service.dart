@@ -62,8 +62,8 @@ class GoogleDriveService {
   GoogleDriveService(this._settings) {
     _googleSignIn = GoogleSignIn(
       scopes: [
+        'email',
         drive.DriveApi.driveFileScope,
-        drive.DriveApi.driveAppdataScope,
       ],
     );
   }

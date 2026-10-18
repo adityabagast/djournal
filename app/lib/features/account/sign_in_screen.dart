@@ -84,7 +84,15 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         if (mounted) Navigator.of(context).pop();
       }
     } catch (e) {
-      setState(() => _error = e.toString());
+      final err = e.toString();
+      if (err.contains('10') || err.contains('DEVELOPER_ERROR')) {
+        setState(
+          () => _error =
+              'Gagal masuk (Kode 10: DEVELOPER_ERROR). SHA-1 aplikasi belum didaftarkan di Firebase Console.',
+        );
+      } else {
+        setState(() => _error = err);
+      }
     } finally {
       if (mounted) setState(() => _busy = false);
     }
