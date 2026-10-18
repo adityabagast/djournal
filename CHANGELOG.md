@@ -18,8 +18,10 @@
   - Menggantikan 4 menu ekspor/impor terpisah yang membingungkan menjadi 2 opsi bersih:
     1. **📤 Cadangkan Data (Ekspor)**: Satu modal praktis untuk memilih format file (Excel `.xlsx` atau Backup `.json`) dan rentang waktu sebelum diekspor.
     2. **📥 Pulihkan / Impor Data**: Satu pintu pemulihan pintar dengan **deteksi format otomatis** (*auto-detection*). Cukup pilih file dari penyimpanan HP, aplikasi secara otomatis mengenali apakah itu file `.json` Nyawtat, file `.xlsx` Nyawtat, atau database Money Manager (`.mmbak`, `.sqlite`, `.db`, `.xlsx`).
-- **Masuk dengan Akun Google (Google Sign-In)**:
-  - Tombol "Lanjutkan dengan Google" di form Masuk untuk otentikasi cepat dan sinkronisasi Google Drive.
+- **Masuk dengan Akun Google (Google Sign-In) & Kartu Akun Terpadu**:
+  - Tombol "Masuk dengan Google" di form Masuk untuk otentikasi cepat dan sinkronisasi Google Drive.
+  - **Penyatuan Kartu Akun di Pengaturan**: Kartu profil paling atas otomatis menampilkan status Google Drive maupun Server Nyawtat yang aktif (Avatar, Nama, Email, status cadangan, tombol aksi cepat cadangkan & keluar).
+  - Tampilan Mode Tamu (Offline) yang bersih dengan opsi masuk fleksibel (Google vs Email & Kata Sandi).
 
 ## 0.7.0 — 2026-10-18
 

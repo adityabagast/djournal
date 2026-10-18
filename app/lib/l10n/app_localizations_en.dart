@@ -1358,11 +1358,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get googleDriveSheetsPreview => 'Sheets Preview';
 
   @override
-  String get googleSignIn => 'Continue with Google';
+  String get googleSignIn => 'Sign in with Google';
 
   @override
   String get googleSignInPrompt =>
       'Sign in with Google to automatically backup to Google Drive.';
+
+  @override
+  String get guestMode => 'Guest Mode (Offline)';
+
+  @override
+  String get guestModePrompt =>
+      'Sign in with Google or server Email to backup your data.';
+
+  @override
+  String get nyawtatServerConnected => 'Nyawtat Server Connected';
+
+  @override
+  String get googleDriveConnectedBadge => 'Google Drive Connected';
+
+  @override
+  String get signInAccount => 'Sign In';
 
   @override
   String get backupRange => 'Backup Data Range';

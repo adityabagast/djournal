@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyawtat — Prototipe Kartu Akun Terpadu (Google & Email/Password)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #1F5F4E;
+    --accent-light: #2D8B6E;
+    --accent-soft: #E8F5EE;
+    --bg: #F8F9FA;
+    --surface: #FFFFFF;
+    --surface-elevated: #F3F4F6;
+    --ink: #1A1A1A;
+    --muted: #6B7280;
+    --line: #E5E7EB;
+    --divider: #F0F0F0;
+    --success: #16A34A;
+    --server-blue: #3B82F6;
+    --server-soft: #EFF6FF;
+    --shadow: rgba(0, 0, 0, 0.08);
+  }
+  .dark {
+    --bg: #111111;
+    --surface: #1C1C1E;
+    --surface-elevated: #28282B;
+    --ink: #F5F5F5;
+    --muted: #9CA3AF;
+    --line: #333336;
+    --divider: #2A2A2C;
+    --accent-soft: #1A3D2F;
+    --server-blue: #60A5FA;
+    --server-soft: #1E293B;
+    --shadow: rgba(0, 0, 0, 0.4);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Poppins', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 28px 16px 60px;
+    transition: background 0.25s, color 0.25s;
+  }
+  .header {
+    max-width: 900px;
+    margin: 0 auto 20px;
+    text-align: center;
+  }
+  .kicker {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 5px 14px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: 25px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .header p {
+    font-size: 14px;
+    color: var(--muted);
+    max-width: 660px;
+    margin: 0 auto;
+  }
+
+  /* Control bar */
+  .control-panel {
+    max-width: 880px;
+    margin: 0 auto 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 16px var(--shadow);
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .control-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .btn-pill {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s ease;
+  }
+  .btn-pill:hover {
+    background: var(--surface-elevated);
+  }
+  .btn-pill.active {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+
+  /* Phone Mockup Frame */
+  .preview-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .phone-frame {
+    width: 390px;
+    height: 790px;
+    border-radius: 44px;
+    background: #18191B;
+    padding: 12px;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.25);
+    border: 3px solid #2C2D30;
+    position: relative;
+    flex-shrink: 0;
+  }
+  .phone-notch {
+    width: 140px;
+    height: 22px;
+    background: #18191B;
+    border-radius: 0 0 14px 14px;
+    position: absolute;
+    top: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+  }
+  .phone-screen {
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    border-radius: 34px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    padding: 44px 16px 30px;
+    scrollbar-width: none;
+  }
+  .phone-screen::-webkit-scrollbar { display: none; }
+
+  /* App Bar */
+  .app-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    padding-top: 4px;
+  }
+  .app-bar h2 {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .app-bar-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--line);
+    background: var(--surface);
+    cursor: pointer;
+  }
+
+  /* App Card */
+  .app-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 2px 10px var(--shadow);
+    margin-bottom: 18px;
+    transition: all 0.25s ease;
+  }
+
+  /* Section Header */
+  .section-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin: 20px 4px 10px;
+  }
+
+  /* Account Card Elements */
+  .account-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+  .avatar.google {
+    background: #E8F0FE;
+    color: #1A73E8;
+    border: 2px solid #C2D7FA;
+  }
+  .avatar.server {
+    background: var(--server-soft);
+    color: var(--server-blue);
+    border: 2px solid rgba(59, 130, 246, 0.3);
+  }
+  .account-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .account-name {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .account-email {
+    font-size: 12.5px;
+    color: var(--muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .badge-container {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .account-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2.5px 8px;
+    border-radius: 10px;
+  }
+  .badge-google {
+    background: #E6F4EA;
+    color: #137333;
+    border: 1px solid #CEEAD6;
+  }
+  .dark .badge-google {
+    background: #132A1C;
+    color: #81C995;
+    border-color: #1E462E;
+  }
+  .badge-server {
+    background: var(--server-soft);
+    color: var(--server-blue);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+  }
+
+  /* Divider inside card */
+  .card-divider {
+    height: 1px;
+    background: var(--divider);
+    margin: 14px 0;
+  }
+
+  /* Status and Action Row */
+  .card-action-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .status-text {
+    font-size: 12px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-text.ok {
+    color: var(--accent);
+    font-weight: 500;
+  }
+  .btn-sm {
+    padding: 6px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-sm:hover {
+    background: var(--surface-elevated);
+  }
+  .btn-sm.primary {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .btn-sm.primary:hover {
+    background: var(--accent-light);
+  }
+
+  .btn-full {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: opacity 0.15s;
+  }
+  .btn-full:hover { opacity: 0.92; }
+
+  .btn-outline-full {
+    width: 100%;
+    padding: 9px 14px;
+    border-radius: 12px;
+    font-size: 12.5px;
+    font-weight: 600;
+    border: 1px solid var(--line);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 8px;
+    transition: background 0.15s;
+  }
+  .btn-outline-full:hover { background: var(--surface-elevated); }
+
+  /* Comparison Notes Sidebar */
+  .side-notes {
+    max-width: 440px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 4px 20px var(--shadow);
+  }
+  .side-notes h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .comparison-item {
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--divider);
+  }
+  .comparison-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  .comparison-item .tag {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 6px;
+  }
+  .tag.google-tag {
+    background: #E8F0FE;
+    color: #1A73E8;
+  }
+  .tag.email-tag {
+    background: #EFF6FF;
+    color: #2563EB;
+  }
+  .tag.both-tag {
+    background: #DCFCE7;
+    color: #16A34A;
+  }
+  .comparison-item p {
+    font-size: 13px;
+    color: var(--ink);
+    line-height: 1.5;
+  }
+
+  /* Dummy settings items */
+  .setting-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--divider);
+  }
+  .setting-item:last-child { border-bottom: none; }
+  .setting-item-label { font-size: 13.5px; font-weight: 500; }
+  .setting-item-val { font-size: 13px; color: var(--muted); }
+
+  /* Bottom sheet modal for sign-in options */
+  .modal-overlay {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.55);
+    border-radius: 34px;
+    z-index: 150;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease;
+    display: flex;
+    align-items: flex-end;
+  }
+  .modal-overlay.open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .bottom-sheet {
+    background: var(--surface);
+    border-radius: 24px 24px 0 0;
+    width: 100%;
+    padding: 20px 20px 30px;
+    box-shadow: 0 -10px 30px rgba(0,0,0,0.2);
+    transform: translateY(100%);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .modal-overlay.open .bottom-sheet {
+    transform: translateY(0);
+  }
+  .sheet-handle {
+    width: 40px;
+    height: 4px;
+    border-radius: 4px;
+    background: var(--line);
+    margin: 0 auto 16px;
+  }
+  .input-box {
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    font-family: inherit;
+    font-size: 13px;
+    margin-bottom: 10px;
+  }
+
+  /* Notification toast */
+  .toast {
+    position: absolute;
+    bottom: 24px;
+    left: 20px;
+    right: 20px;
+    background: #1E293B;
+    color: #FFFFFF;
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    pointer-events: none;
+    z-index: 200;
+  }
+  .toast.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="kicker">Interactive UX Prototype</span>
+  <h1>Pilihan Masuk: Google vs Email & Sandi</h1>
+  <p>Nyawtat mendukung <strong>kedua cara masuk</strong>. Kartu akun secara cerdas menyesuaikan tampilannya dengan cara masuk yang Anda pilih.</p>
+</div>
+
+<!-- Control Panel -->
+<div class="control-panel">
+  <div class="control-group">
+    <span class="control-label">Lihat Kondisi:</span>
+    <button class="btn-pill active" id="btn-state-google" onclick="setState('google')">1. Masuk dg Google</button>
+    <button class="btn-pill" id="btn-state-email" onclick="setState('email')">2. Masuk dg Email & Sandi (Tanpa Google)</button>
+    <button class="btn-pill" id="btn-state-both" onclick="setState('both')">3. Keduanya Aktif</button>
+    <button class="btn-pill" id="btn-state-guest" onclick="setState('guest')">4. Belum Masuk (Tamu)</button>
+  </div>
+  <div class="control-group">
+    <button class="btn-pill" onclick="toggleTheme()" id="btn-theme">🌓 Terang/Gelap</button>
+  </div>
+</div>
+
+<!-- Main Preview Area -->
+<div class="preview-wrapper">
+
+  <!-- Phone Mockup -->
+  <div class="phone-frame">
+    <div class="phone-notch"></div>
+    <div class="phone-screen" id="phone-screen">
+
+      <!-- App Bar -->
+      <div class="app-bar">
+        <h2>Pengaturan</h2>
+        <div class="app-bar-btn" title="Tutup">✕</div>
+      </div>
+
+      <!-- THE UNIFIED ACCOUNT CARD -->
+      <div class="app-card" id="account-card">
+        <!-- Will be dynamically updated by JS -->
+      </div>
+
+      <!-- LANGUAGE SECTION -->
+      <div class="section-label">Bahasa & Mata Uang</div>
+      <div class="app-card" style="padding: 10px 16px;">
+        <div class="setting-item">
+          <span class="setting-item-label">Bahasa</span>
+          <span class="setting-item-val" style="background:var(--accent-soft); color:var(--accent); padding:2px 8px; border-radius:6px; font-weight:600;">Indonesia</span>
+        </div>
+        <div class="setting-item">
+          <span class="setting-item-label">Mata Uang</span>
+          <span class="setting-item-val">Rp (IDR)</span>
+        </div>
+      </div>
+
+      <!-- DATA SECTION -->
+      <div class="section-label">Cadangan Google Drive</div>
+      <div class="app-card">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+          <div style="width:38px; height:38px; border-radius:10px; background:var(--accent-soft); color:var(--accent); display:flex; align-items:center; justify-content:center; font-size:18px;">☁️</div>
+          <div>
+            <div style="font-weight:700; font-size:14px;">Cadangan Cloud Otomatis</div>
+            <div style="font-size:11.5px; color:var(--muted);">Format Excel (.xlsx) rapi & siap Sheets</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:8px;">
+          <button class="btn-sm primary" style="flex:1;" onclick="triggerToast('📤 Sedang mencadangkan ke Google Drive...')">Cadangkan Sekarang</button>
+          <button class="btn-sm" style="flex:1;" onclick="triggerToast('📥 Membaca cadangan dari Google Drive...')">Pulihkan dari Drive</button>
+        </div>
+      </div>
+
+      <div class="section-label">Penyimpanan Lokal</div>
+      <div class="app-card" style="padding: 10px 16px;">
+        <div class="setting-item">
+          <span class="setting-item-label">Cadangkan Data Lokal</span>
+          <span class="setting-item-val">Excel / JSON ›</span>
+        </div>
+        <div class="setting-item">
+          <span class="setting-item-label">Pulihkan / Impor Data</span>
+          <span class="setting-item-val">Pilih File ›</span>
+        </div>
+      </div>
+
+      <!-- Bottom Sheet Modal for Sign In Dialog -->
+      <div class="modal-overlay" id="signInModal" onclick="closeModal(event)">
+        <div class="bottom-sheet" onclick="event.stopPropagation()">
+          <div class="sheet-handle"></div>
+          <h3 style="font-size:16px; font-weight:700; margin-bottom:4px;">Pilih Cara Masuk</h3>
+          <p style="font-size:12px; color:var(--muted); margin-bottom:16px;">Pilih salah satu cara untuk menyimpan dan mencadangkan data Anda:</p>
+          
+          <!-- Option A: Google -->
+          <button class="btn-full" onclick="setState('google'); closeModal(); triggerToast('✅ Masuk dengan Google berhasil!')">
+            <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#FFF" d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+            Masuk dengan Google
+          </button>
+          
+          <div style="display:flex; align-items:center; gap:8px; margin:14px 0;">
+            <div style="flex:1; height:1px; background:var(--divider);"></div>
+            <span style="font-size:10px; font-weight:700; color:var(--muted);">ATAU DENGAN EMAIL SERVER</span>
+            <div style="flex:1; height:1px; background:var(--divider);"></div>
+          </div>
+
+          <!-- Option B: Email & Password -->
+          <input type="email" class="input-box" placeholder="Alamat email Anda..." value="user@domain.com">
+          <input type="password" class="input-box" placeholder="Kata sandi..." value="********">
+          
+          <button class="btn-outline-full" style="background:var(--server-blue); color:white; border:none;" onclick="setState('email'); closeModal(); triggerToast('✅ Masuk dengan Email berhasil!')">
+            Masuk dengan Email & Kata Sandi
+          </button>
+        </div>
+      </div>
+
+      <!-- Toast for Feedback -->
+      <div class="toast" id="toast">Notifikasi</div>
+    </div>
+  </div>
+
+  <!-- Detailed Explanation Notes -->
+  <div class="side-notes">
+    <h3>💡 Bagaimana Keduanya Bekerja Bersama?</h3>
+    
+    <div class="comparison-item">
+      <span class="tag google-tag">Opsi 1: Masuk dengan Google</span>
+      <p><strong>Paling praktis & tanpa perlu ingat kata sandi baru.</strong> Menggunakan akun Google di HP Anda, mencadangkan file Excel & database langsung ke Google Drive Anda sendiri.</p>
+    </div>
+
+    <div class="comparison-item">
+      <span class="tag email-tag">Opsi 2: Masuk dengan Email & Kata Sandi (Tanpa Google)</span>
+      <p><strong>Untuk pengguna yang tidak mau menggunakan Google.</strong> Anda tetap bisa mendaftar dan masuk menggunakan Email & Kata Sandi biasa untuk sinkronisasi database antar-perangkat ke server Nyawtat (Supabase).</p>
+    </div>
+
+    <div class="comparison-item">
+      <span class="tag both-tag">Opsi 3: Keduanya Terhubung (Fleksibel)</span>
+      <p>Jika Anda memakai Email & Sandi untuk server, Anda <em>tetap bisa</em> menghubungkan Google Drive untuk ekspor file Excel berkala.</p>
+    </div>
+
+    <div style="margin-top: 18px; padding: 12px; background: var(--accent-soft); border-radius: 12px; border: 1px solid var(--accent); color: var(--accent); font-size: 12.5px; line-height: 1.5;">
+      👉 <strong>Coba klik tombol "2. Masuk dg Email & Sandi" di atas</strong> untuk melihat bagaimana tampilannya jika login tanpa Google! Atau coba klik "Masuk" pada mode Tamu untuk membuka pilihan cara masuk.
+    </div>
+  </div>
+
+</div>
+
+<script>
+  let currentState = 'google';
+
+  function setState(state) {
+    currentState = state;
+    document.querySelectorAll('.control-panel .btn-pill').forEach(btn => btn.classList.remove('active'));
+    const btn = document.getElementById(`btn-state-${state}`);
+    if (btn) btn.classList.add('active');
+
+    const card = document.getElementById('account-card');
+
+    if (state === 'google') {
+      card.innerHTML = `
+        <div class="account-row">
+          <div class="avatar google">D</div>
+          <div class="account-info">
+            <div class="account-name">dirtybubble02</div>
+            <div class="account-email">dirtybubble02@gmail.com</div>
+            <div class="badge-container">
+              <span class="account-badge badge-google">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM10 17l-3.5-3.5 1.41-1.41L10 14.17 15.09 9.09l1.41 1.41L10 17z"/></svg>
+                Google Drive Terhubung
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-action-row">
+          <div class="status-text ok">
+            <span>●</span> Cadangan otomatis aktif
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-sm primary" onclick="triggerToast('📤 Cadangkan data ke Google Drive...')">Cadangkan</button>
+            <button class="btn-sm" onclick="setState('guest'); triggerToast('Keluar dari Google...')">Keluar</button>
+          </div>
+        </div>
+      `;
+    } else if (state === 'email') {
+      card.innerHTML = `
+        <div class="account-row">
+          <div class="avatar server">U</div>
+          <div class="account-info">
+            <div class="account-name">user@domain.com</div>
+            <div class="account-email">Sinkronisasi Server Database</div>
+            <div class="badge-container">
+              <span class="account-badge badge-server">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14.5v-9l6 4.5-6 4.5z"/></svg>
+                Server Nyawtat Terhubung
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-action-row">
+          <div class="status-text ok">
+            <span>●</span> Terakhir sinkron: Hari ini, 01:25
+          </div>
+          <div style="display:flex; gap:6px;">
+            <button class="btn-sm primary" onclick="triggerToast('🔄 Menyinkronkan database ke server...')">Sync Sekarang</button>
+            <button class="btn-sm" onclick="setState('guest'); triggerToast('Keluar dari akun server...')">Keluar</button>
+          </div>
+        </div>
+      `;
+    } else if (state === 'both') {
+      card.innerHTML = `
+        <div class="account-row">
+          <div class="avatar google">D</div>
+          <div class="account-info">
+            <div class="account-name">dirtybubble02@gmail.com</div>
+            <div class="account-email">Semua Layanan Aktif</div>
+            <div class="badge-container">
+              <span class="account-badge badge-google">✓ Google Drive</span>
+              <span class="account-badge badge-server">✓ Server Database</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-divider"></div>
+        <div class="card-action-row">
+          <div class="status-text ok">
+            <span>●</span> Semua sinkronisasi siap
+          </div>
+          <button class="btn-sm" onclick="setState('guest'); triggerToast('Keluar dari semua akun...')">Keluar</button>
+        </div>
+      `;
+    } else if (state === 'guest') {
+      card.innerHTML = `
+        <div class="account-row">
+          <div class="avatar">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+          </div>
+          <div class="account-info">
+            <div class="account-name">Mode Tamu (Offline)</div>
+            <div class="account-email">Masuk dengan Google atau Email server</div>
+          </div>
+        </div>
+        <div style="margin-top:12px; display:flex; gap:8px;">
+          <button class="btn-full" style="flex:1;" onclick="openModal()">
+            Masuk Akun
+          </button>
+        </div>
+      `;
+    }
+  }
+
+  function openModal() {
+    document.getElementById('signInModal').classList.add('open');
+  }
+
+  function closeModal() {
+    document.getElementById('signInModal').classList.remove('open');
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+  }
+
+  function triggerToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2200);
+  }
+
+  // Initialize
+  setState('google');
+</script>
+
+</body>
+</html>

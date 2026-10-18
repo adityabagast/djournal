@@ -1339,11 +1339,27 @@ class AppLocalizationsId extends AppLocalizations {
   String get googleDriveSheetsPreview => 'Pratinjau Sheets';
 
   @override
-  String get googleSignIn => 'Lanjutkan dengan Google';
+  String get googleSignIn => 'Masuk dengan Google';
 
   @override
   String get googleSignInPrompt =>
       'Masuk dengan akun Google untuk sinkronisasi otomatis ke Google Drive.';
+
+  @override
+  String get guestMode => 'Mode Tamu (Offline)';
+
+  @override
+  String get guestModePrompt =>
+      'Masuk dengan Google atau Email server untuk mencadangkan data.';
+
+  @override
+  String get nyawtatServerConnected => 'Server Nyawtat Terhubung';
+
+  @override
+  String get googleDriveConnectedBadge => 'Google Drive Terhubung';
+
+  @override
+  String get signInAccount => 'Masuk Akun';
 
   @override
   String get backupRange => 'Rentang Data Cadangan';

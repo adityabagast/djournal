@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "696268912",
+    "project_id": "nyawtat",
+    "storage_bucket": "nyawtat.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:696268912:android:5df52bafacf7ff7bba5cb5",
+        "android_client_info": {
+          "package_name": "dev.nyawtat.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5ueFFM6rRgXRQmh82AZewLnkfqMYvIHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

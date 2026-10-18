@@ -2489,7 +2489,7 @@ abstract class AppLocalizations {
   /// No description provided for @googleSignIn.
   ///
   /// In id, this message translates to:
-  /// **'Lanjutkan dengan Google'**
+  /// **'Masuk dengan Google'**
   String get googleSignIn;
 
   /// No description provided for @googleSignInPrompt.
@@ -2497,6 +2497,36 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Masuk dengan akun Google untuk sinkronisasi otomatis ke Google Drive.'**
   String get googleSignInPrompt;
+
+  /// No description provided for @guestMode.
+  ///
+  /// In id, this message translates to:
+  /// **'Mode Tamu (Offline)'**
+  String get guestMode;
+
+  /// No description provided for @guestModePrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan Google atau Email server untuk mencadangkan data.'**
+  String get guestModePrompt;
+
+  /// No description provided for @nyawtatServerConnected.
+  ///
+  /// In id, this message translates to:
+  /// **'Server Nyawtat Terhubung'**
+  String get nyawtatServerConnected;
+
+  /// No description provided for @googleDriveConnectedBadge.
+  ///
+  /// In id, this message translates to:
+  /// **'Google Drive Terhubung'**
+  String get googleDriveConnectedBadge;
+
+  /// No description provided for @signInAccount.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk Akun'**
+  String get signInAccount;
 
   /// No description provided for @backupRange.
   ///
