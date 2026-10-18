@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.8.0 — 2026-10-18
+
+**Baru**
+- **Cadangan Google Drive Cloud & Format Excel (.xlsx)**:
+  - Pencadangan cloud langsung ke Google Drive Anda dalam format spreadsheet Excel (`.xlsx`) yang dapat langsung dibuka, diedit, dan dianalisis di **Google Sheets**.
+  - Spreadsheet terbagi dalam 4 lembar kerja (Sheet Tabs) rapi: `📑 Transaksi`, `📖 Jurnal Catatan`, `💵 Dompet & Saldo`, dan `🎯 Budget Bulanan`.
+  - Tombol aksi cepat "Buka di Sheets" untuk membuka file cadangan langsung di aplikasi Google Sheets / Browser.
+  - Data sistem cadangan tertanam secara aman di file Excel sehingga pemulihan (*restore*) dari Google Drive dapat mengembalikan 100% relasi database, foto, dan catatan tanpa kehilangan format.
+- **Pilihan Rentang Waktu Pencadangan (Period Range Filter)**:
+  - Fleksibilitas memilih data yang ingin dicadangkan:
+    - **Semua Riwayat**: Seluruh riwayat dari awal penggunaan hingga saat ini.
+    - **Tahun Ini**: Khusus transaksi dan catatan dalam 1 tahun kalender.
+    - **Bulan Ini**: Khusus transaksi dan catatan bulan berjalan.
+    - **Rentang Kustom**: Pemilih tanggal kustom (*date range picker*) dari tanggal A s.d. tanggal B.
+- **Penyederhanaan Menu Data & Cadangan (Dari 4 Menu Menjadi 2 Pintu Ringkas)**:
+  - Menggantikan 4 menu ekspor/impor terpisah yang membingungkan menjadi 2 opsi bersih:
+    1. **📤 Cadangkan Data (Ekspor)**: Satu modal praktis untuk memilih format file (Excel `.xlsx` atau Backup `.json`) dan rentang waktu sebelum diekspor.
+    2. **📥 Pulihkan / Impor Data**: Satu pintu pemulihan pintar dengan **deteksi format otomatis** (*auto-detection*). Cukup pilih file dari penyimpanan HP, aplikasi secara otomatis mengenali apakah itu file `.json` Nyawtat, file `.xlsx` Nyawtat, atau database Money Manager (`.mmbak`, `.sqlite`, `.db`, `.xlsx`).
+- **Masuk dengan Akun Google (Google Sign-In)**:
+  - Tombol "Lanjutkan dengan Google" di form Masuk untuk otentikasi cepat dan sinkronisasi Google Drive.
+
 ## 0.7.0 — 2026-10-18
 
 **Baru**

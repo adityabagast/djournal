@@ -2419,6 +2419,258 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count} kategori'**
   String categoryCount(int count);
+
+  /// No description provided for @googleDriveBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangan Google Drive'**
+  String get googleDriveBackup;
+
+  /// No description provided for @googleDriveBackupSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinkronisasi Cloud otomatis & mandiri'**
+  String get googleDriveBackupSub;
+
+  /// No description provided for @googleDriveConnected.
+  ///
+  /// In id, this message translates to:
+  /// **'Terhubung'**
+  String get googleDriveConnected;
+
+  /// No description provided for @googleDriveNotConnected.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum terhubung'**
+  String get googleDriveNotConnected;
+
+  /// No description provided for @googleDriveConnect.
+  ///
+  /// In id, this message translates to:
+  /// **'Hubungkan Akun Google'**
+  String get googleDriveConnect;
+
+  /// No description provided for @googleDriveDisconnect.
+  ///
+  /// In id, this message translates to:
+  /// **'Putuskan Akun'**
+  String get googleDriveDisconnect;
+
+  /// No description provided for @googleDriveLastBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangan terakhir: {time}'**
+  String googleDriveLastBackup(String time);
+
+  /// No description provided for @googleDriveNever.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum pernah dicadangkan'**
+  String get googleDriveNever;
+
+  /// No description provided for @googleDriveFormatInfo.
+  ///
+  /// In id, this message translates to:
+  /// **'Format: Excel (.xlsx) / Sheets'**
+  String get googleDriveFormatInfo;
+
+  /// No description provided for @googleDriveFormatDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisa dibuka langsung di Google Sheets dengan 4 lembar kerja: Transaksi, Jurnal, Dompet, dan Budget.'**
+  String get googleDriveFormatDesc;
+
+  /// No description provided for @googleDriveSheetsPreview.
+  ///
+  /// In id, this message translates to:
+  /// **'Pratinjau Sheets'**
+  String get googleDriveSheetsPreview;
+
+  /// No description provided for @googleSignIn.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjutkan dengan Google'**
+  String get googleSignIn;
+
+  /// No description provided for @googleSignInPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk dengan akun Google untuk sinkronisasi otomatis ke Google Drive.'**
+  String get googleSignInPrompt;
+
+  /// No description provided for @backupRange.
+  ///
+  /// In id, this message translates to:
+  /// **'Rentang Data Cadangan'**
+  String get backupRange;
+
+  /// No description provided for @rangeAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua Riwayat'**
+  String get rangeAll;
+
+  /// No description provided for @rangeThisYear.
+  ///
+  /// In id, this message translates to:
+  /// **'Tahun Ini'**
+  String get rangeThisYear;
+
+  /// No description provided for @rangeThisMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan Ini'**
+  String get rangeThisMonth;
+
+  /// No description provided for @rangeCustom.
+  ///
+  /// In id, this message translates to:
+  /// **'Rentang Kustom'**
+  String get rangeCustom;
+
+  /// No description provided for @rangeCustomFrom.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari'**
+  String get rangeCustomFrom;
+
+  /// No description provided for @rangeCustomTo.
+  ///
+  /// In id, this message translates to:
+  /// **'Sampai'**
+  String get rangeCustomTo;
+
+  /// No description provided for @backupNow.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangkan ke Drive'**
+  String get backupNow;
+
+  /// No description provided for @backupNowSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Berhasil dicadangkan ke Google Drive!'**
+  String get backupNowSuccess;
+
+  /// No description provided for @backupNowLoading.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengunggah ke Drive...'**
+  String get backupNowLoading;
+
+  /// No description provided for @openInSheets.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka di Sheets'**
+  String get openInSheets;
+
+  /// No description provided for @restoreFromDrive.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan dari Drive'**
+  String get restoreFromDrive;
+
+  /// No description provided for @restoreFromDriveConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan data dari cadangan Google Drive? Data lokal akan disinkronkan.'**
+  String get restoreFromDriveConfirm;
+
+  /// No description provided for @restoreFromDriveSuccess.
+  ///
+  /// In id, this message translates to:
+  /// **'Data berhasil dipulihkan dari Google Drive!'**
+  String get restoreFromDriveSuccess;
+
+  /// No description provided for @localDataTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Penyimpanan Lokal'**
+  String get localDataTitle;
+
+  /// No description provided for @localBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangkan Data (Ekspor)'**
+  String get localBackup;
+
+  /// No description provided for @localBackupSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan file Excel (.xlsx) atau Cadangan (.json) ke HP'**
+  String get localBackupSub;
+
+  /// No description provided for @localRestore.
+  ///
+  /// In id, this message translates to:
+  /// **'Pulihkan / Impor Data'**
+  String get localRestore;
+
+  /// No description provided for @localRestoreSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Deteksi otomatis file Nyawtat atau Money Manager'**
+  String get localRestoreSub;
+
+  /// No description provided for @formatExcel.
+  ///
+  /// In id, this message translates to:
+  /// **'Laporan Excel (.xlsx)'**
+  String get formatExcel;
+
+  /// No description provided for @formatExcelDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Bisa dibuka, dianalisis, dan dicetak di Google Sheets / Microsoft Excel.'**
+  String get formatExcelDesc;
+
+  /// No description provided for @formatJson.
+  ///
+  /// In id, this message translates to:
+  /// **'File Cadangan Nyawtat (.json)'**
+  String get formatJson;
+
+  /// No description provided for @formatJsonDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangan lengkap dengan relasi data untuk dipulihkan ke HP lain.'**
+  String get formatJsonDesc;
+
+  /// No description provided for @exportAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor & Bagikan File'**
+  String get exportAction;
+
+  /// No description provided for @selectBackupFile.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih File Cadangan'**
+  String get selectBackupFile;
+
+  /// No description provided for @selectBackupFileHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Mendukung .json (Nyawtat) atau .mmbak / .sqlite / .xlsx (Money Manager)'**
+  String get selectBackupFileHint;
+
+  /// No description provided for @autoBackupWifi.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangkan Otomatis'**
+  String get autoBackupWifi;
+
+  /// No description provided for @autoBackupWifiSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Saat terhubung ke jaringan Wi-Fi'**
+  String get autoBackupWifiSub;
+
+  /// No description provided for @unsupportedFileFormat.
+  ///
+  /// In id, this message translates to:
+  /// **'Format file tidak dikenali. Pilih file backup .json atau file Money Manager.'**
+  String get unsupportedFileFormat;
 }
 
 class _AppLocalizationsDelegate

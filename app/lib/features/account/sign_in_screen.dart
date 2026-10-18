@@ -5,6 +5,7 @@ import '../../core/theme.dart';
 import '../../data/sync/account_controller.dart';
 import '../../data/sync/backend.dart';
 import '../../l10n/app_localizations.dart';
+import '../../providers.dart';
 import '../../ui/common.dart';
 
 String apiErrorText(AppLocalizations l, ApiError e) => switch (e) {
@@ -71,6 +72,24 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
     }
   }
 
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _busy = true;
+      _error = null;
+    });
+    try {
+      await ref.read(googleDriveProvider.notifier).signIn();
+      final gUser = ref.read(googleDriveProvider);
+      if (gUser.email != null) {
+        if (mounted) Navigator.of(context).pop();
+      }
+    } catch (e) {
+      setState(() => _error = e.toString());
+    } finally {
+      if (mounted) setState(() => _busy = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -91,7 +110,42 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               l.signInPrompt,
               style: t.bodyMedium?.copyWith(color: context.colors.muted),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
+            OutlinedButton.icon(
+              onPressed: _busy ? null : _signInWithGoogle,
+              style: OutlinedButton.styleFrom(
+                minimumSize: const Size.fromHeight(48),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              icon: const SizedBox.square(
+                dimension: 20,
+                child: Center(
+                  child: Text('G', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue, fontSize: 18)),
+                ),
+              ),
+              label: Text(l.googleSignIn, style: const TextStyle(fontWeight: FontWeight.w600)),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: Divider(color: context.colors.divider)),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Text(
+                    'ATAU',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: context.colors.muted,
+                    ),
+                  ),
+                ),
+                Expanded(child: Divider(color: context.colors.divider)),
+              ],
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _email,
               keyboardType: TextInputType.emailAddress,

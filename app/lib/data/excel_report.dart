@@ -1,6 +1,7 @@
 import 'package:excel/excel.dart';
 
 import '../core/format.dart';
+import '../domain/models/backup_period.dart';
 import '../l10n/app_localizations.dart';
 import '../ui/common.dart' show categoryLabel;
 import '../ui/mood.dart' show moodLabel;
@@ -15,6 +16,8 @@ List<int> buildExcelReport({
   required MoneySnapshot money,
   required List<JournalEntry> entries,
   required DateTime now,
+  BackupPeriod? period,
+  String? rawBackupJson,
 }) {
   final excel = Excel.createExcel();
   final defaultSheet = excel.getDefaultSheet()!;
@@ -73,7 +76,11 @@ List<int> buildExcelReport({
     ],
     [14, 8, 14, 16, 16, 16, 18, 40],
   );
-  for (final t in money.transactions.reversed) {
+  final txs = period == null
+      ? money.transactions.reversed
+      : money.transactions.reversed.where((t) => period.includesYmd(t.localDate));
+
+  for (final t in txs) {
     final cat = t.categoryId == null ? null : money.categoryById[t.categoryId];
     txSheet.appendRow([
       date(t.localDate),
@@ -99,7 +106,10 @@ List<int> buildExcelReport({
     [l.csvDate, l.csvTime, l.mood, l.entryTitle, l.story, l.tags],
     [14, 8, 10, 30, 60, 20],
   );
-  final sorted = [...entries]
+  final filteredEntries = period == null
+      ? entries
+      : entries.where((e) => period.includesYmd(e.entryDate)).toList();
+  final sorted = [...filteredEntries]
     ..sort((a, b) {
       final byDate = a.entryDate.compareTo(b.entryDate);
       return byDate != 0 ? byDate : entrySortKey(a).compareTo(entrySortKey(b));
@@ -160,9 +170,29 @@ List<int> buildExcelReport({
     }
   }
 
+  // Tambahkan data sistem jika disediakan, untuk pemulihan utuh (restore).
+  if (rawBackupJson != null) {
+    final metaSheet = excel['_Data_Sistem'];
+    metaSheet.appendRow([TextCellValue(rawBackupJson)]);
+  }
+
   // Buang sheet kosong bawaan dan jadikan Transaksi sheet pertama.
   excel.setDefaultSheet(l.sheetTransactions);
   excel.delete(defaultSheet);
 
   return excel.encode()!;
 }
+
+/// Ekstrak kembali data JSON cadangan dari sheet `_Data_Sistem` di file Excel.
+String? extractRawBackupJsonFromExcel(List<int> bytes) {
+  try {
+    final excel = Excel.decodeBytes(bytes);
+    final sheet = excel['_Data_Sistem'];
+    if (sheet.rows.isNotEmpty && sheet.rows.first.isNotEmpty) {
+      final cell = sheet.rows.first.first;
+      return cell?.value?.toString();
+    }
+  } catch (_) {}
+  return null;
+}
+

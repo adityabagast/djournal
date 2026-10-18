@@ -1301,4 +1301,142 @@ class AppLocalizationsId extends AppLocalizations {
   String categoryCount(int count) {
     return '$count kategori';
   }
+
+  @override
+  String get googleDriveBackup => 'Cadangan Google Drive';
+
+  @override
+  String get googleDriveBackupSub => 'Sinkronisasi Cloud otomatis & mandiri';
+
+  @override
+  String get googleDriveConnected => 'Terhubung';
+
+  @override
+  String get googleDriveNotConnected => 'Belum terhubung';
+
+  @override
+  String get googleDriveConnect => 'Hubungkan Akun Google';
+
+  @override
+  String get googleDriveDisconnect => 'Putuskan Akun';
+
+  @override
+  String googleDriveLastBackup(String time) {
+    return 'Cadangan terakhir: $time';
+  }
+
+  @override
+  String get googleDriveNever => 'Belum pernah dicadangkan';
+
+  @override
+  String get googleDriveFormatInfo => 'Format: Excel (.xlsx) / Sheets';
+
+  @override
+  String get googleDriveFormatDesc =>
+      'Bisa dibuka langsung di Google Sheets dengan 4 lembar kerja: Transaksi, Jurnal, Dompet, dan Budget.';
+
+  @override
+  String get googleDriveSheetsPreview => 'Pratinjau Sheets';
+
+  @override
+  String get googleSignIn => 'Lanjutkan dengan Google';
+
+  @override
+  String get googleSignInPrompt =>
+      'Masuk dengan akun Google untuk sinkronisasi otomatis ke Google Drive.';
+
+  @override
+  String get backupRange => 'Rentang Data Cadangan';
+
+  @override
+  String get rangeAll => 'Semua Riwayat';
+
+  @override
+  String get rangeThisYear => 'Tahun Ini';
+
+  @override
+  String get rangeThisMonth => 'Bulan Ini';
+
+  @override
+  String get rangeCustom => 'Rentang Kustom';
+
+  @override
+  String get rangeCustomFrom => 'Dari';
+
+  @override
+  String get rangeCustomTo => 'Sampai';
+
+  @override
+  String get backupNow => 'Cadangkan ke Drive';
+
+  @override
+  String get backupNowSuccess => 'Berhasil dicadangkan ke Google Drive!';
+
+  @override
+  String get backupNowLoading => 'Mengunggah ke Drive...';
+
+  @override
+  String get openInSheets => 'Buka di Sheets';
+
+  @override
+  String get restoreFromDrive => 'Pulihkan dari Drive';
+
+  @override
+  String get restoreFromDriveConfirm =>
+      'Pulihkan data dari cadangan Google Drive? Data lokal akan disinkronkan.';
+
+  @override
+  String get restoreFromDriveSuccess =>
+      'Data berhasil dipulihkan dari Google Drive!';
+
+  @override
+  String get localDataTitle => 'Penyimpanan Lokal';
+
+  @override
+  String get localBackup => 'Cadangkan Data (Ekspor)';
+
+  @override
+  String get localBackupSub =>
+      'Simpan file Excel (.xlsx) atau Cadangan (.json) ke HP';
+
+  @override
+  String get localRestore => 'Pulihkan / Impor Data';
+
+  @override
+  String get localRestoreSub =>
+      'Deteksi otomatis file Nyawtat atau Money Manager';
+
+  @override
+  String get formatExcel => 'Laporan Excel (.xlsx)';
+
+  @override
+  String get formatExcelDesc =>
+      'Bisa dibuka, dianalisis, dan dicetak di Google Sheets / Microsoft Excel.';
+
+  @override
+  String get formatJson => 'File Cadangan Nyawtat (.json)';
+
+  @override
+  String get formatJsonDesc =>
+      'Cadangan lengkap dengan relasi data untuk dipulihkan ke HP lain.';
+
+  @override
+  String get exportAction => 'Ekspor & Bagikan File';
+
+  @override
+  String get selectBackupFile => 'Pilih File Cadangan';
+
+  @override
+  String get selectBackupFileHint =>
+      'Mendukung .json (Nyawtat) atau .mmbak / .sqlite / .xlsx (Money Manager)';
+
+  @override
+  String get autoBackupWifi => 'Cadangkan Otomatis';
+
+  @override
+  String get autoBackupWifiSub => 'Saat terhubung ke jaringan Wi-Fi';
+
+  @override
+  String get unsupportedFileFormat =>
+      'Format file tidak dikenali. Pilih file backup .json atau file Money Manager.';
 }

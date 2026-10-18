@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:drift/drift.dart';
 
+import '../domain/models/backup_period.dart';
 import 'db/app_database.dart';
 import 'sync/row_json.dart';
 
@@ -30,7 +31,15 @@ class BackupService {
 
   /// Semua data, termasuk yang sudah dihapus (supaya penghapusan ikut
   /// terbawa saat dipulihkan). Bentuk baris sama dengan payload sync.
-  Future<String> exportJson() async {
+  Future<String> exportJson({BackupPeriod? period}) async {
+    var txQuery = await _db.select(_db.transactions).get();
+    var entryQuery = await _db.select(_db.journalEntries).get();
+
+    if (period != null && period.type != BackupPeriodType.all) {
+      txQuery = txQuery.where((t) => period.includesYmd(t.localDate)).toList();
+      entryQuery = entryQuery.where((e) => period.includesYmd(e.entryDate)).toList();
+    }
+
     final data = {
       'format': format,
       'version': version,
@@ -41,15 +50,11 @@ class BackupService {
       'categories': (await _db.select(_db.categories).get())
           .map(categoryToJson)
           .toList(),
-      'transactions': (await _db.select(_db.transactions).get())
-          .map(transactionToJson)
-          .toList(),
+      'transactions': txQuery.map(transactionToJson).toList(),
       'budgets': (await _db.select(_db.budgets).get())
           .map(budgetToJson)
           .toList(),
-      'journalEntries': (await _db.select(_db.journalEntries).get())
-          .map(entryToJson)
-          .toList(),
+      'journalEntries': entryQuery.map(entryToJson).toList(),
     };
     return const JsonEncoder.withIndent('  ').convert(data);
   }

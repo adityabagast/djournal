@@ -1320,4 +1320,141 @@ class AppLocalizationsEn extends AppLocalizations {
   String categoryCount(int count) {
     return '$count categories';
   }
+
+  @override
+  String get googleDriveBackup => 'Google Drive Backup';
+
+  @override
+  String get googleDriveBackupSub => 'Automatic & self-hosted cloud sync';
+
+  @override
+  String get googleDriveConnected => 'Connected';
+
+  @override
+  String get googleDriveNotConnected => 'Not connected';
+
+  @override
+  String get googleDriveConnect => 'Connect Google Account';
+
+  @override
+  String get googleDriveDisconnect => 'Disconnect Account';
+
+  @override
+  String googleDriveLastBackup(String time) {
+    return 'Last backup: $time';
+  }
+
+  @override
+  String get googleDriveNever => 'Never backed up';
+
+  @override
+  String get googleDriveFormatInfo => 'Format: Excel (.xlsx) / Sheets';
+
+  @override
+  String get googleDriveFormatDesc =>
+      'View and edit directly in Google Sheets with 4 tabs: Transactions, Journal, Wallets, and Budget.';
+
+  @override
+  String get googleDriveSheetsPreview => 'Sheets Preview';
+
+  @override
+  String get googleSignIn => 'Continue with Google';
+
+  @override
+  String get googleSignInPrompt =>
+      'Sign in with Google to automatically backup to Google Drive.';
+
+  @override
+  String get backupRange => 'Backup Data Range';
+
+  @override
+  String get rangeAll => 'All Time';
+
+  @override
+  String get rangeThisYear => 'This Year';
+
+  @override
+  String get rangeThisMonth => 'This Month';
+
+  @override
+  String get rangeCustom => 'Custom Range';
+
+  @override
+  String get rangeCustomFrom => 'From';
+
+  @override
+  String get rangeCustomTo => 'To';
+
+  @override
+  String get backupNow => 'Backup to Drive';
+
+  @override
+  String get backupNowSuccess => 'Successfully backed up to Google Drive!';
+
+  @override
+  String get backupNowLoading => 'Uploading to Drive...';
+
+  @override
+  String get openInSheets => 'Open in Sheets';
+
+  @override
+  String get restoreFromDrive => 'Restore from Drive';
+
+  @override
+  String get restoreFromDriveConfirm =>
+      'Restore data from Google Drive backup? Local data will be synced.';
+
+  @override
+  String get restoreFromDriveSuccess =>
+      'Data successfully restored from Google Drive!';
+
+  @override
+  String get localDataTitle => 'Local Storage';
+
+  @override
+  String get localBackup => 'Backup Data (Export)';
+
+  @override
+  String get localBackupSub =>
+      'Save Excel (.xlsx) or Backup (.json) file to device';
+
+  @override
+  String get localRestore => 'Restore / Import Data';
+
+  @override
+  String get localRestoreSub => 'Auto-detect Nyawtat or Money Manager file';
+
+  @override
+  String get formatExcel => 'Excel Report (.xlsx)';
+
+  @override
+  String get formatExcelDesc =>
+      'Can be opened, analyzed, and printed in Google Sheets / Excel.';
+
+  @override
+  String get formatJson => 'Nyawtat Backup File (.json)';
+
+  @override
+  String get formatJsonDesc =>
+      'Full backup with relational data for restoring to another device.';
+
+  @override
+  String get exportAction => 'Export & Share File';
+
+  @override
+  String get selectBackupFile => 'Select Backup File';
+
+  @override
+  String get selectBackupFileHint =>
+      'Supports .json (Nyawtat) or .mmbak / .sqlite / .xlsx (Money Manager)';
+
+  @override
+  String get autoBackupWifi => 'Auto Backup';
+
+  @override
+  String get autoBackupWifiSub => 'When connected to Wi-Fi';
+
+  @override
+  String get unsupportedFileFormat =>
+      'Unsupported file format. Please select a .json backup or a Money Manager file.';
 }

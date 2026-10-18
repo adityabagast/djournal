@@ -4,6 +4,7 @@ import 'package:djournal/data/backup_service.dart';
 import 'package:djournal/data/db/app_database.dart';
 import 'package:djournal/data/journal_repository.dart';
 import 'package:djournal/data/money_repository.dart';
+import 'package:djournal/domain/models/backup_period.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -139,4 +140,73 @@ void main() {
       throwsA(isA<BackupFormatException>()),
     );
   });
+
+  test('exportJson dengan BackupPeriod hanya memfilter transaksi & jurnal sesuai rentang', () async {
+    final money = MoneyRepository(a);
+    final journal = JournalRepository(a);
+    final wallet = (await money.watchWallets().first).single;
+    final food = (await money.watchCategories().first).firstWhere(
+      (c) => c.systemKey == 'food',
+    );
+
+    // Transaksi Oktober 2026
+    await money.saveTransaction(
+      type: 'expense',
+      amount: 20000,
+      walletId: wallet.id,
+      categoryId: food.id,
+      note: 'Tx Oktober',
+      occurredAt: DateTime(2026, 10, 10),
+    );
+
+    // Transaksi Januari 2026
+    await money.saveTransaction(
+      type: 'expense',
+      amount: 50000,
+      walletId: wallet.id,
+      categoryId: food.id,
+      note: 'Tx Januari',
+      occurredAt: DateTime(2026, 1, 15),
+    );
+
+    // Jurnal Oktober 2026
+    await journal.saveEntry(
+      entryDate: '2026-10-10',
+      entryTime: '08:00',
+      mood: 4,
+      title: 'Jurnal Oktober',
+      body: 'Cerita',
+      tags: [],
+    );
+
+    // Jurnal Januari 2026
+    await journal.saveEntry(
+      entryDate: '2026-01-15',
+      entryTime: '09:00',
+      mood: 3,
+      title: 'Jurnal Januari',
+      body: 'Cerita',
+      tags: [],
+    );
+
+    // Ekspor dengan filter bulan Oktober 2026
+    final json = await BackupService(a).exportJson(
+      period: BackupPeriod.thisMonth(DateTime(2026, 10, 1)),
+    );
+    final decoded = jsonDecode(json) as Map<String, dynamic>;
+
+    final txList = decoded['transactions'] as List;
+    final entryList = decoded['journalEntries'] as List;
+
+    expect(txList.length, 1);
+    expect(txList.first['note'], 'Tx Oktober');
+
+    expect(entryList.length, 1);
+    expect(entryList.first['title'], 'Jurnal Oktober');
+
+    // Wallets dan Categories tetap utuh untuk integritas data
+    expect((decoded['wallets'] as List).isNotEmpty, isTrue);
+    expect((decoded['categories'] as List).isNotEmpty, isTrue);
+  });
 }
+
