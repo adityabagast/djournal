@@ -1,10 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../data/attachment_repository.dart';
+import '../data/bill_repository.dart';
 import '../data/db/app_database.dart';
 import '../data/journal_repository.dart';
 import '../data/money_repository.dart';
 import '../data/settings_repository.dart';
+import '../data/wishlist_repository.dart';
 
 final databaseProvider = Provider<AppDatabase>((ref) {
   final db = AppDatabase();
@@ -18,6 +20,14 @@ final moneyRepositoryProvider = Provider(
 
 final journalRepositoryProvider = Provider(
   (ref) => JournalRepository(ref.watch(databaseProvider)),
+);
+
+final wishlistRepositoryProvider = Provider(
+  (ref) => WishlistRepository(ref.watch(databaseProvider)),
+);
+
+final billRepositoryProvider = Provider(
+  (ref) => BillRepository(ref.watch(databaseProvider)),
 );
 
 final settingsRepositoryProvider = Provider(
@@ -56,4 +66,3 @@ final txAttachmentMapProvider = Provider<Map<String, Attachment>>((ref) {
   }
   return map;
 });
-

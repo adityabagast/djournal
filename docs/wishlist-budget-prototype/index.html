@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyawtat — Prototipe Fitur Wishlist, Budget Warning, Tagihan & Streak</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #1F5F4E;
+    --accent-light: #2D8B6E;
+    --accent-soft: #E8F5EE;
+    --bg: #F4F6F5;
+    --surface: #FFFFFF;
+    --surface-elevated: #F9FAFB;
+    --ink: #191F1C;
+    --muted: #6B7570;
+    --line: #E2E8E5;
+    --divider: #EDF1EE;
+    --expense: #DC2626;
+    --expense-soft: #FEF2F2;
+    --income: #16A34A;
+    --income-soft: #F0FDF4;
+    --warning: #D97706;
+    --warning-soft: #FFFBEB;
+    --flame: #EA580C;
+    --flame-soft: #FFF7ED;
+    --shadow: rgba(0, 0, 0, 0.08);
+  }
+
+  .dark {
+    --accent-soft: #14352B;
+    --bg: #0F1312;
+    --surface: #181E1C;
+    --surface-elevated: #212926;
+    --ink: #F3F5F4;
+    --muted: #8E9994;
+    --line: #2C3531;
+    --divider: #242C28;
+    --expense: #EF4444;
+    --expense-soft: #381A1A;
+    --income: #22C55E;
+    --income-soft: #143322;
+    --warning: #F59E0B;
+    --warning-soft: #332510;
+    --flame: #F97316;
+    --flame-soft: #382012;
+    --shadow: rgba(0, 0, 0, 0.45);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Poppins', sans-serif; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 24px 16px 60px;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  /* Page Header */
+  .page-header {
+    max-width: 960px;
+    margin: 0 auto 24px;
+    text-align: center;
+  }
+  .tag {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 10px;
+  }
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .page-header p {
+    font-size: 13.5px;
+    color: var(--muted);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  /* Control Panel */
+  .control-bar {
+    max-width: 960px;
+    margin: 0 auto 28px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 14px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    box-shadow: 0 4px 16px var(--shadow);
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .ctrl-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .05em;
+  }
+  .btn-sim {
+    background: var(--surface-elevated);
+    border: 1px solid var(--line);
+    color: var(--ink);
+    padding: 7px 12px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-sim:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .btn-sim.danger {
+    color: var(--expense);
+    border-color: rgba(220, 38, 38, 0.3);
+  }
+  .btn-sim.danger:hover {
+    background: var(--expense-soft);
+  }
+
+  /* Layout */
+  .main-container {
+    max-width: 980px;
+    margin: 0 auto;
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  /* Phone Mockup Frame */
+  .phone {
+    width: 395px;
+    height: 840px;
+    background: #000;
+    border-radius: 46px;
+    padding: 12px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
+    flex-shrink: 0;
+    position: relative;
+  }
+  .screen {
+    width: 100%;
+    height: 100%;
+    background: var(--bg);
+    border-radius: 36px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    position: relative;
+    padding-bottom: 90px;
+    scrollbar-width: none;
+  }
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* App Bar in Phone */
+  .app-bar {
+    padding: 20px 18px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+  .app-brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+  .mascot-avatar {
+    width: 38px;
+    height: 38px;
+    background: var(--accent-soft);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border: 1.5px solid var(--accent);
+  }
+  .app-title-box h2 {
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+  .app-title-box span {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* Streak Badge Button */
+  .streak-badge {
+    background: var(--flame-soft);
+    border: 1.5px solid var(--flame);
+    padding: 6px 12px;
+    border-radius: 999px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .streak-badge:active { transform: scale(0.95); }
+  .streak-flame {
+    font-size: 16px;
+    animation: pulse 1.5s infinite alternate;
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); filter: drop-shadow(0 0 2px rgba(234, 88, 12, 0.4)); }
+    100% { transform: scale(1.15); filter: drop-shadow(0 0 8px rgba(234, 88, 12, 0.8)); }
+  }
+  .streak-num {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--flame);
+  }
+
+  /* App Content Padding */
+  .content {
+    padding: 4px 18px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+
+  /* Warning Alert Banner */
+  .alert-banner {
+    border-radius: 16px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 12.5px;
+    line-height: 1.4;
+    transition: all 0.25s;
+  }
+  .alert-banner.warning {
+    background: var(--warning-soft);
+    border: 1px solid var(--warning);
+    color: var(--warning);
+  }
+  .alert-banner.danger {
+    background: var(--expense-soft);
+    border: 1.5px solid var(--expense);
+    color: var(--expense);
+  }
+  .alert-banner.info {
+    background: var(--flame-soft);
+    border: 1px solid var(--flame);
+    color: var(--flame);
+  }
+  .alert-icon { font-size: 18px; line-height: 1; flex-shrink: 0; }
+  .alert-title { font-weight: 700; margin-bottom: 2px; }
+  .alert-sub { font-size: 11.5px; opacity: 0.9; }
+
+  /* Section Header */
+  .sec-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .sec-title {
+    font-size: 13.5px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .sec-action {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--accent);
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  /* Segmented Control (Harian / Mingguan / Bulanan) */
+  .seg-control {
+    display: flex;
+    background: var(--surface-elevated);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 3px;
+    margin-bottom: 14px;
+  }
+  .seg-opt {
+    flex: 1;
+    text-align: center;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 6px 2px;
+    border-radius: 9px;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  .seg-opt.active {
+    background: var(--surface);
+    color: var(--ink);
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+
+  /* Budget Progress Bar */
+  .budget-metric {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .budget-spent {
+    font-size: 18px;
+    font-weight: 700;
+  }
+  .budget-total {
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .progress-track {
+    height: 10px;
+    background: var(--surface-elevated);
+    border-radius: 999px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid var(--line);
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 999px;
+    transition: width 0.3s ease, background 0.3s ease;
+  }
+  .progress-fill.safe { background: var(--accent); }
+  .progress-fill.warn { background: var(--warning); }
+  .progress-fill.danger { background: var(--expense); }
+
+  .budget-status-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+    font-size: 11.5px;
+  }
+  .budget-pct { font-weight: 700; }
+
+  /* Bills List */
+  .bill-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--divider);
+  }
+  .bill-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .bill-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .bill-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+  }
+  .bill-meta h4 {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .bill-due {
+    font-size: 11px;
+    font-weight: 600;
+  }
+  .due-urgent { color: var(--expense); }
+  .due-warning { color: var(--warning); }
+  .due-safe { color: var(--muted); }
+
+  .bill-right {
+    text-align: right;
+  }
+  .bill-amount {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 3px;
+  }
+  .btn-pay {
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: none;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-pay:hover { background: var(--accent); color: #fff; }
+  .btn-pay.paid {
+    background: var(--surface-elevated);
+    color: var(--income);
+    cursor: default;
+  }
+
+  /* Wishlist Cards */
+  .wishlist-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 14px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 6px var(--shadow);
+  }
+  .wish-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 4px;
+  }
+  .wish-title {
+    font-size: 13.5px;
+    font-weight: 700;
+  }
+  .wish-target-val {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  
+  /* Wallet Allocation Badge */
+  .wallet-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-soft);
+    padding: 3px 8px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+
+  .wish-plan-box {
+    background: var(--surface-elevated);
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin: 8px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 11.5px;
+  }
+  .wish-plan-item b {
+    display: block;
+    font-size: 12.5px;
+    color: var(--ink);
+  }
+  .wish-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+  .btn-save-wish {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    font-size: 11.5px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .btn-save-wish:hover { opacity: 0.9; }
+
+  /* Streak Checklist */
+  .streak-task {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  .streak-check {
+    width: 20px;
+    height: 20px;
+    border-radius: 6px;
+    border: 1.5px solid var(--line);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    transition: all 0.15s;
+    flex-shrink: 0;
+  }
+  .streak-task.done .streak-check {
+    background: var(--flame);
+    border-color: var(--flame);
+    color: white;
+  }
+  .streak-task.done .streak-text {
+    text-decoration: line-through;
+    color: var(--muted);
+  }
+
+  /* Floating Dock (Navigation) */
+  .dock {
+    position: absolute;
+    bottom: 12px;
+    left: 18px;
+    right: 18px;
+    height: 62px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 0 10px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    z-index: 20;
+  }
+  .dock-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+  .dock-item.active {
+    color: var(--accent);
+  }
+  .dock-icon { font-size: 19px; }
+  .dock-fab {
+    width: 44px;
+    height: 44px;
+    background: var(--accent);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: 300;
+    box-shadow: 0 4px 12px rgba(31,95,78,0.35);
+    cursor: pointer;
+    border: none;
+    transform: translateY(-8px);
+  }
+
+  /* Side Explanatory Cards */
+  .side-panel {
+    max-width: 460px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .explain-card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 20px;
+    box-shadow: 0 4px 14px var(--shadow);
+  }
+  .explain-card h3 {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .explain-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .explain-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 12.5px;
+  }
+  .explain-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+  }
+  .explain-list b { color: var(--ink); }
+
+  /* Wallet Balance Card in Sidebar */
+  .wallet-pill-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+  }
+  .wallet-pill {
+    background: var(--surface-elevated);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 10px;
+  }
+  .wallet-pill-name { font-size: 11px; color: var(--muted); display:flex; align-items:center; gap:4px; }
+  .wallet-pill-val { font-size: 12.5px; font-weight: 700; color: var(--ink); margin-top: 2px; }
+
+  /* Modal Form */
+  .modal-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+    z-index: 50;
+    display: none;
+    align-items: flex-end;
+    border-radius: 36px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-sheet {
+    background: var(--surface);
+    width: 100%;
+    border-radius: 28px 28px 0 0;
+    padding: 22px 20px 30px;
+    border-top: 1px solid var(--line);
+    animation: slideUp 0.25s ease-out;
+  }
+  @keyframes slideUp {
+    from { transform: translateY(100%); }
+    to { transform: translateY(0); }
+  }
+  .modal-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .form-group {
+    margin-bottom: 12px;
+  }
+  .form-group label {
+    display: block;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 5px;
+  }
+  .form-group input, .form-group select {
+    width: 100%;
+    background: var(--surface-elevated);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: var(--ink);
+    outline: none;
+  }
+  .form-group input:focus, .form-group select:focus { border-color: var(--accent); }
+  .calc-preview {
+    background: var(--accent-soft);
+    border: 1px dashed var(--accent);
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    margin-bottom: 14px;
+    color: var(--accent);
+  }
+  .btn-submit {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    padding: 12px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+  }
+
+  /* Toast Notification */
+  .toast {
+    position: absolute;
+    top: 70px;
+    left: 20px;
+    right: 20px;
+    background: var(--ink);
+    color: var(--surface);
+    padding: 10px 14px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+    z-index: 60;
+    transform: translateY(-20px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.25s ease;
+  }
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <span class="tag">Prototipe Interaktif Desain</span>
+  <h1>Nyawtat · Budget Warning, Wishlist & Streak</h1>
+  <p>Prototipe telah diperbarui: Sekarang Anda dapat <b>memilih dompet penyimpanan</b> untuk setiap barang wishlist serta memilih dompet sumber saat menyetor tabungan.</p>
+</header>
+
+<!-- External Control Bar -->
+<div class="control-bar">
+  <div class="control-group">
+    <span class="ctrl-label">Simulasi Aksi:</span>
+    <button class="btn-sim" onclick="addExpenseSim(50000)">+ Jajan Rp 50.000</button>
+    <button class="btn-sim" onclick="addExpenseSim(150000)">+ Belanja Rp 150.000</button>
+    <button class="btn-sim danger" onclick="addExpenseSim(400000)">+ Overbudget Rp 400.000</button>
+    <button class="btn-sim" onclick="resetDemo()">↺ Reset Data</button>
+  </div>
+  <div class="control-group">
+    <span class="ctrl-label">Tema:</span>
+    <button class="btn-sim" onclick="toggleTheme()">🌓 Dark / Light</button>
+    <button class="btn-sim" onclick="cycleAccent()">🎨 Ganti Aksen</button>
+  </div>
+</div>
+
+<div class="main-container">
+
+  <!-- PHONE MOCKUP -->
+  <div class="phone">
+    <div class="screen" id="appScreen">
+
+      <!-- TOAST FEEDBACK -->
+      <div id="appToast" class="toast">
+        <span id="toastIcon">✨</span>
+        <span id="toastMsg">Notifikasi</span>
+      </div>
+
+      <!-- APP BAR -->
+      <div class="app-bar">
+        <div class="app-brand">
+          <div class="mascot-avatar" id="mascotFace">🐱</div>
+          <div class="app-title-box">
+            <h2>Hari Ini</h2>
+            <span id="currentDateStr">20 Okt 2026</span>
+          </div>
+        </div>
+        <div class="streak-badge" onclick="showStreakDetails()" title="Klik untuk lihat progres streak">
+          <span class="streak-flame">🔥</span>
+          <span class="streak-num" id="streakBadgeNum">5 Hari</span>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- DYNAMIC WARNING ALERT BANNER -->
+        <div id="budgetAlertBanner" class="alert-banner warning" style="display: none;">
+          <div class="alert-icon" id="alertIcon">⚠️</div>
+          <div>
+            <div class="alert-title" id="alertTitle">Peringatan Budget!</div>
+            <div class="alert-sub" id="alertDesc">Pengeluaranmu hampir melebihi jatah harian.</div>
+          </div>
+        </div>
+
+        <!-- GLOBAL BUDGET CARD -->
+        <div class="card">
+          <div class="sec-head">
+            <span class="sec-title">🎯 Target Budget Global</span>
+            <button class="sec-action" onclick="openBudgetEdit()">Atur Target</button>
+          </div>
+
+          <!-- Segmented Control: Harian / Mingguan / Bulanan -->
+          <div class="seg-control">
+            <div class="seg-opt active" id="tabDaily" onclick="switchBudgetPeriod('daily')">Harian</div>
+            <div class="seg-opt" id="tabWeekly" onclick="switchBudgetPeriod('weekly')">Mingguan</div>
+            <div class="seg-opt" id="tabMonthly" onclick="switchBudgetPeriod('monthly')">Bulanan</div>
+          </div>
+
+          <div class="budget-metric">
+            <span class="budget-spent" id="spentDisplay">Rp 65.000</span>
+            <span class="budget-total" id="limitDisplay">dari Rp 100.000</span>
+          </div>
+
+          <div class="progress-track">
+            <div class="progress-fill safe" id="budgetProgressFill" style="width: 65%;"></div>
+          </div>
+
+          <div class="budget-status-row">
+            <span id="budgetRemaining">Sisa jatah: <b>Rp 35.000</b></span>
+            <span class="budget-pct" id="budgetPctText">65%</span>
+          </div>
+        </div>
+
+        <!-- REMINDER TAGIHAN / BILLS -->
+        <div class="card">
+          <div class="sec-head">
+            <span class="sec-title">🔔 Tagihan Mendatang</span>
+            <button class="sec-action" onclick="openBillModal()">+ Tambah</button>
+          </div>
+
+          <div id="billsList">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- WISHLIST & SMART SAVINGS (DENGAN PILIHAN DOMPET) -->
+        <div class="card">
+          <div class="sec-head">
+            <span class="sec-title">✨ Wishlist & Target Impian</span>
+            <button class="sec-action" onclick="openWishlistModal()">+ Tambah</button>
+          </div>
+
+          <div id="wishlistContainer">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- STREAK RUTINITAS CHECKLIST -->
+        <div class="card">
+          <div class="sec-head">
+            <span class="sec-title">🔥 Rutinitas Nyawtat Hari Ini</span>
+            <span style="font-size:11px; color:var(--flame); font-weight:700;" id="streakStatusLabel">Aktif 5 Hari</span>
+          </div>
+          <p style="font-size:11.5px; color:var(--muted); margin-bottom:8px;">Lakukan minimal satu aktivitas untuk mempertahankan api streak harianmu:</p>
+
+          <div id="streakTasksList">
+            <div class="streak-task done" onclick="toggleTask(0)">
+              <div class="streak-check">✓</div>
+              <span class="streak-text">Menulis 1 Jurnal Harian</span>
+            </div>
+            <div class="streak-task done" onclick="toggleTask(1)">
+              <div class="streak-check">✓</div>
+              <span class="streak-text">Catat Pemasukan / Pengeluaran</span>
+            </div>
+            <div class="streak-task" onclick="toggleTask(2)">
+              <div class="streak-check"></div>
+              <span class="streak-text">Sisihkan Tabungan Wishlist</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- BOTTOM DOCK -->
+      <div class="dock">
+        <button class="dock-item active">
+          <span class="dock-icon">📅</span>
+          <span>Hari Ini</span>
+        </button>
+        <button class="dock-item">
+          <span class="dock-icon">📖</span>
+          <span>Jurnal</span>
+        </button>
+        <button class="dock-fab" onclick="addExpenseSim(50000)">+</button>
+        <button class="dock-item">
+          <span class="dock-icon">💰</span>
+          <span>Uang</span>
+        </button>
+        <button class="dock-item">
+          <span class="dock-icon">📊</span>
+          <span>Laporan</span>
+        </button>
+      </div>
+
+      <!-- MODAL BOTTOM SHEET (WISHLIST / BILLS / SETOR) -->
+      <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-sheet" id="modalSheet">
+          <!-- Injected dynamically -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SIDE PANEL EXPLANATION -->
+  <div class="side-panel">
+
+    <div class="explain-card">
+      <h3>💼 Saldo Dompet Nyawtat Saat Ini</h3>
+      <p>Wishlist dapat diikatkan ke dompet tujuan, dan saat Anda menyetor tabungan, Anda dapat memilih dari dompet mana uang tersebut disisihkan:</p>
+      <div class="wallet-pill-grid" id="walletOverviewGrid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <div class="explain-card">
+      <h3>💡 1. Wishlist Terintegrasi Pilihan Dompet</h3>
+      <p>Setiap target barang impian kini memiliki <b>Dompet Tempat Penyimpanan</b>:</p>
+      <ul class="explain-list">
+        <li><b>Pilihan Fleksibel:</b> Pengguna dapat menaruh impian di rekening khusus (misal: <i>Bank BCA Tabungan</i>, <i>Bibit</i>, atau <i>Dompet Tunai</i>).</li>
+        <li><b>Alur Setor Tabungan:</b> Saat klik <b>"+ Nabung"</b>, muncul dialog untuk memilih dompet sumber dan nominal yang ingin disisihkan.</li>
+        <li><b>Otomatis Menghitung:</b> Rincian target per bulan & harian dihitung otomatis dari sisa kekurangan target.</li>
+      </ul>
+    </div>
+
+    <div class="explain-card">
+      <h3>⚠️ 2. Warning Reminder Tagihan</h3>
+      <p>Tagihan dengan tanggal jatuh tempo (*due date*):</p>
+      <ul class="explain-list">
+        <li><b>H-2 s/d H-0:</b> Peringatan darurat (merah) dengan badge "⚡ 2 hari lagi!".</li>
+        <li><b>Bayar Cepat:</b> Klik "Bayar" langsung memotong saldo dompet terkait dan mencatat transaksi lunas.</li>
+      </ul>
+    </div>
+
+    <div class="explain-card">
+      <h3>🎯 3. Global Budgeting & Warning Threshold</h3>
+      <ul class="explain-list">
+        <li><b>&lt; 75%:</b> Aman (Kucing gembira 😺).</li>
+        <li><b>75% - 99%:</b> Waspada Kuning (⚠️ mendekati batas).</li>
+        <li><b>&ge; 100%:</b> Bahaya Merah (🚨 budget jebol!). Maskot kucing panik 🙀.</li>
+      </ul>
+    </div>
+
+    <div class="explain-card">
+      <h3>🔥 4. Gamifikasi Streak Api</h3>
+      <p>Menyetor tabungan ke wishlist sekarang otomatis <b>mencentang rutinitas harian</b> dan mempertahankan api streak 🔥!</p>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  // --- STATE DATA ---
+  let currentPeriod = 'daily'; // 'daily' | 'weekly' | 'monthly'
+  let budgetData = {
+    daily: { spent: 65000, limit: 100000 },
+    weekly: { spent: 480000, limit: 700000 },
+    monthly: { spent: 2150000, limit: 3000000 }
+  };
+
+  // Wallets representing Nyawtat wallet schema
+  let wallets = [
+    { id: 'w1', name: 'BCA Utama', type: 'bank', icon: '🏦', balance: 5400000 },
+    { id: 'w2', name: 'Dompet Tunai', type: 'cash', icon: '💵', balance: 350000 },
+    { id: 'w3', name: 'GoPay / OVO', type: 'ewallet', icon: '📱', balance: 820000 },
+    { id: 'w4', name: 'Tabungan Impian', type: 'bank', icon: '🐷', balance: 4750000 }
+  ];
+
+  let bills = [
+    { id: 1, title: 'Wi-Fi IndiHome', amount: 375000, daysLeft: 2, dueDate: '22 Okt', icon: '📶', walletId: 'w1', paid: false },
+    { id: 2, title: 'Listrik PLN Token', amount: 200000, daysLeft: 6, dueDate: '26 Okt', icon: '⚡', walletId: 'w3', paid: false },
+    { id: 3, title: 'Spotify Premium', amount: 55000, daysLeft: 12, dueDate: '01 Nov', icon: '🎵', walletId: 'w3', paid: false }
+  ];
+
+  let wishlists = [
+    {
+      id: 1,
+      title: 'Beli HP Flagship Baru',
+      targetAmount: 8000000,
+      savedAmount: 2650000,
+      targetMonths: 12,
+      targetDateStr: 'Okt 2027',
+      walletId: 'w4', // Stored in Tabungan Impian
+      monthlySave: Math.round(8000000 / 12)
+    },
+    {
+      id: 2,
+      title: 'Liburan Akhir Tahun',
+      targetAmount: 3500000,
+      savedAmount: 2100000,
+      targetMonths: 3,
+      targetDateStr: 'Des 2026',
+      walletId: 'w1', // Stored in BCA Utama
+      monthlySave: Math.round(3500000 / 3)
+    }
+  ];
+
+  let streakCount = 5;
+  let streakTasks = [true, true, false]; // [journal, expense, savings]
+
+  // Accent Presets matching Nyawtat
+  const accents = [
+    { name: 'sage', color: '#1F5F4E', soft: '#E8F5EE' },
+    { name: 'ocean', color: '#1D4E89', soft: '#E8F0F8' },
+    { name: 'violet', color: '#5B3E9B', soft: '#F0EBF8' },
+    { name: 'rose', color: '#A83B62', soft: '#F8EBF0' },
+    { name: 'amber', color: '#8A5A12', soft: '#F8F1E8' }
+  ];
+  let accentIdx = 0;
+
+  // Formatting utils
+  function formatRupiah(num) {
+    return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+  }
+
+  function getWallet(id) {
+    return wallets.find(w => w.id === id) || wallets[0];
+  }
+
+  function showToast(msg, icon = '✨') {
+    const toast = document.getElementById('appToast');
+    document.getElementById('toastMsg').textContent = msg;
+    document.getElementById('toastIcon').textContent = icon;
+    toast.classList.add('show');
+    setTimeout(() => { toast.classList.remove('show'); }, 3000);
+  }
+
+  // Render Functions
+  function updateBudgetUI() {
+    const data = budgetData[currentPeriod];
+    const pct = Math.round((data.spent / data.limit) * 100);
+    const remaining = data.limit - data.spent;
+
+    document.getElementById('spentDisplay').textContent = formatRupiah(data.spent);
+    document.getElementById('limitDisplay').textContent = 'dari ' + formatRupiah(data.limit);
+    document.getElementById('budgetPctText').textContent = pct + '%';
+
+    const fill = document.getElementById('budgetProgressFill');
+    fill.style.width = Math.min(pct, 100) + '%';
+
+    const banner = document.getElementById('budgetAlertBanner');
+    const mascot = document.getElementById('mascotFace');
+    const remLabel = document.getElementById('budgetRemaining');
+
+    if (remaining >= 0) {
+      remLabel.innerHTML = 'Sisa jatah: <b>' + formatRupiah(remaining) + '</b>';
+    } else {
+      remLabel.innerHTML = '<span style="color:var(--expense); font-weight:700;">Overbudget: ' + formatRupiah(Math.abs(remaining)) + '</span>';
+    }
+
+    fill.className = 'progress-fill';
+    if (pct < 75) {
+      fill.classList.add('safe');
+      banner.style.display = 'none';
+      mascot.textContent = '😺';
+    } else if (pct < 100) {
+      fill.classList.add('warn');
+      banner.style.display = 'flex';
+      banner.className = 'alert-banner warning';
+      document.getElementById('alertIcon').textContent = '⚠️';
+      document.getElementById('alertTitle').textContent = 'Mendekati Batas Budget (' + pct + '%)';
+      document.getElementById('alertDesc').textContent = 'Sisa jatah belanja ' + (currentPeriod === 'daily' ? 'hari ini' : 'periode ini') + ' tinggal ' + formatRupiah(remaining) + '.';
+      mascot.textContent = '😾';
+    } else {
+      fill.classList.add('danger');
+      banner.style.display = 'flex';
+      banner.className = 'alert-banner danger';
+      document.getElementById('alertIcon').textContent = '🚨';
+      document.getElementById('alertTitle').textContent = 'Budget Terlampaui (' + pct + '%)!';
+      document.getElementById('alertDesc').textContent = 'Kamu sudah melebihi batas jatah sebesar ' + formatRupiah(Math.abs(remaining)) + '.';
+      mascot.textContent = '🙀';
+    }
+  }
+
+  function renderWalletsOverview() {
+    const grid = document.getElementById('walletOverviewGrid');
+    if (!grid) return;
+    grid.innerHTML = '';
+    wallets.forEach(w => {
+      const pill = document.createElement('div');
+      pill.className = 'wallet-pill';
+      pill.innerHTML = `
+        <div class="wallet-pill-name">${w.icon} ${w.name}</div>
+        <div class="wallet-pill-val">${formatRupiah(w.balance)}</div>
+      `;
+      grid.appendChild(pill);
+    });
+  }
+
+  function renderBills() {
+    const list = document.getElementById('billsList');
+    list.innerHTML = '';
+    bills.forEach(bill => {
+      const w = getWallet(bill.walletId);
+      let dueClass = 'due-safe';
+      let dueText = bill.daysLeft + ' hari lagi (' + bill.dueDate + ')';
+      if (bill.daysLeft <= 2) {
+        dueClass = 'due-urgent';
+        dueText = '⚡ ' + bill.daysLeft + ' hari lagi! (' + bill.dueDate + ')';
+      } else if (bill.daysLeft <= 7) {
+        dueClass = 'due-warning';
+      }
+
+      const item = document.createElement('div');
+      item.className = 'bill-item';
+      item.innerHTML = `
+        <div class="bill-info">
+          <div class="bill-icon" style="background:var(--surface-elevated);">${bill.icon}</div>
+          <div class="bill-meta">
+            <h4>${bill.title}</h4>
+            <span class="bill-due ${dueClass}">${bill.paid ? 'Sudah dibayar' : dueText}</span>
+            <div style="font-size:10.5px; color:var(--muted);">${w.icon} Bayar via ${w.name}</div>
+          </div>
+        </div>
+        <div class="bill-right">
+          <div class="bill-amount">${formatRupiah(bill.amount)}</div>
+          ${bill.paid
+            ? '<span class="btn-pay paid">✓ Lunas</span>'
+            : `<button class="btn-pay" onclick="payBill(${bill.id})">Bayar</button>`
+          }
+        </div>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  function renderWishlists() {
+    const container = document.getElementById('wishlistContainer');
+    container.innerHTML = '';
+    wishlists.forEach(w => {
+      const targetWallet = getWallet(w.walletId);
+      const pct = Math.round((w.savedAmount / w.targetAmount) * 100);
+      const sisa = w.targetAmount - w.savedAmount;
+      const dailyEst = Math.round(w.monthlySave / 30);
+
+      const card = document.createElement('div');
+      card.className = 'wishlist-card';
+      card.innerHTML = `
+        <div class="wish-head">
+          <span class="wish-title">📱 ${w.title}</span>
+          <span class="wish-target-val">${formatRupiah(w.targetAmount)}</span>
+        </div>
+        
+        <!-- WALLET BADGE -->
+        <div>
+          <span class="wallet-tag">
+            ${targetWallet.icon} Disimpan di: <b>${targetWallet.name}</b>
+          </span>
+        </div>
+
+        <div class="progress-track" style="margin: 4px 0 6px;">
+          <div class="progress-fill safe" style="width: ${Math.min(pct, 100)}%;"></div>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:11.5px; color:var(--muted); margin-bottom:6px;">
+          <span>Terkumpul: <b>${formatRupiah(w.savedAmount)}</b> (${pct}%)</span>
+          <span>Target: ${w.targetDateStr}</span>
+        </div>
+        <div class="wish-plan-box">
+          <div class="wish-plan-item">
+            <span>Rincian Sisihan:</span>
+            <b>${formatRupiah(w.monthlySave)} / bulan</b>
+          </div>
+          <div class="wish-plan-item" style="text-align:right;">
+            <span>Atau harian:</span>
+            <b>${formatRupiah(dailyEst)} / hari</b>
+          </div>
+        </div>
+        <div class="wish-actions">
+          <span style="font-size:11px; color:var(--muted);">Kurang: ${formatRupiah(sisa)}</span>
+          <button class="btn-save-wish" onclick="openDepositModal(${w.id})">+ Nabung</button>
+        </div>
+      `;
+      container.appendChild(card);
+    });
+  }
+
+  function renderStreak() {
+    document.getElementById('streakBadgeNum').textContent = streakCount + ' Hari';
+    document.getElementById('streakStatusLabel').textContent = 'Aktif ' + streakCount + ' Hari';
+    const hasActiveStreak = streakTasks.some(t => t === true);
+
+    const flame = document.querySelector('.streak-flame');
+    if (hasActiveStreak) {
+      flame.style.animation = 'pulse 1.2s infinite alternate';
+      flame.style.opacity = '1';
+    } else {
+      flame.style.animation = 'none';
+      flame.style.opacity = '0.5';
+    }
+  }
+
+  // --- INTERACTION HANDLERS ---
+  function switchBudgetPeriod(period) {
+    currentPeriod = period;
+    document.getElementById('tabDaily').classList.toggle('active', period === 'daily');
+    document.getElementById('tabWeekly').classList.toggle('active', period === 'weekly');
+    document.getElementById('tabMonthly').classList.toggle('active', period === 'monthly');
+    updateBudgetUI();
+  }
+
+  function addExpenseSim(amount) {
+    budgetData.daily.spent += amount;
+    budgetData.weekly.spent += amount;
+    budgetData.monthly.spent += amount;
+    updateBudgetUI();
+
+    // Mark task 1 (expense) as done
+    streakTasks[1] = true;
+    updateTaskUI();
+    renderStreak();
+  }
+
+  function payBill(id) {
+    const bill = bills.find(b => b.id === id);
+    if (!bill || bill.paid) return;
+    const w = getWallet(bill.walletId);
+    w.balance -= bill.amount;
+    bill.paid = true;
+    addExpenseSim(bill.amount);
+    renderBills();
+    renderWalletsOverview();
+    showToast(`Lunas! ${bill.title} dibayar via ${w.name}`, '💳');
+  }
+
+  function toggleTask(idx) {
+    streakTasks[idx] = !streakTasks[idx];
+    updateTaskUI();
+    renderStreak();
+  }
+
+  function updateTaskUI() {
+    const tasks = document.querySelectorAll('.streak-task');
+    tasks.forEach((t, i) => {
+      const isDone = streakTasks[i];
+      t.classList.toggle('done', isDone);
+      t.querySelector('.streak-check').textContent = isDone ? '✓' : '';
+    });
+  }
+
+  function resetDemo() {
+    budgetData.daily.spent = 65000;
+    budgetData.weekly.spent = 480000;
+    budgetData.monthly.spent = 2150000;
+    wallets[0].balance = 5400000;
+    wallets[1].balance = 350000;
+    wallets[2].balance = 820000;
+    wallets[3].balance = 4750000;
+    bills.forEach(b => b.paid = false);
+    wishlists[0].savedAmount = 2650000;
+    wishlists[1].savedAmount = 2100000;
+    streakTasks = [true, true, false];
+    updateBudgetUI();
+    renderBills();
+    renderWishlists();
+    renderWalletsOverview();
+    updateTaskUI();
+    renderStreak();
+    showToast('Data demo berhasil di-reset', '↺');
+  }
+
+  // --- THEME & ACCENT ---
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+  }
+
+  function cycleAccent() {
+    accentIdx = (accentIdx + 1) % accents.length;
+    const a = accents[accentIdx];
+    document.documentElement.style.setProperty('--accent', a.color);
+    document.documentElement.style.setProperty('--accent-soft', a.soft);
+  }
+
+  // --- MODALS ---
+  const overlay = document.getElementById('modalOverlay');
+  const sheet = document.getElementById('modalSheet');
+
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) closeModal();
+  });
+
+  function closeModal() {
+    overlay.classList.remove('open');
+  }
+
+  // 1. TAMBAH WISHLIST MODAL (DENGAN PILIHAN DOMPET)
+  function openWishlistModal() {
+    const walletOptions = wallets.map(w => `<option value="${w.id}">${w.icon} ${w.name} (Saldo: ${formatRupiah(w.balance)})</option>`).join('');
+
+    sheet.innerHTML = `
+      <div class="modal-title">
+        <span>✨ Tambah Wishlist Impian</span>
+        <button onclick="closeModal()" style="border:none; background:none; font-size:18px; cursor:pointer; color:var(--muted);">&times;</button>
+      </div>
+      <div class="form-group">
+        <label>Nama Barang / Impian</label>
+        <input type="text" id="newWishTitle" placeholder="Misal: iPhone 16 / Kamera Mirrorless">
+      </div>
+      <div class="form-group">
+        <label>Simpan & Kumpulkan di Dompet Mana?</label>
+        <select id="newWishWallet">
+          ${walletOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Target Harga (Rp)</label>
+        <input type="number" id="newWishPrice" value="8000000" oninput="calcWishPreview()">
+      </div>
+      <div class="form-group">
+        <label>Target Waktu Tercapai</label>
+        <select id="newWishDuration" onchange="calcWishPreview()">
+          <option value="6">6 Bulan ke depan</option>
+          <option value="12" selected>1 Tahun (12 Bulan)</option>
+          <option value="24">2 Tahun (24 Bulan)</option>
+          <option value="36">3 Tahun (36 Bulan)</option>
+        </select>
+      </div>
+      <div class="calc-preview" id="wishPreviewText">
+        💡 Rincian Otomatis: <b>Rp 666.667 / bulan</b> (sekitar Rp 22.222 / hari)
+      </div>
+      <button class="btn-submit" onclick="submitWishlist()">Simpan Wishlist</button>
+    `;
+    overlay.classList.add('open');
+    calcWishPreview();
+  }
+
+  function calcWishPreview() {
+    const price = parseInt(document.getElementById('newWishPrice').value) || 0;
+    const months = parseInt(document.getElementById('newWishDuration').value) || 12;
+    const monthly = Math.round(price / months);
+    const daily = Math.round(monthly / 30);
+    const preview = document.getElementById('wishPreviewText');
+    preview.innerHTML = `💡 Rincian Otomatis: <b>${formatRupiah(monthly)} / bulan</b> (sekitar ${formatRupiah(daily)} / hari)`;
+  }
+
+  function submitWishlist() {
+    const title = document.getElementById('newWishTitle').value.trim() || 'Barang Impian';
+    const walletId = document.getElementById('newWishWallet').value;
+    const price = parseInt(document.getElementById('newWishPrice').value) || 1000000;
+    const months = parseInt(document.getElementById('newWishDuration').value) || 12;
+    const monthly = Math.round(price / months);
+
+    wishlists.unshift({
+      id: Date.now(),
+      title: title,
+      walletId: walletId,
+      targetAmount: price,
+      savedAmount: 0,
+      targetMonths: months,
+      targetDateStr: months + ' Bln lagi',
+      monthlySave: monthly
+    });
+
+    renderWishlists();
+    closeModal();
+    const w = getWallet(walletId);
+    showToast(`Wishlist "${title}" dialokasikan ke ${w.name}`, '🎯');
+  }
+
+  // 2. SETOR TABUNGAN MODAL
+  function openDepositModal(wishlistId) {
+    const w = wishlists.find(item => item.id === wishlistId);
+    if (!w) return;
+    const defaultWallet = getWallet(w.walletId);
+    const walletOptions = wallets.map(item => `
+      <option value="${item.id}" ${item.id === 'w1' ? 'selected' : ''}>
+        ${item.icon} ${item.name} (Saldo: ${formatRupiah(item.balance)})
+      </option>
+    `).join('');
+
+    sheet.innerHTML = `
+      <div class="modal-title">
+        <span>🐷 Setor Tabungan Wishlist</span>
+        <button onclick="closeModal()" style="border:none; background:none; font-size:18px; cursor:pointer; color:var(--muted);">&times;</button>
+      </div>
+      <div style="font-size:13px; margin-bottom:12px; color:var(--ink);">
+        Target: <b>${w.title}</b><br>
+        <span style="font-size:11.5px; color:var(--muted);">Disimpan di: ${defaultWallet.icon} ${defaultWallet.name}</span>
+      </div>
+      <div class="form-group">
+        <label>Ambil Uang Dari Dompet Sumber:</label>
+        <select id="sourceWalletSelect">
+          ${walletOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Nominal Setor (Rp):</label>
+        <input type="number" id="depositAmount" value="${Math.min(w.monthlySave, 500000)}">
+      </div>
+      <button class="btn-submit" onclick="submitDeposit(${w.id})">Konfirmasi Setor Tabungan</button>
+    `;
+    overlay.classList.add('open');
+  }
+
+  function submitDeposit(wishlistId) {
+    const w = wishlists.find(item => item.id === wishlistId);
+    if (!w) return;
+    const sourceWalletId = document.getElementById('sourceWalletSelect').value;
+    const amount = parseInt(document.getElementById('depositAmount').value) || 0;
+    if (amount <= 0) return;
+
+    const sourceWallet = getWallet(sourceWalletId);
+    const targetWallet = getWallet(w.walletId);
+
+    // If source and target are different, adjust balances like a transfer
+    if (sourceWallet.id !== targetWallet.id) {
+      sourceWallet.balance -= amount;
+      targetWallet.balance += amount;
+    }
+
+    w.savedAmount = Math.min(w.savedAmount + amount, w.targetAmount);
+
+    // Update streak task
+    streakTasks[2] = true;
+    updateTaskUI();
+    renderStreak();
+    renderWishlists();
+    renderWalletsOverview();
+    closeModal();
+
+    showToast(`Berhasil menyisihkan ${formatRupiah(amount)} ke ${w.title}!`, '🎉');
+  }
+
+  // 3. TAGIHAN MODAL
+  function openBillModal() {
+    const walletOptions = wallets.map(w => `<option value="${w.id}">${w.icon} ${w.name}</option>`).join('');
+
+    sheet.innerHTML = `
+      <div class="modal-title">
+        <span>🔔 Tambah Tagihan Baru</span>
+        <button onclick="closeModal()" style="border:none; background:none; font-size:18px; cursor:pointer; color:var(--muted);">&times;</button>
+      </div>
+      <div class="form-group">
+        <label>Nama Tagihan</label>
+        <input type="text" id="newBillTitle" placeholder="Misal: BPJS / Listrik Rumah">
+      </div>
+      <div class="form-group">
+        <label>Nominal (Rp)</label>
+        <input type="number" id="newBillAmount" value="150000">
+      </div>
+      <div class="form-group">
+        <label>Rencana Bayar Pakai Dompet:</label>
+        <select id="newBillWallet">
+          ${walletOptions}
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Tanggal Jatuh Tempo (Hari ke- depan)</label>
+        <select id="newBillDays">
+          <option value="2">2 Hari lagi (Peringatan Mendesak!)</option>
+          <option value="5" selected>5 Hari lagi</option>
+          <option value="10">10 Hari lagi</option>
+        </select>
+      </div>
+      <button class="btn-submit" onclick="submitBill()">Simpan Tagihan</button>
+    `;
+    overlay.classList.add('open');
+  }
+
+  function submitBill() {
+    const title = document.getElementById('newBillTitle').value.trim() || 'Tagihan Baru';
+    const amount = parseInt(document.getElementById('newBillAmount').value) || 100000;
+    const days = parseInt(document.getElementById('newBillDays').value) || 5;
+    const walletId = document.getElementById('newBillWallet').value;
+
+    bills.unshift({
+      id: Date.now(),
+      title: title,
+      amount: amount,
+      daysLeft: days,
+      dueDate: days + ' Hari lagi',
+      icon: '📄',
+      walletId: walletId,
+      paid: false
+    });
+
+    renderBills();
+    closeModal();
+    showToast(`Tagihan "${title}" berhasil dijadwalkan`, '🔔');
+  }
+
+  // 4. BUDGET TARGET MODAL
+  function openBudgetEdit() {
+    sheet.innerHTML = `
+      <div class="modal-title">
+        <span>🎯 Atur Target Budget Global</span>
+        <button onclick="closeModal()" style="border:none; background:none; font-size:18px; cursor:pointer; color:var(--muted);">&times;</button>
+      </div>
+      <div class="form-group">
+        <label>Target Harian (Rp)</label>
+        <input type="number" id="targetDaily" value="${budgetData.daily.limit}">
+      </div>
+      <div class="form-group">
+        <label>Target Mingguan (Rp)</label>
+        <input type="number" id="targetWeekly" value="${budgetData.weekly.limit}">
+      </div>
+      <div class="form-group">
+        <label>Target Bulanan (Rp)</label>
+        <input type="number" id="targetMonthly" value="${budgetData.monthly.limit}">
+      </div>
+      <button class="btn-submit" onclick="saveBudgets()">Simpan Batas Budget</button>
+    `;
+    overlay.classList.add('open');
+  }
+
+  function saveBudgets() {
+    budgetData.daily.limit = parseInt(document.getElementById('targetDaily').value) || 100000;
+    budgetData.weekly.limit = parseInt(document.getElementById('targetWeekly').value) || 700000;
+    budgetData.monthly.limit = parseInt(document.getElementById('targetMonthly').value) || 3000000;
+    updateBudgetUI();
+    closeModal();
+    showToast('Target budget berhasil diperbarui', '🎯');
+  }
+
+  function showStreakDetails() {
+    alert("🔥 Streak Nyawtat: 5 Hari Berturut-turut! Lakukan minimal satu pencatatan tiap hari untuk mempertahankan api ini.");
+  }
+
+  // --- INITIALIZE ---
+  updateBudgetUI();
+  renderBills();
+  renderWishlists();
+  renderWalletsOverview();
+  renderStreak();
+</script>
+</body>
+</html>

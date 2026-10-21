@@ -22,6 +22,7 @@ lib/
 ├─ data/
 │  ├─ db/                  # Skema Drift (tables.dart) + kode hasil generate
 │  ├─ money_repository.dart, journal_repository.dart, settings_repository.dart
+│  ├─ wishlist_repository.dart, bill_repository.dart # Target wishlist & tagihan
 │  ├─ attachment_repository.dart # Kompresi & penyimpanan gambar/struk
 │  ├─ google_drive_service.dart   # Otentikasi Google & Google Drive API (.xlsx)
 │  ├─ money_snapshot.dart  # Saldo, budget, ringkasan: dihitung dari transaksi
@@ -30,7 +31,7 @@ lib/
 │  ├─ backup_service.dart  # Backup/impor JSON dengan filter rentang
 │  ├─ excel_report.dart    # Ekspor Excel multi-sheet (Google Sheets ready)
 │  └─ home_widget_sync.dart  # Data untuk widget layar utama Android
-├─ domain/models/          # Model bisnis murni: MoneySnapshot, BackupPeriod
+├─ domain/models/          # Model bisnis murni: MoneySnapshot, BackupPeriod, GlobalBudget, StreakInfo
 ├─ features/               # Satu folder per layar: today, journal, money, report, settings, lock, account, shell
 ├─ l10n/                   # app_id.arb (template) + app_en.arb, kode hasil generate
 └─ ui/                     # Komponen bersama, image viewer, maskot, wajah mood

@@ -12,6 +12,7 @@ import 'package:djournal/data/db/app_database.dart';
 import 'package:djournal/data/home_widget_sync.dart';
 import 'package:djournal/data/journal_repository.dart';
 import 'package:djournal/data/money_repository.dart';
+import 'package:djournal/data/attachment_repository.dart';
 import 'package:djournal/data/money_snapshot.dart';
 import 'package:djournal/data/security/lock_controller.dart';
 import 'package:djournal/data/settings_repository.dart';
@@ -56,6 +57,26 @@ class _FakeLock extends LockController {
 
   @override
   Future<bool> unlockWithBiometric(String reason) async => false;
+}
+
+class _FakeAttachmentRepository extends AttachmentRepository {
+  _FakeAttachmentRepository() : super(AppDatabase(NativeDatabase.memory()));
+
+  @override
+  Stream<List<Attachment>> watchAllAttachments() => Stream.value(const []);
+
+  @override
+  Future<List<Attachment>> getAttachmentsForEntry(String entryId) async => const [];
+
+  @override
+  Future<Attachment?> getAttachmentForTx(String txId) async => null;
+
+  @override
+  Stream<List<Attachment>> watchAttachmentsForEntry(String entryId) =>
+      Stream.value(const []);
+
+  @override
+  Stream<Attachment?> watchAttachmentForTx(String txId) => Stream.value(null);
 }
 
 /// Pengganti tabel app_settings (pencarian terakhir): database drift asli
@@ -333,6 +354,15 @@ void main() {
           lockProvider.overrideWith(_FakeLock.new),
           homeWidgetSyncProvider.overrideWithValue(null),
           settingsRepositoryProvider.overrideWithValue(settings ?? _FakeSettings()),
+          walletsProvider.overrideWith((ref) => Stream.value(_snap.wallets)),
+          categoriesProvider.overrideWith((ref) => Stream.value(_snap.categories)),
+          transactionsProvider.overrideWith((ref) => Stream.value(_snap.transactions)),
+          budgetsProvider.overrideWith((ref) => Stream.value(_snap.budgets)),
+          wishlistsProvider.overrideWith((ref) => Stream.value([])),
+          unpaidBillsProvider.overrideWith((ref) => Stream.value([])),
+          billsProvider.overrideWith((ref) => Stream.value([])),
+          allAttachmentsProvider.overrideWith((ref) => Stream.value(const [])),
+          attachmentRepositoryProvider.overrideWithValue(_FakeAttachmentRepository()),
         ],
         child: RepaintBoundary(
           key: shotKey,

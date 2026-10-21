@@ -1,5 +1,26 @@
 # Changelog
 
+## 0.9.0 — 2026-10-21
+
+**Baru**
+- **Target Wishlist & Rincian Tabungan Pintar (Smart Savings)**:
+  - Wujudkan impian barang idaman (mis. beli HP seharga 8 juta, laptop, kendaraan) dengan kalkulasi otomatis: tentukan nominal target dan tenggat waktu (bulan/tanggal), sistem otomatis menghitung rincian tabungan bulanan dan harian yang harus disisihkan.
+  - Alokasi Dompet Penyimpanan: Pilih dan tentukan di dompet mana dana tabungan disimpan (mis. Rekening Tabungan BCA, Dompet Khusus).
+  - Modal Tambah Tabungan Cepat (*Deposit Sheet*): Tambah saldo tabungan kapan saja dengan pilihan dompet sumber dana, mencatat mutasi transfer antar dompet atau pengeluaran tabungan secara teratur.
+- **Pengingat & Peringatan Tagihan Rutin (Bill Reminders & Early Warnings)**:
+  - Manajemen tagihan terjadwal atau berkala (internet, listrik, sewa, asuransi, langganan) dengan tanggal jatuh tempo (*due date*).
+  - Peringatan Dini (*Early Warning Alert*): Indikator visual dan badge peringatan saat mendekati jatuh tempo (H-3, H-2, H-1), jatuh tempo hari ini, atau telat bayar.
+  - Tombol Bayar Cepat (*Quick Pay*): Bayar tagihan langsung dari linimasa Hari Ini dengan memilih dompet pembayaran; otomatis mencatat transaksi pengeluaran dan menjadwalkan tanggal jatuh tempo berikutnya (bulanan, mingguan, tahunan).
+- **Target Budget Global & Indikator Peringatan Bertingkat (Threshold Warning)**:
+  - Kontrol limit pengeluaran terpadu dengan memilih periode fleksibel: Harian, Mingguan, atau Bulanan.
+  - Indikator Dinamis 3 Tingkat:
+    - 🟢 **Aman** (< 75%): Bilah kemajuan hijau tenang dengan sisa budget yang jelas.
+    - 🟡 **Waspada** (75% – 99%): Bilah kemajuan kuning dengan peringatan dini pengeluaran mendekati batas.
+    - 🔴 **Bahaya / Overbudget** (≥ 100%): Banner peringatan merah menyala yang mengingatkan bahwa pengeluaran telah melampaui target yang ditetapkan.
+- **Gamifikasi Streak Api Rutinitas (🔥 Streak Counter)**:
+  - Membangun kebiasaan mencatat harian dengan ikon Streak Api di kartu linimasa Hari Ini.
+  - Api streak tetap menyala setiap kali pengguna menyelesaikan minimal 1 aktivitas per hari (menulis entri jurnal, mencatat transaksi keuangan, atau menabung untuk wishlist).
+
 ## 0.8.0 — 2026-10-18
 
 **Baru**

@@ -2,7 +2,7 @@
 
 Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** dalam satu timeline. Nama "Nyawtat" dari *nyaw* (suara kucing) + *catat*. Offline-first: semua data tersimpan di HP, lalu disinkronkan ke cloud kalau login.
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.8.0**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.9.0**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>
@@ -79,7 +79,12 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
   - **📥 Pulihkan / Impor Data**: satu pintu pemulihan dengan deteksi otomatis (*auto-detection*) untuk file `.json` Nyawtat, file `.xlsx` Nyawtat, maupun database Money Manager (`.mmbak`/`.sqlite`/`.xlsx`)
 - **Masuk dengan Google (Google Sign-In)**: otentikasi cepat satu ketukan
 
-**Hari Ini**: satu linimasa descending (terbaru di atas) yang mencampur entri jurnal dan transaksi, plus bar budget bulan berjalan.
+**Hari Ini & Gamifikasi Rutinitas**
+- Satu linimasa descending (terbaru di atas) yang mencampur entri jurnal dan transaksi, kartu tagihan mendatang, kartu wishlist impian, serta bar budget.
+- **🔥 Gamifikasi Streak Api**: Ikon streak rutinitas yang menyala setiap kali menyelesaikan minimal satu aktivitas hari ini (menulis jurnal, mencatat transaksi keuangan, atau menabung).
+- **🎯 Target Budget Global & Peringatan Ambang Batas**: Limit budget pengeluaran terpadu (Harian, Mingguan, atau Bulanan) dengan status 3 tingkat: Aman (<75%), Waspada (75%–99%), dan Bahaya / Overbudget (≥100%) dengan banner peringatan merah.
+- **✨ Target Wishlist & Tabungan Pintar**: Impian belanja terencana dengan kalkulasi otomatis target simpanan per bulan/hari, pilihan alokasi dompet simpanan, serta modal tambah tabungan cepat (*deposit sheet*).
+- **🔔 Pengingat Tagihan & Bayar Cepat**: Pengingat tagihan berulang/berkala dengan deteksi dini mendekati jatuh tempo (H-3 s.d. hari ini) dan tombol Bayar Cepat langsung dari linimasa.
 
 **Lainnya**
 - Pencarian jurnal dan transaksi (teks, tag, kategori, dompet, nominal) dengan filter jenis dan periode

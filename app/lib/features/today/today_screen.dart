@@ -15,6 +15,11 @@ import '../money/tx_form_screen.dart';
 import '../money/wallets_screen.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
+import 'widgets/bills_card.dart';
+import 'widgets/budget_warning_banner.dart';
+import 'widgets/global_budget_card.dart';
+import 'widgets/streak_badge.dart';
+import 'widgets/wishlist_card.dart';
 
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
@@ -224,6 +229,7 @@ class TodayScreen extends ConsumerWidget {
               trailing: Row(
                 spacing: 8,
                 children: [
+                  const StreakBadge(),
                   const SearchButton(),
                   if (!context.isWide)
                     IconButton.outlined(
@@ -244,7 +250,8 @@ class TodayScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 12),
+            BudgetWarningBanner(snapshot: snap, now: now),
             if (context.isWide)
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -255,6 +262,12 @@ class TodayScreen extends ConsumerWidget {
                       children: [
                         spentCard,
                         const SizedBox(height: 16),
+                        GlobalBudgetCard(
+                          snapshot: snap,
+                          now: now,
+                          hideAmounts: hideAmounts,
+                        ),
+                        const SizedBox(height: 16),
                         timelineCard,
                       ],
                     ),
@@ -264,6 +277,10 @@ class TodayScreen extends ConsumerWidget {
                     flex: 4,
                     child: Column(
                       children: [
+                        BillsCard(now: now),
+                        const SizedBox(height: 16),
+                        const WishlistCard(),
+                        const SizedBox(height: 16),
                         _TodayWalletsCard(
                           snapshot: snap,
                           hideAmounts: hideAmounts,
@@ -281,7 +298,17 @@ class TodayScreen extends ConsumerWidget {
             else ...[
               spentCard,
               const SizedBox(height: 16),
+              GlobalBudgetCard(
+                snapshot: snap,
+                now: now,
+                hideAmounts: hideAmounts,
+              ),
+              const SizedBox(height: 16),
               timelineCard,
+              const SizedBox(height: 16),
+              BillsCard(now: now),
+              const SizedBox(height: 16),
+              const WishlistCard(),
             ],
           ],
         );

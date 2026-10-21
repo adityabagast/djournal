@@ -112,6 +112,50 @@ class JournalEntries extends Table with SyncColumns {
   TextColumn get audioTranscript => text().nullable()();
 }
 
+class Wishlists extends Table with SyncColumns {
+  TextColumn get title => text()();
+
+  /// Target nominal dalam Rupiah.
+  IntColumn get targetAmount => integer()();
+
+  /// Nominal yang sudah terkumpul dalam Rupiah.
+  IntColumn get savedAmount => integer().withDefault(const Constant(0))();
+
+  /// Estimasi durasi pencapaian dalam bulan.
+  IntColumn get targetMonths => integer().withDefault(const Constant(12))();
+
+  /// Tanggal target tercapai (YYYY-MM-DD atau YYYY-MM).
+  TextColumn get targetDate => text().nullable()();
+
+  /// Dompet tempat dana dialokasikan.
+  TextColumn get walletId => text().nullable().references(Wallets, #id)();
+
+  TextColumn get notes => text().nullable()();
+  BoolColumn get isFulfilled => boolean().withDefault(const Constant(false))();
+}
+
+class Bills extends Table with SyncColumns {
+  TextColumn get title => text()();
+
+  /// Nominal tagihan dalam Rupiah.
+  IntColumn get amount => integer()();
+
+  /// Tanggal jatuh tempo (YYYY-MM-DD).
+  TextColumn get dueDate => text()();
+
+  /// once | monthly | yearly
+  TextColumn get repeatInterval => text().nullable()();
+
+  /// Dompet yang diprioritaskan untuk pembayaran.
+  TextColumn get walletId => text().nullable().references(Wallets, #id)();
+
+  /// Kategori transaksi saat dibayar.
+  TextColumn get categoryId => text().nullable().references(Categories, #id)();
+
+  BoolColumn get isPaid => boolean().withDefault(const Constant(false))();
+  IntColumn get paidAt => integer().map(const EpochMsConverter()).nullable()();
+}
+
 @TableIndex(name: 'idx_attachment_entry', columns: {#entryId})
 @TableIndex(name: 'idx_attachment_tx', columns: {#transactionId})
 class Attachments extends Table with SyncColumns {
