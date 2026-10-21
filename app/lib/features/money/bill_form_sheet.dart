@@ -231,6 +231,31 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
   Future<void> _delete() async {
     final e = widget.existing;
     if (e == null) return;
+    final ok = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Hapus Tagihan?'),
+        content: Text(
+          '${e.title} (${rupiah(e.amount)}) akan dihapus dari daftar. '
+          'Tindakan ini tidak bisa dibatalkan.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Batal'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: context.colors.expense,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Hapus'),
+          ),
+        ],
+      ),
+    );
+    if (ok != true) return;
     await ref.read(billRepositoryProvider).deleteBill(e.id);
     if (mounted) Navigator.pop(context);
   }

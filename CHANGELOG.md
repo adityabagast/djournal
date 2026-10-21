@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.9.2 — 2026-10-22
+
+**Baru**
+- **Detail Tagihan**: ketuk baris tagihan di Hari Ini untuk melihat detail (nominal, jatuh tempo, dompet, pengulangan, status).
+- **Edit Tagihan**: ubah nama, nominal, tanggal jatuh tempo, dompet, dan pengulangan dari sheet detail.
+- **Hapus Tagihan**: dialog konfirmasi sebelum menghapus (dari sheet detail maupun form edit).
+
 ## 0.9.1 — 2026-10-21
 
 **Perbaikan**

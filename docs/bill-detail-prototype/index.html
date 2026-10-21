@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nyawtat — Prototipe Detail, Edit & Hapus Tagihan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #1F5F4E;
+    --accent-light: #2D8B6E;
+    --accent-soft: #E8F5EE;
+    --bg: #F4F6F5;
+    --surface: #FFFFFF;
+    --surface-elevated: #F9FAFB;
+    --ink: #191F1C;
+    --muted: #6B7570;
+    --line: #E2E8E5;
+    --expense: #DC2626;
+    --expense-soft: #FEF2F2;
+    --income: #16A34A;
+    --warning: #D97706;
+    --warning-soft: #FFFBEB;
+    --shadow: rgba(0, 0, 0, 0.08);
+    --font: 'Poppins', system-ui, sans-serif;
+  }
+  .dark {
+    --accent-soft: #14352B;
+    --bg: #0F1312;
+    --surface: #181E1C;
+    --surface-elevated: #212926;
+    --ink: #F3F5F4;
+    --muted: #8E9994;
+    --line: #2C3531;
+    --expense: #EF4444;
+    --expense-soft: #381A1A;
+    --income: #22C55E;
+    --warning: #F59E0B;
+    --warning-soft: #332510;
+    --shadow: rgba(0, 0, 0, 0.45);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: var(--font); }
+  body {
+    background: var(--bg); color: var(--ink);
+    min-height: 100vh; padding: 20px 12px 48px;
+    transition: background .25s, color .25s;
+  }
+
+  .page-header { max-width: 960px; margin: 0 auto 18px; text-align: center; }
+  .tag {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--accent); background: var(--accent-soft);
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 10px;
+  }
+  .page-header h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+  .page-header p { font-size: 13px; color: var(--muted); max-width: 640px; margin: 0 auto; line-height: 1.55; }
+
+  .control-bar {
+    max-width: 960px; margin: 0 auto 20px;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 16px;
+    padding: 12px 14px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    justify-content: space-between; box-shadow: 0 4px 16px var(--shadow);
+  }
+  .ctrl-group { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .ctrl-label { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+  .btn-sim {
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    border-radius: 999px; padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .btn-sim:hover { background: var(--surface-elevated); }
+  .btn-sim.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-sim.danger { color: var(--expense); border-color: color-mix(in srgb, var(--expense) 35%, var(--line)); }
+  .btn-sim.danger:hover { background: var(--expense-soft); }
+
+  .stage {
+    max-width: 960px; margin: 0 auto;
+    display: flex; gap: 28px; align-items: flex-start; flex-wrap: wrap; justify-content: center;
+  }
+
+  /* Android phone frame */
+  .phone {
+    width: min(412px, 100vw - 24px);
+    height: min(880px, calc(100dvh - 120px));
+    min-height: 640px;
+    background: #1a1d1c; border-radius: 28px; padding: 10px;
+    box-shadow: 0 25px 60px rgba(0,0,0,.22); flex-shrink: 0; position: relative;
+  }
+  .phone.ios {
+    width: min(393px, 100vw - 24px); height: min(852px, calc(100dvh - 120px));
+    border-radius: 46px; background: #000; padding: 12px;
+  }
+  .screen {
+    width: 100%; height: 100%; background: var(--bg); border-radius: 20px;
+    overflow: hidden; display: flex; flex-direction: column; position: relative;
+  }
+  .phone.ios .screen { border-radius: 36px; }
+
+  .app-bar {
+    flex: 0 0 auto; padding: 18px 16px 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--bg);
+  }
+  .app-title { font-size: 18px; font-weight: 700; }
+  .app-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .content {
+    flex: 1 1 auto; min-height: 0; overflow-y: auto;
+    padding: 4px 14px 20px; display: flex; flex-direction: column; gap: 12px;
+    scrollbar-width: none;
+  }
+  .content::-webkit-scrollbar { display: none; }
+
+  .card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 18px; padding: 14px; box-shadow: 0 2px 8px var(--shadow);
+  }
+  .sec-head {
+    display: flex; justify-content: space-between; align-items: center;
+    gap: 8px; margin-bottom: 8px;
+  }
+  .sec-title { font-size: 13px; font-weight: 700; }
+  .sec-action {
+    border: none; background: none; color: var(--accent);
+    font-size: 12px; font-weight: 600; cursor: pointer; padding: 4px 6px;
+  }
+
+  .bill-row {
+    display: flex; gap: 10px; align-items: center;
+    padding: 12px 4px; border-bottom: 1px solid var(--line); cursor: pointer;
+    border-radius: 12px;
+  }
+  .bill-row:last-child { border-bottom: none; }
+  .bill-row:hover { background: var(--surface-elevated); }
+  .bill-icon {
+    width: 38px; height: 38px; border-radius: 12px; background: var(--accent-soft);
+    display: grid; place-items: center; font-size: 17px; flex-shrink: 0;
+  }
+  .bill-mid { flex: 1; min-width: 0; }
+  .bill-title { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bill-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+  .bill-meta.urgent { color: var(--expense); font-weight: 700; }
+  .bill-meta.warn { color: var(--warning); font-weight: 600; }
+  .bill-right { text-align: right; flex-shrink: 0; }
+  .bill-amount { font-size: 13px; font-weight: 700; }
+  .bill-status {
+    display: inline-block; margin-top: 4px; font-size: 10px; font-weight: 700;
+    padding: 3px 8px; border-radius: 999px;
+  }
+  .bill-status.due { background: var(--warning-soft); color: var(--warning); }
+  .bill-status.urgent { background: var(--expense-soft); color: var(--expense); }
+  .bill-status.paid { background: #F0FDF4; color: var(--income); }
+  .hint-tap { font-size: 11px; color: var(--muted); text-align: center; padding: 6px; }
+
+  /* Sheets & dialogs */
+  .scrim {
+    position: absolute; inset: 0; background: rgba(0,0,0,.42);
+    z-index: 40; display: none; align-items: flex-end; justify-content: center;
+  }
+  .scrim.open { display: flex; }
+  .scrim.center { align-items: center; padding: 20px; }
+
+  .sheet {
+    width: 100%; background: var(--surface); border-radius: 24px 24px 0 0;
+    padding: 16px 18px 22px; max-height: 88%; overflow-y: auto;
+    animation: slideUp .22s ease; scrollbar-width: none;
+  }
+  .sheet::-webkit-scrollbar { display: none; }
+  .dialog {
+    width: min(340px, 100%); background: var(--surface); border-radius: 20px;
+    padding: 18px; animation: pop .18s ease;
+  }
+  @keyframes slideUp { from { transform: translateY(28px); opacity: .6; } to { transform: none; opacity: 1; } }
+  @keyframes pop { from { transform: scale(.96); opacity: .5; } to { transform: none; opacity: 1; } }
+
+  .sheet-grip {
+    width: 40px; height: 4px; border-radius: 2px; background: var(--line);
+    margin: 0 auto 14px;
+  }
+  .sheet-title { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+  .sheet-sub { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .detail-hero {
+    display: flex; gap: 12px; align-items: center;
+    padding: 12px; background: var(--surface-elevated); border-radius: 16px; margin: 12px 0;
+  }
+  .detail-amount { font-size: 22px; font-weight: 700; letter-spacing: -.02em; }
+
+  .kv { display: flex; justify-content: space-between; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 12px; }
+  .kv:last-child { border-bottom: none; }
+  .kv .k { color: var(--muted); }
+  .kv .v { font-weight: 600; text-align: right; }
+
+  .action-row { display: flex; gap: 8px; margin-top: 16px; }
+  .btn-primary {
+    flex: 1; border: none; border-radius: 14px; background: var(--accent); color: #fff;
+    padding: 13px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+  .btn-secondary {
+    flex: 1; border: 1px solid var(--line); border-radius: 14px;
+    background: var(--surface); color: var(--ink);
+    padding: 13px 14px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .btn-danger {
+    flex: 1; border: 1px solid color-mix(in srgb, var(--expense) 35%, var(--line));
+    border-radius: 14px; background: var(--expense-soft); color: var(--expense);
+    padding: 13px 14px; font-size: 13px; font-weight: 700; cursor: pointer;
+  }
+
+  .field { margin-bottom: 12px; }
+  .field label {
+    display: block; font-size: 11px; font-weight: 600; color: var(--muted);
+    margin-bottom: 6px;
+  }
+  .field input, .field select {
+    width: 100%; border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 12px; font-size: 13px; background: var(--bg); color: var(--ink);
+    outline: none;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent);
+  }
+
+  .side-panel {
+    max-width: 360px; display: flex; flex-direction: column; gap: 14px;
+  }
+  .explain-card {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 18px;
+    padding: 16px; box-shadow: 0 2px 8px var(--shadow);
+  }
+  .explain-card h3 { font-size: 14px; margin-bottom: 8px; }
+  .explain-card li {
+    font-size: 12px; color: var(--muted); line-height: 1.65; margin-left: 16px; margin-bottom: 6px;
+  }
+  .step {
+    display: flex; gap: 10px; align-items: flex-start; margin-bottom: 10px;
+  }
+  .step-num {
+    width: 22px; height: 22px; border-radius: 50%; background: var(--accent-soft);
+    color: var(--accent); font-size: 11px; font-weight: 700;
+    display: grid; place-items: center; flex-shrink: 0;
+  }
+  .step p { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  .toast {
+    position: absolute; left: 50%; bottom: 18px; transform: translateX(-50%) translateY(12px);
+    background: var(--ink); color: var(--bg); padding: 10px 14px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; opacity: 0; pointer-events: none;
+    transition: all .22s ease; z-index: 80; white-space: nowrap;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 720px) {
+    .side-panel { max-width: min(412px, 100vw - 24px); }
+    .page-header h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="page-header">
+  <span class="tag">Prototipe Interaktif · UI/UX</span>
+  <h1>Detail, Edit &amp; Hapus Tagihan</h1>
+  <p>
+    Klik baris tagihan untuk membuka <b>sheet detail</b>. Dari situ bisa <b>Bayar</b>,
+    <b>Edit</b>, atau <b>Hapus</b> — sama seperti alur yang akan diimplementasi di Flutter.
+  </p>
+</header>
+
+<div class="control-bar">
+  <div class="ctrl-group">
+    <span class="ctrl-label">Perangkat:</span>
+    <button class="btn-sim active" id="devAndroid" onclick="setDevice('android')">📱 Android</button>
+    <button class="btn-sim" id="devIos" onclick="setDevice('ios')">📲 iPhone</button>
+  </div>
+  <div class="ctrl-group">
+    <span class="ctrl-label">Demo:</span>
+    <button class="btn-sim" onclick="resetDemo()">↺ Reset data</button>
+    <button class="btn-sim" onclick="toggleTheme()">🌓 Dark / Light</button>
+  </div>
+</div>
+
+<div class="stage">
+  <!-- PHONE -->
+  <div class="phone" id="phoneFrame">
+    <div class="screen" id="appScreen">
+      <div class="app-bar">
+        <div>
+          <div class="app-title">Tagihan</div>
+          <div class="app-sub" id="billCount">3 belum dibayar · ketuk untuk detail</div>
+        </div>
+        <button class="btn-sim" onclick="openCreate()" style="border-radius:12px">+ Tambah</button>
+      </div>
+
+      <div class="content" id="billList">
+        <!-- rendered by JS -->
+      </div>
+
+      <!-- Detail sheet -->
+      <div class="scrim" id="detailScrim" onclick="if(event.target===this) closeDetail()">
+        <div class="sheet" id="detailSheet"></div>
+      </div>
+
+      <!-- Edit / create sheet -->
+      <div class="scrim" id="formScrim" onclick="if(event.target===this) closeForm()">
+        <div class="sheet" id="formSheet"></div>
+      </div>
+
+      <!-- Delete confirm -->
+      <div class="scrim center" id="deleteScrim">
+        <div class="dialog" id="deleteDialog"></div>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+  <!-- SIDE EXPLAIN -->
+  <aside class="side-panel">
+    <div class="explain-card">
+      <h3>Alur yang diprototipe</h3>
+      <div class="step">
+        <div class="step-num">1</div>
+        <p><b>Tap baris tagihan</b> → sheet detail (nominal, jatuh tempo, dompet, pengulangan).</p>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <p><b>Bayar</b> → konfirmasi pilih dompet → status lunas.</p>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <p><b>Edit</b> → form yang sama dengan tambah tagihan (nama, nominal, tanggal, dompet, pengulangan).</p>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <p><b>Hapus</b> → dialog konfirmasi → tagihan hilang dari daftar.</p>
+      </div>
+    </div>
+    <div class="explain-card">
+      <h3>Cocok dengan kode Flutter</h3>
+      <ul>
+        <li><code>BillFormSheet(existing: …)</code> untuk edit</li>
+        <li><code>deleteBill(id)</code> + konfirmasi</li>
+        <li><code>payBill(...)</code> tetap seperti sekarang</li>
+        <li>Android-first (412px), full-bleed di HP</li>
+      </ul>
+    </div>
+  </aside>
+</div>
+
+<script>
+  const fmt = (n) => 'Rp ' + Number(n).toLocaleString('id-ID');
+
+  let bills = [
+    { id: 1, title: 'Wi-Fi IndiHome', amount: 375000, daysLeft: 2, dueDate: '22 Okt 2026', wallet: 'BCA Utama', repeat: 'Bulanan', icon: '📶', paid: false },
+    { id: 2, title: 'Listrik PLN Token', amount: 200000, daysLeft: 6, dueDate: '26 Okt 2026', wallet: 'GoPay / OVO', repeat: 'Bulanan', icon: '⚡', paid: false },
+    { id: 3, title: 'Spotify Premium', amount: 55000, daysLeft: 12, dueDate: '01 Nov 2026', wallet: 'GoPay / OVO', repeat: 'Bulanan', icon: '🎵', paid: false },
+    { id: 4, title: 'Asuransi Kesehatan', amount: 450000, daysLeft: 0, dueDate: '18 Okt 2026', wallet: 'BCA Utama', repeat: 'Tahunan', icon: '🛡', paid: true }
+  ];
+  let selectedId = null;
+  let nextId = 100;
+
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove('show'), 1800);
+  }
+
+  function setDevice(mode) {
+    const p = document.getElementById('phoneFrame');
+    p.classList.toggle('ios', mode === 'ios');
+    document.getElementById('devAndroid').classList.toggle('active', mode === 'android');
+    document.getElementById('devIos').classList.toggle('active', mode === 'ios');
+  }
+
+  function toggleTheme() {
+    document.body.classList.toggle('dark');
+  }
+
+  function resetDemo() {
+    bills = [
+      { id: 1, title: 'Wi-Fi IndiHome', amount: 375000, daysLeft: 2, dueDate: '22 Okt 2026', wallet: 'BCA Utama', repeat: 'Bulanan', icon: '📶', paid: false },
+      { id: 2, title: 'Listrik PLN Token', amount: 200000, daysLeft: 6, dueDate: '26 Okt 2026', wallet: 'GoPay / OVO', repeat: 'Bulanan', icon: '⚡', paid: false },
+      { id: 3, title: 'Spotify Premium', amount: 55000, daysLeft: 12, dueDate: '01 Nov 2026', wallet: 'GoPay / OVO', repeat: 'Bulanan', icon: '🎵', paid: false },
+      { id: 4, title: 'Asuransi Kesehatan', amount: 450000, daysLeft: 0, dueDate: '18 Okt 2026', wallet: 'BCA Utama', repeat: 'Tahunan', icon: '🛡', paid: true }
+    ];
+    closeDetail(); closeForm(); closeDelete();
+    render();
+    toast('Data demo direset');
+  }
+
+  function statusOf(b) {
+    if (b.paid) return { cls: 'paid', text: 'Lunas' };
+    if (b.daysLeft <= 0) return { cls: 'urgent', text: 'Hari ini' };
+    if (b.daysLeft <= 2) return { cls: 'urgent', text: b.daysLeft + ' hari lagi' };
+    return { cls: 'due', text: b.daysLeft + ' hari lagi' };
+  }
+
+  function render() {
+    const unpaid = bills.filter(b => !b.paid);
+    document.getElementById('billCount').textContent =
+      unpaid.length + ' belum dibayar · ketuk untuk detail';
+
+    const root = document.getElementById('billList');
+    if (bills.length === 0) {
+      root.innerHTML = `
+        <div class="card" style="text-align:center;padding:28px 16px">
+          <div style="font-size:34px;margin-bottom:8px">🧾</div>
+          <div class="sec-title">Belum ada tagihan</div>
+          <p class="sheet-sub" style="margin-top:6px">Ketuk <b>+ Tambah</b> untuk menjadwalkan tagihan rutin.</p>
+        </div>`;
+      return;
+    }
+
+    root.innerHTML = `
+      <div class="card">
+        <div class="sec-head">
+          <span class="sec-title">Daftar Tagihan</span>
+          <span style="font-size:11px;color:var(--muted)">Ketuk baris → detail</span>
+        </div>
+        ${bills.map(b => {
+          const s = statusOf(b);
+          return `
+            <div class="bill-row" onclick="openDetail(${b.id})">
+              <div class="bill-icon">${b.icon}</div>
+              <div class="bill-mid">
+                <div class="bill-title">${b.title}</div>
+                <div class="bill-meta ${s.cls === 'urgent' ? 'urgent' : s.cls === 'due' ? 'warn' : ''}">
+                  ${b.paid ? 'Dibayar · ' + b.dueDate : b.daysLeft <= 0 ? 'Jatuh tempo HARI INI' : b.daysLeft + ' hari lagi (' + b.dueDate + ')'}
+                </div>
+                <div class="bill-meta">Bayar via ${b.wallet}</div>
+              </div>
+              <div class="bill-right">
+                <div class="bill-amount">${fmt(b.amount)}</div>
+                <span class="bill-status ${s.cls}">${s.text}</span>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>
+      <div class="hint-tap">💡 Ketuk tagihan untuk Detail · Edit · Hapus · Bayar</div>
+    `;
+  }
+
+  /* ===== Detail sheet ===== */
+  function openDetail(id) {
+    const b = bills.find(x => x.id === id);
+    if (!b) return;
+    selectedId = id;
+    const s = statusOf(b);
+    document.getElementById('detailSheet').innerHTML = `
+      <div class="sheet-grip"></div>
+      <div class="sheet-title">Detail Tagihan</div>
+      <div class="sheet-sub">Kelola tagihan ini: bayar, ubah, atau hapus.</div>
+
+      <div class="detail-hero">
+        <div class="bill-icon" style="width:48px;height:48px;font-size:22px">${b.icon}</div>
+        <div style="flex:1;min-width:0">
+          <div class="bill-title" style="font-size:15px">${b.title}</div>
+          <div class="detail-amount">${fmt(b.amount)}</div>
+        </div>
+        <span class="bill-status ${s.cls}">${s.text}</span>
+      </div>
+
+      <div>
+        <div class="kv"><span class="k">Jatuh tempo</span><span class="v">${b.dueDate}</span></div>
+        <div class="kv"><span class="k">Sisa waktu</span><span class="v">${b.paid ? '—' : b.daysLeft <= 0 ? 'HARI INI' : b.daysLeft + ' hari lagi'}</span></div>
+        <div class="kv"><span class="k">Rencana bayar</span><span class="v">${b.wallet}</span></div>
+        <div class="kv"><span class="k">Pengulangan</span><span class="v">${b.repeat}</span></div>
+        <div class="kv"><span class="k">Status</span><span class="v">${b.paid ? 'Sudah dibayar' : 'Belum dibayar'}</span></div>
+      </div>
+
+      <div class="action-row">
+        ${b.paid
+          ? `<button class="btn-secondary" onclick="closeDetail()">Tutup</button>
+             <button class="btn-danger" onclick="askDelete(${b.id})">Hapus</button>`
+          : `<button class="btn-primary" onclick="payBill(${b.id})">Bayar</button>
+             <button class="btn-secondary" onclick="openEdit(${b.id})">Edit</button>
+             <button class="btn-danger" onclick="askDelete(${b.id})">Hapus</button>`
+        }
+      </div>
+    `;
+    document.getElementById('detailScrim').classList.add('open');
+  }
+
+  function closeDetail() {
+    document.getElementById('detailScrim').classList.remove('open');
+    selectedId = null;
+  }
+
+  function payBill(id) {
+    const b = bills.find(x => x.id === id);
+    if (!b) return;
+    b.paid = true;
+    b.daysLeft = 0;
+    closeDetail();
+    render();
+    toast('Tagihan ' + b.title + ' lunas!');
+  }
+
+  /* ===== Form sheet (create / edit) ===== */
+  function openCreate() {
+    selectedId = null;
+    document.getElementById('formSheet').innerHTML = formHTML({
+      title: '', amount: '', dueDate: '2026-11-15', wallet: 'BCA Utama', repeat: 'Bulanan', icon: '🧾'
+    }, false);
+    document.getElementById('formScrim').classList.add('open');
+  }
+
+  function openEdit(id) {
+    const b = bills.find(x => x.id === id);
+    if (!b) return;
+    selectedId = id;
+    document.getElementById('formSheet').innerHTML = formHTML({
+      title: b.title,
+      amount: b.amount,
+      dueDate: '2026-11-15',
+      wallet: b.wallet,
+      repeat: b.repeat,
+      icon: b.icon
+    }, true);
+    document.getElementById('formScrim').classList.add('open');
+    // keep detail open under? close detail for cleaner UX
+    closeDetail();
+  }
+
+  function formHTML(b, isEdit) {
+    return `
+      <div class="sheet-grip"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <div>
+          <div class="sheet-title">${isEdit ? 'Ubah Tagihan' : 'Jadwalkan Tagihan Baru'}</div>
+          <div class="sheet-sub">${isEdit ? 'Perubahan langsung tersimpan ke daftar.' : 'Isi detail tagihan rutinmu.'}</div>
+        </div>
+        ${isEdit ? `<button class="btn-sim danger" onclick="askDelete(${selectedId})">Hapus</button>` : ''}
+      </div>
+
+      <div style="margin-top:14px">
+        <div class="field">
+          <label>Nama Tagihan</label>
+          <input id="fTitle" value="${b.title}" placeholder="Misal: Wi-Fi IndiHome">
+        </div>
+        <div class="field">
+          <label>Nominal Tagihan (Rp)</label>
+          <input id="fAmount" value="${b.amount}" inputmode="numeric" placeholder="375000">
+        </div>
+        <div class="field">
+          <label>Rencana Bayar Dari Dompet</label>
+          <select id="fWallet">
+            <option ${b.wallet === 'BCA Utama' ? 'selected' : ''}>BCA Utama</option>
+            <option ${b.wallet === 'Dompet Tunai' ? 'selected' : ''}>Dompet Tunai</option>
+            <option ${b.wallet === 'GoPay / OVO' ? 'selected' : ''}>GoPay / OVO</option>
+            <option ${b.wallet === 'Tabungan Impian' ? 'selected' : ''}>Tabungan Impian</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Tanggal Jatuh Tempo</label>
+          <input id="fDue" type="date" value="${b.dueDate}">
+        </div>
+        <div class="field">
+          <label>Pengulangan</label>
+          <select id="fRepeat">
+            <option ${b.repeat === 'Bulanan' ? 'selected' : ''}>Bulanan</option>
+            <option ${b.repeat === 'Sekali' ? 'selected' : ''}>Sekali</option>
+            <option ${b.repeat === 'Tahunan' ? 'selected' : ''}>Tahunan</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn-secondary" onclick="closeForm()">Batal</button>
+        <button class="btn-primary" onclick="saveForm(${isEdit ? selectedId : 'null'})">
+          ${isEdit ? 'Simpan Perubahan' : 'Jadwalkan Tagihan'}
+        </button>
+      </div>
+    `;
+  }
+
+  function closeForm() {
+    document.getElementById('formScrim').classList.remove('open');
+  }
+
+  function saveForm(id) {
+    const title = document.getElementById('fTitle').value.trim() || 'Tagihan';
+    const amount = parseInt(document.getElementById('fAmount').value, 10) || 0;
+    const wallet = document.getElementById('fWallet').value;
+    const repeat = document.getElementById('fRepeat').value;
+
+    if (id == null) {
+      bills.unshift({
+        id: nextId++, title, amount, daysLeft: 14,
+        dueDate: '15 Nov 2026', wallet, repeat, icon: '🧾', paid: false
+      });
+      toast('Tagihan "' + title + '" dijadwalkan');
+    } else {
+      const b = bills.find(x => x.id === id);
+      if (b) {
+        b.title = title; b.amount = amount; b.wallet = wallet; b.repeat = repeat;
+      }
+      toast('Perubahan tersimpan');
+    }
+    closeForm();
+    render();
+  }
+
+  /* ===== Delete ===== */
+  function askDelete(id) {
+    const b = bills.find(x => x.id === id);
+    if (!b) return;
+    selectedId = id;
+    document.getElementById('deleteDialog').innerHTML = `
+      <div class="sheet-title" style="margin-bottom:8px">Hapus Tagihan?</div>
+      <p class="sheet-sub">
+        <b>${b.title}</b> (${fmt(b.amount)}) akan dihapus dari daftar.
+        Tindakan ini tidak bisa dibatalkan di demo.
+      </p>
+      <div class="action-row">
+        <button class="btn-secondary" onclick="closeDelete()">Batal</button>
+        <button class="btn-danger" onclick="confirmDelete(${id})">Hapus</button>
+      </div>
+    `;
+    document.getElementById('deleteScrim').classList.add('open');
+  }
+
+  function closeDelete() {
+    document.getElementById('deleteScrim').classList.remove('open');
+  }
+
+  function confirmDelete(id) {
+    const b = bills.find(x => x.id === id);
+    bills = bills.filter(x => x.id !== id);
+    closeDelete();
+    closeDetail();
+    closeForm();
+    render();
+    toast('Tagihan ' + (b ? b.title : '') + ' dihapus');
+  }
+
+  render();
+</script>
+</body>
+</html>

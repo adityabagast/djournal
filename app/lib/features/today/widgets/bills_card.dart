@@ -6,6 +6,7 @@ import '../../../core/format.dart';
 import '../../../core/theme.dart';
 import '../../../data/db/app_database.dart';
 import '../../../providers.dart';
+import '../../money/bill_detail_sheet.dart';
 import '../../money/bill_form_sheet.dart';
 
 class BillsCard extends ConsumerWidget {
@@ -106,129 +107,77 @@ class BillsCard extends ConsumerWidget {
 
     final wallet = bill.walletId != null ? snap?.walletById[bill.walletId!] : null;
 
-    return Row(
-      children: [
-        Container(
-          width: 36,
-          height: 36,
-          decoration: BoxDecoration(
-            color: context.colors.subtle,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: const Center(
-            child: Text('📄', style: TextStyle(fontSize: 18)),
-          ),
-        ),
-        const SizedBox(width: 10),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                bill.title,
-                style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-              ),
-              Text(
-                dueText,
-                style: t.bodySmall?.copyWith(
-                  color: dueColor,
-                  fontWeight: isUrgent ? FontWeight.w700 : FontWeight.w500,
-                  fontSize: 11.5,
-                ),
-              ),
-              if (wallet != null)
-                Text(
-                  'Bayar via: ${wallet.name}',
-                  style: t.bodySmall?.copyWith(
-                    color: context.colors.muted,
-                    fontSize: 10.5,
-                  ),
-                ),
-            ],
-          ),
-        ),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () => BillDetailSheet.open(context, bill: bill, now: now, moneySnap: snap),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: Row(
           children: [
-            Text(
-              rupiah(bill.amount),
-              style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 4),
-            SizedBox(
-              height: 28,
-              child: FilledButton.tonal(
-                onPressed: () => _confirmPay(context, ref, bill, snap),
-                style: FilledButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  textStyle: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
-                ),
-                child: const Text('Bayar'),
+            Container(
+              width: 36,
+              height: 36,
+              decoration: BoxDecoration(
+                color: context.colors.subtle,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: const Center(
+                child: Text('📄', style: TextStyle(fontSize: 18)),
               ),
             ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  void _confirmPay(
-    BuildContext context,
-    WidgetRef ref,
-    Bill bill,
-    dynamic snap,
-  ) {
-    final activeWallets = snap?.wallets as List<Wallet>? ?? [];
-    if (activeWallets.isEmpty) return;
-
-    var selectedWalletId = bill.walletId ?? activeWallets.first.id;
-
-    showDialog(
-      context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setState) => AlertDialog(
-          title: const Text('Bayar Tagihan'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('Konfirmasi pembayaran ${bill.title} sebesar ${rupiah(bill.amount)}?'),
-              const SizedBox(height: 14),
-              DropdownButtonFormField<String>(
-                initialValue: selectedWalletId,
-                decoration: const InputDecoration(labelText: 'Sumber Dana'),
-                items: [
-                  for (final w in activeWallets)
-                    DropdownMenuItem(
-                      value: w.id,
-                      child: Text('${w.name} (${rupiah(snap?.balanceOf(w.id) ?? 0)})'),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    bill.title,
+                    style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+                  ),
+                  Text(
+                    dueText,
+                    style: t.bodySmall?.copyWith(
+                      color: dueColor,
+                      fontWeight: isUrgent ? FontWeight.w700 : FontWeight.w500,
+                      fontSize: 11.5,
+                    ),
+                  ),
+                  if (wallet != null)
+                    Text(
+                      'Bayar via: ${wallet.name}',
+                      style: t.bodySmall?.copyWith(
+                        color: context.colors.muted,
+                        fontSize: 10.5,
+                      ),
                     ),
                 ],
-                onChanged: (val) {
-                  if (val != null) setState(() => selectedWalletId = val);
-                },
               ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Batal'),
             ),
-            FilledButton(
-              onPressed: () async {
-                Navigator.pop(ctx);
-                await ref.read(billRepositoryProvider).payBill(
-                  billId: bill.id,
-                  walletId: selectedWalletId,
-                );
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Tagihan ${bill.title} lunas!')),
-                  );
-                }
-              },
-              child: const Text('Bayar Sekarang'),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  rupiah(bill.amount),
+                  style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 4),
+                SizedBox(
+                  height: 28,
+                  child: FilledButton.tonal(
+                    onPressed: () => BillDetailSheet.open(
+                      context,
+                      bill: bill,
+                      now: now,
+                      moneySnap: snap,
+                    ),
+                    style: FilledButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                      textStyle: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
+                    ),
+                    child: const Text('Detail'),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

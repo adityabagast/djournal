@@ -267,6 +267,7 @@
       <div class="layer" data-artboard="account"><div class="dot"></div>04 · account-prototype</div>
       <div class="layer" data-artboard="drive"><div class="dot"></div>05 · google-drive</div>
       <div class="layer" data-artboard="attach"><div class="dot"></div>06 · image-attachment</div>
+      <div class="layer" data-artboard="bills"><div class="dot"></div>06b · bill detail/edit/hapus</div>
       <div class="section-label">Screenshots</div>
       <div class="layer" data-artboard="shots"><div class="dot"></div>07 · docs/screenshots</div>
     </div>
@@ -306,6 +307,7 @@
         <a class="chip" href="../google-drive-prototype/index.html" target="_blank">drive</a>
         <a class="chip" href="../image-attachment-prototype/index.html" target="_blank">attach</a>
         <a class="chip" href="../image-attachment-prototype/index.html" target="_blank">image-attach</a>
+        <a class="chip" href="../bill-detail-prototype/index.html" target="_blank">bill-detail</a>
       </div>
 
       <div class="section-label">Jump</div>
@@ -460,9 +462,15 @@
       src: "../image-attachment-prototype/index.html"
     },
     {
+      key: "bills", label: "06b bill detail/edit/hapus", tag: "PROTOTYPE",
+      type: "Prototype", source: "docs/bill-detail-prototype/index.html",
+      x: 1200, y: 2400, w: 1100, h: 820, kind: "iframe",
+      src: "../bill-detail-prototype/index.html"
+    },
+    {
       key: "shots", label: "07 docs/screenshots", tag: "ORIGINAL",
       type: "Gallery", source: "docs/screenshots/",
-      x: 1200, y: 2400, w: 1100, h: 820, kind: "board-shots"
+      x: 40, y: 3300, w: 1100, h: 820, kind: "board-shots"
     }
   ];
 
@@ -620,7 +628,7 @@
   }
 
   /* ===== Present ===== */
-  const presentKeys = ["accent","desktop","wishlist","account","drive","attach","shots"];
+  const presentKeys = ["accent","desktop","wishlist","account","drive","attach","bills","shots"];
   let presentIndex = 0;
 
   function presentShow(i) {
