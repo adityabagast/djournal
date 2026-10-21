@@ -60,6 +60,13 @@ android {
 
     buildTypes {
         release {
+            // Perkecil APK/AAB: R8 + resource shrinker.
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro",
+            )
             signingConfig = if (keystorePropertiesFile.exists()) {
                 signingConfigs.getByName("release")
             } else {
