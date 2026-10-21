@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.9.1 — 2026-10-21
+
+**Perbaikan**
+- **Wishlist & Target Impian**: tombol **+ Nabung** tidak lagi tergeser/overflow di layar Android sempit. Teks rincian tabungan kini menyesuaikan lebar dan tombol tetap rapi di kanan.
+- Prototipe UI (`docs/wishlist-budget-prototype`): dock navigasi tidak menimpa konten, layout responsif Android, dan tab interaktif.
+
 ## 0.9.0 — 2026-10-21
 
 **Baru**

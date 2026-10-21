@@ -152,15 +152,22 @@ class WishlistCard extends ConsumerWidget {
             ),
             const SizedBox(height: 6),
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  'Terkumpul: ${rupiah(w.savedAmount)} ($pct%)',
-                  style: t.bodySmall?.copyWith(fontSize: 11.5, color: context.colors.muted),
+                Expanded(
+                  child: Text(
+                    'Terkumpul: ${rupiah(w.savedAmount)} ($pct%)',
+                    overflow: TextOverflow.ellipsis,
+                    style: t.bodySmall?.copyWith(fontSize: 11.5, color: context.colors.muted),
+                  ),
                 ),
-                Text(
-                  'Kurang: ${rupiah(w.targetAmount - w.savedAmount)}',
-                  style: t.bodySmall?.copyWith(fontSize: 11.5, color: context.colors.muted),
+                const SizedBox(width: 8),
+                Flexible(
+                  child: Text(
+                    'Kurang: ${rupiah(w.targetAmount - w.savedAmount)}',
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.end,
+                    style: t.bodySmall?.copyWith(fontSize: 11.5, color: context.colors.muted),
+                  ),
                 ),
               ],
             ),
@@ -173,22 +180,26 @@ class WishlistCard extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      'Rincian: ${rupiah(monthly)} / bln (sekitar ${rupiah(daily)} / hr)',
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: context.colors.ink,
-                        fontWeight: FontWeight.w500,
+                    Expanded(
+                      child: Text(
+                        'Rincian: ${rupiah(monthly)} / bln (sekitar ${rupiah(daily)} / hr)',
+                        overflow: TextOverflow.ellipsis,
+                        maxLines: 2,
+                        style: TextStyle(
+                          fontSize: 11,
+                          color: context.colors.ink,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
+                    const SizedBox(width: 8),
                     SizedBox(
-                      height: 26,
+                      height: 32,
                       child: FilledButton(
                         onPressed: () => WishlistDepositSheet.open(context, wishlist: w),
                         style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 12),
                           textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
                         ),
                         child: const Text('+ Nabung'),

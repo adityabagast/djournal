@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nyawtat — Design Canvas (Original Prototypes)</title>
+<style>
+  :root {
+    --chrome: #1e1e1e;
+    --chrome-2: #2c2c2c;
+    --chrome-3: #383838;
+    --chrome-border: #444;
+    --chrome-text: #e8e8e8;
+    --chrome-muted: #9b9b9b;
+    --sel: #0d99ff;
+    --sel-soft: rgba(13, 153, 255, 0.18);
+    --app-accent: #6c5ce7;
+    --font: "Inter", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    width: 100%; height: 100%; overflow: hidden;
+    font-family: var(--font); background: var(--chrome); color: var(--chrome-text);
+    user-select: none;
+  }
+
+  .topbar {
+    height: 48px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 12px; background: var(--chrome); border-bottom: 1px solid var(--chrome-border);
+    gap: 12px; z-index: 40;
+  }
+  .top-left, .top-right { display: flex; align-items: center; gap: 8px; }
+  .brand {
+    width: 28px; height: 28px; border-radius: 8px; overflow: hidden;
+    background: #FFF9F0; display: grid; place-items: center;
+  }
+  .file-title { display: flex; flex-direction: column; gap: 1px; }
+  .file-title strong { font-size: 12px; font-weight: 600; }
+  .file-title span { font-size: 10px; color: var(--chrome-muted); }
+  .tool-btn {
+    height: 32px; min-width: 32px; padding: 0 10px; border: 0; border-radius: 6px;
+    background: transparent; color: var(--chrome-text); font: inherit; font-size: 12px;
+    font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+  }
+  .tool-btn:hover { background: var(--chrome-2); }
+  .tool-btn.active { background: var(--sel); color: white; }
+  .tool-btn.ghost { color: var(--chrome-muted); }
+  .tool-btn.primary {
+    background: var(--app-accent); color: white; border: 0; font-weight: 600;
+  }
+
+  .shell { height: calc(100% - 48px); display: grid; grid-template-columns: 240px 1fr 280px; min-height: 0; }
+  .panel {
+    background: var(--chrome); border-right: 1px solid var(--chrome-border);
+    display: flex; flex-direction: column; min-height: 0;
+  }
+  .panel.right { border-right: 0; border-left: 1px solid var(--chrome-border); }
+  .panel-tabs {
+    display: flex; border-bottom: 1px solid var(--chrome-border); padding: 0 8px;
+  }
+  .panel-tab {
+    flex: 1; height: 36px; border: 0; background: transparent; color: var(--chrome-muted);
+    font: inherit; font-size: 11px; font-weight: 600; cursor: pointer;
+    border-bottom: 2px solid transparent;
+  }
+  .panel-tab.active { color: var(--chrome-text); border-bottom-color: var(--sel); }
+  .panel-body { overflow: auto; padding: 12px; flex: 1; }
+  .layer {
+    display: flex; align-items: center; gap: 8px; padding: 7px 8px; border-radius: 6px;
+    font-size: 12px; color: var(--chrome-muted); cursor: pointer;
+  }
+  .layer:hover { background: var(--chrome-2); color: var(--chrome-text); }
+  .layer.active { background: var(--sel-soft); color: #7dd3ff; }
+  .layer .dot { width: 8px; height: 8px; border-radius: 3px; background: var(--chrome-3); flex-shrink: 0; }
+  .layer.active .dot { background: var(--sel); }
+  .section-label {
+    font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--chrome-muted); margin: 14px 0 8px;
+  }
+  .inspect-card {
+    background: var(--chrome-2); border: 1px solid var(--chrome-border);
+    border-radius: 8px; padding: 10px; margin-bottom: 10px;
+  }
+  .inspect-card h4 { font-size: 11px; margin-bottom: 8px; }
+  .prop-row {
+    display: flex; justify-content: space-between; gap: 8px;
+    margin-bottom: 8px; font-size: 11px;
+  }
+  .prop-row label { color: var(--chrome-muted); }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    border: 1px solid var(--chrome-border); background: var(--chrome-2); color: var(--chrome-text);
+    border-radius: 999px; padding: 6px 10px; font: inherit; font-size: 11px; font-weight: 600; cursor: pointer;
+  }
+  .chip.active { background: var(--sel); border-color: var(--sel); color: white; }
+
+  .canvas-wrap {
+    position: relative; overflow: hidden;
+    background:
+      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px),
+      linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+      #2a2a2a;
+    background-size: 24px 24px, 24px 24px, auto;
+  }
+  .canvas { position: absolute; inset: 0; transform-origin: 0 0; will-change: transform; }
+  .artboard { position: absolute; cursor: grab; }
+  .artboard:active { cursor: grabbing; }
+  .artboard.selected .frame-label { color: var(--sel); }
+  .artboard.selected .frame {
+    outline: 2px solid var(--sel); outline-offset: 2px;
+  }
+  .frame-label {
+    font-size: 11px; color: var(--chrome-muted); margin-bottom: 8px;
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  }
+  .frame-label b { font-weight: 600; color: inherit; }
+  .frame-label span { font-size: 10px; opacity: 0.85; white-space: nowrap; }
+  .frame {
+    background: #fff; border-radius: 8px; overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+    border: 1px solid rgba(255,255,255,0.08);
+    position: relative;
+  }
+  .frame iframe {
+    width: 100%; height: 100%; border: 0; display: block; background: #fff;
+    pointer-events: auto;
+  }
+  .frame .click-shield {
+    position: absolute; inset: 0; z-index: 2; background: transparent;
+  }
+  .artboard.interactive .frame .click-shield { display: none; }
+  .frame-tag {
+    position: absolute; top: 8px; right: 8px; z-index: 3;
+    background: rgba(0,0,0,0.55); color: #fff; font-size: 10px; font-weight: 600;
+    padding: 4px 8px; border-radius: 999px; pointer-events: none;
+  }
+  .artboard.interactive .frame-tag {
+    background: var(--sel);
+  }
+  .handle {
+    position: absolute; width: 8px; height: 8px; background: white;
+    border: 1.5px solid var(--sel); border-radius: 2px; display: none; z-index: 6;
+  }
+  .artboard.selected .handle { display: block; }
+  .handle.tl { left: -4px; top: -4px; } .handle.tr { right: -4px; top: -4px; }
+  .handle.bl { left: -4px; bottom: -4px; } .handle.br { right: -4px; bottom: -4px; }
+
+  /* Design system board (mascot only — no rewritten app UI) */
+  .board {
+    width: 100%; height: 100%; background: #f4f2f8; color: #1e1b2e;
+    padding: 18px; overflow: auto; font-family: 'Poppins', var(--font);
+  }
+  .board h2 { font-size: 20px; margin-bottom: 4px; letter-spacing: -0.02em; }
+  .board p { color: #6b6785; font-size: 12px; margin-bottom: 12px; }
+  .pose-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .pose-cell {
+    background: #fff; border: 1px solid rgba(30,27,46,0.08); border-radius: 16px;
+    padding: 12px 8px; text-align: center;
+  }
+  .pose-cell .name { margin-top: 8px; font-size: 11px; color: #6b6785; font-weight: 600; }
+  .mascot-wrap {
+    display: inline-flex; align-items: center; justify-content: center; border-radius: 50%;
+  }
+  .token-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 12px 0; }
+  .token {
+    border-radius: 12px; padding: 12px 10px; min-height: 68px;
+    display: flex; flex-direction: column; justify-content: space-between;
+    border: 1px solid rgba(30,27,46,0.08);
+  }
+  .token b { font-size: 11px; color: #4A5A54; }
+  .token span { font-size: 9px; color: #7a6f63; }
+
+  .zoom-bar {
+    position: absolute; left: 16px; bottom: 16px; display: flex; align-items: center; gap: 4px;
+    background: var(--chrome-2); border: 1px solid var(--chrome-border); border-radius: 10px;
+    padding: 4px; z-index: 30; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  }
+  .zoom-bar button {
+    width: 28px; height: 28px; border: 0; border-radius: 6px; background: transparent;
+    color: var(--chrome-text); cursor: pointer; font-size: 14px;
+  }
+  .zoom-bar button:hover { background: var(--chrome-3); }
+  .zoom-val { min-width: 52px; text-align: center; font-size: 11px; color: var(--chrome-muted); }
+  .hint-bar {
+    position: absolute; right: 16px; bottom: 16px; background: rgba(30,30,30,0.9);
+    border: 1px solid var(--chrome-border); border-radius: 10px; padding: 8px 12px;
+    font-size: 11px; color: var(--chrome-muted); z-index: 30; max-width: 300px; line-height: 1.5;
+  }
+  .toast {
+    position: fixed; left: 50%; bottom: 28px; transform: translateX(-50%) translateY(16px);
+    background: white; color: #111; padding: 10px 14px; border-radius: 999px;
+    font-size: 12px; font-weight: 600; opacity: 0; pointer-events: none;
+    transition: all 0.22s ease; z-index: 100; box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Present overlay */
+  .present-overlay {
+    position: fixed; inset: 0; z-index: 200; background: #141414;
+    display: none; flex-direction: column;
+  }
+  .present-overlay.open { display: flex; }
+  .present-bar {
+    height: 52px; display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; background: #0f0f0f; border-bottom: 1px solid #333; gap: 12px;
+  }
+  .present-bar .title {
+    font-size: 12px; color: #aaa; display: flex; align-items: center; gap: 10px;
+  }
+  .present-bar .title b { color: #fff; font-size: 13px; }
+  .present-tools { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .present-tools button, .present-tools a {
+    height: 32px; padding: 0 12px; border-radius: 8px; border: 1px solid #444;
+    background: #222; color: #eee; font: inherit; font-size: 12px; font-weight: 600;
+    cursor: pointer; display: inline-flex; align-items: center; text-decoration: none;
+  }
+  .present-tools button:hover, .present-tools a:hover { background: #2c2c2c; }
+  .present-tools button.active { background: var(--sel); border-color: var(--sel); color: white; }
+  .present-tools button.primary { background: var(--app-accent); border-color: var(--app-accent); color: white; }
+  .present-stage {
+    flex: 1; display: flex; align-items: stretch; justify-content: center;
+    padding: 16px; min-height: 0;
+  }
+  .present-frame {
+    width: 100%; max-width: 1280px; height: 100%;
+    border-radius: 12px; overflow: hidden; background: #fff;
+    border: 1px solid #333; box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+  }
+  .present-frame iframe {
+    width: 100%; height: 100%; border: 0; display: block; background: #fff;
+  }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="top-left">
+    <div class="brand" id="brandIcon"></div>
+    <div class="file-title">
+      <strong>Nyawtat · Original Prototype Canvas</strong>
+      <span>1:1 embed dari docs/*-prototype — tidak diubah</span>
+    </div>
+    <button class="tool-btn active" data-tool="move">Move</button>
+    <button class="tool-btn" data-tool="hand">Hand</button>
+    <button class="tool-btn" id="btnToggleInteractive">Click-through</button>
+  </div>
+  <div class="top-right">
+    <button class="tool-btn ghost" id="btnFit">Fit</button>
+    <button class="tool-btn primary" id="btnPresent">▶ Present</button>
+    <button class="tool-btn ghost" id="btnOpenExternal">Open original</button>
+  </div>
+</header>
+
+<div class="shell">
+  <aside class="panel">
+    <div class="panel-tabs">
+      <button class="panel-tab active">Frames</button>
+      <button class="panel-tab">Sources</button>
+    </div>
+    <div class="panel-body" id="layersPanel">
+      <div class="section-label">Design system</div>
+      <div class="layer active" data-artboard="design"><div class="dot"></div>00 · Mascot + Tints</div>
+      <div class="section-label">Original prototypes</div>
+      <div class="layer" data-artboard="accent"><div class="dot"></div>01 · accent-prototype</div>
+      <div class="layer" data-artboard="desktop"><div class="dot"></div>02 · desktop-ui-prototype</div>
+      <div class="layer" data-artboard="wishlist"><div class="dot"></div>03 · wishlist-budget</div>
+      <div class="layer" data-artboard="account"><div class="dot"></div>04 · account-prototype</div>
+      <div class="layer" data-artboard="drive"><div class="dot"></div>05 · google-drive</div>
+      <div class="layer" data-artboard="attach"><div class="dot"></div>06 · image-attachment</div>
+      <div class="section-label">Screenshots</div>
+      <div class="layer" data-artboard="shots"><div class="dot"></div>07 · docs/screenshots</div>
+    </div>
+  </aside>
+
+  <main class="canvas-wrap" id="canvasWrap">
+    <div class="canvas" id="canvas"></div>
+    <div class="zoom-bar">
+      <button id="zoomOut">−</button>
+      <div class="zoom-val" id="zoomVal">100%</div>
+      <button id="zoomIn">+</button>
+      <button id="zoomReset">1:1</button>
+    </div>
+    <div class="hint-bar">
+      Scroll zoom · Drag pan · Klik frame select · <b>Click-through</b> = interaksi di dalam iframe · <b>Present</b> = preview full
+    </div>
+  </main>
+
+  <aside class="panel right">
+    <div class="panel-tabs">
+      <button class="panel-tab active">Inspect</button>
+    </div>
+    <div class="panel-body">
+      <div class="section-label">Selection</div>
+      <div class="inspect-card">
+        <h4 id="selName">00 Mascot + Tints</h4>
+        <div class="prop-row"><label>Type</label><span id="selType">Board</span></div>
+        <div class="prop-row"><label>Source</label><span id="selSource">app/assets/mascot</span></div>
+      </div>
+
+      <div class="section-label">Open source file</div>
+      <div class="chip-row" id="sourceLinks">
+        <a class="chip" href="../accent-prototype/index.html" target="_blank">accent</a>
+        <a class="chip" href="../desktop-ui-prototype/index.html" target="_blank">desktop-ui</a>
+        <a class="chip" href="../wishlist-budget-prototype/index.html" target="_blank">wishlist</a>
+        <a class="chip" href="../account-prototype/index.html" target="_blank">account</a>
+        <a class="chip" href="../google-drive-prototype/index.html" target="_blank">drive</a>
+        <a class="chip" href="../image-attachment-prototype/index.html" target="_blank">attach</a>
+        <a class="chip" href="../image-attachment-prototype/index.html" target="_blank">image-attach</a>
+      </div>
+
+      <div class="section-label">Jump</div>
+      <div class="chip-row">
+        <button class="chip" data-goto="design">Mascot</button>
+        <button class="chip" data-goto="accent">Accent</button>
+        <button class="chip" data-goto="desktop">Desktop</button>
+        <button class="chip" data-goto="wishlist">Wishlist</button>
+        <button class="chip" data-goto="account">Account</button>
+        <button class="chip" data-goto="drive">Drive</button>
+        <button class="chip" data-goto="attach">Attach</button>
+        <button class="chip" data-goto="shots">Shots</button>
+      </div>
+
+      <div class="section-label">Catatan</div>
+      <div class="inspect-card">
+        <h4>Tidak diubah</h4>
+        <p style="font-size:11px;color:var(--chrome-muted);line-height:1.55;">
+          Setiap frame me-<b>embed file prototype asli</b> dari folder <code>docs/*-prototype/</code>
+          dan <code>docs/screenshots/</code>. Tampilan = 100% design sebelumnya.
+          Canvas hanya host ala Figma untuk mereview semuanya di satu tempat.
+        </p>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="present-overlay" id="presentOverlay">
+  <div class="present-bar">
+    <div class="title">
+      <b id="presentTitle">Nyawtat Preview</b>
+      <span class="device-label-chip" id="presentName" style="font-size:11px;color:#aaa;background:#222;border:1px solid #333;padding:4px 10px;border-radius:999px;">accent-prototype</span>
+    </div>
+    <div class="present-tools">
+      <button id="presentPrev">‹</button>
+      <button id="presentNext">›</button>
+      <select id="presentSelect" style="height:32px;border-radius:8px;border:1px solid #444;background:#222;color:#eee;font:inherit;font-size:12px;padding:0 10px;">
+        <option value="accent">01 accent-prototype</option>
+        <option value="desktop">02 desktop-ui-prototype</option>
+        <option value="wishlist">03 wishlist-budget</option>
+        <option value="account">04 account-prototype</option>
+        <option value="drive">05 google-drive</option>
+        <option value="attach">06 image-attachment</option>
+        <option value="shots">07 screenshots</option>
+      </select>
+      <a id="presentOpenNew" href="../accent-prototype/index.html" target="_blank">Open tab ↗</a>
+      <button class="primary" id="presentClose">✕ Exit</button>
+    </div>
+  </div>
+  <div class="present-stage">
+    <div class="present-frame">
+      <iframe id="presentIframe" src="../accent-prototype/index.html" title="Prototype preview"></iframe>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+  const state = {
+    selected: "design",
+    tool: "move",
+    interactive: false,
+    zoom: 0.7,
+    panX: 24,
+    panY: 16
+  };
+
+  function toast(msg) {
+    const el = $("#toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => el.classList.remove("show"), 1800);
+  }
+
+  /* ===== Mascot SVG asli dari app/assets/mascot ===== */
+  const CAT_BASE = `
+    <ellipse cx="78" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+    <ellipse cx="122" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+    <path d="M46 80 L54 26 Q57 17 65 23 L88 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M154 80 L146 26 Q143 17 135 23 L112 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4" stroke-linejoin="round"/>
+    <path d="M58 52 L61 34 L76 50 Z" fill="#F8C8CC"/>
+    <path d="M142 52 L139 34 L124 50 Z" fill="#F8C8CC"/>
+    <rect x="40" y="50" width="120" height="140" rx="28" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+    <ellipse cx="76" cy="94" rx="9" ry="11" fill="#3D4B46"/><circle cx="79.5" cy="89.5" r="3.6" fill="#FFFFFF"/>
+    <ellipse cx="124" cy="94" rx="9" ry="11" fill="#3D4B46"/><circle cx="127.5" cy="89.5" r="3.6" fill="#FFFFFF"/>
+    <ellipse cx="62" cy="112" rx="9" ry="5" fill="#F7B5B9"/><ellipse cx="138" cy="112" rx="9" ry="5" fill="#F7B5B9"/>
+    <path d="M95.5 105 Q100 101.5 104.5 105 L100 109.5 Z" fill="#F29CA3"/>
+    <path d="M91 111 Q95.5 117 100 111 Q104.5 117 109 111" fill="none" stroke="#4A5A54" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  `;
+  const POSES = {
+    halo: CAT_BASE + `<line x1="64" y1="140" x2="136" y2="140" stroke="#8EC5AB" stroke-width="6" stroke-linecap="round"/><line x1="64" y1="155" x2="136" y2="155" stroke="#8EC5AB" stroke-width="6" stroke-linecap="round"/><line x1="64" y1="170" x2="108" y2="170" stroke="#F5BE86" stroke-width="6" stroke-linecap="round"/>`,
+    senang: CAT_BASE + `<path d="M70 88 Q76 82 82 88" fill="none" stroke="#3D4B46" stroke-width="3" stroke-linecap="round"/><path d="M118 88 Q124 82 130 88" fill="none" stroke="#3D4B46" stroke-width="3" stroke-linecap="round"/>`,
+    koin: CAT_BASE + `<circle cx="100" cy="148" r="23" fill="#F9DC94" stroke="#4A5A54" stroke-width="4"/><circle cx="100" cy="148" r="15.5" fill="none" stroke="#E2B35A" stroke-width="3"/><text x="100" y="153" text-anchor="middle" font-family="Poppins, sans-serif" font-size="14" font-weight="600" fill="#9A6E24">Rp</text>`,
+    gembok: CAT_BASE + `<path d="M88 138 V128 Q88 115 100 115 Q112 115 112 128 V138" fill="none" stroke="#4A5A54" stroke-width="5"/><rect x="78" y="136" width="44" height="36" rx="9" fill="#D9E7F5" stroke="#4A5A54" stroke-width="4"/><circle cx="100" cy="150" r="4.5" fill="#4A5A54"/>`,
+    menulis: CAT_BASE + `<rect x="62" y="132" width="76" height="52" rx="8" fill="#E3EDF8" stroke="#4A5A54" stroke-width="4"/>`,
+    mencari: CAT_BASE + `<circle cx="148" cy="128" r="18" fill="none" stroke="#4A5A54" stroke-width="5"/><line x1="160" y1="142" x2="178" y2="160" stroke="#4A5A54" stroke-width="6" stroke-linecap="round"/>`
+  };
+
+  function mascotSvg(pose, size = 64, tint = "#FDEBD9") {
+    return `<div class="mascot-wrap" style="width:${size}px;height:${size}px;background:${tint}">
+      <svg width="${size*0.78}" height="${size*0.86}" viewBox="0 0 200 220">${POSES[pose] || POSES.halo}</svg>
+    </div>`;
+  }
+
+  /* ===== Frames: embed file ASLI ===== */
+  const FRAMES = [
+    {
+      key: "design", label: "00 Mascot + Tints", tag: "design system",
+      type: "Board", source: "app/assets/mascot",
+      x: 40, y: 40, w: 720, h: 520, kind: "board"
+    },
+    {
+      key: "accent", label: "01 accent-prototype", tag: "ORIGINAL",
+      type: "Prototype", source: "docs/accent-prototype/index.html",
+      x: 820, y: 40, w: 1100, h: 820, kind: "iframe",
+      src: "../accent-prototype/index.html"
+    },
+    {
+      key: "desktop", label: "02 desktop-ui-prototype", tag: "ORIGINAL",
+      type: "Prototype", source: "docs/desktop-ui-prototype/index.html",
+      x: 40, y: 640, w: 1240, h: 780, kind: "iframe",
+      src: "../desktop-ui-prototype/index.html"
+    },
+    {
+      key: "wishlist", label: "03 wishlist-budget-prototype", tag: "ORIGINAL",
+      type: "Prototype", source: "docs/wishlist-budget-prototype/index.html",
+      x: 1340, y: 640, w: 980, h: 920, kind: "iframe",
+      src: "../wishlist-budget-prototype/index.html"
+    },
+    {
+      key: "account", label: "04 account-prototype", tag: "ORIGINAL",
+      type: "Prototype", source: "docs/account-prototype/index.html",
+      x: 40, y: 1500, w: 1000, h: 820, kind: "iframe",
+      src: "../account-prototype/index.html"
+    },
+    {
+      key: "drive", label: "05 google-drive-prototype", tag: "ORIGINAL",
+      type: "Prototype", source: "docs/google-drive-prototype/index.html",
+      x: 1100, y: 1500, w: 1100, h: 820, kind: "iframe",
+      src: "../google-drive-prototype/index.html"
+    },
+    {
+      key: "attach", label: "06 image-attachment-prototype", tag: "ORIGINAL",
+      type: "Prototype", source: "docs/image-attachment-prototype/index.html",
+      x: 40, y: 2400, w: 1100, h: 820, kind: "iframe",
+      src: "../image-attachment-prototype/index.html"
+    },
+    {
+      key: "shots", label: "07 docs/screenshots", tag: "ORIGINAL",
+      type: "Gallery", source: "docs/screenshots/",
+      x: 1200, y: 2400, w: 1100, h: 820, kind: "board-shots"
+    }
+  ];
+
+  const SHOTS = [
+    ["hari-ini.png", "Hari Ini"],
+    ["hari-ini-gelap.png", "Hari Ini Gelap"],
+    ["jurnal.png", "Jurnal"],
+    ["tulis-jurnal.png", "Tulis Jurnal"],
+    ["catatan-suara.png", "Catatan Suara"],
+    ["keuangan.png", "Keuangan"],
+    ["laporan.png", "Laporan"],
+    ["cari.png", "Cari"],
+    ["kelola-dompet.png", "Kelola Dompet"],
+    ["kelola-kategori.png", "Kelola Kategori"],
+    ["kunci.png", "Kunci PIN"],
+    ["mode-privasi.png", "Mode Privasi"],
+    ["accent-preview.png", "Accent Preview"]
+  ];
+
+  function designBoardHTML() {
+    return `
+      <div class="board">
+        <h2>Mascot & Design Tokens</h2>
+        <p>Sumber asli: <code>app/assets/mascot/*.svg</code> · tint dari <code>MascotTint</code></p>
+        <div class="pose-grid">
+          ${[
+            ["halo","#E3F3EA"],["senang","#FDEBD9"],["koin","#FBF3D6"],
+            ["gembok","#E3EDF8"],["menulis","#ECE6F6"],["mencari","#F3E3E0"]
+          ].map(([p,t]) => `
+            <div class="pose-cell">
+              ${mascotSvg(p, 72, t)}
+              <div class="name">${p}</div>
+            </div>
+          `).join("")}
+        </div>
+        <div class="token-grid">
+          <div class="token" style="background:#E3F3EA"><b>Mint</b><span>#E3F3EA</span></div>
+          <div class="token" style="background:#FDEBD9"><b>Peach</b><span>#FDEBD9</span></div>
+          <div class="token" style="background:#FBF3D6"><b>Lemon</b><span>#FBF3D6</span></div>
+          <div class="token" style="background:#E3EDF8"><b>Sky</b><span>#E3EDF8</span></div>
+          <div class="token" style="background:#FBE4E6"><b>Pink</b><span>#FBE4E6</span></div>
+          <div class="token" style="background:#ECE6F6"><b>Lilac</b><span>#ECE6F6</span></div>
+          <div class="token" style="background:#F3E3E0"><b>Rose</b><span>#F3E3E0</span></div>
+          <div class="token" style="background:#1e1b2e;color:#fff"><b style="color:#fff">Ink</b><span style="color:#ccc">#1E1B2E</span></div>
+        </div>
+        <p style="font-size:11px;color:#6b6785">Frame lain di canvas ini = <b>file prototype asli</b> (iframe), bukan remake.</p>
+      </div>
+    `;
+  }
+
+  function shotsBoardHTML() {
+    return `
+      <div class="board">
+        <h2>docs/screenshots</h2>
+        <p>Screenshot asli aplikasi — dari repo, tidak diubah.</p>
+        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+          ${SHOTS.map(([file, label]) => `
+            <div style="background:#fff;border:1px solid rgba(30,27,46,0.08);border-radius:12px;overflow:hidden;">
+              <img src="../screenshots/${file}" alt="${label}" style="width:100%;height:140px;object-fit:cover;object-position:top;display:block;" loading="lazy">
+              <div style="padding:8px 10px;font-size:11px;color:#6b6785;font-weight:600;">${label}</div>
+            </div>
+          `).join("")}
+        </div>
+      </div>
+    `;
+  }
+
+  function buildCanvas() {
+    const canvas = $("#canvas");
+    FRAMES.forEach((f) => {
+      const el = document.createElement("article");
+      el.className = "artboard" + (f.key === state.selected ? " selected" : "");
+      el.id = "ab-" + f.key;
+      el.dataset.key = f.key;
+      el.style.left = f.x + "px";
+      el.style.top = f.y + "px";
+      el.style.width = f.w + "px";
+      el.style.height = (f.h + 28) + "px";
+
+      let inner = "";
+      if (f.kind === "iframe") {
+        inner = `
+          <div class="frame" style="width:${f.w}px;height:${f.h}px;">
+            <div class="click-shield"></div>
+            <div class="frame-tag">${f.tag}</div>
+            <iframe src="${f.src}" title="${f.label}" loading="lazy"></iframe>
+          </div>
+        `;
+      } else if (f.kind === "board-shots") {
+        inner = `
+          <div class="frame" style="width:${f.w}px;height:${f.h}px;">
+            <div class="click-shield"></div>
+            <div class="frame-tag">screenshots</div>
+            ${shotsBoardHTML()}
+          </div>
+        `;
+      } else {
+        inner = `
+          <div class="frame" style="width:${f.w}px;height:${f.h}px;">
+            <div class="click-shield"></div>
+            <div class="frame-tag">mascot</div>
+            ${designBoardHTML()}
+          </div>
+        `;
+      }
+
+      el.innerHTML = `
+        <div class="frame-label"><b>${f.label}</b><span>${f.source}</span></div>
+        ${inner}
+        <div class="handle tl"></div><div class="handle tr"></div><div class="handle bl"></div><div class="handle br"></div>
+      `;
+      canvas.appendChild(el);
+    });
+  }
+
+  function selectFrame(key, center = true) {
+    const board = document.getElementById("ab-" + key);
+    if (!board) return;
+    state.selected = key;
+    $$(".artboard").forEach((a) => {
+      a.classList.toggle("selected", a.id === "ab-" + key);
+      if (a.id !== "ab-" + key) a.classList.remove("interactive");
+    });
+    $$(".layer[data-artboard]").forEach((l) => l.classList.toggle("active", l.dataset.artboard === key));
+    const f = FRAMES.find((x) => x.key === key);
+    if (f) {
+      $("#selName").textContent = f.label;
+      $("#selType").textContent = f.type;
+      $("#selSource").textContent = f.source;
+    }
+    if (center) centerOn(board);
+  }
+
+  function centerOn(board) {
+    const wrap = $("#canvasWrap");
+    const x = board.offsetLeft + board.offsetWidth / 2;
+    const y = board.offsetTop + board.offsetHeight / 2;
+    state.panX = wrap.clientWidth / 2 - x * state.zoom;
+    state.panY = wrap.clientHeight / 2 - y * state.zoom;
+    applyTransform();
+  }
+
+  function applyTransform() {
+    $("#canvas").style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${state.zoom})`;
+    $("#zoomVal").textContent = Math.round(state.zoom * 100) + "%";
+  }
+
+  function fitAll() {
+    const wrap = $("#canvasWrap");
+    state.zoom = Math.min((wrap.clientWidth - 40) / 2500, (wrap.clientHeight - 40) / 3300, 0.85);
+    state.zoom = Math.max(state.zoom, 0.18);
+    state.panX = 16; state.panY = 8;
+    applyTransform();
+    toast("Fit all original prototypes");
+  }
+
+  /* ===== Present ===== */
+  const presentKeys = ["accent","desktop","wishlist","account","drive","attach","shots"];
+  let presentIndex = 0;
+
+  function presentShow(i) {
+    presentIndex = (i + presentKeys.length) % presentKeys.length;
+    const key = presentKeys[presentIndex];
+    const f = FRAMES.find((x) => x.key === key);
+    $("#presentName").textContent = f.label;
+    $("#presentSelect").value = key;
+    const src = f.src || "../screenshots/";
+    const iframe = $("#presentIframe");
+    if (key === "shots") {
+      iframe.srcdoc = `<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+        body{margin:0;font-family:Poppins,Inter,sans-serif;background:#f4f2f8;padding:24px;color:#1e1b2e}
+        h2{margin:0 0 8px} p{color:#6b6785;margin:0 0 16px;font-size:13px}
+        .g{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+        .c{background:#fff;border-radius:14px;overflow:hidden;border:1px solid rgba(0,0,0,.08)}
+        img{width:100%;height:220px;object-fit:cover;object-position:top;display:block}
+        .l{padding:10px 12px;font-size:12px;color:#6b6785;font-weight:600}
+      </style></head><body>
+        <h2>docs/screenshots</h2>
+        <p>Screenshot asli aplikasi Nyawtat</p>
+        <div class="g">
+          ${SHOTS.map(([file,label]) => `
+            <div class="c"><img src="../screenshots/${file}" alt="${label}"><div class="l">${label}</div></div>
+          `).join("")}
+        </div>
+      </body></html>`;
+    } else {
+      iframe.removeAttribute("srcdoc");
+      iframe.src = src;
+    }
+    $("#presentOpenNew").href = key === "shots" ? "../screenshots/" : f.src;
+    $("#presentOpenNew").textContent = "Open tab ↗";
+  }
+
+  function openPresent() {
+    $("#presentOverlay").classList.add("open");
+    const i = Math.max(0, presentKeys.indexOf(state.selected));
+    presentShow(i);
+  }
+
+  function closePresent() {
+    $("#presentOverlay").classList.remove("open");
+    toast("Kembali ke canvas");
+  }
+
+  /* ===== Events ===== */
+  const wrap = $("#canvasWrap");
+  let dragging = false, spaceDown = false, lastX = 0, lastY = 0;
+
+  wrap.addEventListener("mousedown", (e) => {
+    const art = e.target.closest(".artboard");
+    const inFrame = e.target.closest(".frame iframe");
+    if (inFrame && art && art.classList.contains("interactive")) return;
+    if (e.button === 1 || state.tool === "hand" || spaceDown || e.target === wrap || e.target === $("#canvas") || e.target.classList?.contains("click-shield")) {
+      dragging = true; lastX = e.clientX; lastY = e.clientY;
+      wrap.style.cursor = "grabbing"; e.preventDefault();
+    }
+    if (art && !art.classList.contains("interactive")) {
+      selectFrame(art.dataset.key, false);
+    }
+  });
+  window.addEventListener("mousemove", (e) => {
+    if (!dragging) return;
+    state.panX += e.clientX - lastX; state.panY += e.clientY - lastY;
+    lastX = e.clientX; lastY = e.clientY; applyTransform();
+  });
+  window.addEventListener("mouseup", () => {
+    dragging = false; wrap.style.cursor = state.tool === "hand" ? "grab" : "default";
+  });
+  wrap.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    state.zoom = Math.min(1.4, Math.max(0.18, state.zoom * (e.deltaY > 0 ? 0.92 : 1.08)));
+    applyTransform();
+  }, { passive: false });
+
+  window.addEventListener("keydown", (e) => {
+    if ($("#presentOverlay").classList.contains("open")) {
+      if (e.key === "Escape") closePresent();
+      if (e.key === "ArrowRight") presentShow(presentIndex + 1);
+      if (e.key === "ArrowLeft") presentShow(presentIndex - 1);
+      return;
+    }
+    if (e.code === "Space") { spaceDown = true; wrap.style.cursor = "grab"; }
+    if (e.key === "0") { state.zoom = 1; applyTransform(); }
+    if (e.key === "1") {
+      const b = document.getElementById("ab-" + state.selected);
+      if (b) centerOn(b);
+    }
+    if (e.key === "f" || e.key === "F") fitAll();
+    if (e.key === "i" || e.key === "I") $("#btnToggleInteractive").click();
+  });
+  window.addEventListener("keyup", (e) => {
+    if (e.code === "Space") { spaceDown = false; wrap.style.cursor = state.tool === "hand" ? "grab" : "default"; }
+  });
+
+  $$(".tool-btn[data-tool]").forEach((btn) => btn.addEventListener("click", () => {
+    $$(".tool-btn[data-tool]").forEach((b) => b.classList.remove("active"));
+    btn.classList.add("active");
+    state.tool = btn.dataset.tool;
+    wrap.style.cursor = state.tool === "hand" ? "grab" : "default";
+  }));
+
+  $("#btnToggleInteractive").addEventListener("click", () => {
+    state.interactive = !state.interactive;
+    $("#btnToggleInteractive").classList.toggle("active", state.interactive);
+    $$(".artboard").forEach((a) => a.classList.toggle("interactive", state.interactive && a.dataset.key === state.selected));
+    if (state.interactive) {
+      const art = document.getElementById("ab-" + state.selected);
+      if (art) art.classList.add("interactive");
+      toast("Click-through ON — interaksi di dalam prototype asli");
+    } else {
+      toast("Click-through OFF");
+    }
+  });
+
+  $$(".layer[data-artboard]").forEach((layer) => layer.addEventListener("click", () => selectFrame(layer.dataset.artboard, true)));
+  $$("[data-goto]").forEach((el) => el.addEventListener("click", () => selectFrame(el.dataset.goto, true)));
+
+  $("#btnFit").addEventListener("click", fitAll);
+  $("#btnPresent").addEventListener("click", openPresent);
+  $("#btnOpenExternal").addEventListener("click", () => {
+    const f = FRAMES.find((x) => x.key === state.selected);
+    if (!f) return;
+    const href = f.src || "../screenshots/";
+    window.open(href, "_blank");
+  });
+  $("#zoomIn").addEventListener("click", () => { state.zoom = Math.min(1.4, state.zoom * 1.12); applyTransform(); });
+  $("#zoomOut").addEventListener("click", () => { state.zoom = Math.max(0.18, state.zoom * 0.9); applyTransform(); });
+  $("#zoomReset").addEventListener("click", () => { state.zoom = 1; applyTransform(); });
+
+  $("#presentClose").addEventListener("click", closePresent);
+  $("#presentPrev").addEventListener("click", () => presentShow(presentIndex - 1));
+  $("#presentNext").addEventListener("click", () => presentShow(presentIndex + 1));
+  $("#presentSelect").addEventListener("change", (e) => {
+    presentShow(presentKeys.indexOf(e.target.value));
+  });
+
+  // init
+  $("#brandIcon").innerHTML = `<svg width="26" height="26" viewBox="0 0 200 220">${POSES.halo}</svg>`;
+  buildCanvas();
+  applyTransform();
+  selectFrame("design", true);
+})();
+</script>
+</body>
+</html>

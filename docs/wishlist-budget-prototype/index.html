@@ -140,6 +140,11 @@
   .btn-sim.danger:hover {
     background: var(--expense-soft);
   }
+  .btn-sim.active {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
 
   /* Layout */
   .main-container {
@@ -152,29 +157,118 @@
     flex-wrap: wrap;
   }
 
-  /* Phone Mockup Frame */
+  /* Phone Mockup Frame — default = Android (Pixel 412×915 class) */
   .phone {
-    width: 395px;
-    height: 840px;
-    background: #000;
-    border-radius: 46px;
-    padding: 12px;
+    width: min(412px, 100vw - 24px);
+    height: min(880px, calc(100dvh - 120px));
+    min-height: 640px;
+    background: #1a1d1c;
+    border-radius: 28px;
+    padding: 10px;
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25);
     flex-shrink: 0;
     position: relative;
+  }
+  .phone.ios {
+    width: min(393px, 100vw - 24px);
+    height: min(852px, calc(100dvh - 120px));
+    border-radius: 46px;
+    background: #000;
+    padding: 12px;
   }
   .screen {
     width: 100%;
     height: 100%;
     background: var(--bg);
-    border-radius: 36px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .phone.ios .screen { border-radius: 36px; }
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* Scrollable app content ABOVE the dock (dock tidak ikut scroll) */
+  .content {
+    flex: 1 1 auto;
+    min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    position: relative;
-    padding-bottom: 90px;
+    -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
-  .screen::-webkit-scrollbar { display: none; }
+  .content::-webkit-scrollbar { display: none; }
+
+  /* App bar = flex item di atas content (bukan sticky di dalam scroll) */
+  .app-bar {
+    flex: 0 0 auto;
+    position: relative;
+  }
+
+  /* Tab panels */
+  .app-view { display: none; flex-direction: column; gap: 16px; }
+  .app-view.active { display: flex; }
+
+  /* FAB quick action sheet */
+  .fab-sheet {
+    position: absolute;
+    left: 12px; right: 12px; bottom: 84px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    padding: 12px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.2);
+    z-index: 30;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .fab-sheet.open { display: flex; }
+  .fab-sheet button {
+    display: flex; align-items: center; gap: 10px;
+    width: 100%; text-align: left;
+    border: 1px solid var(--line);
+    background: var(--surface-elevated);
+    color: var(--ink);
+    border-radius: 12px;
+    padding: 12px 14px;
+    font-size: 13px; font-weight: 600;
+    cursor: pointer;
+  }
+  .fab-sheet button:hover { background: var(--accent-soft); }
+  .fab-scrim {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.18);
+    z-index: 25;
+    display: none;
+  }
+  .fab-scrim.open { display: block; }
+
+  /* Full-bleed on real phones (Android / iOS browser) */
+  @media (max-width: 560px) {
+    body { padding: 12px 0 40px; }
+    .page-header, .control-bar, .info-section {
+      margin-left: 12px; margin-right: 12px;
+    }
+    .phone, .phone.ios {
+      width: 100%;
+      height: auto;
+      min-height: calc(100dvh - 80px);
+      border-radius: 18px;
+      padding: 8px;
+      margin: 0 8px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+    }
+    .screen, .phone.ios .screen {
+      border-radius: 14px;
+      height: calc(100dvh - 110px);
+    }
+    .page-header h1 { font-size: 20px; }
+    .control-bar { padding: 12px; }
+  }
 
   /* App Bar in Phone */
   .app-bar {
@@ -240,7 +334,7 @@
     color: var(--flame);
   }
 
-  /* App Content Padding */
+  /* App Content Padding — scrollable panel above dock */
   .content {
     padding: 4px 18px 24px;
     display: flex;
@@ -451,16 +545,26 @@
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
+    gap: 10px;
     margin-bottom: 4px;
   }
   .wish-title {
     font-size: 13.5px;
     font-weight: 700;
+    min-width: 0;
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    line-height: 1.35;
   }
   .wish-target-val {
     font-size: 13.5px;
     font-weight: 700;
     color: var(--accent);
+    white-space: nowrap;
+    flex-shrink: 0;
+    line-height: 1.35;
   }
   
   /* Wallet Allocation Badge */
@@ -496,7 +600,18 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 10px;
+    gap: 10px;
+    margin-top: 12px;
+    min-height: 36px;
+    flex-wrap: wrap;
+  }
+  .wish-actions .wish-remain {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.35;
+    min-width: 0;
+    flex: 1 1 auto;
+    overflow-wrap: anywhere;
   }
   .btn-save-wish {
     background: var(--accent);
@@ -504,12 +619,17 @@
     border: none;
     font-size: 11.5px;
     font-weight: 600;
-    padding: 6px 14px;
+    padding: 8px 14px;
     border-radius: 8px;
     cursor: pointer;
     transition: opacity 0.15s;
+    flex: 0 0 auto;
+    white-space: nowrap;
+    min-height: 36px;
+    margin-left: auto;
   }
   .btn-save-wish:hover { opacity: 0.9; }
+  .btn-save-wish:active { transform: scale(0.97); }
 
   /* Streak Checklist */
   .streak-task {
@@ -542,12 +662,11 @@
     color: var(--muted);
   }
 
-  /* Floating Dock (Navigation) */
+  /* Floating Dock (Navigation) — flex footer, tidak ikut scroll konten */
   .dock {
-    position: absolute;
-    bottom: 12px;
-    left: 18px;
-    right: 18px;
+    flex: 0 0 auto;
+    position: relative;
+    margin: 0 12px 12px;
     height: 62px;
     background: var(--surface);
     border: 1px solid var(--line);
@@ -763,6 +882,11 @@
 <!-- External Control Bar -->
 <div class="control-bar">
   <div class="control-group">
+    <span class="ctrl-label">Perangkat:</span>
+    <button class="btn-sim active" id="devAndroid" onclick="setDevice('android')" type="button">📱 Android</button>
+    <button class="btn-sim" id="devIos" onclick="setDevice('ios')" type="button">📲 iPhone</button>
+  </div>
+  <div class="control-group">
     <span class="ctrl-label">Simulasi Aksi:</span>
     <button class="btn-sim" onclick="addExpenseSim(50000)">+ Jajan Rp 50.000</button>
     <button class="btn-sim" onclick="addExpenseSim(150000)">+ Belanja Rp 150.000</button>
@@ -779,7 +903,7 @@
 <div class="main-container">
 
   <!-- PHONE MOCKUP -->
-  <div class="phone">
+  <div class="phone" id="phoneFrame">
     <div class="screen" id="appScreen">
 
       <!-- TOAST FEEDBACK -->
@@ -803,8 +927,10 @@
         </div>
       </div>
 
-      <div class="content">
+      <div class="content" id="appContent">
 
+        <!-- ===== VIEW: HARI INI ===== -->
+        <section class="app-view active" id="view-today">
         <!-- DYNAMIC WARNING ALERT BANNER -->
         <div id="budgetAlertBanner" class="alert-banner warning" style="display: none;">
           <div class="alert-icon" id="alertIcon">⚠️</div>
@@ -890,25 +1016,128 @@
             </div>
           </div>
         </div>
+        </section>
+
+        <!-- ===== VIEW: JURNAL ===== -->
+        <section class="app-view" id="view-journal">
+          <div class="card">
+            <div class="sec-head">
+              <span class="sec-title">📖 Jurnal Harian</span>
+              <button class="sec-action" onclick="showToast('Form jurnal baru (demo)', '✍️')">+ Tulis</button>
+            </div>
+            <div class="wish-plan-box" style="margin-top:4px">
+              <div class="wish-plan-item">
+                <span>Mood hari ini</span>
+                <b>😊 Tenang</b>
+              </div>
+              <div class="wish-plan-item" style="text-align:right">
+                <span>Streak</span>
+                <b>🔥 5 hari</b>
+              </div>
+            </div>
+            <div style="margin-top:12px;display:flex;flex-direction:column;gap:10px">
+              <div class="bill-item" style="border:none;padding:10px 0">
+                <div>
+                  <div class="wish-title" style="margin-bottom:4px">Pagi yang produktif</div>
+                  <div style="font-size:11.5px;color:var(--muted);line-height:1.5">Selesai stand-up, budget harian masih aman. Lanjut review prototype.</div>
+                </div>
+              </div>
+              <div class="bill-item" style="border:none;padding:10px 0">
+                <div>
+                  <div class="wish-title" style="margin-bottom:4px">Refleksi malam</div>
+                  <div style="font-size:11.5px;color:var(--muted);line-height:1.5">Sisihkan tabungan wishlist sedikit demi sedikit.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="sec-head"><span class="sec-title">🎙 Catatan Suara</span></div>
+            <button class="btn-save-wish" style="width:100%;margin-top:6px;min-height:44px" onclick="showToast('Voice record sheet (demo)', '🎙')">Mulai Rekam</button>
+          </div>
+        </section>
+
+        <!-- ===== VIEW: UANG ===== -->
+        <section class="app-view" id="view-money">
+          <div class="card">
+            <div class="sec-head">
+              <span class="sec-title">💰 Ringkasan Uang</span>
+              <button class="sec-action" onclick="addExpenseSim(50000)">+ Catat</button>
+            </div>
+            <div class="wish-plan-box" style="margin-top:4px">
+              <div class="wish-plan-item">
+                <span>Pengeluaran hari ini</span>
+                <b style="color:var(--expense)" id="moneySpent">Rp 65.000</b>
+              </div>
+              <div class="wish-plan-item" style="text-align:right">
+                <span>Sisa jatah</span>
+                <b id="moneyLeft">Rp 35.000</b>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="sec-head"><span class="sec-title">🏦 Dompet</span></div>
+            <div id="walletListMini" style="display:flex;flex-direction:column;gap:8px"></div>
+          </div>
+          <div class="card">
+            <div class="sec-head"><span class="sec-title">✨ Target wishlist</span></div>
+            <div id="moneyWishMini" style="display:flex;flex-direction:column;gap:10px"></div>
+          </div>
+        </section>
+
+        <!-- ===== VIEW: LAPORAN ===== -->
+        <section class="app-view" id="view-report">
+          <div class="card">
+            <div class="sec-head">
+              <span class="sec-title">📊 Laporan Sederhana</span>
+              <button class="sec-action" onclick="showToast('Export Excel (demo)', '📤')">Export</button>
+            </div>
+            <div class="wish-plan-box" style="margin-top:4px">
+              <div class="wish-plan-item"><span>Budget terpakai</span><b id="reportPct">65%</b></div>
+              <div class="wish-plan-item" style="text-align:right"><span>Streak</span><b>5 hari</b></div>
+            </div>
+            <div class="progress-track" style="margin-top:12px">
+              <div class="progress-fill safe" id="reportBar" style="width:65%"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="sec-head"><span class="sec-title">💡 Insight</span></div>
+            <p style="font-size:12px;color:var(--muted);line-height:1.6">
+              Budget harianmu masih di batas aman. Prioritaskan setor ke wishlist
+              <b>Barang Impian</b> agar target 12 bulan tetap on-track.
+            </p>
+            <button class="btn-save-wish" style="width:100%;margin-top:12px;min-height:42px"
+              onclick="switchView('today'); document.querySelector('#wishlistContainer')?.scrollIntoView({behavior:'smooth'})">
+              Lihat Wishlist
+            </button>
+          </div>
+        </section>
 
       </div>
 
-      <!-- BOTTOM DOCK -->
+            <!-- FAB action sheet -->
+      <div class="fab-scrim" id="fabScrim" onclick="toggleFabSheet(false)"></div>
+      <div class="fab-sheet" id="fabSheet">
+        <button type="button" onclick="toggleFabSheet(false); addExpenseSim(50000)">Catat pengeluaran</button>
+        <button type="button" onclick="toggleFabSheet(false); openWishlistModal()">Tambah wishlist</button>
+        <button type="button" onclick="toggleFabSheet(false); openBillModal()">Tambah tagihan</button>
+        <button type="button" onclick="toggleFabSheet(false); switchView('journal')">Tulis jurnal</button>
+      </div>
+<!-- BOTTOM DOCK -->
       <div class="dock">
-        <button class="dock-item active">
+        <button class="dock-item active" data-view="today" onclick="switchView('today')">
           <span class="dock-icon">📅</span>
           <span>Hari Ini</span>
         </button>
-        <button class="dock-item">
+        <button class="dock-item" data-view="journal" onclick="switchView('journal')">
           <span class="dock-icon">📖</span>
           <span>Jurnal</span>
         </button>
-        <button class="dock-fab" onclick="addExpenseSim(50000)">+</button>
-        <button class="dock-item">
+        <button class="dock-fab" id="fabBtn" type="button" onclick="toggleFabSheet()">+</button>
+        <button class="dock-item" data-view="money" onclick="switchView('money')">
           <span class="dock-icon">💰</span>
           <span>Uang</span>
         </button>
-        <button class="dock-item">
+        <button class="dock-item" data-view="report" onclick="switchView('report')">
           <span class="dock-icon">📊</span>
           <span>Laporan</span>
         </button>
@@ -1093,6 +1322,7 @@
       document.getElementById('alertDesc').textContent = 'Kamu sudah melebihi batas jatah sebesar ' + formatRupiah(Math.abs(remaining)) + '.';
       mascot.textContent = '🙀';
     }
+    if (typeof renderMoneyMini === 'function') renderMoneyMini();
   }
 
   function renderWalletsOverview() {
@@ -1189,8 +1419,8 @@
           </div>
         </div>
         <div class="wish-actions">
-          <span style="font-size:11px; color:var(--muted);">Kurang: ${formatRupiah(sisa)}</span>
-          <button class="btn-save-wish" onclick="openDepositModal(${w.id})">+ Nabung</button>
+          <span class="wish-remain">Kurang: ${formatRupiah(sisa)}</span>
+          <button type="button" class="btn-save-wish" onclick="openDepositModal(${w.id})">+ Nabung</button>
         </div>
       `;
       container.appendChild(card);
@@ -1213,6 +1443,75 @@
   }
 
   // --- INTERACTION HANDLERS ---
+  function setDevice(mode) {
+    const phone = document.querySelector('.phone');
+    if (!phone) return;
+    if (mode === 'ios') {
+      phone.classList.add('ios');
+      document.getElementById('devIos')?.classList.add('active');
+      document.getElementById('devAndroid')?.classList.remove('active');
+    } else {
+      phone.classList.remove('ios');
+      document.getElementById('devAndroid')?.classList.add('active');
+      document.getElementById('devIos')?.classList.remove('active');
+    }
+  }
+
+  function switchView(name) {
+    document.querySelectorAll('.app-view').forEach((v) => {
+      v.classList.toggle('active', v.id === 'view-' + name);
+    });
+    document.querySelectorAll('.dock-item[data-view]').forEach((b) => {
+      b.classList.toggle('active', b.dataset.view === name);
+    });
+    const content = document.getElementById('appContent');
+    if (content) content.scrollTop = 0;
+    if (name === 'money') renderMoneyMini();
+  }
+
+  function toggleFabSheet(force) {
+    const sheet = document.getElementById('fabSheet');
+    const scrim = document.getElementById('fabScrim');
+    if (!sheet || !scrim) return;
+    const open = typeof force === 'boolean' ? force : !sheet.classList.contains('open');
+    sheet.classList.toggle('open', open);
+    scrim.classList.toggle('open', open);
+  }
+
+  function renderMoneyMini() {
+    const period = budgetData[currentPeriod] || budgetData.daily;
+    const spent = period.spent;
+    const left = Math.max(0, period.limit - spent);
+    const ms = document.getElementById('moneySpent');
+    const ml = document.getElementById('moneyLeft');
+    if (ms) ms.textContent = formatRupiah(spent);
+    if (ml) ml.textContent = formatRupiah(left);
+    const list = document.getElementById('walletListMini');
+    if (list) {
+      list.innerHTML = wallets.map(w => `
+        <div class="wish-plan-box" style="margin:0">
+          <div class="wish-plan-item"><span>${w.icon} ${w.name}</span><b>${formatRupiah(w.balance)}</b></div>
+        </div>
+      `).join('');
+    }
+    const wish = document.getElementById('moneyWishMini');
+    if (wish) {
+      wish.innerHTML = wishlists.map(w => {
+        const pct = Math.round((w.savedAmount / w.targetAmount) * 100);
+        return `<div>
+          <div style="display:flex;justify-content:space-between;font-size:11.5px;margin-bottom:4px">
+            <b>${w.title}</b><span>${pct}%</span>
+          </div>
+          <div class="progress-track"><div class="progress-fill safe" style="width:${Math.min(pct,100)}%"></div></div>
+        </div>`;
+      }).join('');
+    }
+    const rb = document.getElementById('reportBar');
+    const rp = document.getElementById('reportPct');
+    const pct = Math.min(100, Math.round((spent / (period.limit || 1)) * 100));
+    if (rb) rb.style.width = pct + '%';
+    if (rp) rp.textContent = pct + '%';
+  }
   function switchBudgetPeriod(period) {
     currentPeriod = period;
     document.getElementById('tabDaily').classList.toggle('active', period === 'daily');
@@ -1375,6 +1674,11 @@
 
     renderWishlists();
     closeModal();
+    // Scroll ke card baru supaya tombol +Nabung terlihat & posisi rapi
+    requestAnimationFrame(() => {
+      const first = document.querySelector('#wishlistContainer .wishlist-card');
+      if (first) first.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
     const w = getWallet(walletId);
     showToast(`Wishlist "${title}" dialokasikan ke ${w.name}`, '🎯');
   }
