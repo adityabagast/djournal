@@ -26,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -46,6 +46,18 @@ class AppDatabase extends _$AppDatabase {
       if (from < 4) {
         await m.createTable(wishlists);
         await m.createTable(bills);
+      }
+      if (from < 5) {
+        // Upgrade dari v1/v2 dulu tidak mengubah entry_id jadi nullable dan
+        // tidak membuat index, sehingga foto struk transaksi gagal disimpan.
+        // Bangun ulang tabelnya; aman juga untuk instalasi baru v3/v4.
+        await m.alterTable(TableMigration(attachments));
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_attachment_entry ON attachments (entry_id)',
+        );
+        await customStatement(
+          'CREATE INDEX IF NOT EXISTS idx_attachment_tx ON attachments (transaction_id)',
+        );
       }
     },
     beforeOpen: (details) async {
