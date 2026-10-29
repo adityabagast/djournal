@@ -4,7 +4,7 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 
 **🌐 Situs: [adityabagast.github.io/djournal](https://adityabagast.github.io/djournal/)** · [Unduh APK](../../releases/latest) · [Jadi tester](https://appdistribution.firebase.dev/i/7f0a29e4b1386d45)
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.9.2**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.9.3**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>

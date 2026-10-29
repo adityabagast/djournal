@@ -1,8 +1,9 @@
 # Changelog
 
-## Belum dirilis
+## 0.9.3 — 2026-10-29
 
 **Perbaikan**
+- **Foto struk gagal tersimpan** di HP yang sudah memakai Nyawtat sejak versi awal (database hasil upgrade dari schema v1/v2). Schema v5 membangun ulang tabel lampiran beserta indeksnya; data lama tetap utuh.
 - **Tagihan berulang**: membayar tagihan bulanan/tahunan kini menjadwalkan jatuh tempo berikutnya (tanggal yang tidak ada di bulan tujuan dipotong ke akhir bulan, mis. 31 Jan → 28 Feb). Sebelumnya tagihan langsung ditandai lunas dan hilang dari Hari Ini. Tagihan "Satu Kali Saja" tetap ditandai lunas.
 - **Bayar tagihan & setor wishlist** berjalan dalam satu transaksi database, jadi tidak ada lagi keadaan uang sudah tercatat keluar tapi tagihan/wishlist belum ter-update.
 - **Streak › Menabung** hanya tercentang oleh setoran wishlist, bukan oleh transfer biasa seperti tarik tunai.
