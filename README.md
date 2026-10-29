@@ -2,7 +2,7 @@
 
 Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** dalam satu timeline. Nama "Nyawtat" dari *nyaw* (suara kucing) + *catat*. Offline-first: semua data tersimpan di HP, lalu disinkronkan ke cloud kalau login.
 
-**🌐 Situs: [adityabagast.github.io/djournal/landing](https://adityabagast.github.io/djournal/landing/)** · [Unduh APK](../../releases/latest) · [Jadi tester](https://appdistribution.firebase.dev/i/7f0a29e4b1386d45)
+**🌐 Situs: [adityabagast.github.io/djournal](https://adityabagast.github.io/djournal/)** · [Unduh APK](../../releases/latest) · [Jadi tester](https://appdistribution.firebase.dev/i/7f0a29e4b1386d45)
 
 > Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.9.2**, lihat [CHANGELOG.md](CHANGELOG.md).
 
