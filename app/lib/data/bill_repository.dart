@@ -85,49 +85,82 @@ class BillRepository {
     );
   }
 
-  Future<void> payBill({
+  /// Bayar tagihan: catat transaksi pengeluaran, lalu
+  /// - tagihan berulang (`monthly` / `yearly`) dijadwalkan ke jatuh tempo
+  ///   berikutnya dan tetap belum lunas;
+  /// - tagihan sekali (`once` / null) ditandai lunas.
+  ///
+  /// Semua langkah dalam satu transaksi database, jadi tidak ada keadaan
+  /// "uang sudah keluar tapi tagihan belum ter-update".
+  ///
+  /// Mengembalikan jatuh tempo berikutnya (YYYY-MM-DD) untuk tagihan
+  /// berulang, atau null kalau tagihan selesai / tidak ditemukan.
+  Future<String?> payBill({
     required String billId,
     required String walletId,
     String? categoryId,
-  }) async {
-    final now = DateTime.now().toUtc();
-    final bill = await getBill(billId);
-    if (bill == null || bill.isPaid) return;
+  }) {
+    return _db.transaction(() async {
+      final now = DateTime.now().toUtc();
+      final bill = await getBill(billId);
+      if (bill == null || bill.isPaid || bill.deletedAt != null) return null;
 
-    var catId = categoryId ?? bill.categoryId;
-    if (catId == null) {
-      final billCats = await (_db.select(_db.categories)
-            ..where((c) => c.systemKey.equals('bills') & c.deletedAt.isNull())
-            ..limit(1))
-          .get();
-      catId = billCats.firstOrNull?.id;
-    }
+      var catId = categoryId ?? bill.categoryId;
+      if (catId == null) {
+        final billCats = await (_db.select(_db.categories)
+              ..where((c) => c.systemKey.equals('bills') & c.deletedAt.isNull())
+              ..limit(1))
+            .get();
+        catId = billCats.firstOrNull?.id;
+      }
 
-    // Catat transaksi pengeluaran
-    await _db.into(_db.transactions).insert(
-      TransactionsCompanion.insert(
-        id: newId(),
-        createdAt: now,
-        updatedAt: now,
-        type: 'expense',
-        amount: bill.amount,
-        walletId: walletId,
-        categoryId: Value(catId),
-        note: Value('Bayar Tagihan: ${bill.title}'),
-        occurredAt: now,
-        localDate: toLocalDate(now.toLocal()),
-      ),
-    );
+      await _db.into(_db.transactions).insert(
+        TransactionsCompanion.insert(
+          id: newId(),
+          createdAt: now,
+          updatedAt: now,
+          type: 'expense',
+          amount: bill.amount,
+          walletId: walletId,
+          categoryId: Value(catId),
+          note: Value('Bayar Tagihan: ${bill.title}'),
+          occurredAt: now,
+          localDate: toLocalDate(now.toLocal()),
+        ),
+      );
 
-    // Tandai tagihan sebagai lunas
-    await (_db.update(_db.bills)..where((b) => b.id.equals(billId))).write(
-      BillsCompanion(
-        updatedAt: Value(now),
-        isDirty: const Value(true),
-        isPaid: const Value(true),
-        paidAt: Value(now),
-      ),
-    );
+      final next = nextDueDate(bill.dueDate, bill.repeatInterval);
+      await (_db.update(_db.bills)..where((b) => b.id.equals(billId))).write(
+        BillsCompanion(
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+          paidAt: Value(now),
+          isPaid: Value(next == null),
+          dueDate: next != null ? Value(next) : const Value.absent(),
+        ),
+      );
+      return next;
+    });
+  }
+
+  /// Jatuh tempo berikutnya untuk tagihan berulang, atau null kalau
+  /// tagihan tidak berulang (`once`, null, atau nilai tak dikenal).
+  ///
+  /// Tanggal yang tidak ada di bulan tujuan dipotong ke akhir bulan:
+  /// 31 Jan → 28/29 Feb, 29 Feb (tahunan) → 28 Feb tahun berikutnya.
+  static String? nextDueDate(String dueDate, String? repeatInterval) {
+    final months = switch (repeatInterval) {
+      'monthly' => 1,
+      'yearly' => 12,
+      _ => 0,
+    };
+    if (months == 0) return null;
+    final due = DateTime.tryParse(dueDate);
+    if (due == null) return null;
+    final firstOfTarget = DateTime(due.year, due.month + months, 1);
+    final lastDay = DateTime(firstOfTarget.year, firstOfTarget.month + 1, 0).day;
+    final day = due.day > lastDay ? lastDay : due.day;
+    return toLocalDate(DateTime(firstOfTarget.year, firstOfTarget.month, day));
   }
 
   Future<void> deleteBill(String id) async {

@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
-import '../../../core/format.dart';
-import '../../../core/theme.dart';
-import '../../../data/db/app_database.dart';
-import '../../../providers.dart';
+import '../../core/format.dart';
+import '../../core/theme.dart';
+import '../../data/db/app_database.dart';
+import '../../providers.dart';
 import 'bill_form_sheet.dart';
 
 /// Sheet detail tagihan: info lengkap + aksi Bayar / Edit / Hapus.
@@ -306,13 +306,21 @@ class BillDetailSheet extends ConsumerWidget {
     final walletId = selectedWalletId;
     if (ok != true || walletId == null) return;
 
-    await ref.read(billRepositoryProvider).payBill(
+    final next = await ref.read(billRepositoryProvider).payBill(
           billId: bill.id,
           walletId: walletId,
         );
     if (context.mounted) {
+      final nextDue = next == null ? null : DateTime.tryParse(next);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Tagihan ${bill.title} lunas!')),
+        SnackBar(
+          content: Text(
+            nextDue == null
+                ? 'Tagihan ${bill.title} lunas!'
+                : 'Tagihan ${bill.title} dibayar. Jatuh tempo berikutnya '
+                    '${DateFormat('d MMM yyyy', 'id').format(nextDue)}.',
+          ),
+        ),
       );
     }
   }

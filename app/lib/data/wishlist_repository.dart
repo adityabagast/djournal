@@ -6,6 +6,15 @@ import 'db/app_database.dart';
 class WishlistRepository {
   WishlistRepository(this._db);
 
+  /// Awalan catatan transfer yang dibuat [deposit]. Dipakai juga untuk
+  /// mengenali setoran tabungan (mis. di streak harian), jadi jangan diubah
+  /// tanpa memperbarui [isDepositTransfer].
+  static const depositNotePrefix = 'Nabung Wishlist: ';
+
+  /// True kalau transaksi adalah transfer setoran wishlist dari [deposit].
+  static bool isDepositTransfer({required String type, String? note}) =>
+      type == 'transfer' && (note?.startsWith(depositNotePrefix) ?? false);
+
   final AppDatabase _db;
 
   Stream<List<Wishlist>> watchWishlists() {
@@ -81,44 +90,48 @@ class WishlistRepository {
     required String wishlistId,
     required int amount,
     String? sourceWalletId,
-  }) async {
-    final now = DateTime.now().toUtc();
-    final current = await getWishlist(wishlistId);
-    if (current == null) return;
+  }) {
+    // Satu transaksi database: transfer tabungan dan saldo wishlist
+    // selalu ter-update bersamaan.
+    return _db.transaction(() async {
+      final now = DateTime.now().toUtc();
+      final current = await getWishlist(wishlistId);
+      if (current == null) return;
 
-    final newSaved = current.savedAmount + amount;
-    final fulfilled = newSaved >= current.targetAmount;
+      final newSaved = current.savedAmount + amount;
+      final fulfilled = newSaved >= current.targetAmount;
 
-    // Catat mutasi / transaksi jika ada dompet yang dipilih
-    if (sourceWalletId != null) {
-      final targetWalletId = current.walletId;
-      if (targetWalletId != null && targetWalletId != sourceWalletId) {
-        // Transfer antar dompet (misal: Rekening Utama -> Rekening Tabungan)
-        await _db.into(_db.transactions).insert(
-          TransactionsCompanion.insert(
-            id: newId(),
-            createdAt: now,
-            updatedAt: now,
-            type: 'transfer',
-            amount: amount,
-            walletId: sourceWalletId,
-            toWalletId: Value(targetWalletId),
-            note: Value('Nabung Wishlist: ${current.title}'),
-            occurredAt: now,
-            localDate: toLocalDate(now.toLocal()),
-          ),
-        );
+      // Catat mutasi / transaksi jika ada dompet yang dipilih
+      if (sourceWalletId != null) {
+        final targetWalletId = current.walletId;
+        if (targetWalletId != null && targetWalletId != sourceWalletId) {
+          // Transfer antar dompet (misal: Rekening Utama -> Rekening Tabungan)
+          await _db.into(_db.transactions).insert(
+            TransactionsCompanion.insert(
+              id: newId(),
+              createdAt: now,
+              updatedAt: now,
+              type: 'transfer',
+              amount: amount,
+              walletId: sourceWalletId,
+              toWalletId: Value(targetWalletId),
+              note: Value('$depositNotePrefix${current.title}'),
+              occurredAt: now,
+              localDate: toLocalDate(now.toLocal()),
+            ),
+          );
+        }
       }
-    }
 
-    await (_db.update(_db.wishlists)..where((w) => w.id.equals(wishlistId))).write(
-      WishlistsCompanion(
-        updatedAt: Value(now),
-        isDirty: const Value(true),
-        savedAmount: Value(newSaved),
-        isFulfilled: Value(fulfilled),
-      ),
-    );
+      await (_db.update(_db.wishlists)..where((w) => w.id.equals(wishlistId))).write(
+        WishlistsCompanion(
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+          savedAmount: Value(newSaved),
+          isFulfilled: Value(fulfilled),
+        ),
+      );
+    });
   }
 
   Future<void> deleteWishlist(String id) async {

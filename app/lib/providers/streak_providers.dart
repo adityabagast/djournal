@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/format.dart';
+import '../data/wishlist_repository.dart';
 import '../domain/models/streak_info.dart';
 import 'journal_providers.dart';
 import 'money_providers.dart';
@@ -46,9 +47,11 @@ final dailyRoutineProvider = Provider<DailyRoutineState>((ref) {
 
   final hasJournal = entries.any((e) => e.entryDate == today);
   final hasTx = txs.any((t) => t.localDate == today && t.type != 'transfer');
+  // Hanya transfer setoran wishlist; transfer biasa (mis. tarik tunai)
+  // bukan menabung.
   final hasSavings = txs.any((t) =>
       t.localDate == today &&
-      (t.type == 'transfer' || (t.note != null && t.note!.contains('Wishlist'))));
+      WishlistRepository.isDepositTransfer(type: t.type, note: t.note));
 
   return DailyRoutineState(
     hasJournalToday: hasJournal,
