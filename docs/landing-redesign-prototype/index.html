@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Prototipe · Redesign Landing Nyawtat</title>
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400..800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; display: flex; flex-direction: column; background: #e7ebe9; color: #1b2420; font-family: "Plus Jakarta Sans", system-ui, sans-serif; }
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: 14px 22px; padding: 12px 18px; background: #14201b; color: #e8efeb; }
+.title { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; }
+.title img { width: 26px; height: 26px; border-radius: 7px; }
+.title small { display: block; font-weight: 500; font-size: 12px; color: #8fa39a; }
+.seg { display: inline-flex; padding: 3px; border-radius: 12px; background: rgba(255,255,255,.08); }
+.seg button { border: 0; background: none; color: #b7c5be; font: inherit; font-size: 13.5px; font-weight: 600; padding: 7px 13px; border-radius: 9px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: #cdebdd; color: #14201b; }
+.seg button b { display: inline-grid; place-items: center; width: 18px; height: 18px; margin-right: 6px; border-radius: 5px; background: rgba(255,255,255,.12); font-size: 11px; }
+.seg button[aria-pressed="true"] b { background: #1f5f4e; color: #fff; }
+.spacer { flex: 1; }
+.open { color: #cdebdd; font-size: 13.5px; font-weight: 600; text-decoration: none; }
+.info { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; padding: 12px 18px; background: #fff; border-bottom: 1px solid #d6ddd9; font-size: 14px; }
+.info h2 { margin: 0; font-size: 16px; }
+.info p { margin: 0; color: #5b6f67; flex: 1; min-width: 260px; }
+.swatches { display: flex; gap: 4px; }
+.swatches i { width: 18px; height: 18px; border-radius: 5px; box-shadow: inset 0 0 0 1px rgba(0,0,0,.12); }
+.stage { flex: 1; min-height: 0; display: grid; place-items: center; padding: 16px; }
+iframe { border: 0; background: #fff; width: 100%; height: 100%; border-radius: 12px; box-shadow: 0 20px 50px -30px rgba(0,0,0,.5); transition: width .35s, height .35s, border-radius .35s; }
+.mobile iframe { width: 390px; max-width: 100%; height: min(844px, 100%); border-radius: 36px; box-shadow: 0 0 0 10px #14201b, 0 30px 60px -30px rgba(0,0,0,.6); }
+.mobile .stage { padding: 24px; }
+</style>
+</head>
+<body>
+<div class="bar">
+  <div class="title"><img src="../assets/icon.svg" alt=""><div>Redesign landing page<small>Prototipe interaktif · pilih arah desain</small></div></div>
+  <div class="seg" id="dirs" role="group" aria-label="Arah desain">
+    <button type="button" data-dir="a" aria-pressed="true"><b>A</b>Buku Catatan</button>
+    <button type="button" data-dir="b" aria-pressed="false"><b>B</b>Mint Pastel</button>
+    <button type="button" data-dir="c" aria-pressed="false"><b>C</b>Linimasa</button>
+  </div>
+  <div class="seg" id="views" role="group" aria-label="Ukuran layar">
+    <button type="button" data-view="desktop" aria-pressed="true">Desktop</button>
+    <button type="button" data-view="mobile" aria-pressed="false">Mobile</button>
+  </div>
+  <span class="spacer"></span>
+  <a class="open" id="open" href="page.html?dir=a" target="_blank" rel="noopener">Buka penuh ↗</a>
+</div>
+<div class="info">
+  <h2 id="i-name"></h2>
+  <div class="swatches" id="i-sw"></div>
+  <p id="i-desc"></p>
+</div>
+<div class="stage"><iframe id="frame" src="page.html?dir=a" title="Pratinjau landing page"></iframe></div>
+<script>
+const info = {
+  a: { name: 'A · Buku Catatan', sw: ['#fbf7ef', '#2b2a26', '#1f5f4e', '#cdebdd', '#fdebd9', '#fbe4e6'],
+       desc: 'Kertas krem bertitik seperti buku jurnal. Judul Fraunces (serif lembut), isi Plus Jakarta Sans, coretan tangan Caveat. Fitur jadi catatan tempel pastel, screenshot jadi polaroid, tombol bergaya stiker. Hangat & personal.' },
+  b: { name: 'B · Mint Pastel', sw: ['#f3faf6', '#13261f', '#1f5f4e', '#cdebdd', '#fdebd9', '#e3edf8'],
+       desc: 'Paling senada dengan app: mint #CDEBDD, hijau #1F5F4E, dan warna kategori pastel. Semua pakai Plus Jakarta Sans (font buatan studio Jakarta). Nav pil melayang, chip mengambang, fitur dalam bento grid. Ramah & modern.' },
+  c: { name: 'C · Linimasa', sw: ['#f6f1e7', '#1b1f1d', '#1f5f4e', '#c2413b', '#ffffff'],
+       desc: 'Editorial: judul Instrument Serif berukuran besar, isi Instrument Sans, latar krem. Tiap bagian halaman diberi jam di rel kiri, seperti linimasa layar Hari Ini (07.40 → 21.30). Fitur ditulis seperti baris transaksi. Elegan & paling beda.' }
+};
+const frame = document.getElementById('frame'), open = document.getElementById('open');
+let dir = 'a';
+function setDir(d) {
+  dir = d;
+  document.querySelectorAll('#dirs button').forEach(b => b.setAttribute('aria-pressed', b.dataset.dir === d));
+  document.getElementById('i-name').textContent = info[d].name;
+  document.getElementById('i-desc').textContent = info[d].desc;
+  document.getElementById('i-sw').innerHTML = info[d].sw.map(c => '<i style="background:' + c + '" title="' + c + '"></i>').join('');
+  open.href = 'page.html?dir=' + d;
+  frame.contentWindow && frame.contentWindow.postMessage({ dir: d }, '*');
+  try { localStorage.setItem('nyawtat-redesign-dir', d); } catch (e) {}
+}
+document.getElementById('dirs').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setDir(b.dataset.dir); });
+document.getElementById('views').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  document.querySelectorAll('#views button').forEach(x => x.setAttribute('aria-pressed', x === b));
+  document.body.classList.toggle('mobile', b.dataset.view === 'mobile');
+});
+frame.addEventListener('load', () => frame.contentWindow.postMessage({ dir }, '*'));
+let saved = null; try { saved = localStorage.getItem('nyawtat-redesign-dir'); } catch (e) {}
+setDir(/^[abc]$/.test(saved) ? saved : 'a');
+</script>
+</body>
+</html>
