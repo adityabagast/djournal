@@ -202,6 +202,13 @@ section { padding: 110px 0 0; }
 .btn .t { display: flex; flex-direction: column; align-items: flex-start; line-height: 1.1; text-align: left; }
 .btn .t small { font-size: 11.5px; font-weight: 600; opacity: .65; letter-spacing: .02em; margin-bottom: 2px; }
 .dl-desc { font-size: 14px; line-height: 1.45; color: var(--mist); max-width: 300px; }
+.tester { margin: 40px auto 0; max-width: 760px; display: flex; align-items: center; gap: 24px; text-align: left;
+  padding: 22px 24px; border-radius: 22px; background: rgba(76,199,154,.06); border: 1px solid rgba(76,199,154,.22); }
+.tester-t { flex: 1; min-width: 0; }
+.tester-t b { display: block; font-size: 18px; margin-bottom: 4px; }
+.tester-t span { display: block; color: var(--mist); font-size: 15px; line-height: 1.45; }
+.tester .btn { flex: none; }
+@media (max-width: 560px) { .tester { flex-direction: column; align-items: stretch; } .tester .btn { justify-content: center; } }
 .trust { text-align: left; max-width: 760px; margin: 70px auto 0; }
 .trust h3 { font-size: 22px; margin: 0 0 8px; letter-spacing: -.01em; }
 .trust > p { color: var(--mist); margin: 0 0 22px; font-size: 16px; }
@@ -459,6 +466,17 @@ footer a:hover { color: var(--ink); }
           </a>
           <div class="dl-desc" data-en="Only if the arm64 version refuses to install.">Hanya kalau versi arm64 gagal dipasang.</div>
         </div>
+      </div>
+
+      <div class="tester">
+        <div class="tester-t">
+          <b data-en="Join as a tester">Gabung jadi tester</b>
+          <span data-en="Sign up with your email through Firebase App Distribution and get every new build by email, before it's released.">Daftar dengan email lewat Firebase App Distribution, lalu dapat setiap build baru lewat email sebelum dirilis.</span>
+        </div>
+        <a class="btn btn-alt" href="https://appdistribution.firebase.dev/i/7f0a29e4b1386d45" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M19 8v6M16 11h6"/></svg>
+          <span data-en="Become a tester">Jadi tester</span>
+        </a>
       </div>
 
       <div class="trust">
