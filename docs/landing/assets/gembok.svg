@@ -1,0 +1,23 @@
+<svg width="200" height="220" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+<path d="M156 174 Q194 172 189 138 Q187 124 175 130" fill="none" stroke="#4A5A54" stroke-width="15" stroke-linecap="round"/>
+<path d="M156 174 Q194 172 189 138 Q187 124 175 130" fill="none" stroke="#FFF9F0" stroke-width="7" stroke-linecap="round"/>
+<ellipse cx="78" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<ellipse cx="122" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<path d="M46 80 L54 26 Q57 17 65 23 L88 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4" stroke-linejoin="round"/>
+<path d="M154 80 L146 26 Q143 17 135 23 L112 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4" stroke-linejoin="round"/>
+<path d="M58 52 L61 34 L76 50 Z" fill="#F8C8CC"/>
+<path d="M142 52 L139 34 L124 50 Z" fill="#F8C8CC"/>
+<rect x="40" y="50" width="120" height="140" rx="28" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<ellipse cx="76" cy="94" rx="9" ry="11" fill="#3D4B46"/><circle cx="79.5" cy="89.5" r="3.6" fill="#FFFFFF"/><circle cx="73" cy="98.5" r="1.6" fill="#FFFFFF"/>
+<ellipse cx="124" cy="94" rx="9" ry="11" fill="#3D4B46"/><circle cx="127.5" cy="89.5" r="3.6" fill="#FFFFFF"/><circle cx="121" cy="98.5" r="1.6" fill="#FFFFFF"/>
+<ellipse cx="62" cy="112" rx="9" ry="5" fill="#F7B5B9"/><ellipse cx="138" cy="112" rx="9" ry="5" fill="#F7B5B9"/>
+<path d="M95.5 105 Q100 101.5 104.5 105 L100 109.5 Z" fill="#F29CA3"/>
+<path d="M91 111 Q95.5 117 100 111 Q104.5 117 109 111" fill="none" stroke="#4A5A54" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="64" y1="170" x2="76" y2="170" stroke="#F5BE86" stroke-width="6" stroke-linecap="round"/>
+<path d="M88 138 V128 Q88 115 100 115 Q112 115 112 128 V138" fill="none" stroke="#4A5A54" stroke-width="5" stroke-linecap="round"/>
+<rect x="78" y="136" width="44" height="36" rx="9" fill="#D9E7F5" stroke="#4A5A54" stroke-width="4"/>
+<circle cx="100" cy="150" r="4.5" fill="#4A5A54"/>
+<rect x="98.3" y="152" width="3.4" height="10" rx="1.7" fill="#4A5A54"/>
+<ellipse cx="78" cy="160" rx="10" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<ellipse cx="122" cy="160" rx="10" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+</svg>

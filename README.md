@@ -2,7 +2,7 @@
 
 Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** dalam satu timeline. Nama "Nyawtat" dari *nyaw* (suara kucing) + *catat*. Offline-first: semua data tersimpan di HP, lalu disinkronkan ke cloud kalau login.
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.9.0**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.9.2**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>

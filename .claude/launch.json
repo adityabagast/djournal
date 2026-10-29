@@ -6,6 +6,12 @@
       "runtimeExecutable": "python",
       "runtimeArgs": ["-m", "http.server", "8080", "--bind", "127.0.0.1", "--directory", "app/build/web"],
       "port": 8080
+    },
+    {
+      "name": "docs-site",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8090", "--bind", "127.0.0.1", "--directory", "docs"],
+      "port": 8090
     }
   ]
 }

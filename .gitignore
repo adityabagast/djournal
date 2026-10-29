@@ -8,3 +8,7 @@
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Hasil build rilis (APK/AAB) — unggah ke GitHub Releases, jangan di-commit
+dist/
+/build/

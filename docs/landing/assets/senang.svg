@@ -1,0 +1,24 @@
+<svg width="200" height="220" viewBox="0 0 200 220" xmlns="http://www.w3.org/2000/svg">
+<path d="M156 174 Q194 172 189 138 Q187 124 175 130" fill="none" stroke="#4A5A54" stroke-width="15" stroke-linecap="round"/>
+<path d="M156 174 Q194 172 189 138 Q187 124 175 130" fill="none" stroke="#FFF9F0" stroke-width="7" stroke-linecap="round"/>
+<ellipse cx="78" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<ellipse cx="122" cy="193" rx="15" ry="9" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<path d="M46 80 L54 26 Q57 17 65 23 L88 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4" stroke-linejoin="round"/>
+<path d="M154 80 L146 26 Q143 17 135 23 L112 56 Z" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4" stroke-linejoin="round"/>
+<path d="M58 52 L61 34 L76 50 Z" fill="#F8C8CC"/>
+<path d="M142 52 L139 34 L124 50 Z" fill="#F8C8CC"/>
+<rect x="40" y="50" width="120" height="140" rx="28" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<path d="M67 98 Q76 85 85 98" fill="none" stroke="#3D4B46" stroke-width="5" stroke-linecap="round"/>
+<path d="M115 98 Q124 85 133 98" fill="none" stroke="#3D4B46" stroke-width="5" stroke-linecap="round"/>
+<ellipse cx="62" cy="110" rx="10" ry="6" fill="#F7B5B9"/><ellipse cx="138" cy="110" rx="10" ry="6" fill="#F7B5B9"/>
+<path d="M95.5 102 Q100 98.5 104.5 102 L100 106.5 Z" fill="#F29CA3"/>
+<path d="M90 110 Q100 126 110 110 Z" fill="#F29CA3" stroke="#4A5A54" stroke-width="3" stroke-linejoin="round"/>
+<line x1="64" y1="140" x2="136" y2="140" stroke="#8EC5AB" stroke-width="6" stroke-linecap="round"/>
+<line x1="64" y1="155" x2="136" y2="155" stroke="#8EC5AB" stroke-width="6" stroke-linecap="round"/>
+<line x1="64" y1="170" x2="108" y2="170" stroke="#F5BE86" stroke-width="6" stroke-linecap="round"/>
+<ellipse cx="27" cy="84" rx="12" ry="13" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<ellipse cx="173" cy="84" rx="12" ry="13" fill="#FFF9F0" stroke="#4A5A54" stroke-width="4"/>
+<path d="M22 35 Q22 44 31 44 Q22 44 22 53 Q22 44 13 44 Q22 44 22 35 Z" fill="#F5BE86"/>
+<path d="M180 32 Q180 40 188 40 Q180 40 180 48 Q180 40 172 40 Q180 40 180 32 Z" fill="#8EC5AB"/>
+<path d="M150 9 Q150 14 155 14 Q150 14 150 19 Q150 14 145 14 Q150 14 150 9 Z" fill="#F7B5B9"/>
+</svg>
