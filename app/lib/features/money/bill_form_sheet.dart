@@ -65,6 +65,12 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
     final wallets = ref.watch(walletsProvider).value ?? const [];
     final activeWallets = wallets.where((w) => !w.isArchived).toList();
 
+    // Dompet lama bisa sudah diarsip/dihapus; dropdown akan crash kalau
+    // nilainya tidak ada di daftar pilihan.
+    if (_selectedWalletId != null &&
+        !activeWallets.any((w) => w.id == _selectedWalletId)) {
+      _selectedWalletId = null;
+    }
     if (_selectedWalletId == null && activeWallets.isNotEmpty) {
       _selectedWalletId = activeWallets.first.id;
     }
@@ -184,11 +190,15 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
   }
 
   Future<void> _pickDate() async {
+    // Tagihan yang sudah lama lewat tempo bisa lebih tua dari batas 30 hari;
+    // showDatePicker menolak initialDate sebelum firstDate.
+    final minDate = DateTime.now().subtract(const Duration(days: 30));
+    final maxDate = DateTime.now().add(const Duration(days: 365 * 2));
     final picked = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime.now().subtract(const Duration(days: 30)),
-      lastDate: DateTime.now().add(const Duration(days: 365 * 2)),
+      firstDate: _selectedDate.isBefore(minDate) ? _selectedDate : minDate,
+      lastDate: _selectedDate.isAfter(maxDate) ? _selectedDate : maxDate,
     );
     if (picked != null) {
       setState(() => _selectedDate = picked);

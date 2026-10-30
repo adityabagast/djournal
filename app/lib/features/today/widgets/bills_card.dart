@@ -19,6 +19,7 @@ class BillsCard extends ConsumerWidget {
     final t = Theme.of(context).textTheme;
     final bills = ref.watch(unpaidBillsProvider).value ?? const [];
     final snap = ref.watch(moneySnapshotProvider).value;
+    final hide = ref.watch(hideAmountsProvider).value ?? false;
 
     return AppCard(
       child: Column(
@@ -69,7 +70,7 @@ class BillsCard extends ConsumerWidget {
           else
             for (var i = 0; i < bills.length; i++) ...[
               if (i > 0) Divider(color: context.colors.divider, height: 16),
-              _buildBillRow(context, ref, bills[i], snap),
+              _buildBillRow(context, ref, bills[i], snap, hide),
             ],
         ],
       ),
@@ -81,6 +82,7 @@ class BillsCard extends ConsumerWidget {
     WidgetRef ref,
     Bill bill,
     dynamic snap,
+    bool hide,
   ) {
     final t = Theme.of(context).textTheme;
     final due = DateTime.tryParse(bill.dueDate);
@@ -157,7 +159,7 @@ class BillsCard extends ConsumerWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  rupiah(bill.amount),
+                  rupiah(bill.amount, hide: hide),
                   style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
                 const SizedBox(height: 4),

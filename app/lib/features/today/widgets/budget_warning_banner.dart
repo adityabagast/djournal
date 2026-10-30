@@ -22,6 +22,7 @@ class BudgetWarningBanner extends ConsumerWidget {
     final t = Theme.of(context).textTheme;
     final globalBudget = ref.watch(globalBudgetProvider);
     final unpaidBills = ref.watch(unpaidBillsProvider).value ?? const [];
+    final hide = ref.watch(hideAmountsProvider).value ?? false;
 
     // 1. Cek peringatan tagihan jatuh tempo (H-2 atau lewat tempo)
     final todayStr = toLocalDate(now);
@@ -34,6 +35,12 @@ class BudgetWarningBanner extends ConsumerWidget {
 
     if (urgentBills.isNotEmpty) {
       final bill = urgentBills.first;
+      final overdue = bill.dueDate.compareTo(todayStr) < 0;
+      final when = overdue
+          ? 'sudah lewat jatuh tempo'
+          : bill.dueDate == todayStr
+              ? 'jatuh tempo HARI INI'
+              : 'segera jatuh tempo';
       return Container(
         margin: const EdgeInsets.only(bottom: 14),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -52,7 +59,7 @@ class BudgetWarningBanner extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Tagihan Segera Jatuh Tempo!',
+                    overdue ? 'Tagihan Lewat Jatuh Tempo!' : 'Tagihan Segera Jatuh Tempo!',
                     style: t.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w700,
                       color: context.colors.expense,
@@ -60,7 +67,7 @@ class BudgetWarningBanner extends ConsumerWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    '${bill.title} (${rupiah(bill.amount)}) jatuh tempo ${bill.dueDate == todayStr ? 'HARI INI' : 'segera'}.',
+                    '${bill.title} (${rupiah(bill.amount, hide: hide)}) $when.',
                     style: t.bodySmall?.copyWith(
                       color: context.colors.expense,
                     ),
@@ -105,7 +112,7 @@ class BudgetWarningBanner extends ConsumerWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Pengeluaran hari ini sudah melebihi batas jatah sebesar ${rupiah(todaySpent - dailyLimit)}.',
+                    'Pengeluaran hari ini sudah melebihi batas jatah sebesar ${rupiah(todaySpent - dailyLimit, hide: hide)}.',
                     style: t.bodySmall?.copyWith(color: context.colors.expense),
                   ),
                 ],
@@ -141,7 +148,7 @@ class BudgetWarningBanner extends ConsumerWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    'Sisa jatah belanja hari ini tinggal ${rupiah(dailyLimit - todaySpent)}.',
+                    'Sisa jatah belanja hari ini tinggal ${rupiah(dailyLimit - todaySpent, hide: hide)}.',
                     style: t.bodySmall?.copyWith(color: context.colors.warning),
                   ),
                 ],
