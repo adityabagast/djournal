@@ -143,6 +143,11 @@ class Bills extends Table with SyncColumns {
   /// Tanggal jatuh tempo (YYYY-MM-DD).
   TextColumn get dueDate => text()();
 
+  /// Tanggal (1–31) yang dipilih user untuk tagihan berulang. [dueDate]
+  /// bisa dipotong ke akhir bulan (31 → 28 Feb); kolom ini menjaga supaya
+  /// bulan berikutnya kembali ke tanggal 31. NULL = pakai hari [dueDate].
+  IntColumn get dueDay => integer().nullable()();
+
   /// once | monthly | yearly
   TextColumn get repeatInterval => text().nullable()();
 

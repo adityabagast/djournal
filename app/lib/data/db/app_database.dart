@@ -26,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -57,6 +57,15 @@ class AppDatabase extends _$AppDatabase {
         );
         await customStatement(
           'CREATE INDEX IF NOT EXISTS idx_attachment_tx ON attachments (transaction_id)',
+        );
+      }
+      if (from < 6) {
+        // Dari < v4 tabel bills baru dibuat di atas, sudah lengkap.
+        if (from >= 4) await m.addColumn(bills, bills.dueDay);
+        // Tanggal asli tagihan lama tidak diketahui; pakai hari jatuh tempo
+        // saat ini sebagai patokan terbaik.
+        await customStatement(
+          'UPDATE bills SET due_day = CAST(substr(due_date, 9, 2) AS INTEGER)',
         );
       }
     },

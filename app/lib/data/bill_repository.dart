@@ -48,6 +48,7 @@ class BillRepository {
         title: title,
         amount: amount,
         dueDate: dueDate,
+        dueDay: Value(_dayOf(dueDate)),
         repeatInterval: Value(repeatInterval),
         walletId: Value(walletId),
         categoryId: Value(categoryId),
@@ -76,6 +77,8 @@ class BillRepository {
         title: title != null ? Value(title) : const Value.absent(),
         amount: amount != null ? Value(amount) : const Value.absent(),
         dueDate: dueDate != null ? Value(dueDate) : const Value.absent(),
+        // Tanggal diubah user = patokan baru untuk bulan-bulan berikutnya.
+        dueDay: dueDate != null ? Value(_dayOf(dueDate)) : const Value.absent(),
         repeatInterval: repeatInterval != null ? Value(repeatInterval) : const Value.absent(),
         walletId: walletId != null ? Value(walletId) : const Value.absent(),
         categoryId: categoryId != null ? Value(categoryId) : const Value.absent(),
@@ -129,7 +132,11 @@ class BillRepository {
         ),
       );
 
-      final next = nextDueDate(bill.dueDate, bill.repeatInterval);
+      final next = nextDueDate(
+        bill.dueDate,
+        bill.repeatInterval,
+        anchorDay: bill.dueDay,
+      );
       await (_db.update(_db.bills)..where((b) => b.id.equals(billId))).write(
         BillsCompanion(
           updatedAt: Value(now),
@@ -148,7 +155,13 @@ class BillRepository {
   ///
   /// Tanggal yang tidak ada di bulan tujuan dipotong ke akhir bulan:
   /// 31 Jan → 28/29 Feb, 29 Feb (tahunan) → 28 Feb tahun berikutnya.
-  static String? nextDueDate(String dueDate, String? repeatInterval) {
+  /// [anchorDay] = tanggal asli pilihan user, supaya setelah dipotong
+  /// bulan berikutnya kembali lagi (31 Jan → 28 Feb → 31 Mar).
+  static String? nextDueDate(
+    String dueDate,
+    String? repeatInterval, {
+    int? anchorDay,
+  }) {
     final months = switch (repeatInterval) {
       'monthly' => 1,
       'yearly' => 12,
@@ -159,9 +172,12 @@ class BillRepository {
     if (due == null) return null;
     final firstOfTarget = DateTime(due.year, due.month + months, 1);
     final lastDay = DateTime(firstOfTarget.year, firstOfTarget.month + 1, 0).day;
-    final day = due.day > lastDay ? lastDay : due.day;
+    final wanted = anchorDay ?? due.day;
+    final day = wanted > lastDay ? lastDay : wanted;
     return toLocalDate(DateTime(firstOfTarget.year, firstOfTarget.month, day));
   }
+
+  static int? _dayOf(String ymd) => DateTime.tryParse(ymd)?.day;
 
   Future<void> deleteBill(String id) async {
     final now = DateTime.now().toUtc();

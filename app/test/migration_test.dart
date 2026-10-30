@@ -14,7 +14,7 @@ void main() {
 
   setUpAll(() => verifier = SchemaVerifier(GeneratedHelper()));
 
-  const latest = 5;
+  const latest = 6;
 
   for (var from = 1; from < latest; from++) {
     test('upgrade v$from -> v$latest menghasilkan schema yang sama', () async {
@@ -65,6 +65,21 @@ void main() {
 
     expect(await db.select(db.wishlists).get(), isEmpty);
     expect(await db.select(db.bills).get(), isEmpty);
+    await db.close();
+  });
+
+  test('upgrade v5 -> v6 mengisi due_day dari tanggal jatuh tempo', () async {
+    final schema = await verifier.schemaAt(5);
+    const ts = 1791504000;
+    schema.rawDatabase.execute(
+      'INSERT INTO bills (id, created_at, updated_at, title, amount, due_date, repeat_interval) '
+      "VALUES ('b1', $ts, $ts, 'Listrik', 250000, '2026-11-07', 'monthly')",
+    );
+
+    final db = AppDatabase(schema.newConnection());
+    await verifier.migrateAndValidate(db, latest);
+    final bill = await db.select(db.bills).getSingle();
+    expect(bill.dueDay, 7);
     await db.close();
   });
 }

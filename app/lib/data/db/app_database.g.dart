@@ -4370,6 +4370,15 @@ class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
     type: DriftSqlType.string,
     requiredDuringInsert: true,
   );
+  static const VerificationMeta _dueDayMeta = const VerificationMeta('dueDay');
+  @override
+  late final GeneratedColumn<int> dueDay = GeneratedColumn<int>(
+    'due_day',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _repeatIntervalMeta = const VerificationMeta(
     'repeatInterval',
   );
@@ -4441,6 +4450,7 @@ class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
     title,
     amount,
     dueDate,
+    dueDay,
     repeatInterval,
     walletId,
     categoryId,
@@ -4493,6 +4503,12 @@ class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
       );
     } else if (isInserting) {
       context.missing(_dueDateMeta);
+    }
+    if (data.containsKey('due_day')) {
+      context.handle(
+        _dueDayMeta,
+        dueDay.isAcceptableOrUnknown(data['due_day']!, _dueDayMeta),
+      );
     }
     if (data.containsKey('repeat_interval')) {
       context.handle(
@@ -4568,6 +4584,10 @@ class $BillsTable extends Bills with TableInfo<$BillsTable, Bill> {
         DriftSqlType.string,
         data['${effectivePrefix}due_date'],
       )!,
+      dueDay: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}due_day'],
+      ),
       repeatInterval: attachedDatabase.typeMapping.read(
         DriftSqlType.string,
         data['${effectivePrefix}repeat_interval'],
@@ -4626,6 +4646,11 @@ class Bill extends DataClass implements Insertable<Bill> {
   /// Tanggal jatuh tempo (YYYY-MM-DD).
   final String dueDate;
 
+  /// Tanggal (1–31) yang dipilih user untuk tagihan berulang. [dueDate]
+  /// bisa dipotong ke akhir bulan (31 → 28 Feb); kolom ini menjaga supaya
+  /// bulan berikutnya kembali ke tanggal 31. NULL = pakai hari [dueDate].
+  final int? dueDay;
+
   /// once | monthly | yearly
   final String? repeatInterval;
 
@@ -4645,6 +4670,7 @@ class Bill extends DataClass implements Insertable<Bill> {
     required this.title,
     required this.amount,
     required this.dueDate,
+    this.dueDay,
     this.repeatInterval,
     this.walletId,
     this.categoryId,
@@ -4674,6 +4700,9 @@ class Bill extends DataClass implements Insertable<Bill> {
     map['title'] = Variable<String>(title);
     map['amount'] = Variable<int>(amount);
     map['due_date'] = Variable<String>(dueDate);
+    if (!nullToAbsent || dueDay != null) {
+      map['due_day'] = Variable<int>(dueDay);
+    }
     if (!nullToAbsent || repeatInterval != null) {
       map['repeat_interval'] = Variable<String>(repeatInterval);
     }
@@ -4704,6 +4733,9 @@ class Bill extends DataClass implements Insertable<Bill> {
       title: Value(title),
       amount: Value(amount),
       dueDate: Value(dueDate),
+      dueDay: dueDay == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDay),
       repeatInterval: repeatInterval == null && nullToAbsent
           ? const Value.absent()
           : Value(repeatInterval),
@@ -4734,6 +4766,7 @@ class Bill extends DataClass implements Insertable<Bill> {
       title: serializer.fromJson<String>(json['title']),
       amount: serializer.fromJson<int>(json['amount']),
       dueDate: serializer.fromJson<String>(json['dueDate']),
+      dueDay: serializer.fromJson<int?>(json['dueDay']),
       repeatInterval: serializer.fromJson<String?>(json['repeatInterval']),
       walletId: serializer.fromJson<String?>(json['walletId']),
       categoryId: serializer.fromJson<String?>(json['categoryId']),
@@ -4753,6 +4786,7 @@ class Bill extends DataClass implements Insertable<Bill> {
       'title': serializer.toJson<String>(title),
       'amount': serializer.toJson<int>(amount),
       'dueDate': serializer.toJson<String>(dueDate),
+      'dueDay': serializer.toJson<int?>(dueDay),
       'repeatInterval': serializer.toJson<String?>(repeatInterval),
       'walletId': serializer.toJson<String?>(walletId),
       'categoryId': serializer.toJson<String?>(categoryId),
@@ -4770,6 +4804,7 @@ class Bill extends DataClass implements Insertable<Bill> {
     String? title,
     int? amount,
     String? dueDate,
+    Value<int?> dueDay = const Value.absent(),
     Value<String?> repeatInterval = const Value.absent(),
     Value<String?> walletId = const Value.absent(),
     Value<String?> categoryId = const Value.absent(),
@@ -4784,6 +4819,7 @@ class Bill extends DataClass implements Insertable<Bill> {
     title: title ?? this.title,
     amount: amount ?? this.amount,
     dueDate: dueDate ?? this.dueDate,
+    dueDay: dueDay.present ? dueDay.value : this.dueDay,
     repeatInterval: repeatInterval.present
         ? repeatInterval.value
         : this.repeatInterval,
@@ -4802,6 +4838,7 @@ class Bill extends DataClass implements Insertable<Bill> {
       title: data.title.present ? data.title.value : this.title,
       amount: data.amount.present ? data.amount.value : this.amount,
       dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+      dueDay: data.dueDay.present ? data.dueDay.value : this.dueDay,
       repeatInterval: data.repeatInterval.present
           ? data.repeatInterval.value
           : this.repeatInterval,
@@ -4825,6 +4862,7 @@ class Bill extends DataClass implements Insertable<Bill> {
           ..write('title: $title, ')
           ..write('amount: $amount, ')
           ..write('dueDate: $dueDate, ')
+          ..write('dueDay: $dueDay, ')
           ..write('repeatInterval: $repeatInterval, ')
           ..write('walletId: $walletId, ')
           ..write('categoryId: $categoryId, ')
@@ -4844,6 +4882,7 @@ class Bill extends DataClass implements Insertable<Bill> {
     title,
     amount,
     dueDate,
+    dueDay,
     repeatInterval,
     walletId,
     categoryId,
@@ -4862,6 +4901,7 @@ class Bill extends DataClass implements Insertable<Bill> {
           other.title == this.title &&
           other.amount == this.amount &&
           other.dueDate == this.dueDate &&
+          other.dueDay == this.dueDay &&
           other.repeatInterval == this.repeatInterval &&
           other.walletId == this.walletId &&
           other.categoryId == this.categoryId &&
@@ -4878,6 +4918,7 @@ class BillsCompanion extends UpdateCompanion<Bill> {
   final Value<String> title;
   final Value<int> amount;
   final Value<String> dueDate;
+  final Value<int?> dueDay;
   final Value<String?> repeatInterval;
   final Value<String?> walletId;
   final Value<String?> categoryId;
@@ -4893,6 +4934,7 @@ class BillsCompanion extends UpdateCompanion<Bill> {
     this.title = const Value.absent(),
     this.amount = const Value.absent(),
     this.dueDate = const Value.absent(),
+    this.dueDay = const Value.absent(),
     this.repeatInterval = const Value.absent(),
     this.walletId = const Value.absent(),
     this.categoryId = const Value.absent(),
@@ -4909,6 +4951,7 @@ class BillsCompanion extends UpdateCompanion<Bill> {
     required String title,
     required int amount,
     required String dueDate,
+    this.dueDay = const Value.absent(),
     this.repeatInterval = const Value.absent(),
     this.walletId = const Value.absent(),
     this.categoryId = const Value.absent(),
@@ -4930,6 +4973,7 @@ class BillsCompanion extends UpdateCompanion<Bill> {
     Expression<String>? title,
     Expression<int>? amount,
     Expression<String>? dueDate,
+    Expression<int>? dueDay,
     Expression<String>? repeatInterval,
     Expression<String>? walletId,
     Expression<String>? categoryId,
@@ -4946,6 +4990,7 @@ class BillsCompanion extends UpdateCompanion<Bill> {
       if (title != null) 'title': title,
       if (amount != null) 'amount': amount,
       if (dueDate != null) 'due_date': dueDate,
+      if (dueDay != null) 'due_day': dueDay,
       if (repeatInterval != null) 'repeat_interval': repeatInterval,
       if (walletId != null) 'wallet_id': walletId,
       if (categoryId != null) 'category_id': categoryId,
@@ -4964,6 +5009,7 @@ class BillsCompanion extends UpdateCompanion<Bill> {
     Value<String>? title,
     Value<int>? amount,
     Value<String>? dueDate,
+    Value<int?>? dueDay,
     Value<String?>? repeatInterval,
     Value<String?>? walletId,
     Value<String?>? categoryId,
@@ -4980,6 +5026,7 @@ class BillsCompanion extends UpdateCompanion<Bill> {
       title: title ?? this.title,
       amount: amount ?? this.amount,
       dueDate: dueDate ?? this.dueDate,
+      dueDay: dueDay ?? this.dueDay,
       repeatInterval: repeatInterval ?? this.repeatInterval,
       walletId: walletId ?? this.walletId,
       categoryId: categoryId ?? this.categoryId,
@@ -5022,6 +5069,9 @@ class BillsCompanion extends UpdateCompanion<Bill> {
     if (dueDate.present) {
       map['due_date'] = Variable<String>(dueDate.value);
     }
+    if (dueDay.present) {
+      map['due_day'] = Variable<int>(dueDay.value);
+    }
     if (repeatInterval.present) {
       map['repeat_interval'] = Variable<String>(repeatInterval.value);
     }
@@ -5056,6 +5106,7 @@ class BillsCompanion extends UpdateCompanion<Bill> {
           ..write('title: $title, ')
           ..write('amount: $amount, ')
           ..write('dueDate: $dueDate, ')
+          ..write('dueDay: $dueDay, ')
           ..write('repeatInterval: $repeatInterval, ')
           ..write('walletId: $walletId, ')
           ..write('categoryId: $categoryId, ')
@@ -9549,6 +9600,7 @@ typedef $$BillsTableCreateCompanionBuilder = BillsCompanion Function({
   required String title,
   required int amount,
   required String dueDate,
+  Value<int?> dueDay,
   Value<String?> repeatInterval,
   Value<String?> walletId,
   Value<String?> categoryId,
@@ -9565,6 +9617,7 @@ typedef $$BillsTableUpdateCompanionBuilder = BillsCompanion Function({
   Value<String> title,
   Value<int> amount,
   Value<String> dueDate,
+  Value<int?> dueDay,
   Value<String?> repeatInterval,
   Value<String?> walletId,
   Value<String?> categoryId,
@@ -9660,6 +9713,11 @@ class $$BillsTableFilterComposer extends Composer<_$AppDatabase, $BillsTable> {
 
   ColumnFilters<String> get dueDate => $composableBuilder(
     column: $table.dueDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get dueDay => $composableBuilder(
+    column: $table.dueDay,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -9775,6 +9833,11 @@ class $$BillsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<int> get dueDay => $composableBuilder(
+    column: $table.dueDay,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<String> get repeatInterval => $composableBuilder(
     column: $table.repeatInterval,
     builder: (column) => ColumnOrderings(column),
@@ -9870,6 +9933,9 @@ class $$BillsTableAnnotationComposer
   GeneratedColumn<String> get dueDate =>
       $composableBuilder(column: $table.dueDate, builder: (column) => column);
 
+  GeneratedColumn<int> get dueDay =>
+      $composableBuilder(column: $table.dueDay, builder: (column) => column);
+
   GeneratedColumn<String> get repeatInterval => $composableBuilder(
     column: $table.repeatInterval,
     builder: (column) => column,
@@ -9964,6 +10030,7 @@ class $$BillsTableTableManager
                 Value<String> title = const Value.absent(),
                 Value<int> amount = const Value.absent(),
                 Value<String> dueDate = const Value.absent(),
+                Value<int?> dueDay = const Value.absent(),
                 Value<String?> repeatInterval = const Value.absent(),
                 Value<String?> walletId = const Value.absent(),
                 Value<String?> categoryId = const Value.absent(),
@@ -9979,6 +10046,7 @@ class $$BillsTableTableManager
                 title: title,
                 amount: amount,
                 dueDate: dueDate,
+                dueDay: dueDay,
                 repeatInterval: repeatInterval,
                 walletId: walletId,
                 categoryId: categoryId,
@@ -9996,6 +10064,7 @@ class $$BillsTableTableManager
                 required String title,
                 required int amount,
                 required String dueDate,
+                Value<int?> dueDay = const Value.absent(),
                 Value<String?> repeatInterval = const Value.absent(),
                 Value<String?> walletId = const Value.absent(),
                 Value<String?> categoryId = const Value.absent(),
@@ -10011,6 +10080,7 @@ class $$BillsTableTableManager
                 title: title,
                 amount: amount,
                 dueDate: dueDate,
+                dueDay: dueDay,
                 repeatInterval: repeatInterval,
                 walletId: walletId,
                 categoryId: categoryId,

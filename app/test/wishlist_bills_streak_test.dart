@@ -242,6 +242,21 @@ void main() {
       expect(BillRepository.nextDueDate('bukan-tanggal', 'monthly'), isNull);
     });
 
+    test('nextDueDate: tanggal asli dipakai lagi setelah dipotong', () {
+      expect(
+        BillRepository.nextDueDate('2027-02-28', 'monthly', anchorDay: 31),
+        '2027-03-31',
+      );
+      expect(
+        BillRepository.nextDueDate('2027-03-31', 'monthly', anchorDay: 30),
+        '2027-04-30',
+      );
+      expect(
+        BillRepository.nextDueDate('2029-02-28', 'yearly', anchorDay: 29),
+        '2030-02-28',
+      );
+    });
+
     late AppDatabase db;
     late BillRepository billRepo;
 
@@ -253,6 +268,26 @@ void main() {
 
     tearDown(() async {
       await db.close();
+    });
+
+    test('tagihan tanggal 31 tidak bergeser permanen ke tanggal 28', () async {
+      final walletId = (await db.select(db.wallets).get()).first.id;
+      final id = await billRepo.createBill(
+        title: 'Cicilan',
+        amount: 1000000,
+        dueDate: '2027-01-31',
+        repeatInterval: 'monthly',
+        walletId: walletId,
+      );
+      expect((await billRepo.getBill(id))!.dueDay, 31);
+
+      expect(await billRepo.payBill(billId: id, walletId: walletId), '2027-02-28');
+      expect(await billRepo.payBill(billId: id, walletId: walletId), '2027-03-31');
+      expect(await billRepo.payBill(billId: id, walletId: walletId), '2027-04-30');
+
+      // Ubah jatuh tempo = patokan tanggal baru.
+      await billRepo.updateBill(id: id, dueDate: '2027-05-15');
+      expect((await billRepo.getBill(id))!.dueDay, 15);
     });
 
     test('bayar tagihan bulanan menjadwalkan jatuh tempo berikutnya', () async {
