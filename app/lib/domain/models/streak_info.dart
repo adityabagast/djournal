@@ -26,12 +26,13 @@ class StreakInfo {
     }
 
     final todayStr = _formatDate(now);
-    final yesterdayStr = _formatDate(now.subtract(const Duration(days: 1)));
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterdayStr = _formatDate(_prevDay(today));
     final isTodayActive = activeDates.contains(todayStr);
 
     // Hitung current streak
     var streak = 0;
-    var checkDate = isTodayActive ? now : now.subtract(const Duration(days: 1));
+    var checkDate = isTodayActive ? today : _prevDay(today);
 
     // Jika kemarin dan hari ini tidak ada aktivitas, streak = 0
     if (!isTodayActive && !activeDates.contains(yesterdayStr)) {
@@ -39,7 +40,7 @@ class StreakInfo {
     } else {
       while (activeDates.contains(_formatDate(checkDate))) {
         streak++;
-        checkDate = checkDate.subtract(const Duration(days: 1));
+        checkDate = _prevDay(checkDate);
       }
     }
 
@@ -50,7 +51,8 @@ class StreakInfo {
     DateTime? prevDate;
 
     for (final dateStr in sortedDates) {
-      final parsed = DateTime.tryParse(dateStr);
+      // UTC supaya selisih hari selalu kelipatan 24 jam (tanpa efek DST).
+      final parsed = DateTime.tryParse('${dateStr}T00:00:00Z');
       if (parsed == null) continue;
 
       if (prevDate == null) {
@@ -74,6 +76,10 @@ class StreakInfo {
       activeDates: activeDates,
     );
   }
+
+  /// Hari sebelumnya lewat komponen tanggal; `subtract(Duration(days: 1))`
+  /// bisa meleset di hari pergantian jam musim panas.
+  static DateTime _prevDay(DateTime d) => DateTime(d.year, d.month, d.day - 1);
 
   static String _formatDate(DateTime d) {
     final y = d.year.toString().padLeft(4, '0');

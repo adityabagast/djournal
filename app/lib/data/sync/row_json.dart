@@ -154,3 +154,60 @@ JournalEntry entryFromJson(Map<String, dynamic> j, {bool dirty = false}) {
 List<String> _decodeTags(String json) =>
     (jsonDecode(json) as List).cast<String>();
 String _encodeTags(List<String> tags) => jsonEncode(tags);
+
+Map<String, dynamic> wishlistToJson(Wishlist w) => {
+  ..._base(w.id, w.createdAt, w.updatedAt, w.deletedAt),
+  'title': w.title,
+  'targetAmount': w.targetAmount,
+  'savedAmount': w.savedAmount,
+  'targetMonths': w.targetMonths,
+  'targetDate': w.targetDate,
+  'walletId': w.walletId,
+  'notes': w.notes,
+  'isFulfilled': w.isFulfilled,
+};
+
+Wishlist wishlistFromJson(Map<String, dynamic> j, {bool dirty = false}) =>
+    Wishlist(
+      id: j['id'] as String,
+      createdAt: _parseTs(j['createdAt']),
+      updatedAt: _parseTs(j['updatedAt']),
+      deletedAt: _parseTsOrNull(j['deletedAt']),
+      isDirty: dirty,
+      title: j['title'] as String,
+      targetAmount: (j['targetAmount'] as num).toInt(),
+      savedAmount: (j['savedAmount'] as num).toInt(),
+      targetMonths: (j['targetMonths'] as num).toInt(),
+      targetDate: j['targetDate'] as String?,
+      walletId: j['walletId'] as String?,
+      notes: j['notes'] as String?,
+      isFulfilled: j['isFulfilled'] as bool,
+    );
+
+Map<String, dynamic> billToJson(Bill b) => {
+  ..._base(b.id, b.createdAt, b.updatedAt, b.deletedAt),
+  'title': b.title,
+  'amount': b.amount,
+  'dueDate': b.dueDate,
+  'repeatInterval': b.repeatInterval,
+  'walletId': b.walletId,
+  'categoryId': b.categoryId,
+  'isPaid': b.isPaid,
+  'paidAt': b.paidAt == null ? null : _ts(b.paidAt!),
+};
+
+Bill billFromJson(Map<String, dynamic> j, {bool dirty = false}) => Bill(
+  id: j['id'] as String,
+  createdAt: _parseTs(j['createdAt']),
+  updatedAt: _parseTs(j['updatedAt']),
+  deletedAt: _parseTsOrNull(j['deletedAt']),
+  isDirty: dirty,
+  title: j['title'] as String,
+  amount: (j['amount'] as num).toInt(),
+  dueDate: j['dueDate'] as String,
+  repeatInterval: j['repeatInterval'] as String?,
+  walletId: j['walletId'] as String?,
+  categoryId: j['categoryId'] as String?,
+  isPaid: j['isPaid'] as bool,
+  paidAt: _parseTsOrNull(j['paidAt']),
+);

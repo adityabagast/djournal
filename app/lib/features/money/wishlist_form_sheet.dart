@@ -74,6 +74,12 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
     final wallets = ref.watch(walletsProvider).value ?? const [];
     final activeWallets = wallets.where((w) => !w.isArchived).toList();
 
+    // Dompet lama bisa sudah diarsip/dihapus; dropdown akan crash kalau
+    // nilainya tidak ada di daftar pilihan.
+    if (_selectedWalletId != null &&
+        !activeWallets.any((w) => w.id == _selectedWalletId)) {
+      _selectedWalletId = null;
+    }
     // Default ke dompet pertama jika belum dipilih
     if (_selectedWalletId == null && activeWallets.isNotEmpty) {
       _selectedWalletId = activeWallets.first.id;

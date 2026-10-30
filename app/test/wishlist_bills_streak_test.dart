@@ -1,5 +1,6 @@
 import 'package:djournal/data/bill_repository.dart';
 import 'package:djournal/data/db/app_database.dart';
+import 'package:djournal/data/money_repository.dart';
 import 'package:djournal/data/wishlist_repository.dart';
 import 'package:djournal/domain/models/global_budget.dart';
 import 'package:djournal/domain/models/streak_info.dart';
@@ -85,6 +86,15 @@ void main() {
       expect(streak.isTodayActive, false);
     });
 
+    test('rekor terpanjang melewati pergantian bulan dan tahun', () {
+      final info = StreakInfo.calculate(
+        activeDates: {'2025-12-30', '2025-12-31', '2026-01-01', '2026-01-02'},
+        now: DateTime(2026, 1, 2, 23, 59),
+      );
+      expect(info.currentStreak, 4);
+      expect(info.longestStreak, 4);
+    });
+
     test('streak putus jika kemarin dan hari ini tidak ada aktivitas', () {
       final now = DateTime(2026, 10, 21);
       final activeDates = {
@@ -157,6 +167,32 @@ void main() {
       wishlist = await wishlistRepo.getWishlist(id);
       expect(wishlist!.savedAmount, 8000000);
       expect(wishlist.isFulfilled, true);
+    });
+
+    test('setor ke wishlist yang dompetnya sudah diarsip tidak membuat transfer', () async {
+      final money = MoneyRepository(db);
+      await money.addWallet(name: 'Tabungan', type: 'bank', openingBalance: 0);
+      final wallets = await db.select(db.wallets).get();
+      final source = wallets.firstWhere((w) => w.name != 'Tabungan');
+      final savings = wallets.firstWhere((w) => w.name == 'Tabungan');
+
+      final id = await wishlistRepo.createWishlist(
+        title: 'Liburan',
+        targetAmount: 3000000,
+        targetMonths: 6,
+        walletId: savings.id,
+      );
+      await money.setWalletArchived(savings.id, true);
+
+      await wishlistRepo.deposit(
+        wishlistId: id,
+        amount: 500000,
+        sourceWalletId: source.id,
+      );
+
+      final txs = await db.select(db.transactions).get();
+      expect(txs.where((t) => t.type == 'transfer'), isEmpty);
+      expect((await wishlistRepo.getWishlist(id))!.savedAmount, 500000);
     });
 
     test('jadwalkan tagihan dan bayar tagihan otomatis mencatat transaksi pengeluaran', () async {
