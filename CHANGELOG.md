@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.10.0 — 2026-11-02
+
+**Baru**
+- **Subkategori**: tiap kategori bisa punya subkategori (satu tingkat), mis. Makan › Sarapan, Makan › Kopi & jajan. Tambah lewat **Kelola kategori** › ikon panah di kategori › **+ Subkategori**. Warna subkategori mengikuti induknya.
+- **Pemilih kategori minimalis** di form catat transaksi: chip kecil bertitik warna menggantikan kotak ikon besar. Pilih kategori utama, lalu subkategori muncul di bawahnya ("Semua Makan" = tanpa subkategori). Kategori terpilih tampil sebagai "Makan › Kopi".
+- Budget dan laporan tetap per kategori utama: pengeluaran subkategori dijumlahkan ke induknya. Riwayat transaksi, pencarian, dan ekspor Excel menampilkan nama lengkap "Induk › Sub".
+- Hapus kategori utama ikut menghapus subkategorinya (hanya kalau belum dipakai); gabung kategori utama memindahkan subkategorinya ke kategori tujuan.
+
+**Teknis**
+- Database lokal schema v6 (kolom `parent_id` di kategori). Backup JSON lama tetap bisa dipulihkan.
+- Migration Supabase `20261102000000_category_parent.sql`: sinkronisasi membawa `parentId`.
+
 ## 0.9.3 — 2026-10-29
 
 **Perbaikan**
