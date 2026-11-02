@@ -1473,4 +1473,36 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get unsupportedFileFormat =>
       'Unsupported file format. Please select a .json backup or a Money Manager file.';
+
+  @override
+  String get addSubcategory => 'Subcategory';
+
+  @override
+  String allOfCategory(String name) {
+    return 'All $name';
+  }
+
+  @override
+  String subcategoryCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count subcategories',
+      one: '1 subcategory',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String newSubcategory(String parent) {
+    return 'New subcategory in $parent';
+  }
+
+  @override
+  String get editSubcategory => 'Edit subcategory';
+
+  @override
+  String subcategoryColorNote(String parent) {
+    return 'Uses the color of $parent.';
+  }
 }

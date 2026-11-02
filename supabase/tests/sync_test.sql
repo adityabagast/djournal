@@ -130,4 +130,31 @@ begin
   end;
 end $$;
 
+-- 8. Subkategori: anak boleh datang sebelum induk, parentId ikut pull ------
+do $$
+declare p jsonb;
+begin
+  perform public.sync_push('{"categories":[{"id":"22222222-0000-0000-0000-000000000003","createdAt":"2026-10-08T06:00:00Z","updatedAt":"2026-10-08T06:00:00Z","deletedAt":null,"name":"Kopi","kind":"expense","color":"#9A3412","icon":null,"sortOrder":0,"systemKey":null,"isArchived":false,"parentId":"22222222-0000-0000-0000-000000000004"},{"id":"22222222-0000-0000-0000-000000000004","createdAt":"2026-10-08T06:00:00Z","updatedAt":"2026-10-08T06:00:00Z","deletedAt":null,"name":"Jajan","kind":"expense","color":"#9A3412","icon":null,"sortOrder":5,"systemKey":null,"isArchived":false}]}');
+  p := public.sync_pull(0);
+  perform pg_temp.assert_true(
+    (select c ->> 'parentId' from jsonb_array_elements(p -> 'categories') c
+      where c ->> 'id' = '22222222-0000-0000-0000-000000000003') = '22222222-0000-0000-0000-000000000004',
+    'parentId subkategori tersimpan');
+  perform pg_temp.assert_true(
+    (select c -> 'parentId' from jsonb_array_elements(p -> 'categories') c
+      where c ->> 'id' = '22222222-0000-0000-0000-000000000004') = 'null'::jsonb,
+    'kategori utama tanpa parentId');
+end $$;
+
+-- 9. Induk milik user lain ditolak ------------------------------------------
+select pg_temp.login('bbbbbbbb-0000-0000-0000-000000000002');
+do $$
+begin
+  begin
+    perform public.sync_push('{"categories":[{"id":"22222222-0000-0000-0000-000000000005","createdAt":"2026-10-08T06:00:00Z","updatedAt":"2026-10-08T06:00:00Z","deletedAt":null,"name":"Curang","kind":"expense","color":"#9A3412","icon":null,"sortOrder":0,"systemKey":null,"isArchived":false,"parentId":"22222222-0000-0000-0000-000000000004"}]}');
+    raise exception 'GAGAL: induk milik user lain diterima';
+  exception when sqlstate '22023' then null;
+  end;
+end $$;
+
 \echo 'SEMUA TES LULUS'

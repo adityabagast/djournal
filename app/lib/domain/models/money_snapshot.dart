@@ -13,10 +13,33 @@ class MoneySnapshot {
     this.budgets = const [],
   }) : wallets = wallets.where((w) => !w.isArchived).toList(),
        archivedWallets = wallets.where((w) => w.isArchived).toList(),
-       categories = categories.where((c) => !c.isArchived).toList(),
-       hiddenCategories = categories.where((c) => c.isArchived).toList(),
+       categories = _roots(categories).where((c) => !c.isArchived).toList(),
+       hiddenCategories = _roots(categories)
+           .where((c) => c.isArchived)
+           .toList(),
        walletById = {for (final w in wallets) w.id: w},
-       categoryById = {for (final c in categories) c.id: c};
+       categoryById = {for (final c in categories) c.id: c},
+       _children = _groupChildren(categories);
+
+  /// Kategori utama. Subkategori yang induknya sudah tidak ada ikut dianggap
+  /// kategori utama supaya transaksinya tetap terlihat.
+  static Iterable<Category> _roots(List<Category> all) {
+    final ids = {for (final c in all) c.id};
+    return all.where((c) => c.parentId == null || !ids.contains(c.parentId));
+  }
+
+  static Map<String, List<Category>> _groupChildren(List<Category> all) {
+    final ids = {for (final c in all) c.id};
+    final map = <String, List<Category>>{};
+    for (final c in all) {
+      if (c.parentId case final p? when ids.contains(p)) {
+        (map[p] ??= []).add(c);
+      }
+    }
+    return map;
+  }
+
+  final Map<String, List<Category>> _children;
 
   /// Dompet aktif: tampil di daftar, pilihan dompet, dan total saldo.
   final List<Wallet> wallets;
@@ -25,14 +48,33 @@ class MoneySnapshot {
   /// dan laporan.
   final List<Wallet> archivedWallets;
 
-  /// Kategori yang tampil di form catat transaksi, urut sesuai pilihan user.
+  /// Kategori utama yang tampil di form catat transaksi, urut sesuai pilihan
+  /// user. Subkategori ada di [childrenOf].
   final List<Category> categories;
 
-  /// Kategori yang disembunyikan dari form; transaksi lamanya tetap memakai
-  /// kategori ini, jadi tetap ada di laporan.
+  /// Kategori utama yang disembunyikan dari form; transaksi lamanya tetap
+  /// memakai kategori ini, jadi tetap ada di laporan.
   final List<Category> hiddenCategories;
 
+  /// Semua kategori utama (budget dan laporan dihitung per kategori utama).
   List<Category> get allCategories => [...categories, ...hiddenCategories];
+
+  /// Subkategori [parentId], urut sesuai pilihan user.
+  List<Category> childrenOf(String parentId, {bool includeHidden = false}) => [
+    for (final c in _children[parentId] ?? const <Category>[])
+      if (includeHidden || !c.isArchived) c,
+  ];
+
+  /// Induk kategori [c], atau null kalau [c] kategori utama.
+  Category? parentOf(Category c) =>
+      c.parentId == null ? null : categoryById[c.parentId];
+
+  /// Id kategori utama untuk [categoryId] (dirinya sendiri kalau sudah utama).
+  String rootIdOf(String categoryId) {
+    final c = categoryById[categoryId];
+    return c == null ? categoryId : (parentOf(c)?.id ?? c.id);
+  }
+
   final List<Budget> budgets;
 
   /// Terbaru dulu.
@@ -86,17 +128,25 @@ class MoneySnapshot {
       .where((c) => c.kind == 'expense')
       .fold(0, (sum, c) => sum + budgetFor(c.id, monthKey));
 
-  int spentIn(String categoryId, String monthKey) =>
-      inMonth(monthKey)
-          .where((t) => t.type == 'expense' && t.categoryId == categoryId)
-          .fold(0, (s, t) => s + t.amount);
+  /// Pengeluaran [categoryId] di bulan itu, termasuk subkategorinya.
+  int spentIn(String categoryId, String monthKey) => inMonth(monthKey)
+      .where(
+        (t) =>
+            t.type == 'expense' &&
+            t.categoryId != null &&
+            (t.categoryId == categoryId ||
+                categoryById[t.categoryId]?.parentId == categoryId),
+      )
+      .fold(0, (s, t) => s + t.amount);
 
-  /// Total pengeluaran per kategori, terbesar dulu.
+  /// Total pengeluaran per kategori utama (subkategori digabung ke
+  /// induknya), terbesar dulu.
   List<(Category, int)> expenseByCategory(String monthKey) {
     final totals = <String, int>{};
     for (final t in inMonth(monthKey)) {
       if (t.type != 'expense' || t.categoryId == null) continue;
-      totals[t.categoryId!] = (totals[t.categoryId!] ?? 0) + t.amount;
+      final id = rootIdOf(t.categoryId!);
+      totals[id] = (totals[id] ?? 0) + t.amount;
     }
     final rows = [
       for (final e in totals.entries)
@@ -106,4 +156,3 @@ class MoneySnapshot {
     return rows;
   }
 }
-

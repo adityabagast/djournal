@@ -49,6 +49,11 @@ class Categories extends Table with SyncColumns {
   /// diterjemahkan. NULL = kategori buatan user.
   TextColumn get systemKey => text().nullable()();
   BoolColumn get isArchived => boolean().withDefault(const Constant(false))();
+
+  /// Kategori induk; NULL = kategori utama. Maksimal satu tingkat.
+  /// Sengaja tanpa foreign key: saat pull/impor, anak bisa datang lebih dulu
+  /// daripada induknya.
+  TextColumn get parentId => text().nullable()();
 }
 
 @DataClassName('MoneyTx')
@@ -159,8 +164,7 @@ class Bills extends Table with SyncColumns {
 @TableIndex(name: 'idx_attachment_entry', columns: {#entryId})
 @TableIndex(name: 'idx_attachment_tx', columns: {#transactionId})
 class Attachments extends Table with SyncColumns {
-  TextColumn get entryId =>
-      text().nullable().references(JournalEntries, #id)();
+  TextColumn get entryId => text().nullable().references(JournalEntries, #id)();
   TextColumn get transactionId =>
       text().nullable().references(Transactions, #id)();
   TextColumn get localPath => text().nullable()();

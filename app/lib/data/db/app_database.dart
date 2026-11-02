@@ -26,7 +26,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 5;
+  int get schemaVersion => 6;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -58,6 +58,9 @@ class AppDatabase extends _$AppDatabase {
         await customStatement(
           'CREATE INDEX IF NOT EXISTS idx_attachment_tx ON attachments (transaction_id)',
         );
+      }
+      if (from < 6) {
+        await m.addColumn(categories, categories.parentId);
       }
     },
     beforeOpen: (details) async {

@@ -119,4 +119,92 @@ void main() {
     expect(snap.categoryById.containsKey(hadiah.id), isFalse);
     expect(snap.budgets.where((b) => b.categoryId == hadiah.id), isEmpty);
   });
+
+  test('subkategori: ikut induk di budget, laporan, warna, dan hapus', () async {
+    var snap = await snapshot();
+    final wallet = snap.wallets.single;
+    final food = snap.categories.firstWhere((c) => c.systemKey == 'food');
+    await repo.addCategory(
+      kind: 'expense',
+      name: 'Kopi',
+      color: food.color,
+      parentId: food.id,
+    );
+    await repo.addCategory(
+      kind: 'expense',
+      name: 'Sarapan',
+      color: food.color,
+      parentId: food.id,
+    );
+    snap = await snapshot();
+    // Subkategori tidak masuk daftar kategori utama.
+    expect(snap.categories.any((c) => c.name == 'Kopi'), isFalse);
+    final subs = snap.childrenOf(food.id);
+    expect(subs.map((c) => c.name), ['Kopi', 'Sarapan']);
+    expect(subs.map((c) => c.sortOrder), [0, 1]);
+    final kopi = subs.first;
+    expect(snap.rootIdOf(kopi.id), food.id);
+
+    await repo.setBudget(
+      categoryId: food.id,
+      startMonth: '2026-10',
+      amount: 100000,
+    );
+    await spend(wallet.id, kopi.id, 25000);
+    await spend(wallet.id, food.id, 30000);
+    snap = await snapshot();
+    expect(snap.spentIn(food.id, '2026-10'), 55000);
+    expect(snap.spentIn(kopi.id, '2026-10'), 25000);
+    expect(snap.expenseByCategory('2026-10').single, (food, 55000));
+
+    // Warna induk berubah, subkategori ikut.
+    await repo.updateCategory(id: food.id, color: '#0E7490', icon: null);
+    snap = await snapshot();
+    expect(snap.categoryById[kopi.id]!.color, '#0E7490');
+
+    // Disembunyikan: hilang dari pilihan, tetap terbaca untuk transaksi lama.
+    await repo.setCategoryHidden(kopi.id, true);
+    snap = await snapshot();
+    expect(snap.childrenOf(food.id).map((c) => c.name), ['Sarapan']);
+    expect(snap.childrenOf(food.id, includeHidden: true).length, 2);
+
+    // Hapus induk ikut menghapus subkategorinya.
+    await repo.addCategory(kind: 'expense', name: 'Hobi', color: '#4D7C0F');
+    snap = await snapshot();
+    final hobi = snap.categories.firstWhere((c) => c.name == 'Hobi');
+    await repo.addCategory(
+      kind: 'expense',
+      name: 'Kamera',
+      color: hobi.color,
+      parentId: hobi.id,
+    );
+    await repo.deleteCategory(hobi.id);
+    snap = await snapshot();
+    expect(snap.categoryById.values.any((c) => c.name == 'Kamera'), isFalse);
+  });
+
+  test('gabung kategori utama memindahkan subkategorinya', () async {
+    var snap = await snapshot();
+    final food = snap.categories.firstWhere((c) => c.systemKey == 'food');
+    final shop = snap.categories.firstWhere((c) => c.systemKey == 'shopping');
+    await repo.addCategory(
+      kind: 'expense',
+      name: 'Kopi',
+      color: food.color,
+      parentId: food.id,
+    );
+    snap = await snapshot();
+    final kopi = snap.childrenOf(food.id).single;
+
+    // Tidak boleh digabung ke subkategorinya sendiri.
+    expect(
+      () => repo.mergeCategory(fromId: food.id, toId: kopi.id),
+      throwsArgumentError,
+    );
+
+    await repo.mergeCategory(fromId: food.id, toId: shop.id);
+    snap = await snapshot();
+    final moved = snap.childrenOf(shop.id).single;
+    expect((moved.id, moved.color), (kopi.id, shop.color));
+  });
 }

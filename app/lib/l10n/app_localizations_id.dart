@@ -1455,4 +1455,30 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get unsupportedFileFormat =>
       'Format file tidak dikenali. Pilih file backup .json atau file Money Manager.';
+
+  @override
+  String get addSubcategory => 'Subkategori';
+
+  @override
+  String allOfCategory(String name) {
+    return 'Semua $name';
+  }
+
+  @override
+  String subcategoryCount(int count) {
+    return '$count subkategori';
+  }
+
+  @override
+  String newSubcategory(String parent) {
+    return 'Subkategori baru di $parent';
+  }
+
+  @override
+  String get editSubcategory => 'Ubah subkategori';
+
+  @override
+  String subcategoryColorNote(String parent) {
+    return 'Warna mengikuti kategori $parent.';
+  }
 }

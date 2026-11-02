@@ -201,18 +201,26 @@ class MoneyRepository {
     );
   }
 
+  /// [parentId] terisi = subkategori; urutannya dihitung di antara saudaranya.
   Future<void> addCategory({
     required String kind,
     required String name,
     required String color,
     String? icon,
+    String? parentId,
   }) async {
     final now = DateTime.now().toUtc();
     final maxOrder = _db.categories.sortOrder.max();
+    final cats = _db.categories;
     final row =
-        await (_db.selectOnly(_db.categories)
+        await (_db.selectOnly(cats)
               ..addColumns([maxOrder])
-              ..where(_db.categories.kind.equals(kind)))
+              ..where(
+                cats.kind.equals(kind) &
+                    (parentId == null
+                        ? cats.parentId.isNull()
+                        : cats.parentId.equals(parentId)),
+              ))
             .getSingle();
     await _db
         .into(_db.categories)
@@ -226,27 +234,40 @@ class MoneyRepository {
             color: color,
             icon: Value(icon),
             sortOrder: Value((row.read(maxOrder) ?? -1) + 1),
+            parentId: Value(parentId),
           ),
         );
   }
 
   /// [name] null = nama tidak diubah (kategori bawaan). [icon] null = tanpa
-  /// ikon (badge memakai huruf awal).
+  /// ikon (badge memakai huruf awal). Warna subkategori selalu ikut induknya.
   Future<void> updateCategory({
     required String id,
     String? name,
     required String color,
     required String? icon,
   }) async {
-    await (_db.update(_db.categories)..where((c) => c.id.equals(id))).write(
-      CategoriesCompanion(
-        name: name == null ? const Value.absent() : Value(name.trim()),
-        color: Value(color),
-        icon: Value(icon),
-        updatedAt: Value(DateTime.now().toUtc()),
-        isDirty: const Value(true),
-      ),
-    );
+    final now = DateTime.now().toUtc();
+    await _db.transaction(() async {
+      await (_db.update(_db.categories)..where((c) => c.id.equals(id))).write(
+        CategoriesCompanion(
+          name: name == null ? const Value.absent() : Value(name.trim()),
+          color: Value(color),
+          icon: Value(icon),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+      await (_db.update(_db.categories)
+            ..where((c) => c.parentId.equals(id) & c.color.equals(color).not()))
+          .write(
+            CategoriesCompanion(
+              color: Value(color),
+              updatedAt: Value(now),
+              isDirty: const Value(true),
+            ),
+          );
+    });
   }
 
   /// Sembunyikan kategori dari form catat transaksi; transaksi lamanya tetap.
@@ -279,19 +300,28 @@ class MoneyRepository {
   }
 
   /// Hapus kategori yang belum dipakai transaksi (budget-nya ikut dihapus).
+  /// Subkategorinya ikut terhapus; UI hanya mengizinkan ini kalau
+  /// subkategori itu juga belum dipakai.
   Future<void> deleteCategory(String id) async {
     final now = DateTime.now().toUtc();
     await _db.transaction(() async {
+      final childIds =
+          (await (_db.select(
+                    _db.categories,
+                  )..where((c) => c.parentId.equals(id) & c.deletedAt.isNull()))
+                  .get())
+              .map((c) => c.id);
+      final ids = [id, ...childIds];
       await (_db.update(
         _db.budgets,
-      )..where((b) => b.categoryId.equals(id) & b.deletedAt.isNull())).write(
+      )..where((b) => b.categoryId.isIn(ids) & b.deletedAt.isNull())).write(
         BudgetsCompanion(
           deletedAt: Value(now),
           updatedAt: Value(now),
           isDirty: const Value(true),
         ),
       );
-      await (_db.update(_db.categories)..where((c) => c.id.equals(id))).write(
+      await (_db.update(_db.categories)..where((c) => c.id.isIn(ids))).write(
         CategoriesCompanion(
           deletedAt: Value(now),
           updatedAt: Value(now),
@@ -303,13 +333,37 @@ class MoneyRepository {
 
   /// Pindahkan semua transaksi dan budget [fromId] ke [toId], lalu hapus
   /// [fromId]. Kalau [toId] sudah punya budget di bulan yang sama, budget
-  /// [toId] yang dipertahankan.
+  /// [toId] yang dipertahankan. Subkategori [fromId] pindah ke induk [toId]
+  /// (atau [toId] sendiri kalau ia kategori utama), dengan nama dan warna
+  /// tetap kecuali warna yang ikut induk baru.
   Future<void> mergeCategory({
     required String fromId,
     required String toId,
   }) async {
     final now = DateTime.now().toUtc();
     await _db.transaction(() async {
+      final target = await (_db.select(
+        _db.categories,
+      )..where((c) => c.id.equals(toId))).getSingle();
+      if (target.parentId == fromId) {
+        throw ArgumentError('Kategori tidak bisa digabung ke subkategorinya');
+      }
+      final newParentId = target.parentId ?? target.id;
+      final newParent = target.parentId == null
+          ? target
+          : await (_db.select(
+              _db.categories,
+            )..where((c) => c.id.equals(newParentId))).getSingle();
+      await (_db.update(
+        _db.categories,
+      )..where((c) => c.parentId.equals(fromId) & c.deletedAt.isNull())).write(
+        CategoriesCompanion(
+          parentId: Value(newParentId),
+          color: Value(newParent.color),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
       await (_db.update(
         _db.transactions,
       )..where((t) => t.categoryId.equals(fromId))).write(

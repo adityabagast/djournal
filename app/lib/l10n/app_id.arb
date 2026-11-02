@@ -499,5 +499,15 @@
   "selectBackupFileHint": "Mendukung .json (Nyawtat) atau .mmbak / .sqlite / .xlsx (Money Manager)",
   "autoBackupWifi": "Cadangkan Otomatis",
   "autoBackupWifiSub": "Saat terhubung ke jaringan Wi-Fi",
-  "unsupportedFileFormat": "Format file tidak dikenali. Pilih file backup .json atau file Money Manager."
+  "unsupportedFileFormat": "Format file tidak dikenali. Pilih file backup .json atau file Money Manager.",
+  "addSubcategory": "Subkategori",
+  "allOfCategory": "Semua {name}",
+  "@allOfCategory": { "placeholders": { "name": { "type": "String" } } },
+  "subcategoryCount": "{count} subkategori",
+  "@subcategoryCount": { "placeholders": { "count": { "type": "int" } } },
+  "newSubcategory": "Subkategori baru di {parent}",
+  "@newSubcategory": { "placeholders": { "parent": { "type": "String" } } },
+  "editSubcategory": "Ubah subkategori",
+  "subcategoryColorNote": "Warna mengikuti kategori {parent}.",
+  "@subcategoryColorNote": { "placeholders": { "parent": { "type": "String" } } }
 }

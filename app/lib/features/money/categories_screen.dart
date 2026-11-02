@@ -26,8 +26,15 @@ const categoryPalette = [
   '#4A4E4C', // abu-abu
 ];
 
-int _txCount(MoneySnapshot snap, String categoryId) =>
-    snap.transactions.where((t) => t.categoryId == categoryId).length;
+/// Jumlah transaksi kategori ini, termasuk subkategorinya.
+int _txCount(MoneySnapshot snap, String categoryId) => snap.transactions
+    .where(
+      (t) =>
+          t.categoryId != null &&
+          (t.categoryId == categoryId ||
+              snap.categoryById[t.categoryId]?.parentId == categoryId),
+    )
+    .length;
 
 /// Halaman "Kelola kategori": urutkan (tahan & geser), sembunyikan,
 /// gabungkan, hapus, dan tambah kategori. Dibuka dari Pengaturan › Data dan
@@ -50,6 +57,9 @@ class CategoriesScreen extends ConsumerStatefulWidget {
 class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
   late String _kind = widget.kind;
   bool _hiddenOpen = true;
+
+  /// Kategori utama yang daftar subkategorinya sedang dibuka.
+  final _expanded = <String>{};
 
   /// Urutan yang baru digeser, dipakai sampai database selesai menyimpan
   /// supaya daftar tidak "melompat balik" sesaat.
@@ -158,6 +168,10 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                             category: c,
                             snapshot: snap,
                             showDivider: i < active.length - 1,
+                            expanded: _expanded.contains(c.id),
+                            onToggle: () => setState(() {
+                              if (!_expanded.remove(c.id)) _expanded.add(c.id);
+                            }),
                           ),
                       ],
                     ),
@@ -311,19 +325,25 @@ class _CategoryRow extends StatelessWidget {
     required this.category,
     required this.snapshot,
     required this.showDivider,
+    required this.expanded,
+    required this.onToggle,
   });
 
   final int index;
   final Category category;
   final MoneySnapshot snapshot;
   final bool showDivider;
+  final bool expanded;
+  final VoidCallback onToggle;
 
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
     final budget = snapshot.budgetFor(category.id, toMonthKey(DateTime.now()));
+    final subs = snapshot.childrenOf(category.id, includeHidden: true);
     final meta = [
+      if (subs.isNotEmpty) l.subcategoryCount(subs.length),
       l.walletTxCount(_txCount(snapshot, category.id)),
       if (budget > 0) l.categoryBudgetMeta(rupiah(budget)),
     ].join(' · ');
@@ -336,89 +356,188 @@ class _CategoryRow extends StatelessWidget {
               ? Border(bottom: BorderSide(color: context.colors.divider))
               : null,
         ),
-        child: Row(
+        child: Column(
           children: [
-            ReorderableDragStartListener(
-              index: index,
-              child: SizedBox(
-                width: 40,
-                height: 60,
-                child: Icon(Icons.drag_indicator, color: context.colors.faint),
-              ),
-            ),
-            Expanded(
-              child: InkWell(
-                onTap: () => CategoryFormSheet.open(
-                  context,
-                  kind: category.kind,
-                  existing: category,
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  child: Row(
-                    children: [
-                      CategoryBadge(category: category, size: 36),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Flexible(
-                                  child: Text(
-                                    categoryLabel(l, category),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: t.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ),
-                                if (category.systemKey != null) ...[
-                                  const SizedBox(width: 6),
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 6,
-                                      vertical: 1,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: context.colors.track,
-                                      borderRadius: BorderRadius.circular(6),
-                                    ),
-                                    child: Text(
-                                      l.categorySystemBadge,
-                                      style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.w600,
-                                        color: context.colors.muted,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ],
-                            ),
-                            Text(
-                              meta,
-                              style: t.bodySmall?.copyWith(
-                                color: context.colors.muted,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      Icon(
-                        Icons.chevron_right,
-                        size: 20,
-                        color: context.colors.faint,
-                      ),
-                    ],
+            Row(
+              children: [
+                ReorderableDragStartListener(
+                  index: index,
+                  child: SizedBox(
+                    width: 40,
+                    height: 60,
+                    child: Icon(
+                      Icons.drag_indicator,
+                      color: context.colors.faint,
+                    ),
                   ),
                 ),
-              ),
+                Expanded(
+                  child: InkWell(
+                    onTap: () => CategoryFormSheet.open(
+                      context,
+                      kind: category.kind,
+                      existing: category,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Row(
+                        children: [
+                          CategoryBadge(category: category, size: 36),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Flexible(
+                                      child: Text(
+                                        categoryLabel(l, category),
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: t.bodyMedium?.copyWith(
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    if (category.systemKey != null) ...[
+                                      const SizedBox(width: 6),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 6,
+                                          vertical: 1,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: context.colors.track,
+                                          borderRadius: BorderRadius.circular(
+                                            6,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          l.categorySystemBadge,
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.w600,
+                                            color: context.colors.muted,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ],
+                                ),
+                                Text(
+                                  meta,
+                                  style: t.bodySmall?.copyWith(
+                                    color: context.colors.muted,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                IconButton(
+                  tooltip: l.addSubcategory,
+                  onPressed: onToggle,
+                  icon: AnimatedRotation(
+                    turns: expanded ? 0.5 : 0,
+                    duration: const Duration(milliseconds: 150),
+                    child: Icon(Icons.expand_more, color: context.colors.muted),
+                  ),
+                ),
+              ],
             ),
+            if (expanded)
+              _SubcategoryList(
+                parent: category,
+                subs: subs,
+                snapshot: snapshot,
+              ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+/// Subkategori di bawah kategori utama yang dibuka, plus tombol tambah.
+class _SubcategoryList extends StatelessWidget {
+  const _SubcategoryList({
+    required this.parent,
+    required this.subs,
+    required this.snapshot,
+  });
+
+  final Category parent;
+  final List<Category> subs;
+  final MoneySnapshot snapshot;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final t = Theme.of(context).textTheme;
+    return Container(
+      margin: const EdgeInsets.fromLTRB(52, 0, 12, 10),
+      padding: const EdgeInsets.only(left: 12),
+      decoration: BoxDecoration(
+        border: Border(left: BorderSide(color: context.colors.line, width: 2)),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final s in subs)
+            InkWell(
+              onTap: () => CategoryFormSheet.open(
+                context,
+                kind: s.kind,
+                existing: s,
+                parent: parent,
+              ),
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(minHeight: 40),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        categoryLabel(l, s),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: t.bodyMedium?.copyWith(
+                          color: s.isArchived ? context.colors.muted : null,
+                          decoration: s.isArchived
+                              ? TextDecoration.lineThrough
+                              : null,
+                        ),
+                      ),
+                    ),
+                    Text(
+                      l.walletTxCount(_txCount(snapshot, s.id)),
+                      style: t.bodySmall?.copyWith(color: context.colors.muted),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton.icon(
+              onPressed: () => CategoryFormSheet.open(
+                context,
+                kind: parent.kind,
+                parent: parent,
+              ),
+              style: TextButton.styleFrom(
+                padding: EdgeInsets.zero,
+                visualDensity: VisualDensity.compact,
+              ),
+              icon: const Icon(Icons.add, size: 18),
+              label: Text(l.addSubcategory),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -504,15 +623,24 @@ class _HiddenRow extends ConsumerWidget {
 
 /// Bottom sheet tambah / ubah kategori, plus sembunyikan, gabungkan, hapus.
 class CategoryFormSheet extends ConsumerStatefulWidget {
-  const CategoryFormSheet({super.key, required this.kind, this.existing});
+  const CategoryFormSheet({
+    super.key,
+    required this.kind,
+    this.existing,
+    this.parent,
+  });
 
   final String kind;
   final Category? existing;
+
+  /// Terisi = form subkategori (warna ikut induk).
+  final Category? parent;
 
   static Future<void> open(
     BuildContext context, {
     required String kind,
     Category? existing,
+    Category? parent,
   }) {
     return showModalBottomSheet(
       context: context,
@@ -521,7 +649,8 @@ class CategoryFormSheet extends ConsumerStatefulWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => CategoryFormSheet(kind: kind, existing: existing),
+      builder: (_) =>
+          CategoryFormSheet(kind: kind, existing: existing, parent: parent),
     );
   }
 
@@ -537,12 +666,13 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
 
   Category? get _existing => widget.existing;
   bool get _isSystem => _existing?.systemKey != null;
+  Category? get _parent => widget.parent;
 
   @override
   void initState() {
     super.initState();
     final e = _existing;
-    _color = e?.color ?? categoryPalette[6];
+    _color = widget.parent?.color ?? e?.color ?? categoryPalette[6];
     _icon = categoryIcons.containsKey(e?.icon) ? e!.icon : null;
     if (e != null) _name.text = e.name;
   }
@@ -573,6 +703,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
         name: _name.text,
         color: _color,
         icon: _icon,
+        parentId: _parent?.id,
       );
     } else {
       await repo.updateCategory(
@@ -599,9 +730,16 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
   Future<void> _merge(MoneySnapshot snap, String name, int txCount) async {
     final l = context.l10n;
     final e = _existing!;
-    final targets = snap.categories
-        .where((c) => c.kind == e.kind && c.id != e.id)
-        .toList();
+    // Subkategori boleh digabung ke kategori mana pun (utama atau sub);
+    // kategori utama hanya ke kategori utama lain.
+    final targets = [
+      for (final c in snap.categories.where((c) => c.kind == e.kind)) ...[
+        if (c.id != e.id) c,
+        if (_parent != null)
+          for (final s in snap.childrenOf(c.id))
+            if (s.id != e.id) s,
+      ],
+    ];
     final target = await showModalBottomSheet<Category>(
       context: context,
       isScrollControlled: true,
@@ -634,7 +772,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                 contentPadding: EdgeInsets.zero,
                 leading: CategoryBadge(category: c, size: 32),
                 title: Text(
-                  categoryLabel(l, c),
+                  categoryPath(l, snap, c),
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 onTap: () => Navigator.pop(ctx, c),
@@ -690,7 +828,10 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
     final letter = previewName.isEmpty
         ? '?'
         : previewName.characters.first.toUpperCase();
-    final title = e != null
+    final parentName = _parent == null ? '' : categoryLabel(l, _parent!);
+    final title = _parent != null
+        ? (e != null ? l.editSubcategory : l.newSubcategory(parentName))
+        : e != null
         ? l.editCategory
         : widget.kind == 'income'
         ? l.newIncomeCategory
@@ -816,52 +957,59 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
               ],
             ),
             const SizedBox(height: 16),
-            Text(
-              l.categoryColor,
-              style: t.bodySmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: context.colors.muted,
+            if (_parent != null)
+              Text(
+                l.subcategoryColorNote(parentName),
+                style: t.bodySmall?.copyWith(color: context.colors.muted),
+              )
+            else ...[
+              Text(
+                l.categoryColor,
+                style: t.bodySmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: context.colors.muted,
+                ),
               ),
-            ),
-            const SizedBox(height: 8),
-            GridView.count(
-              crossAxisCount: 5,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-              childAspectRatio: 1.4,
-              children: [
-                for (final hex in categoryPalette)
-                  Semantics(
-                    selected: hex == _color,
-                    button: true,
-                    child: GestureDetector(
-                      onTap: () => setState(() => _color = hex),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: context.colors.fg(hexColor(hex)),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: hex == _color
-                                ? context.colors.ink
-                                : Colors.transparent,
-                            width: 3,
+              const SizedBox(height: 8),
+              GridView.count(
+                crossAxisCount: 5,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                mainAxisSpacing: 10,
+                crossAxisSpacing: 10,
+                childAspectRatio: 1.4,
+                children: [
+                  for (final hex in categoryPalette)
+                    Semantics(
+                      selected: hex == _color,
+                      button: true,
+                      child: GestureDetector(
+                        onTap: () => setState(() => _color = hex),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: context.colors.fg(hexColor(hex)),
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: hex == _color
+                                  ? context.colors.ink
+                                  : Colors.transparent,
+                              width: 3,
+                            ),
                           ),
+                          child: hex == _color
+                              ? Icon(
+                                  Icons.check,
+                                  color: context.colors.isDark
+                                      ? context.colors.background
+                                      : Colors.white,
+                                )
+                              : null,
                         ),
-                        child: hex == _color
-                            ? Icon(
-                                Icons.check,
-                                color: context.colors.isDark
-                                    ? context.colors.background
-                                    : Colors.white,
-                              )
-                            : null,
                       ),
                     ),
-                  ),
-              ],
-            ),
+                ],
+              ),
+            ],
             const SizedBox(height: 20),
             FilledButton(
               onPressed: _save,

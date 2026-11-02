@@ -147,7 +147,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
         query: query,
         entries: entries,
         money: money,
-        categoryName: (c) => categoryLabel(l, c),
+        categoryName: (c) => categoryPath(l, money, c),
         transferLabel: l.transfer,
         scope: _scope,
         period: _period,
@@ -402,8 +402,10 @@ class _Results extends ConsumerWidget {
       if (results.txCount > 0) l.walletTxCount(results.txCount),
     ].join(' · ');
     final sums = [
-      if (results.expense > 0) l.searchSumOut(rupiah(results.expense, hide: hideAmounts)),
-      if (results.income > 0) l.searchSumIn(rupiah(results.income, hide: hideAmounts)),
+      if (results.expense > 0)
+        l.searchSumOut(rupiah(results.expense, hide: hideAmounts)),
+      if (results.income > 0)
+        l.searchSumIn(rupiah(results.income, hide: hideAmounts)),
     ].join(' · ');
 
     final groups = <String, List<SearchHit>>{};
@@ -582,7 +584,7 @@ class _HitRow extends ConsumerWidget {
               : categoryLabel(l, category));
       meta = [
         hhmm(tx.occurredAt),
-        if (category != null) categoryLabel(l, category),
+        if (category != null) categoryPath(l, money, category),
         if (isTransfer)
           // Poppins tidak punya karakter panah, jadi pakai kata "ke".
           '$wallet ${l.transferTo.toLowerCase()} '
@@ -594,8 +596,8 @@ class _HitRow extends ConsumerWidget {
         hideAmounts
             ? maskedRupiah
             : (isTransfer
-                ? rupiah(tx.amount)
-                : '${isOut ? '−' : '+'}${rupiah(tx.amount)}'),
+                  ? rupiah(tx.amount)
+                  : '${isOut ? '−' : '+'}${rupiah(tx.amount)}'),
         style: titleStyle?.copyWith(
           color: isTransfer
               ? context.colors.ink

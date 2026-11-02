@@ -2701,6 +2701,42 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Format file tidak dikenali. Pilih file backup .json atau file Money Manager.'**
   String get unsupportedFileFormat;
+
+  /// No description provided for @addSubcategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Subkategori'**
+  String get addSubcategory;
+
+  /// No description provided for @allOfCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua {name}'**
+  String allOfCategory(String name);
+
+  /// No description provided for @subcategoryCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} subkategori'**
+  String subcategoryCount(int count);
+
+  /// No description provided for @newSubcategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Subkategori baru di {parent}'**
+  String newSubcategory(String parent);
+
+  /// No description provided for @editSubcategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah subkategori'**
+  String get editSubcategory;
+
+  /// No description provided for @subcategoryColorNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna mengikuti kategori {parent}.'**
+  String subcategoryColorNote(String parent);
 }
 
 class _AppLocalizationsDelegate

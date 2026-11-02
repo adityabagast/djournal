@@ -52,6 +52,7 @@ Map<String, dynamic> categoryToJson(Category c) => {
   'sortOrder': c.sortOrder,
   'systemKey': c.systemKey,
   'isArchived': c.isArchived,
+  'parentId': c.parentId,
 };
 
 Category categoryFromJson(Map<String, dynamic> j, {bool dirty = false}) =>
@@ -68,6 +69,8 @@ Category categoryFromJson(Map<String, dynamic> j, {bool dirty = false}) =>
       sortOrder: (j['sortOrder'] as num).toInt(),
       systemKey: j['systemKey'] as String?,
       isArchived: j['isArchived'] as bool,
+      // Backup/server lama belum punya kolom ini.
+      parentId: j['parentId'] as String?,
     );
 
 Map<String, dynamic> transactionToJson(MoneyTx t) => {

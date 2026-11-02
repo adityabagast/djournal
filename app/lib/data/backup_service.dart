@@ -37,7 +37,9 @@ class BackupService {
 
     if (period != null && period.type != BackupPeriodType.all) {
       txQuery = txQuery.where((t) => period.includesYmd(t.localDate)).toList();
-      entryQuery = entryQuery.where((e) => period.includesYmd(e.entryDate)).toList();
+      entryQuery = entryQuery
+          .where((e) => period.includesYmd(e.entryDate))
+          .toList();
     }
 
     final data = {
@@ -214,6 +216,15 @@ class BackupService {
       )..where((b) => b.categoryId.equals(mine.id))).write(
         BudgetsCompanion(
           categoryId: Value(match.id),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+      await (_db.update(
+        _db.categories,
+      )..where((c) => c.parentId.equals(mine.id))).write(
+        CategoriesCompanion(
+          parentId: Value(match.id),
           updatedAt: Value(now),
           isDirty: const Value(true),
         ),

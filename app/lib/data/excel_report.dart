@@ -3,7 +3,7 @@ import 'package:excel/excel.dart';
 import '../core/format.dart';
 import '../domain/models/backup_period.dart';
 import '../l10n/app_localizations.dart';
-import '../ui/common.dart' show categoryLabel;
+import '../ui/common.dart' show categoryLabel, categoryPath;
 import '../ui/mood.dart' show moodLabel;
 import 'db/app_database.dart';
 import 'journal_repository.dart';
@@ -78,7 +78,9 @@ List<int> buildExcelReport({
   );
   final txs = period == null
       ? money.transactions.reversed
-      : money.transactions.reversed.where((t) => period.includesYmd(t.localDate));
+      : money.transactions.reversed.where(
+          (t) => period.includesYmd(t.localDate),
+        );
 
   for (final t in txs) {
     final cat = t.categoryId == null ? null : money.categoryById[t.categoryId];
@@ -90,7 +92,7 @@ List<int> buildExcelReport({
         'income' => l.income,
         _ => l.transfer,
       }),
-      text(cat == null ? null : categoryLabel(l, cat)),
+      text(cat == null ? null : categoryPath(l, money, cat)),
       text(money.walletById[t.walletId]?.name),
       text(t.toWalletId == null ? null : money.walletById[t.toWalletId]?.name),
       IntCellValue(t.type == 'expense' ? -t.amount : t.amount),
@@ -195,4 +197,3 @@ String? extractRawBackupJsonFromExcel(List<int> bytes) {
   } catch (_) {}
   return null;
 }
-

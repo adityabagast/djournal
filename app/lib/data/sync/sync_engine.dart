@@ -244,6 +244,15 @@ class SyncEngine {
           );
         }
       }
+      await (_db.update(
+        _db.categories,
+      )..where((c) => c.parentId.equals(local.id))).write(
+        CategoriesCompanion(
+          parentId: Value(match.id),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
       // Belum pernah di-push, jadi aman dihapus permanen.
       await (_db.delete(
         _db.categories,

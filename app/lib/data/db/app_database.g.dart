@@ -795,6 +795,17 @@ class $CategoriesTable extends Categories
     ),
     defaultValue: const Constant(false),
   );
+  static const VerificationMeta _parentIdMeta = const VerificationMeta(
+    'parentId',
+  );
+  @override
+  late final GeneratedColumn<String> parentId = GeneratedColumn<String>(
+    'parent_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
   @override
   List<GeneratedColumn> get $columns => [
     id,
@@ -809,6 +820,7 @@ class $CategoriesTable extends Categories
     sortOrder,
     systemKey,
     isArchived,
+    parentId,
   ];
   @override
   String get aliasedName => _alias ?? actualTableName;
@@ -881,6 +893,12 @@ class $CategoriesTable extends Categories
         isArchived.isAcceptableOrUnknown(data['is_archived']!, _isArchivedMeta),
       );
     }
+    if (data.containsKey('parent_id')) {
+      context.handle(
+        _parentIdMeta,
+        parentId.isAcceptableOrUnknown(data['parent_id']!, _parentIdMeta),
+      );
+    }
     return context;
   }
 
@@ -944,6 +962,10 @@ class $CategoriesTable extends Categories
         DriftSqlType.bool,
         data['${effectivePrefix}is_archived'],
       )!,
+      parentId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}parent_id'],
+      ),
     );
   }
 
@@ -980,6 +1002,11 @@ class Category extends DataClass implements Insertable<Category> {
   /// diterjemahkan. NULL = kategori buatan user.
   final String? systemKey;
   final bool isArchived;
+
+  /// Kategori induk; NULL = kategori utama. Maksimal satu tingkat.
+  /// Sengaja tanpa foreign key: saat pull/impor, anak bisa datang lebih dulu
+  /// daripada induknya.
+  final String? parentId;
   const Category({
     required this.id,
     required this.createdAt,
@@ -993,6 +1020,7 @@ class Category extends DataClass implements Insertable<Category> {
     required this.sortOrder,
     this.systemKey,
     required this.isArchived,
+    this.parentId,
   });
   @override
   Map<String, Expression> toColumns(bool nullToAbsent) {
@@ -1025,6 +1053,9 @@ class Category extends DataClass implements Insertable<Category> {
       map['system_key'] = Variable<String>(systemKey);
     }
     map['is_archived'] = Variable<bool>(isArchived);
+    if (!nullToAbsent || parentId != null) {
+      map['parent_id'] = Variable<String>(parentId);
+    }
     return map;
   }
 
@@ -1046,6 +1077,9 @@ class Category extends DataClass implements Insertable<Category> {
           ? const Value.absent()
           : Value(systemKey),
       isArchived: Value(isArchived),
+      parentId: parentId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(parentId),
     );
   }
 
@@ -1067,6 +1101,7 @@ class Category extends DataClass implements Insertable<Category> {
       sortOrder: serializer.fromJson<int>(json['sortOrder']),
       systemKey: serializer.fromJson<String?>(json['systemKey']),
       isArchived: serializer.fromJson<bool>(json['isArchived']),
+      parentId: serializer.fromJson<String?>(json['parentId']),
     );
   }
   @override
@@ -1085,6 +1120,7 @@ class Category extends DataClass implements Insertable<Category> {
       'sortOrder': serializer.toJson<int>(sortOrder),
       'systemKey': serializer.toJson<String?>(systemKey),
       'isArchived': serializer.toJson<bool>(isArchived),
+      'parentId': serializer.toJson<String?>(parentId),
     };
   }
 
@@ -1101,6 +1137,7 @@ class Category extends DataClass implements Insertable<Category> {
     int? sortOrder,
     Value<String?> systemKey = const Value.absent(),
     bool? isArchived,
+    Value<String?> parentId = const Value.absent(),
   }) => Category(
     id: id ?? this.id,
     createdAt: createdAt ?? this.createdAt,
@@ -1114,6 +1151,7 @@ class Category extends DataClass implements Insertable<Category> {
     sortOrder: sortOrder ?? this.sortOrder,
     systemKey: systemKey.present ? systemKey.value : this.systemKey,
     isArchived: isArchived ?? this.isArchived,
+    parentId: parentId.present ? parentId.value : this.parentId,
   );
   Category copyWithCompanion(CategoriesCompanion data) {
     return Category(
@@ -1131,6 +1169,7 @@ class Category extends DataClass implements Insertable<Category> {
       isArchived: data.isArchived.present
           ? data.isArchived.value
           : this.isArchived,
+      parentId: data.parentId.present ? data.parentId.value : this.parentId,
     );
   }
 
@@ -1148,7 +1187,8 @@ class Category extends DataClass implements Insertable<Category> {
           ..write('icon: $icon, ')
           ..write('sortOrder: $sortOrder, ')
           ..write('systemKey: $systemKey, ')
-          ..write('isArchived: $isArchived')
+          ..write('isArchived: $isArchived, ')
+          ..write('parentId: $parentId')
           ..write(')'))
         .toString();
   }
@@ -1167,6 +1207,7 @@ class Category extends DataClass implements Insertable<Category> {
     sortOrder,
     systemKey,
     isArchived,
+    parentId,
   );
   @override
   bool operator ==(Object other) =>
@@ -1183,7 +1224,8 @@ class Category extends DataClass implements Insertable<Category> {
           other.icon == this.icon &&
           other.sortOrder == this.sortOrder &&
           other.systemKey == this.systemKey &&
-          other.isArchived == this.isArchived);
+          other.isArchived == this.isArchived &&
+          other.parentId == this.parentId);
 }
 
 class CategoriesCompanion extends UpdateCompanion<Category> {
@@ -1199,6 +1241,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
   final Value<int> sortOrder;
   final Value<String?> systemKey;
   final Value<bool> isArchived;
+  final Value<String?> parentId;
   final Value<int> rowid;
   const CategoriesCompanion({
     this.id = const Value.absent(),
@@ -1213,6 +1256,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     this.sortOrder = const Value.absent(),
     this.systemKey = const Value.absent(),
     this.isArchived = const Value.absent(),
+    this.parentId = const Value.absent(),
     this.rowid = const Value.absent(),
   });
   CategoriesCompanion.insert({
@@ -1228,6 +1272,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     this.sortOrder = const Value.absent(),
     this.systemKey = const Value.absent(),
     this.isArchived = const Value.absent(),
+    this.parentId = const Value.absent(),
     this.rowid = const Value.absent(),
   }) : id = Value(id),
        createdAt = Value(createdAt),
@@ -1248,6 +1293,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     Expression<int>? sortOrder,
     Expression<String>? systemKey,
     Expression<bool>? isArchived,
+    Expression<String>? parentId,
     Expression<int>? rowid,
   }) {
     return RawValuesInsertable({
@@ -1263,6 +1309,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
       if (sortOrder != null) 'sort_order': sortOrder,
       if (systemKey != null) 'system_key': systemKey,
       if (isArchived != null) 'is_archived': isArchived,
+      if (parentId != null) 'parent_id': parentId,
       if (rowid != null) 'rowid': rowid,
     });
   }
@@ -1280,6 +1327,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     Value<int>? sortOrder,
     Value<String?>? systemKey,
     Value<bool>? isArchived,
+    Value<String?>? parentId,
     Value<int>? rowid,
   }) {
     return CategoriesCompanion(
@@ -1295,6 +1343,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
       sortOrder: sortOrder ?? this.sortOrder,
       systemKey: systemKey ?? this.systemKey,
       isArchived: isArchived ?? this.isArchived,
+      parentId: parentId ?? this.parentId,
       rowid: rowid ?? this.rowid,
     );
   }
@@ -1344,6 +1393,9 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
     if (isArchived.present) {
       map['is_archived'] = Variable<bool>(isArchived.value);
     }
+    if (parentId.present) {
+      map['parent_id'] = Variable<String>(parentId.value);
+    }
     if (rowid.present) {
       map['rowid'] = Variable<int>(rowid.value);
     }
@@ -1365,6 +1417,7 @@ class CategoriesCompanion extends UpdateCompanion<Category> {
           ..write('sortOrder: $sortOrder, ')
           ..write('systemKey: $systemKey, ')
           ..write('isArchived: $isArchived, ')
+          ..write('parentId: $parentId, ')
           ..write('rowid: $rowid')
           ..write(')'))
         .toString();
@@ -6829,6 +6882,7 @@ typedef $$CategoriesTableCreateCompanionBuilder = CategoriesCompanion Function({
   Value<int> sortOrder,
   Value<String?> systemKey,
   Value<bool> isArchived,
+  Value<String?> parentId,
   Value<int> rowid,
 });
 typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
@@ -6844,6 +6898,7 @@ typedef $$CategoriesTableUpdateCompanionBuilder = CategoriesCompanion Function({
   Value<int> sortOrder,
   Value<String?> systemKey,
   Value<bool> isArchived,
+  Value<String?> parentId,
   Value<int> rowid,
 });
 
@@ -6977,6 +7032,11 @@ class $$CategoriesTableFilterComposer
 
   ColumnFilters<bool> get isArchived => $composableBuilder(
     column: $table.isArchived,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get parentId => $composableBuilder(
+    column: $table.parentId,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -7124,6 +7184,11 @@ class $$CategoriesTableOrderingComposer
     column: $table.isArchived,
     builder: (column) => ColumnOrderings(column),
   );
+
+  ColumnOrderings<String> get parentId => $composableBuilder(
+    column: $table.parentId,
+    builder: (column) => ColumnOrderings(column),
+  );
 }
 
 class $$CategoriesTableAnnotationComposer
@@ -7172,6 +7237,9 @@ class $$CategoriesTableAnnotationComposer
     column: $table.isArchived,
     builder: (column) => column,
   );
+
+  GeneratedColumn<String> get parentId =>
+      $composableBuilder(column: $table.parentId, builder: (column) => column);
 
   Expression<T> transactionsRefs<T extends Object>(
     Expression<T> Function($$TransactionsTableAnnotationComposer a) f,
@@ -7293,6 +7361,7 @@ class $$CategoriesTableTableManager
                 Value<int> sortOrder = const Value.absent(),
                 Value<String?> systemKey = const Value.absent(),
                 Value<bool> isArchived = const Value.absent(),
+                Value<String?> parentId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CategoriesCompanion(
                 id: id,
@@ -7307,6 +7376,7 @@ class $$CategoriesTableTableManager
                 sortOrder: sortOrder,
                 systemKey: systemKey,
                 isArchived: isArchived,
+                parentId: parentId,
                 rowid: rowid,
               ),
           createCompanionCallback:
@@ -7323,6 +7393,7 @@ class $$CategoriesTableTableManager
                 Value<int> sortOrder = const Value.absent(),
                 Value<String?> systemKey = const Value.absent(),
                 Value<bool> isArchived = const Value.absent(),
+                Value<String?> parentId = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
               }) => CategoriesCompanion.insert(
                 id: id,
@@ -7337,6 +7408,7 @@ class $$CategoriesTableTableManager
                 sortOrder: sortOrder,
                 systemKey: systemKey,
                 isArchived: isArchived,
+                parentId: parentId,
                 rowid: rowid,
               ),
           withReferenceMapper: (p0) => p0

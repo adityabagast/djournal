@@ -61,7 +61,9 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     if (e != null) {
       _amount.text = thousands(e.amount);
       _note.text = e.note ?? '';
-      ref.read(attachmentRepositoryProvider).getAttachmentForTx(e.id).then((att) {
+      ref.read(attachmentRepositoryProvider).getAttachmentForTx(e.id).then((
+        att,
+      ) {
         if (mounted && att != null && att.localPath != null) {
           setState(() => _receiptPath = att.localPath);
         }
@@ -110,7 +112,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     setState(() => _receiptPath = null);
   }
 
-  Future<void> _save(List<Category> cats, List<Wallet> wallets) async {
+  Future<void> _save(MoneySnapshot snap, List<Wallet> wallets) async {
     final amount = parseAmount(_amount.text);
     if (amount <= 0) {
       setState(() => _showAmountError = true);
@@ -118,7 +120,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     }
     setState(() => _saving = true);
     final isTransfer = _type == 'transfer';
-    final categoryId = isTransfer ? null : (_categoryId ?? cats.first.id);
+    final categoryId = isTransfer ? null : _categoryId;
     final overBudget = categoryId != null && _exceedsBudget(categoryId, amount);
     final txId = await ref
         .read(moneyRepositoryProvider)
@@ -139,7 +141,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     if (!mounted) return;
     final l = context.l10n;
     if (overBudget) {
-      final cat = cats.firstWhere((c) => c.id == categoryId);
+      final cat = snap.categoryById[snap.rootIdOf(categoryId)]!;
       showMascotSnackBar(
         context,
         MascotPose.sedih,
@@ -156,22 +158,25 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
   }
 
   /// Apakah pengeluaran ini membuat kategorinya lewat budget bulan itu.
+  /// Budget dipasang di kategori utama, jadi subkategori ikut induknya.
   bool _exceedsBudget(String categoryId, int amount) {
     final snap = ref.read(moneySnapshotProvider).value;
     if (_type != 'expense' || snap == null) return false;
     final month = toMonthKey(_occurredAt);
-    final budget = snap.budgetFor(categoryId, month);
+    final rootId = snap.rootIdOf(categoryId);
+    final budget = snap.budgetFor(rootId, month);
     if (budget <= 0) return false;
     // Saat edit, nominal lama sudah termasuk di spentIn: jangan dihitung dua kali.
     final old = widget.existing;
     final oldAmount =
         old != null &&
             old.type == 'expense' &&
-            old.categoryId == categoryId &&
+            old.categoryId != null &&
+            snap.rootIdOf(old.categoryId!) == rootId &&
             old.localDate.startsWith(month)
         ? old.amount
         : 0;
-    return snap.spentIn(categoryId, month) - oldAmount + amount > budget;
+    return snap.spentIn(rootId, month) - oldAmount + amount > budget;
   }
 
   /// Saldo [walletId] tanpa pengaruh transaksi yang sedang diedit, supaya
@@ -226,18 +231,37 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     }
 
     final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
-    // Kategori aktif, plus kategori tersembunyi yang dipakai transaksi yang
-    // sedang diedit supaya tetap terpilih.
+    // Kategori utama aktif, plus kategori tersembunyi yang dipakai transaksi
+    // yang sedang diedit supaya tetap terpilih.
     final current = snap.categoryById[widget.existing?.categoryId];
-    final cats = [
+    final currentRoot = current == null
+        ? null
+        : snap.categoryById[snap.rootIdOf(current.id)];
+    final roots = [
       ...snap.categories.where((c) => c.kind == _type),
-      if (current != null && current.isArchived && current.kind == _type)
+      if (currentRoot != null &&
+          currentRoot.isArchived &&
+          currentRoot.kind == _type)
+        currentRoot,
+    ];
+    List<Category> subsOf(Category root) => [
+      ...snap.childrenOf(root.id),
+      if (current != null && current.isArchived && current.parentId == root.id)
         current,
     ];
     // Kategori terpilih harus sesuai jenis (pengeluaran/pemasukan).
-    if (_categoryId == null || !cats.any((c) => c.id == _categoryId)) {
-      _categoryId = cats.isEmpty ? null : cats.first.id;
+    final selectable = {
+      for (final r in roots) ...[r.id, for (final s in subsOf(r)) s.id],
+    };
+    if (_categoryId == null || !selectable.contains(_categoryId)) {
+      _categoryId = roots.isEmpty ? null : roots.first.id;
     }
+    final selectedRoot = _categoryId == null
+        ? null
+        : snap.categoryById[snap.rootIdOf(_categoryId!)];
+    final subs = selectedRoot == null
+        ? const <Category>[]
+        : subsOf(selectedRoot);
     // Dompet aktif, plus dompet arsip yang dipakai transaksi yang sedang
     // diedit supaya pilihannya tetap terlihat.
     final e = widget.existing;
@@ -404,7 +428,21 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           else ...[
             Row(
               children: [
-                Expanded(child: label(l.category)),
+                label(l.category),
+                if (_categoryId != null)
+                  Expanded(
+                    child: Text(
+                      ' · ${categoryPath(l, snap, snap.categoryById[_categoryId]!)}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: t.bodySmall?.copyWith(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  )
+                else
+                  const Spacer(),
                 TextButton(
                   onPressed: () => CategoriesScreen.open(context, kind: _type),
                   style: TextButton.styleFrom(
@@ -414,22 +452,26 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                 ),
               ],
             ),
-            GridView.count(
-              crossAxisCount: 3,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              mainAxisSpacing: 8,
-              crossAxisSpacing: 8,
-              childAspectRatio: 1.45,
+            const SizedBox(height: 4),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
               children: [
-                for (final c in cats)
-                  _CategoryChoice(
+                for (final c in roots)
+                  _CategoryPill(
                     category: c,
-                    selected: c.id == _categoryId,
+                    selected: c.id == selectedRoot?.id,
                     onTap: () => setState(() => _categoryId = c.id),
                   ),
               ],
             ),
+            if (selectedRoot != null && subs.isNotEmpty)
+              _SubcategoryRow(
+                root: selectedRoot,
+                subs: subs,
+                selectedId: _categoryId,
+                onSelect: (id) => setState(() => _categoryId = id),
+              ),
             const SizedBox(height: 20),
             label(l.wallet),
             const SizedBox(height: 8),
@@ -507,7 +549,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           border: Border(top: BorderSide(color: context.colors.line)),
         ),
         child: FilledButton(
-          onPressed: _saving || !canSave ? null : () => _save(cats, wallets),
+          onPressed: _saving || !canSave ? null : () => _save(snap, wallets),
           style: FilledButton.styleFrom(
             minimumSize: const Size.fromHeight(52),
             shape: RoundedRectangleBorder(
@@ -575,8 +617,9 @@ class _Segment extends StatelessWidget {
   }
 }
 
-class _CategoryChoice extends StatelessWidget {
-  const _CategoryChoice({
+/// Pilihan kategori utama: chip kecil dengan titik warna kategori.
+class _CategoryPill extends StatelessWidget {
+  const _CategoryPill({
     required this.category,
     required this.selected,
     required this.onTap,
@@ -588,31 +631,127 @@ class _CategoryChoice extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: selected ? context.colors.primarySoft : context.colors.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(14),
-        side: BorderSide(
-          color: selected ? context.colors.primary : context.colors.line,
-          width: 2,
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: Material(
+        color: selected ? context.colors.primarySoft : context.colors.surface,
+        shape: StadiumBorder(
+          side: BorderSide(
+            color: selected ? Colors.transparent : context.colors.line,
+          ),
+        ),
+        child: InkWell(
+          customBorder: const StadiumBorder(),
+          onTap: () {
+            HapticFeedback.selectionClick();
+            onTap();
+          },
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: context.colors.fg(hexColor(category.color)),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 7),
+                Text(
+                  categoryLabel(context.l10n, category),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                    color: selected
+                        ? context.colors.onPrimarySoft
+                        : context.colors.ink,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(14),
-        onTap: onTap,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            CategoryBadge(category: category, size: 32),
-            const SizedBox(height: 6),
-            Text(
-              categoryLabel(context.l10n, category),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+    );
+  }
+}
+
+/// Baris subkategori di bawah kategori utama yang terpilih: teks kecil
+/// dengan garis di kiri, pilihan aktif bergaris bawah. "Semua X" = tanpa
+/// subkategori.
+class _SubcategoryRow extends StatelessWidget {
+  const _SubcategoryRow({
+    required this.root,
+    required this.subs,
+    required this.selectedId,
+    required this.onSelect,
+  });
+
+  final Category root;
+  final List<Category> subs;
+  final String? selectedId;
+  final ValueChanged<String> onSelect;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    return Container(
+      margin: const EdgeInsets.only(top: 10, left: 4),
+      padding: const EdgeInsets.only(left: 12),
+      decoration: BoxDecoration(
+        border: Border(left: BorderSide(color: context.colors.line, width: 2)),
+      ),
+      child: Wrap(
+        spacing: 14,
+        children: [
+          for (final (id, text) in [
+            (root.id, l.allOfCategory(categoryLabel(l, root))),
+            for (final s in subs) (s.id, categoryLabel(l, s)),
+          ])
+            Semantics(
+              selected: id == selectedId,
+              button: true,
+              child: InkWell(
+                onTap: () {
+                  HapticFeedback.selectionClick();
+                  onSelect(id);
+                },
+                child: Container(
+                  constraints: const BoxConstraints(minHeight: 36),
+                  alignment: Alignment.center,
+                  child: Container(
+                    padding: const EdgeInsets.only(bottom: 2),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: id == selectedId
+                              ? context.colors.primary
+                              : Colors.transparent,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                    child: Text(
+                      text,
+                      style: TextStyle(
+                        fontSize: 13,
+                        fontWeight: id == selectedId
+                            ? FontWeight.w600
+                            : FontWeight.w400,
+                        color: id == selectedId
+                            ? context.colors.ink
+                            : context.colors.muted,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }

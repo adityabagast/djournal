@@ -43,6 +43,14 @@ String categoryLabel(AppLocalizations l, Category c) => switch (c.systemKey) {
   _ => c.name,
 };
 
+/// Nama kategori lengkap dengan induknya, mis. "Makan › Kopi".
+String categoryPath(AppLocalizations l, MoneySnapshot snap, Category c) {
+  final parent = snap.parentOf(c);
+  return parent == null
+      ? categoryLabel(l, c)
+      : '${categoryLabel(l, parent)} › ${categoryLabel(l, c)}';
+}
+
 /// "Hari ini · Kamis, 8 Okt"
 String dayLabel(BuildContext context, String localDate) {
   final l = context.l10n;
@@ -197,7 +205,7 @@ class TxRow extends ConsumerWidget {
         ? null
         : snapshot.categoryById[tx.categoryId];
     final wallet = snapshot.walletById[tx.walletId];
-    final catName = cat == null ? '' : categoryLabel(l, cat);
+    final catName = cat == null ? '' : categoryPath(l, snapshot, cat);
     final isTransfer = tx.type == 'transfer';
     final isOut = tx.type == 'expense';
     final time = hhmm(tx.occurredAt);
@@ -234,8 +242,8 @@ class TxRow extends ConsumerWidget {
     final amountText = hide
         ? maskedRupiah
         : (isTransfer
-            ? rupiah(tx.amount)
-            : '${isOut ? '−' : '+'}${rupiah(tx.amount)}');
+              ? rupiah(tx.amount)
+              : '${isOut ? '−' : '+'}${rupiah(tx.amount)}');
     final amountColor = isTransfer
         ? context.colors.ink
         : isOut

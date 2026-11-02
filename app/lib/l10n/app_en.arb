@@ -449,5 +449,11 @@
   "selectBackupFileHint": "Supports .json (Nyawtat) or .mmbak / .sqlite / .xlsx (Money Manager)",
   "autoBackupWifi": "Auto Backup",
   "autoBackupWifiSub": "When connected to Wi-Fi",
-  "unsupportedFileFormat": "Unsupported file format. Please select a .json backup or a Money Manager file."
+  "unsupportedFileFormat": "Unsupported file format. Please select a .json backup or a Money Manager file.",
+  "addSubcategory": "Subcategory",
+  "allOfCategory": "All {name}",
+  "subcategoryCount": "{count, plural, =1{1 subcategory} other{{count} subcategories}}",
+  "newSubcategory": "New subcategory in {parent}",
+  "editSubcategory": "Edit subcategory",
+  "subcategoryColorNote": "Uses the color of {parent}."
 }
