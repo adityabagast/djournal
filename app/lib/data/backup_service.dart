@@ -57,6 +57,13 @@ class BackupService {
           .map(budgetToJson)
           .toList(),
       'journalEntries': entryQuery.map(entryToJson).toList(),
+      // Wishlist dan tagihan belum ikut sync, jadi file backup satu-satunya
+      // cadangannya. Selalu disertakan penuh (bukan per periode) karena
+      // keduanya rencana ke depan, bukan riwayat.
+      'wishlists': (await _db.select(_db.wishlists).get())
+          .map(wishlistToJson)
+          .toList(),
+      'bills': (await _db.select(_db.bills).get()).map(billToJson).toList(),
     };
     return const JsonEncoder.withIndent('  ').convert(data);
   }
@@ -103,6 +110,12 @@ class BackupService {
       'journalEntries',
       (j) => entryFromJson(j, dirty: true),
     );
+    // Tidak ada di file backup lama; rows() mengembalikan list kosong.
+    final wishlists = rows(
+      'wishlists',
+      (j) => wishlistFromJson(j, dirty: true),
+    );
+    final bills = rows('bills', (j) => billFromJson(j, dirty: true));
 
     var imported = 0;
     var skipped = 0;
@@ -172,6 +185,12 @@ class BackupService {
       for (final e in entries) {
         await put(_db.journalEntries, e, e.id, e.updatedAt);
       }
+      for (final w in wishlists) {
+        await put(_db.wishlists, w, w.id, w.updatedAt);
+      }
+      for (final b in bills) {
+        await put(_db.bills, b, b.id, b.updatedAt);
+      }
     });
 
     return (imported: imported, skipped: skipped);
@@ -215,6 +234,15 @@ class BackupService {
         _db.budgets,
       )..where((b) => b.categoryId.equals(mine.id))).write(
         BudgetsCompanion(
+          categoryId: Value(match.id),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+      await (_db.update(
+        _db.bills,
+      )..where((b) => b.categoryId.equals(mine.id))).write(
+        BillsCompanion(
           categoryId: Value(match.id),
           updatedAt: Value(now),
           isDirty: const Value(true),
@@ -267,6 +295,24 @@ class BackupService {
       )..where((t) => t.toWalletId.equals(mine.id))).write(
         TransactionsCompanion(
           toWalletId: Value(match.id),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+      await (_db.update(
+        _db.bills,
+      )..where((b) => b.walletId.equals(mine.id))).write(
+        BillsCompanion(
+          walletId: Value(match.id),
+          updatedAt: Value(now),
+          isDirty: const Value(true),
+        ),
+      );
+      await (_db.update(
+        _db.wishlists,
+      )..where((w) => w.walletId.equals(mine.id))).write(
+        WishlistsCompanion(
+          walletId: Value(match.id),
           updatedAt: Value(now),
           isDirty: const Value(true),
         ),

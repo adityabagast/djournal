@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:djournal/data/backup_service.dart';
+import 'package:djournal/data/bill_repository.dart';
 import 'package:djournal/data/db/app_database.dart';
 import 'package:djournal/data/journal_repository.dart';
 import 'package:djournal/data/money_repository.dart';
+import 'package:djournal/data/wishlist_repository.dart';
 import 'package:djournal/domain/models/backup_period.dart';
 import 'package:drift/drift.dart' show driftRuntimeOptions;
 import 'package:drift/native.dart';
@@ -208,5 +210,51 @@ void main() {
     expect((decoded['wallets'] as List).isNotEmpty, isTrue);
     expect((decoded['categories'] as List).isNotEmpty, isTrue);
   });
-}
 
+  test('wishlist dan tagihan ikut dicadangkan dan dipulihkan', () async {
+    final walletA = (await MoneyRepository(a).watchWallets().first).first;
+    final wishId = await WishlistRepository(a).createWishlist(
+      title: 'Laptop',
+      targetAmount: 12000000,
+      targetMonths: 12,
+      walletId: walletA.id,
+    );
+    await WishlistRepository(a).deposit(wishlistId: wishId, amount: 1000000);
+    await BillRepository(a).createBill(
+      title: 'Wi-Fi',
+      amount: 350000,
+      dueDate: '2026-11-05',
+      repeatInterval: 'monthly',
+      walletId: walletA.id,
+    );
+
+    final json = await BackupService(a).exportJson(
+      period: BackupPeriod.thisMonth(DateTime(2026, 10, 1)),
+    );
+    final result = await BackupService(b).importJson(json);
+    expect(result.imported, greaterThan(0));
+
+    final wishes = await b.select(b.wishlists).get();
+    expect(wishes.single.title, 'Laptop');
+    expect(wishes.single.savedAmount, 1000000);
+    expect(wishes.single.isDirty, isTrue);
+    final bills = await b.select(b.bills).get();
+    expect(bills.single.title, 'Wi-Fi');
+    expect(bills.single.dueDate, '2026-11-05');
+    expect(bills.single.repeatInterval, 'monthly');
+
+    // Dompet "Tunai" bawaan HP b digabung ke milik file: rujukan ikut.
+    final walletsB = await MoneyRepository(b).watchWallets().first;
+    expect(walletsB.map((w) => w.id), contains(bills.single.walletId));
+    expect(walletsB.map((w) => w.id), contains(wishes.single.walletId));
+  });
+
+  test('file backup lama tanpa wishlist & tagihan tetap bisa diimpor', () async {
+    final json = jsonDecode(await BackupService(a).exportJson())
+        as Map<String, dynamic>
+      ..remove('wishlists')
+      ..remove('bills');
+    await BackupService(b).importJson(jsonEncode(json));
+    expect(await b.select(b.bills).get(), isEmpty);
+  });
+}

@@ -260,7 +260,11 @@ class BillDetailSheet extends ConsumerWidget {
   Future<void> _pay(BuildContext context, WidgetRef ref) async {
     final snap = moneySnap;
     final activeWallets = (snap?.wallets as List<Wallet>?) ?? const [];
-    var selectedWalletId = bill.walletId ?? activeWallets.firstOrNull?.id;
+    // Dompet rencana bisa sudah diarsip/dihapus: pakai dompet aktif pertama.
+    var selectedWalletId =
+        activeWallets.any((w) => w.id == bill.walletId)
+            ? bill.walletId
+            : activeWallets.firstOrNull?.id;
 
     final ok = await showDialog<bool>(
       context: context,

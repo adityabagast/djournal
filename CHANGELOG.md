@@ -8,6 +8,14 @@
 - Budget dan laporan tetap per kategori utama: pengeluaran subkategori dijumlahkan ke induknya. Riwayat transaksi, pencarian, dan ekspor Excel menampilkan nama lengkap "Induk › Sub".
 - Hapus kategori utama ikut menghapus subkategorinya (hanya kalau belum dipakai); gabung kategori utama memindahkan subkategorinya ke kategori tujuan.
 
+**Perbaikan**
+- **Backup JSON** kini menyertakan wishlist dan tagihan (sebelumnya hilang saat pulih/pindah HP). File backup lama tetap bisa diimpor.
+- **Sembunyikan nominal** kini juga berlaku di kartu Tagihan, Wishlist, dan banner peringatan di Hari Ini.
+- Form tagihan/wishlist dan dialog bayar tidak crash lagi bila dompetnya sudah diarsip/dihapus; date picker tagihan tidak crash untuk tagihan yang sudah lama lewat tempo.
+- Setoran wishlist tidak lagi mentransfer ke dompet yang diarsip/dihapus.
+- Banner membedakan tagihan lewat tempo dan yang segera jatuh tempo; "Kurang" di wishlist tidak lagi negatif.
+- Hitungan streak dan budget mingguan aman di zona waktu ber-DST (desktop).
+
 **Teknis**
 - Database lokal schema v6 (kolom `parent_id` di kategori). Backup JSON lama tetap bisa dipulihkan.
 - Migration Supabase `20261102000000_category_parent.sql`: sinkronisasi membawa `parentId`.

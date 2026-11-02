@@ -40,10 +40,12 @@ class GlobalBudgetCard extends ConsumerWidget {
         break;
       case BudgetPeriod.weekly:
         // Hitung pengeluaran minggu ini (Mulai Senin)
-        final startOfWeek = now.subtract(Duration(days: now.weekday - 1));
+        // Pakai komponen tanggal, bukan Duration, supaya tidak meleset
+        // sehari di zona waktu yang punya pergantian jam musim panas.
+        final monday = now.day - (now.weekday - 1);
         var weekTotal = 0;
         for (var i = 0; i < 7; i++) {
-          final d = startOfWeek.add(Duration(days: i));
+          final d = DateTime(now.year, now.month, monday + i);
           weekTotal += MoneySnapshot.sumOf(snapshot.onDate(toLocalDate(d)), 'expense');
         }
         spent = weekTotal;

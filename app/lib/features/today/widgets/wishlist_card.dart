@@ -17,6 +17,7 @@ class WishlistCard extends ConsumerWidget {
     final wishlists = ref.watch(wishlistsProvider).value ?? const [];
     final activeWishlists = wishlists.where((w) => !w.isFulfilled).toList();
     final snap = ref.watch(moneySnapshotProvider).value;
+    final hide = ref.watch(hideAmountsProvider).value ?? false;
 
     return AppCard(
       child: Column(
@@ -67,7 +68,7 @@ class WishlistCard extends ConsumerWidget {
           else
             for (var i = 0; i < activeWishlists.length; i++) ...[
               if (i > 0) const SizedBox(height: 12),
-              _buildWishlistItem(context, ref, activeWishlists[i], snap),
+              _buildWishlistItem(context, ref, activeWishlists[i], snap, hide),
             ],
         ],
       ),
@@ -79,6 +80,7 @@ class WishlistCard extends ConsumerWidget {
     WidgetRef ref,
     Wishlist w,
     dynamic snap,
+    bool hide,
   ) {
     final t = Theme.of(context).textTheme;
     final pct = w.targetAmount > 0
@@ -91,6 +93,10 @@ class WishlistCard extends ConsumerWidget {
     final targetWallet = w.walletId != null ? snap?.walletById[w.walletId!] : null;
     final monthly = w.targetMonths > 0 ? (w.targetAmount / w.targetMonths).round() : 0;
     final daily = (monthly / 30).round();
+    // Setoran bisa melebihi target; jangan tampilkan kekurangan negatif.
+    final shortfall = w.targetAmount > w.savedAmount
+        ? w.targetAmount - w.savedAmount
+        : 0;
 
     return InkWell(
       onTap: () => WishlistFormSheet.open(context, existing: w),
@@ -115,7 +121,7 @@ class WishlistCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  rupiah(w.targetAmount),
+                  rupiah(w.targetAmount, hide: hide),
                   style: t.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w700,
                     color: context.colors.primary,
@@ -155,7 +161,7 @@ class WishlistCard extends ConsumerWidget {
               children: [
                 Expanded(
                   child: Text(
-                    'Terkumpul: ${rupiah(w.savedAmount)} ($pct%)',
+                    'Terkumpul: ${rupiah(w.savedAmount, hide: hide)} ($pct%)',
                     overflow: TextOverflow.ellipsis,
                     style: t.bodySmall?.copyWith(fontSize: 11.5, color: context.colors.muted),
                   ),
@@ -163,7 +169,7 @@ class WishlistCard extends ConsumerWidget {
                 const SizedBox(width: 8),
                 Flexible(
                   child: Text(
-                    'Kurang: ${rupiah(w.targetAmount - w.savedAmount)}',
+                    'Kurang: ${rupiah(shortfall, hide: hide)}',
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.end,
                     style: t.bodySmall?.copyWith(fontSize: 11.5, color: context.colors.muted),
@@ -183,7 +189,7 @@ class WishlistCard extends ConsumerWidget {
                   children: [
                     Expanded(
                       child: Text(
-                        'Rincian: ${rupiah(monthly)} / bln (sekitar ${rupiah(daily)} / hr)',
+                        'Rincian: ${rupiah(monthly, hide: hide)} / bln (sekitar ${rupiah(daily, hide: hide)} / hr)',
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                         style: TextStyle(

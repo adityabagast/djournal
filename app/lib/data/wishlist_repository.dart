@@ -104,7 +104,16 @@ class WishlistRepository {
       // Catat mutasi / transaksi jika ada dompet yang dipilih
       if (sourceWalletId != null) {
         final targetWalletId = current.walletId;
-        if (targetWalletId != null && targetWalletId != sourceWalletId) {
+        final target = targetWalletId == null
+            ? null
+            : await (_db.select(
+                _db.wallets,
+              )..where((w) => w.id.equals(targetWalletId))).getSingleOrNull();
+        // Dompet tujuan yang sudah dihapus/diarsip tidak dihitung di total
+        // saldo; transfer ke sana membuat uang seolah hilang.
+        final targetActive =
+            target != null && target.deletedAt == null && !target.isArchived;
+        if (targetActive && targetWalletId != sourceWalletId) {
           // Transfer antar dompet (misal: Rekening Utama -> Rekening Tabungan)
           await _db.into(_db.transactions).insert(
             TransactionsCompanion.insert(
