@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.11.0 — 2026-11-02
+
+**Baru**
+- **Tampilan baru yang lebih bersih dan imut**: kartu tanpa garis tepi dengan bayangan halus, tombol dan dock berbentuk kapsul, isian berlatar lembut, dan badge kategori bulat.
+- **Maskot Nyaw versi baru**: lebih bulat dan sederhana dengan mata besar, tetap 9 pose (juga di widget layar utama).
+- **Sapaan di Hari Ini**: Nyaw menyapa sesuai jam dan menghitung catatan hari ini (tidur kalau belum ada catatan).
+- **Pertanyaan harian di Jurnal**: pemancing ide menulis yang berganti tiap hari.
+- **Layar PIN** berlatar mint pastel dengan tombol angka putih.
+
 ## 0.10.0 — 2026-11-02
 
 **Baru**
