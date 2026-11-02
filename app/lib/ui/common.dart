@@ -132,7 +132,7 @@ class CategoryBadge extends StatelessWidget {
       alignment: Alignment.center,
       decoration: BoxDecoration(
         color: context.colors.soft(raw),
-        borderRadius: BorderRadius.circular(size * 0.3),
+        shape: BoxShape.circle,
       ),
       child: icon != null
           ? Icon(icon, color: fg, size: size * 0.55)
@@ -166,7 +166,7 @@ class TransferBadge extends StatelessWidget {
         color: context.colors.isDark
             ? context.colors.soft(_fg)
             : const Color(0xFFE3EDF8),
-        borderRadius: BorderRadius.circular(size * 0.3),
+        shape: BoxShape.circle,
       ),
       child: Icon(
         Icons.swap_horiz,

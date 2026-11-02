@@ -67,8 +67,11 @@ class _PinPadState extends State<PinPad> {
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final onHero = context.colors.onHero;
-    final onDark = context.colors.onHeroMuted;
+    final c = context.colors;
+    // Latar mint pastel (gelap: latar biasa), teks tinta, aksen warna utama.
+    final bg = c.isDark ? c.background : const Color(0xFFCDEBDD);
+    final onHero = c.ink;
+    final onDark = c.muted;
 
     Widget key(String digit) => _KeyButton(
       label: digit,
@@ -84,7 +87,7 @@ class _PinPadState extends State<PinPad> {
     );
 
     return Material(
-      color: context.colors.hero,
+      color: bg,
       child: SafeArea(
         child: LayoutBuilder(
           builder: (context, box) => SingleChildScrollView(
@@ -106,12 +109,7 @@ class _PinPadState extends State<PinPad> {
                             ),
                     ),
                     const SizedBox(height: 8),
-                    const MascotBadge(
-                      MascotPose.gembok,
-                      tint: MascotTint.lilac,
-                      size: 128,
-                      adaptive: false,
-                    ),
+                    const Mascot(MascotPose.gembok, size: 128),
                     const SizedBox(height: 16),
                     Text(
                       widget.title,
@@ -141,12 +139,9 @@ class _PinPadState extends State<PinPad> {
                               margin: const EdgeInsets.symmetric(horizontal: 8),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: onHero,
-                                  width: 2,
-                                ),
+                                border: Border.all(color: c.primary, width: 2),
                                 color: i < _pin.length
-                                    ? onHero
+                                    ? c.primary
                                     : Colors.transparent,
                               ),
                             ),
@@ -159,8 +154,8 @@ class _PinPadState extends State<PinPad> {
                         child: Text(
                           widget.error ?? '',
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            color: Color(0xFFFFD7C2),
+                          style: TextStyle(
+                            color: c.expense,
                             fontSize: 14,
                             fontWeight: FontWeight.w600,
                           ),
@@ -235,9 +230,9 @@ class _KeyButton extends StatelessWidget {
       label: label,
       excludeSemantics: true,
       child: Material(
-        color: filled
-            ? context.colors.onHero.withValues(alpha: 0.12)
-            : Colors.transparent,
+        color: filled ? context.colors.surface : Colors.transparent,
+        elevation: filled ? 1 : 0,
+        shadowColor: context.colors.shadow.withValues(alpha: 0.25),
         shape: const CircleBorder(),
         child: InkWell(
           customBorder: const CircleBorder(),
@@ -249,7 +244,7 @@ class _KeyButton extends StatelessWidget {
   }
 }
 
-/// Tombol teks putih bergaris bawah di bawah keypad.
+/// Tombol teks di bawah keypad.
 class PinFooterButton extends StatelessWidget {
   const PinFooterButton({super.key, required this.label, required this.onTap});
 
@@ -261,15 +256,10 @@ class PinFooterButton extends StatelessWidget {
     return TextButton(
       onPressed: onTap,
       style: TextButton.styleFrom(
-        foregroundColor: context.colors.onHeroMuted,
+        foregroundColor: context.colors.primary,
         textStyle: buttonTextStyle(
           context,
-          TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w400,
-            decoration: TextDecoration.underline,
-            decorationColor: context.colors.onHeroMuted,
-          ),
+          const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
         ),
       ),
       child: Text(label),

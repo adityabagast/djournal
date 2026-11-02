@@ -509,5 +509,19 @@
   "@newSubcategory": { "placeholders": { "parent": { "type": "String" } } },
   "editSubcategory": "Ubah subkategori",
   "subcategoryColorNote": "Warna mengikuti kategori {parent}.",
-  "@subcategoryColorNote": { "placeholders": { "parent": { "type": "String" } } }
+  "@subcategoryColorNote": { "placeholders": { "parent": { "type": "String" } } },
+  "greetingMorning": "Selamat pagi!",
+  "greetingNoon": "Selamat siang!",
+  "greetingAfternoon": "Selamat sore!",
+  "greetingEvening": "Selamat malam!",
+  "greetingCount": "Sudah {count} catatan hari ini. Mantap!",
+  "@greetingCount": { "placeholders": { "count": { "type": "int" } } },
+  "greetingEmpty": "Belum ada catatan hari ini. Yuk mulai!",
+  "journalPromptTitle": "Pertanyaan hari ini",
+  "journalPromptAction": "Tulis jawaban ›",
+  "journalPrompt1": "Apa hal kecil yang bikin kamu senyum hari ini?",
+  "journalPrompt2": "Apa yang paling kamu syukuri hari ini?",
+  "journalPrompt3": "Pengeluaran apa hari ini yang paling worth it?",
+  "journalPrompt4": "Apa yang ingin kamu lakukan lebih baik besok?",
+  "journalPrompt5": "Siapa yang membuat harimu lebih ringan?"
 }

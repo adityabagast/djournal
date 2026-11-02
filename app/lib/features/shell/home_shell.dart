@@ -176,8 +176,9 @@ class _HomeShellState extends ConsumerState<HomeShell> {
             context,
             initialAudioPath: rec.audioPath.isEmpty ? null : rec.audioPath,
             initialAudioDurationMs: rec.durationMs,
-            initialAudioTranscript:
-                rec.transcript.isEmpty ? null : rec.transcript,
+            initialAudioTranscript: rec.transcript.isEmpty
+                ? null
+                : rec.transcript,
           );
         }
     }
@@ -240,10 +241,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                       items: navItems,
                     ),
                     Expanded(
-                      child: IndexedStack(
-                        index: _index,
-                        children: _tabs,
-                      ),
+                      child: IndexedStack(index: _index, children: _tabs),
                     ),
                   ],
                 ),
@@ -337,9 +335,7 @@ class _DesktopSidebar extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: c.line),
                 ),
-                child: const Center(
-                  child: Mascot(MascotPose.halo, size: 26),
-                ),
+                child: const Center(child: Mascot(MascotPose.halo, size: 26)),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -372,7 +368,10 @@ class _DesktopSidebar extends StatelessWidget {
               onTap: onAdd,
               borderRadius: BorderRadius.circular(12),
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 11,
+                ),
                 child: Row(
                   children: [
                     Icon(Icons.add, color: c.onPrimary, size: 18),
@@ -468,17 +467,11 @@ class _DesktopNavItem extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: selected ? c.line : Colors.transparent,
-            ),
+            border: Border.all(color: selected ? c.line : Colors.transparent),
           ),
           child: Row(
             children: [
-              Icon(
-                icon,
-                size: 20,
-                color: selected ? c.primary : c.muted,
-              ),
+              Icon(icon, size: 20, color: selected ? c.primary : c.muted),
               const SizedBox(width: 10),
               Expanded(
                 child: Text(
@@ -500,8 +493,8 @@ class _DesktopNavItem extends StatelessWidget {
                     color: selected
                         ? c.primarySoft
                         : (c.isDark
-                            ? Colors.white10
-                            : Colors.black.withValues(alpha: 0.05)),
+                              ? Colors.white10
+                              : Colors.black.withValues(alpha: 0.05)),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: Text(
@@ -560,10 +553,7 @@ class _SyncStatusBadge extends StatelessWidget {
           Container(
             width: 6,
             height: 6,
-            decoration: BoxDecoration(
-              color: c.income,
-              shape: BoxShape.circle,
-            ),
+            decoration: BoxDecoration(color: c.income, shape: BoxShape.circle),
           ),
           const SizedBox(width: 5),
           Flexible(
@@ -587,10 +577,7 @@ class _SyncStatusBadge extends StatelessWidget {
         Container(
           width: 6,
           height: 6,
-          decoration: BoxDecoration(
-            color: c.faint,
-            shape: BoxShape.circle,
-          ),
+          decoration: BoxDecoration(color: c.faint, shape: BoxShape.circle),
         ),
         const SizedBox(width: 5),
         Flexible(
@@ -660,7 +647,7 @@ class _Dock extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(36),
         boxShadow: [
           BoxShadow(
             color: c.shadow.withValues(alpha: c.isDark ? 0.45 : 0.16),
@@ -675,7 +662,7 @@ class _Dock extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(36),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
@@ -685,10 +672,7 @@ class _Dock extends StatelessWidget {
               color: c.isDark
                   ? const Color(0xFF1E2421).withValues(alpha: 0.88)
                   : Colors.white.withValues(alpha: 0.86),
-              borderRadius: BorderRadius.circular(28),
-              border: Border.all(
-                color: context.colors.line.withValues(alpha: 0.9),
-              ),
+              borderRadius: BorderRadius.circular(36),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -703,10 +687,10 @@ class _Dock extends StatelessWidget {
                     shadowColor: c.isDark
                         ? Colors.black
                         : c.primary.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(27),
                     child: InkWell(
                       onTap: onAdd,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(27),
                       child: SizedBox(
                         width: 54,
                         height: 54,
@@ -751,14 +735,14 @@ class _DockTab extends StatelessWidget {
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 150),
           width: 64,
           height: 54,
           decoration: BoxDecoration(
             color: selected ? context.colors.primarySoft : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(24),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

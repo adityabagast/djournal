@@ -1481,4 +1481,45 @@ class AppLocalizationsId extends AppLocalizations {
   String subcategoryColorNote(String parent) {
     return 'Warna mengikuti kategori $parent.';
   }
+
+  @override
+  String get greetingMorning => 'Selamat pagi!';
+
+  @override
+  String get greetingNoon => 'Selamat siang!';
+
+  @override
+  String get greetingAfternoon => 'Selamat sore!';
+
+  @override
+  String get greetingEvening => 'Selamat malam!';
+
+  @override
+  String greetingCount(int count) {
+    return 'Sudah $count catatan hari ini. Mantap!';
+  }
+
+  @override
+  String get greetingEmpty => 'Belum ada catatan hari ini. Yuk mulai!';
+
+  @override
+  String get journalPromptTitle => 'Pertanyaan hari ini';
+
+  @override
+  String get journalPromptAction => 'Tulis jawaban ›';
+
+  @override
+  String get journalPrompt1 => 'Apa hal kecil yang bikin kamu senyum hari ini?';
+
+  @override
+  String get journalPrompt2 => 'Apa yang paling kamu syukuri hari ini?';
+
+  @override
+  String get journalPrompt3 => 'Pengeluaran apa hari ini yang paling worth it?';
+
+  @override
+  String get journalPrompt4 => 'Apa yang ingin kamu lakukan lebih baik besok?';
+
+  @override
+  String get journalPrompt5 => 'Siapa yang membuat harimu lebih ringan?';
 }

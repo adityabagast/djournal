@@ -2737,6 +2737,84 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Warna mengikuti kategori {parent}.'**
   String subcategoryColorNote(String parent);
+
+  /// No description provided for @greetingMorning.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat pagi!'**
+  String get greetingMorning;
+
+  /// No description provided for @greetingNoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat siang!'**
+  String get greetingNoon;
+
+  /// No description provided for @greetingAfternoon.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat sore!'**
+  String get greetingAfternoon;
+
+  /// No description provided for @greetingEvening.
+  ///
+  /// In id, this message translates to:
+  /// **'Selamat malam!'**
+  String get greetingEvening;
+
+  /// No description provided for @greetingCount.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah {count} catatan hari ini. Mantap!'**
+  String greetingCount(int count);
+
+  /// No description provided for @greetingEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada catatan hari ini. Yuk mulai!'**
+  String get greetingEmpty;
+
+  /// No description provided for @journalPromptTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Pertanyaan hari ini'**
+  String get journalPromptTitle;
+
+  /// No description provided for @journalPromptAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis jawaban ›'**
+  String get journalPromptAction;
+
+  /// No description provided for @journalPrompt1.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa hal kecil yang bikin kamu senyum hari ini?'**
+  String get journalPrompt1;
+
+  /// No description provided for @journalPrompt2.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang paling kamu syukuri hari ini?'**
+  String get journalPrompt2;
+
+  /// No description provided for @journalPrompt3.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengeluaran apa hari ini yang paling worth it?'**
+  String get journalPrompt3;
+
+  /// No description provided for @journalPrompt4.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang ingin kamu lakukan lebih baik besok?'**
+  String get journalPrompt4;
+
+  /// No description provided for @journalPrompt5.
+  ///
+  /// In id, this message translates to:
+  /// **'Siapa yang membuat harimu lebih ringan?'**
+  String get journalPrompt5;
 }
 
 class _AppLocalizationsDelegate

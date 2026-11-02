@@ -66,7 +66,8 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
         }
 
         final filteredEntries = [for (final list in groups.values) ...list];
-        final activeEntry = filteredEntries
+        final activeEntry =
+            filteredEntries
                 .where((e) => e.id == _selectedEntryId)
                 .firstOrNull ??
             filteredEntries.firstOrNull;
@@ -186,8 +187,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                     child: _JournalDetailPane(
                       entry: activeEntry,
                       snapshot: snap,
-                      onDeleted: () =>
-                          setState(() => _selectedEntryId = null),
+                      onDeleted: () => setState(() => _selectedEntryId = null),
                     ),
                   ),
                 ],
@@ -201,6 +201,10 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           children: [
             header,
             const SizedBox(height: 16),
+            if (entries.isNotEmpty) ...[
+              const _PromptCard(),
+              const SizedBox(height: 16),
+            ],
             weekStripWidget,
             const SizedBox(height: 16),
             if (_selected != null)
@@ -291,8 +295,8 @@ class _MasterEntryItem extends StatelessWidget {
           border: isSelected
               ? Border.all(color: c.primary.withValues(alpha: 0.3))
               : (showDivider
-                  ? Border(bottom: BorderSide(color: c.divider))
-                  : null),
+                    ? Border(bottom: BorderSide(color: c.divider))
+                    : null),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -342,11 +346,7 @@ class _MasterEntryItem extends StatelessWidget {
                 entry.body!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: c.muted,
-                  height: 1.3,
-                ),
+                style: TextStyle(fontSize: 12, color: c.muted, height: 1.3),
               ),
             ],
           ],
@@ -511,9 +511,7 @@ class _JournalDetailPane extends ConsumerWidget {
                       vertical: 4,
                     ),
                     decoration: BoxDecoration(
-                      color: c.isDark
-                          ? c.subtle
-                          : const Color(0xFFF1F5F2),
+                      color: c.isDark ? c.subtle : const Color(0xFFF1F5F2),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: c.line),
                     ),
@@ -557,6 +555,74 @@ class _JournalDetailPane extends ConsumerWidget {
 
 /// Senin–Minggu dari [monday]; titik hijau = ada entri di hari itu.
 /// Tap tanggal untuk memfilter, tap lagi untuk melepas filter.
+/// Pertanyaan harian untuk memancing tulisan, ganti tiap hari.
+class _PromptCard extends StatelessWidget {
+  const _PromptCard();
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final c = context.colors;
+    final now = DateTime.now();
+    final prompts = [
+      l.journalPrompt1,
+      l.journalPrompt2,
+      l.journalPrompt3,
+      l.journalPrompt4,
+      l.journalPrompt5,
+    ];
+    final day = now.difference(DateTime(now.year)).inDays;
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      padding: const EdgeInsets.fromLTRB(6, 12, 16, 0),
+      decoration: BoxDecoration(
+        color: c.primarySoft,
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          const Mascot(MascotPose.menulis, size: 82),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    l.journalPromptTitle,
+                    style: TextStyle(fontSize: 12, color: c.onPrimarySoft),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    prompts[day % prompts.length],
+                    style: TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.w600,
+                      height: 1.35,
+                      color: c.onPrimarySoft,
+                    ),
+                  ),
+                  TextButton(
+                    onPressed: () => EntryFormScreen.open(context),
+                    style: TextButton.styleFrom(
+                      padding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.compact,
+                      foregroundColor: c.onPrimarySoft,
+                    ),
+                    child: Text(l.journalPromptAction),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _WeekStrip extends StatelessWidget {
   const _WeekStrip({
     required this.monday,

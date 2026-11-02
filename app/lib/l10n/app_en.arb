@@ -455,5 +455,18 @@
   "subcategoryCount": "{count, plural, =1{1 subcategory} other{{count} subcategories}}",
   "newSubcategory": "New subcategory in {parent}",
   "editSubcategory": "Edit subcategory",
-  "subcategoryColorNote": "Uses the color of {parent}."
+  "subcategoryColorNote": "Uses the color of {parent}.",
+  "greetingMorning": "Good morning!",
+  "greetingNoon": "Good afternoon!",
+  "greetingAfternoon": "Good afternoon!",
+  "greetingEvening": "Good evening!",
+  "greetingCount": "{count, plural, =1{1 note today. Nice!} other{{count} notes today. Nice!}}",
+  "greetingEmpty": "No notes yet today. Let's start!",
+  "journalPromptTitle": "Today's question",
+  "journalPromptAction": "Write an answer ›",
+  "journalPrompt1": "What small thing made you smile today?",
+  "journalPrompt2": "What are you most grateful for today?",
+  "journalPrompt3": "Which purchase today was most worth it?",
+  "journalPrompt4": "What would you like to do better tomorrow?",
+  "journalPrompt5": "Who made your day a little lighter?"
 }

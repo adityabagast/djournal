@@ -261,7 +261,7 @@ class _KindTabs extends StatelessWidget {
       padding: const EdgeInsets.all(4),
       decoration: BoxDecoration(
         color: context.colors.track,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(24),
       ),
       child: Row(
         children: [
@@ -286,7 +286,7 @@ class _KindTabs extends StatelessWidget {
                       color: value == kind
                           ? context.colors.raised
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
                       boxShadow: value == kind
                           ? [
                               BoxShadow(

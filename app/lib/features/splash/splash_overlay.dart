@@ -321,7 +321,7 @@ class _CatPainter extends CustomPainter {
         ..close(),
     );
 
-    final body = RRect.fromLTRBR(34, 39, 74, 82, const Radius.circular(10));
+    final body = RRect.fromLTRBR(34, 39, 74, 82, const Radius.circular(14));
     canvas
       ..drawRRect(body, _fill(_paper))
       ..drawRRect(body, _stroke(2.2));

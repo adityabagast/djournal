@@ -1505,4 +1505,51 @@ class AppLocalizationsEn extends AppLocalizations {
   String subcategoryColorNote(String parent) {
     return 'Uses the color of $parent.';
   }
+
+  @override
+  String get greetingMorning => 'Good morning!';
+
+  @override
+  String get greetingNoon => 'Good afternoon!';
+
+  @override
+  String get greetingAfternoon => 'Good afternoon!';
+
+  @override
+  String get greetingEvening => 'Good evening!';
+
+  @override
+  String greetingCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count notes today. Nice!',
+      one: '1 note today. Nice!',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get greetingEmpty => 'No notes yet today. Let\'s start!';
+
+  @override
+  String get journalPromptTitle => 'Today\'s question';
+
+  @override
+  String get journalPromptAction => 'Write an answer ›';
+
+  @override
+  String get journalPrompt1 => 'What small thing made you smile today?';
+
+  @override
+  String get journalPrompt2 => 'What are you most grateful for today?';
+
+  @override
+  String get journalPrompt3 => 'Which purchase today was most worth it?';
+
+  @override
+  String get journalPrompt4 => 'What would you like to do better tomorrow?';
+
+  @override
+  String get journalPrompt5 => 'Who made your day a little lighter?';
 }

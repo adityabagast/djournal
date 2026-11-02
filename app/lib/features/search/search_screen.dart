@@ -39,10 +39,8 @@ class SearchButton extends StatelessWidget {
       tooltip: context.l10n.search,
       onPressed: () => SearchScreen.open(context),
       style: IconButton.styleFrom(
-        backgroundColor: context.colors.surface,
-        side: BorderSide(color: context.colors.line),
+        side: BorderSide.none,
         minimumSize: const Size(44, 44),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
       icon: const Icon(Icons.search, size: 22),
     );

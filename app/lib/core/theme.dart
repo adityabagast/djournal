@@ -214,32 +214,32 @@ class AppPalette extends ThemeExtension<AppPalette> {
     Color? primarySoft,
     Color? onPrimarySoft,
   }) => AppPalette(
-        isDark: isDark,
-        hero: hero ?? this.hero,
-        onHero: onHero ?? this.onHero,
-        onHeroMuted: onHeroMuted ?? this.onHeroMuted,
-        background: background,
-        surface: surface,
-        ink: ink,
-        muted: muted,
-        faint: faint,
-        line: line,
-        divider: divider,
-        track: track,
-        handle: handle,
-        subtle: subtle,
-        primary: primary ?? this.primary,
-        onPrimary: onPrimary ?? this.onPrimary,
-        primarySoft: primarySoft ?? this.primarySoft,
-        onPrimarySoft: onPrimarySoft ?? this.onPrimarySoft,
-        expense: expense,
-        income: income,
-        warning: warning,
-        warnSoft: warnSoft,
-        onWarnSoft: onWarnSoft,
-        highlight: highlight,
-        shadow: shadow,
-      );
+    isDark: isDark,
+    hero: hero ?? this.hero,
+    onHero: onHero ?? this.onHero,
+    onHeroMuted: onHeroMuted ?? this.onHeroMuted,
+    background: background,
+    surface: surface,
+    ink: ink,
+    muted: muted,
+    faint: faint,
+    line: line,
+    divider: divider,
+    track: track,
+    handle: handle,
+    subtle: subtle,
+    primary: primary ?? this.primary,
+    onPrimary: onPrimary ?? this.onPrimary,
+    primarySoft: primarySoft ?? this.primarySoft,
+    onPrimarySoft: onPrimarySoft ?? this.onPrimarySoft,
+    expense: expense,
+    income: income,
+    warning: warning,
+    warnSoft: warnSoft,
+    onWarnSoft: onWarnSoft,
+    highlight: highlight,
+    shadow: shadow,
+  );
 
   /// Palet dengan warna aksen [seed] menggantikan hijau bawaan: token hero
   /// dan primary berubah, warna semantic (expense/income/warning) dan
@@ -252,8 +252,9 @@ class AppPalette extends ThemeExtension<AppPalette> {
     final onHeroMuted = Color.lerp(onHero, seed, 0.2)!;
     if (!isDark) {
       // Terang: primary gelap sedikit supaya teks putih tetap terbaca.
-      final primary =
-          hsl.withLightness(hsl.lightness.clamp(0.22, 0.52).toDouble()).toColor();
+      final primary = hsl
+          .withLightness(hsl.lightness.clamp(0.22, 0.52).toDouble())
+          .toColor();
       return copyWith(
         hero: seed,
         onHero: onHero,
@@ -323,15 +324,10 @@ TextStyle buttonTextStyle(BuildContext context, TextStyle overrides) =>
 /// Membangun tema untuk [brightness] dengan warna aksen [accent]
 /// (bawaan: hijau sage [AppColors.hero]).
 ThemeData buildTheme(Brightness brightness, {Color accent = AppColors.hero}) {
-  final c = (brightness == Brightness.dark
-          ? AppPalette.dark
-          : AppPalette.light)
+  final c = (brightness == Brightness.dark ? AppPalette.dark : AppPalette.light)
       .withAccent(accent);
-  final scheme =
-      ColorScheme.fromSeed(
-        seedColor: c.hero,
-        brightness: brightness,
-      ).copyWith(
+  final scheme = ColorScheme.fromSeed(seedColor: c.hero, brightness: brightness)
+      .copyWith(
         primary: c.primary,
         onPrimary: c.onPrimary,
         primaryContainer: c.primarySoft,
@@ -360,9 +356,10 @@ ThemeData buildTheme(Brightness brightness, {Color accent = AppColors.hero}) {
     extensions: [c],
   );
   final text = base.textTheme.apply(bodyColor: c.ink, displayColor: c.ink);
-  final inputBorder = OutlineInputBorder(
-    borderRadius: const BorderRadius.all(Radius.circular(12)),
-    borderSide: BorderSide(color: c.line),
+  // Isian bergaya lembut: latar sedikit lebih gelap, tanpa garis tepi.
+  const inputBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.all(Radius.circular(16)),
+    borderSide: BorderSide.none,
   );
   return base.copyWith(
     textTheme: text,
@@ -377,6 +374,9 @@ ThemeData buildTheme(Brightness brightness, {Color accent = AppColors.hero}) {
     bottomSheetTheme: BottomSheetThemeData(
       backgroundColor: c.surface,
       surfaceTintColor: Colors.transparent,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+      ),
     ),
     popupMenuTheme: PopupMenuThemeData(
       color: c.surface,
@@ -384,23 +384,47 @@ ThemeData buildTheme(Brightness brightness, {Color accent = AppColors.hero}) {
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: c.surface,
+      fillColor: c.subtle,
       border: inputBorder,
       enabledBorder: inputBorder,
+      disabledBorder: inputBorder,
       focusedBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(12)),
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
         borderSide: BorderSide(color: c.primary, width: 1.5),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 14),
+      errorBorder: OutlineInputBorder(
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        borderSide: BorderSide(color: c.expense),
+      ),
+      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     ),
+    // Tombol berbentuk kapsul.
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(
         backgroundColor: c.primary,
         foregroundColor: c.onPrimary,
         minimumSize: const Size(0, 44),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: const StadiumBorder(),
         textStyle: text.labelLarge?.copyWith(fontWeight: FontWeight.w600),
       ),
+    ),
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: OutlinedButton.styleFrom(
+        minimumSize: const Size(0, 44),
+        shape: const StadiumBorder(),
+        side: BorderSide(color: c.line),
+        textStyle: text.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+      ),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: TextButton.styleFrom(
+        shape: const StadiumBorder(),
+        textStyle: text.labelLarge?.copyWith(fontWeight: FontWeight.w600),
+      ),
+    ),
+    chipTheme: ChipThemeData(
+      shape: const StadiumBorder(),
+      side: BorderSide(color: c.line),
     ),
     switchTheme: SwitchThemeData(
       thumbColor: WidgetStateProperty.resolveWith(
@@ -413,30 +437,58 @@ ThemeData buildTheme(Brightness brightness, {Color accent = AppColors.hero}) {
   );
 }
 
-/// Kartu bergaris tipis, dipakai di hampir semua layar.
+/// Bayangan halus kartu di mode terang; mode gelap memakai garis tipis
+/// karena bayangan tidak terlihat di latar gelap.
+List<BoxShadow>? cardShadow(AppPalette c) => c.isDark
+    ? null
+    : const [
+        BoxShadow(
+          color: Color(0x0A1B1F1D),
+          blurRadius: 2,
+          offset: Offset(0, 1),
+        ),
+        BoxShadow(
+          color: Color(0x0F1B1F1D),
+          blurRadius: 20,
+          offset: Offset(0, 6),
+        ),
+      ];
+
+/// Kartu tanpa garis tepi dengan bayangan halus, dipakai di hampir semua
+/// layar.
 class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(16),
+    this.padding = const EdgeInsets.all(18),
   });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
 
+  static const radius = 24.0;
+
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
-    return Material(
-      color: c.surface,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: BorderSide(color: c.line),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius),
+        boxShadow: cardShadow(c),
       ),
-      child: Container(
-        width: double.infinity,
-        padding: padding,
-        child: child,
+      child: Material(
+        color: c.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius),
+          side: c.isDark
+              ? BorderSide(color: Colors.white.withValues(alpha: 0.05))
+              : BorderSide.none,
+        ),
+        child: Container(
+          width: double.infinity,
+          padding: padding,
+          child: child,
+        ),
       ),
     );
   }

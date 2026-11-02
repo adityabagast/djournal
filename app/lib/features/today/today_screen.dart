@@ -93,7 +93,10 @@ class TodayScreen extends ConsumerWidget {
                             InkWell(
                               onTap: () => ref
                                   .read(settingsRepositoryProvider)
-                                  .set('hide_amounts', (!hideAmounts).toString()),
+                                  .set(
+                                    'hide_amounts',
+                                    (!hideAmounts).toString(),
+                                  ),
                               borderRadius: BorderRadius.circular(10),
                               child: Padding(
                                 padding: const EdgeInsets.all(2),
@@ -153,7 +156,10 @@ class TodayScreen extends ConsumerWidget {
                   l.budgetUsage(
                     DateFormat('MMMM', context.localeTag).format(now),
                     (monthOut * 100 / budget).round(),
-                    rupiah((budget - monthOut).clamp(0, budget), hide: hideAmounts),
+                    rupiah(
+                      (budget - monthOut).clamp(0, budget),
+                      hide: hideAmounts,
+                    ),
                   ),
                   style: t.bodySmall?.copyWith(
                     color: context.colors.muted,
@@ -187,9 +193,7 @@ class TodayScreen extends ConsumerWidget {
                       foregroundColor: context.colors.primary,
                       minimumSize: const Size(0, 36),
                       padding: const EdgeInsets.symmetric(horizontal: 14),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+                      shape: const StadiumBorder(),
                       textStyle: buttonTextStyle(
                         context,
                         const TextStyle(
@@ -235,15 +239,13 @@ class TodayScreen extends ConsumerWidget {
                     IconButton.outlined(
                       tooltip: l.settings,
                       onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => const SettingsScreen(),
+                        ),
                       ),
                       style: IconButton.styleFrom(
-                        backgroundColor: context.colors.surface,
-                        side: BorderSide(color: context.colors.line),
+                        side: BorderSide.none,
                         minimumSize: const Size(44, 44),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
                       ),
                       icon: const Icon(Icons.tune, size: 22),
                     ),
@@ -251,6 +253,8 @@ class TodayScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 12),
+            _GreetingCard(now: now, count: timeline.length),
+            const SizedBox(height: 16),
             BudgetWarningBanner(snapshot: snap, now: now),
             if (context.isWide)
               Row(
@@ -286,10 +290,7 @@ class TodayScreen extends ConsumerWidget {
                           hideAmounts: hideAmounts,
                         ),
                         const SizedBox(height: 16),
-                        _TodayTipCard(
-                          todayOut: todayOut,
-                          budget: budget,
-                        ),
+                        _TodayTipCard(todayOut: todayOut, budget: budget),
                       ],
                     ),
                   ),
@@ -317,11 +318,66 @@ class TodayScreen extends ConsumerWidget {
   }
 }
 
+/// Sapaan maskot di atas Hari Ini: salam sesuai jam dan jumlah catatan.
+class _GreetingCard extends StatelessWidget {
+  const _GreetingCard({required this.now, required this.count});
+
+  final DateTime now;
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final c = context.colors;
+    final greeting = switch (now.hour) {
+      < 11 => l.greetingMorning,
+      < 15 => l.greetingNoon,
+      < 18 => l.greetingAfternoon,
+      _ => l.greetingEvening,
+    };
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      padding: const EdgeInsets.fromLTRB(8, 14, 18, 0),
+      decoration: BoxDecoration(
+        color: c.primarySoft,
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Mascot(count == 0 ? MascotPose.tidur : MascotPose.halo, size: 86),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(bottom: 18),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    greeting,
+                    style: TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w700,
+                      color: c.onPrimarySoft,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    count == 0 ? l.greetingEmpty : l.greetingCount(count),
+                    style: TextStyle(fontSize: 13, color: c.onPrimarySoft),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class _TodayWalletsCard extends StatelessWidget {
-  const _TodayWalletsCard({
-    required this.snapshot,
-    required this.hideAmounts,
-  });
+  const _TodayWalletsCard({required this.snapshot, required this.hideAmounts});
 
   final MoneySnapshot snapshot;
   final bool hideAmounts;
@@ -346,7 +402,10 @@ class _TodayWalletsCard extends StatelessWidget {
               TextButton(
                 onPressed: () => WalletsScreen.open(context),
                 style: TextButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   minimumSize: const Size(0, 30),
                   textStyle: const TextStyle(
                     fontSize: 12,
@@ -389,8 +448,8 @@ class _TodayWalletsCard extends StatelessWidget {
                         w.type == 'cash'
                             ? Icons.payments_outlined
                             : (w.type == 'bank'
-                                ? Icons.account_balance_outlined
-                                : Icons.phone_android_outlined),
+                                  ? Icons.account_balance_outlined
+                                  : Icons.phone_android_outlined),
                         size: 18,
                         color: c.onPrimarySoft,
                       ),
@@ -435,10 +494,7 @@ class _TodayWalletsCard extends StatelessWidget {
 }
 
 class _TodayTipCard extends StatelessWidget {
-  const _TodayTipCard({
-    required this.todayOut,
-    required this.budget,
-  });
+  const _TodayTipCard({required this.todayOut, required this.budget});
 
   final int todayOut;
   final int budget;
@@ -477,11 +533,7 @@ class _TodayTipCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   message,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: c.muted,
-                    height: 1.4,
-                  ),
+                  style: TextStyle(fontSize: 12, color: c.muted, height: 1.4),
                 ),
               ],
             ),
