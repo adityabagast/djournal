@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.12.0 — 2026-11-02
+
+**Baru**
+- **Cek update di dalam app**: sekali sehari (saat ada internet) Nyawtat membaca rilis terbaru di GitHub. Kalau ada versi baru, muncul kartu di Hari Ini: unduh di dalam app dengan progres, file dicek keasliannya (sha256), lalu tinggal ketuk **Pasang sekarang**.
+- **Apa yang baru?**: catatan rilis bisa dibaca sebelum mengunduh.
+- **Pengaturan › Tentang**: versi app, tombol **Cek update**, sakelar cek otomatis, riwayat versi, dan tautan jadi tester. Versi di Pengaturan kini selalu sesuai versi terpasang (sebelumnya tertulis 0.9.0).
+
+**Izin baru**
+- `REQUEST_INSTALL_PACKAGES`: supaya update yang diunduh bisa dibuka di installer Android. Android tetap meminta konfirmasi untuk setiap pemasangan, dan Nyawtat hanya membuka file dari rilis resminya sendiri.
+
+**Privasi**
+- Cek update hanya membaca daftar rilis publik di GitHub; tidak ada data pribadi yang dikirim. Bisa dimatikan di Pengaturan › Tentang.
+
 ## 0.11.0 — 2026-11-02
 
 **Baru**
