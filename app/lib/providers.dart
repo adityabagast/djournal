@@ -9,4 +9,5 @@ export 'providers/journal_providers.dart';
 export 'providers/money_providers.dart';
 export 'providers/settings_providers.dart';
 export 'providers/streak_providers.dart';
+export 'providers/update_providers.dart';
 export 'providers/wishlist_providers.dart';

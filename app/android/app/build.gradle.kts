@@ -88,3 +88,8 @@ kotlin {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // FileProvider untuk membuka APK update di installer Android.
+    implementation("androidx.core:core:1.13.1")
+}

@@ -5,6 +5,7 @@ import '../../core/theme.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../account/account_card.dart';
+import 'about_section.dart';
 import 'appearance_section.dart';
 import 'data_section.dart';
 import 'security_section.dart';
@@ -12,9 +13,9 @@ import 'security_section.dart';
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  static Future<void> open(BuildContext context) => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => const SettingsScreen()),
-      );
+  static Future<void> open(BuildContext context) =>
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (_) => const SettingsScreen()));
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -106,12 +107,8 @@ class SettingsScreen extends ConsumerWidget {
           sectionTitle(l.data),
           const DataSection(),
           const SizedBox(height: 20),
-          Center(
-            child: Text(
-              l.versionLabel('0.9.0'),
-              style: t.bodySmall?.copyWith(color: context.colors.muted),
-            ),
-          ),
+          sectionTitle(l.aboutTitle),
+          const AboutSection(),
         ],
       ),
     );

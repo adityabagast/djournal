@@ -1,7 +1,7 @@
 name: djournal
 description: "Jurnal harian dan catatan keuangan"
 publish_to: 'none'
-version: 0.11.0+14
+version: 0.12.0+15
 
 environment:
   sdk: ^3.13.5
@@ -28,6 +28,7 @@ dependencies:
   intl: ^0.20.3
   just_audio: ^0.10.6
   local_auth: ^3.0.2
+  package_info_plus: ^10.2.2
   path: ^1.9.1
   path_provider: ^2.1.6
   record: ^7.1.2

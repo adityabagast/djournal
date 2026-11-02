@@ -10,6 +10,7 @@ import '../../core/platform/platform_info.dart';
 import '../../core/theme.dart';
 import '../../data/home_widget_sync.dart';
 import '../../data/sync/account_controller.dart';
+import '../../data/update/update_controller.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
 import '../journal/entry_form_screen.dart';
@@ -47,6 +48,8 @@ class _HomeShellState extends ConsumerState<HomeShell> {
       onResume: () => ref.read(accountProvider.notifier).sync(),
     );
     if (PlatformInfo.isAndroid) {
+      // Cek versi baru di GitHub (paling sering sekali sehari, diam kalau offline).
+      ref.read(updateProvider.notifier).autoCheck();
       ref.read(homeWidgetSyncProvider);
       HomeWidget.initiallyLaunchedFromHomeWidget().then(_openFromWidget);
       _widgetClicks = HomeWidget.widgetClicked.listen(_openFromWidget);

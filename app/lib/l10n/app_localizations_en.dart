@@ -1552,4 +1552,136 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get journalPrompt5 => 'Who made your day a little lighter?';
+
+  @override
+  String get updateAvailableTitle => 'A new version is here!';
+
+  @override
+  String updateAvailableBody(String version, String size) {
+    return 'Nyawtat $version is available$size. Your data stays safe when updating.';
+  }
+
+  @override
+  String get updateDownload => 'Download';
+
+  @override
+  String get updateWhatsNew => 'What\'s new?';
+
+  @override
+  String get updateLater => 'Later';
+
+  @override
+  String updateDownloading(String version) {
+    return 'Downloading $version…';
+  }
+
+  @override
+  String updateDownloadProgress(String done, String total) {
+    return '$done / $total · you can keep using the app';
+  }
+
+  @override
+  String get updateCancel => 'Cancel';
+
+  @override
+  String get updateReadyTitle => 'Ready to install!';
+
+  @override
+  String get updateReadyBody =>
+      'The file has been verified. Installing takes just a few seconds.';
+
+  @override
+  String get updateInstallNow => 'Install now';
+
+  @override
+  String updateWhatsNewTitle(String version) {
+    return 'What\'s new in $version';
+  }
+
+  @override
+  String updateReleased(String date) {
+    return 'Released $date';
+  }
+
+  @override
+  String get updateInstallHint =>
+      'Downloaded inside the app, then Android asks you to confirm the install. The first time, allow \"Install unknown apps\" for Nyawtat. Your data stays safe.';
+
+  @override
+  String get updateDownloadAndInstall => 'Download & install';
+
+  @override
+  String get updateOpenRelease => 'Open release page';
+
+  @override
+  String get updateRemindLater => 'Remind me later';
+
+  @override
+  String get updateErrorNetwork =>
+      'Download failed. Check your internet and try again.';
+
+  @override
+  String get updateErrorChecksum =>
+      'The update file doesn\'t match the official release, so it wasn\'t installed.';
+
+  @override
+  String get updateErrorPermission =>
+      'Allow Nyawtat to install apps, then tap Install now again.';
+
+  @override
+  String get updateErrorSource =>
+      'The update file isn\'t from an official Nyawtat release.';
+
+  @override
+  String get aboutTitle => 'About';
+
+  @override
+  String aboutVersion(String version, String build) {
+    return 'Version $version ($build)';
+  }
+
+  @override
+  String updateLastChecked(String when) {
+    return 'Last checked: $when';
+  }
+
+  @override
+  String get updateCheckNow => 'Check for updates';
+
+  @override
+  String get updateChecking => 'Nyaw is checking…';
+
+  @override
+  String updateVersionAvailable(String version) {
+    return 'Version $version available';
+  }
+
+  @override
+  String get updateUpToDate => 'You\'re on the latest version';
+
+  @override
+  String get updateCheckFailed =>
+      'Couldn\'t check. Check your internet connection.';
+
+  @override
+  String get updateAuto => 'Check for updates automatically';
+
+  @override
+  String get updateAutoSub => 'Once a day when online';
+
+  @override
+  String get updatePrivacyNote =>
+      'Nyawtat only reads the release list on GitHub. No personal data is sent.';
+
+  @override
+  String get aboutReleases => 'Version history';
+
+  @override
+  String get aboutTester => 'Become a tester';
+
+  @override
+  String get aboutTesterSub => 'Get new versions first';
+
+  @override
+  String get updateSnoozed => 'Okay! Nyaw will remind you tomorrow.';
 }

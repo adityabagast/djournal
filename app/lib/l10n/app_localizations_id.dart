@@ -1522,4 +1522,134 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get journalPrompt5 => 'Siapa yang membuat harimu lebih ringan?';
+
+  @override
+  String get updateAvailableTitle => 'Ada versi baru!';
+
+  @override
+  String updateAvailableBody(String version, String size) {
+    return 'Nyawtat $version sudah tersedia$size. Datamu tetap aman saat update.';
+  }
+
+  @override
+  String get updateDownload => 'Unduh';
+
+  @override
+  String get updateWhatsNew => 'Apa yang baru?';
+
+  @override
+  String get updateLater => 'Nanti saja';
+
+  @override
+  String updateDownloading(String version) {
+    return 'Mengunduh $version…';
+  }
+
+  @override
+  String updateDownloadProgress(String done, String total) {
+    return '$done / $total · app tetap bisa dipakai';
+  }
+
+  @override
+  String get updateCancel => 'Batalkan';
+
+  @override
+  String get updateReadyTitle => 'Siap dipasang!';
+
+  @override
+  String get updateReadyBody =>
+      'File sudah dicek keasliannya. Pemasangan cuma butuh beberapa detik.';
+
+  @override
+  String get updateInstallNow => 'Pasang sekarang';
+
+  @override
+  String updateWhatsNewTitle(String version) {
+    return 'Apa yang baru di $version';
+  }
+
+  @override
+  String updateReleased(String date) {
+    return 'Dirilis $date';
+  }
+
+  @override
+  String get updateInstallHint =>
+      'Diunduh di dalam app, lalu Android akan minta konfirmasi pemasangan. Pemasangan pertama minta izin \"Instal aplikasi tak dikenal\" untuk Nyawtat. Datamu tetap aman.';
+
+  @override
+  String get updateDownloadAndInstall => 'Unduh & pasang';
+
+  @override
+  String get updateOpenRelease => 'Buka halaman rilis';
+
+  @override
+  String get updateRemindLater => 'Ingatkan nanti';
+
+  @override
+  String get updateErrorNetwork =>
+      'Gagal mengunduh. Periksa internet lalu coba lagi.';
+
+  @override
+  String get updateErrorChecksum =>
+      'File update tidak cocok dengan rilis resmi, jadi tidak dipasang.';
+
+  @override
+  String get updateErrorPermission =>
+      'Izinkan Nyawtat memasang aplikasi, lalu ketuk Pasang sekarang lagi.';
+
+  @override
+  String get updateErrorSource => 'File update bukan dari rilis resmi Nyawtat.';
+
+  @override
+  String get aboutTitle => 'Tentang';
+
+  @override
+  String aboutVersion(String version, String build) {
+    return 'Versi $version ($build)';
+  }
+
+  @override
+  String updateLastChecked(String when) {
+    return 'Terakhir dicek: $when';
+  }
+
+  @override
+  String get updateCheckNow => 'Cek update';
+
+  @override
+  String get updateChecking => 'Nyaw sedang mengecek…';
+
+  @override
+  String updateVersionAvailable(String version) {
+    return 'Versi $version tersedia';
+  }
+
+  @override
+  String get updateUpToDate => 'Sudah versi terbaru';
+
+  @override
+  String get updateCheckFailed => 'Gagal mengecek. Periksa koneksi internet.';
+
+  @override
+  String get updateAuto => 'Cek update otomatis';
+
+  @override
+  String get updateAutoSub => 'Sekali sehari saat ada internet';
+
+  @override
+  String get updatePrivacyNote =>
+      'Nyawtat hanya membaca daftar rilis di GitHub. Tidak ada data pribadi yang dikirim.';
+
+  @override
+  String get aboutReleases => 'Riwayat versi';
+
+  @override
+  String get aboutTester => 'Jadi tester';
+
+  @override
+  String get aboutTesterSub => 'Dapat versi baru lebih dulu';
+
+  @override
+  String get updateSnoozed => 'Oke! Nyaw ingatkan lagi besok.';
 }

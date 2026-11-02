@@ -15,6 +15,7 @@ import '../money/tx_form_screen.dart';
 import '../money/wallets_screen.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
+import '../update/update_card.dart';
 import 'widgets/bills_card.dart';
 import 'widgets/budget_warning_banner.dart';
 import 'widgets/global_budget_card.dart';
@@ -253,6 +254,7 @@ class TodayScreen extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 12),
+            const UpdateCard(),
             _GreetingCard(now: now, count: timeline.length),
             const SizedBox(height: 16),
             BudgetWarningBanner(snapshot: snap, now: now),

@@ -2815,6 +2815,222 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Siapa yang membuat harimu lebih ringan?'**
   String get journalPrompt5;
+
+  /// No description provided for @updateAvailableTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada versi baru!'**
+  String get updateAvailableTitle;
+
+  /// No description provided for @updateAvailableBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Nyawtat {version} sudah tersedia{size}. Datamu tetap aman saat update.'**
+  String updateAvailableBody(String version, String size);
+
+  /// No description provided for @updateDownload.
+  ///
+  /// In id, this message translates to:
+  /// **'Unduh'**
+  String get updateDownload;
+
+  /// No description provided for @updateWhatsNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang baru?'**
+  String get updateWhatsNew;
+
+  /// No description provided for @updateLater.
+  ///
+  /// In id, this message translates to:
+  /// **'Nanti saja'**
+  String get updateLater;
+
+  /// No description provided for @updateDownloading.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengunduh {version}…'**
+  String updateDownloading(String version);
+
+  /// No description provided for @updateDownloadProgress.
+  ///
+  /// In id, this message translates to:
+  /// **'{done} / {total} · app tetap bisa dipakai'**
+  String updateDownloadProgress(String done, String total);
+
+  /// No description provided for @updateCancel.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan'**
+  String get updateCancel;
+
+  /// No description provided for @updateReadyTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Siap dipasang!'**
+  String get updateReadyTitle;
+
+  /// No description provided for @updateReadyBody.
+  ///
+  /// In id, this message translates to:
+  /// **'File sudah dicek keasliannya. Pemasangan cuma butuh beberapa detik.'**
+  String get updateReadyBody;
+
+  /// No description provided for @updateInstallNow.
+  ///
+  /// In id, this message translates to:
+  /// **'Pasang sekarang'**
+  String get updateInstallNow;
+
+  /// No description provided for @updateWhatsNewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang baru di {version}'**
+  String updateWhatsNewTitle(String version);
+
+  /// No description provided for @updateReleased.
+  ///
+  /// In id, this message translates to:
+  /// **'Dirilis {date}'**
+  String updateReleased(String date);
+
+  /// No description provided for @updateInstallHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Diunduh di dalam app, lalu Android akan minta konfirmasi pemasangan. Pemasangan pertama minta izin \"Instal aplikasi tak dikenal\" untuk Nyawtat. Datamu tetap aman.'**
+  String get updateInstallHint;
+
+  /// No description provided for @updateDownloadAndInstall.
+  ///
+  /// In id, this message translates to:
+  /// **'Unduh & pasang'**
+  String get updateDownloadAndInstall;
+
+  /// No description provided for @updateOpenRelease.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka halaman rilis'**
+  String get updateOpenRelease;
+
+  /// No description provided for @updateRemindLater.
+  ///
+  /// In id, this message translates to:
+  /// **'Ingatkan nanti'**
+  String get updateRemindLater;
+
+  /// No description provided for @updateErrorNetwork.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengunduh. Periksa internet lalu coba lagi.'**
+  String get updateErrorNetwork;
+
+  /// No description provided for @updateErrorChecksum.
+  ///
+  /// In id, this message translates to:
+  /// **'File update tidak cocok dengan rilis resmi, jadi tidak dipasang.'**
+  String get updateErrorChecksum;
+
+  /// No description provided for @updateErrorPermission.
+  ///
+  /// In id, this message translates to:
+  /// **'Izinkan Nyawtat memasang aplikasi, lalu ketuk Pasang sekarang lagi.'**
+  String get updateErrorPermission;
+
+  /// No description provided for @updateErrorSource.
+  ///
+  /// In id, this message translates to:
+  /// **'File update bukan dari rilis resmi Nyawtat.'**
+  String get updateErrorSource;
+
+  /// No description provided for @aboutTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Tentang'**
+  String get aboutTitle;
+
+  /// No description provided for @aboutVersion.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi {version} ({build})'**
+  String aboutVersion(String version, String build);
+
+  /// No description provided for @updateLastChecked.
+  ///
+  /// In id, this message translates to:
+  /// **'Terakhir dicek: {when}'**
+  String updateLastChecked(String when);
+
+  /// No description provided for @updateCheckNow.
+  ///
+  /// In id, this message translates to:
+  /// **'Cek update'**
+  String get updateCheckNow;
+
+  /// No description provided for @updateChecking.
+  ///
+  /// In id, this message translates to:
+  /// **'Nyaw sedang mengecek…'**
+  String get updateChecking;
+
+  /// No description provided for @updateVersionAvailable.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi {version} tersedia'**
+  String updateVersionAvailable(String version);
+
+  /// No description provided for @updateUpToDate.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah versi terbaru'**
+  String get updateUpToDate;
+
+  /// No description provided for @updateCheckFailed.
+  ///
+  /// In id, this message translates to:
+  /// **'Gagal mengecek. Periksa koneksi internet.'**
+  String get updateCheckFailed;
+
+  /// No description provided for @updateAuto.
+  ///
+  /// In id, this message translates to:
+  /// **'Cek update otomatis'**
+  String get updateAuto;
+
+  /// No description provided for @updateAutoSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Sekali sehari saat ada internet'**
+  String get updateAutoSub;
+
+  /// No description provided for @updatePrivacyNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Nyawtat hanya membaca daftar rilis di GitHub. Tidak ada data pribadi yang dikirim.'**
+  String get updatePrivacyNote;
+
+  /// No description provided for @aboutReleases.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat versi'**
+  String get aboutReleases;
+
+  /// No description provided for @aboutTester.
+  ///
+  /// In id, this message translates to:
+  /// **'Jadi tester'**
+  String get aboutTester;
+
+  /// No description provided for @aboutTesterSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Dapat versi baru lebih dulu'**
+  String get aboutTesterSub;
+
+  /// No description provided for @updateSnoozed.
+  ///
+  /// In id, this message translates to:
+  /// **'Oke! Nyaw ingatkan lagi besok.'**
+  String get updateSnoozed;
 }
 
 class _AppLocalizationsDelegate
