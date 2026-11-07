@@ -80,3 +80,33 @@ class MemoryGame {
     for (var k = 0; k < pairs; k++) ...[k, k],
   ]..shuffle(random);
 }
+
+/// Kantong kocok: mengeluarkan semua nomor 0..n-1 dalam urutan acak sebelum
+/// ada yang muncul lagi, dan tidak pernah memberi nomor yang sama dua kali
+/// berturut-turut (juga di antara dua putaran kantong).
+class ShuffleBag {
+  ShuffleBag(this.count, this._random) : assert(count > 0);
+
+  final int count;
+  final Random _random;
+  final List<int> _order = [];
+  int _pos = 0;
+  int? _last;
+
+  int next() {
+    if (_pos >= _order.length) {
+      _order
+        ..clear()
+        ..addAll(List.generate(count, (i) => i))
+        ..shuffle(_random);
+      if (count > 1 && _order.first == _last) {
+        final j = 1 + _random.nextInt(count - 1);
+        final t = _order[0];
+        _order[0] = _order[j];
+        _order[j] = t;
+      }
+      _pos = 0;
+    }
+    return _last = _order[_pos++];
+  }
+}

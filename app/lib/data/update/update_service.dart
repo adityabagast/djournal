@@ -10,7 +10,7 @@ import '../../domain/models/release_info.dart';
 class UpdateException implements Exception {
   const UpdateException(this.kind);
 
-  /// network | checksum | cancelled | source
+  /// network | notfound | ratelimit | server | checksum | cancelled | source
   final String kind;
 
   @override
@@ -42,7 +42,11 @@ class UpdateService {
     } on Exception {
       throw const UpdateException('network');
     }
-    if (res.statusCode != 200) throw const UpdateException('network');
+    if (res.statusCode == 404) throw const UpdateException('notfound');
+    if (res.statusCode == 403 || res.statusCode == 429) {
+      throw const UpdateException('ratelimit');
+    }
+    if (res.statusCode != 200) throw const UpdateException('server');
     return ReleaseInfo.fromGitHub(
       jsonDecode(res.body) as Map<String, dynamic>,
       abi: abi,

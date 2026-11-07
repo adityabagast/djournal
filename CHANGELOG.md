@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.13.1 — 2026-11-08
+
+**Perbaikan**
+- **Update di Pengaturan › Tentang**: saat mengunduh kini tampil progres (ukuran, bar, tombol Batalkan), tombol **Pasang sekarang** saat selesai, dan pesan error kalau gagal. Sebelumnya halaman itu tidak menunjukkan apa pun setelah Unduh ditekan.
+- **Pesan gagal cek update** kini sesuai penyebabnya: rilis belum ditemukan, terlalu sering mengecek, atau server GitHub bermasalah. "Periksa koneksi internet" hanya muncul kalau memang tidak ada koneksi.
+
+**Baru**
+- **Kocok ide** jauh lebih beragam: 24 pertanyaan per tema (sebelumnya 4), pertanyaan pertama acak, dan tidak ada yang muncul lagi sebelum semuanya keluar.
+
 ## 0.13.0 — 2026-11-07
 
 **Baru**

@@ -47,34 +47,91 @@ class AboutSection extends ConsumerWidget {
       ),
       UpdatePhase.available ||
       UpdatePhase.downloading ||
-      UpdatePhase.ready => Row(
+      UpdatePhase.ready => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const Mascot(MascotPose.senang, size: 40),
-          const SizedBox(width: 10),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          Row(
+            children: [
+              Mascot(
+                s.phase == UpdatePhase.downloading
+                    ? MascotPose.sinkron
+                    : MascotPose.senang,
+                size: 40,
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      s.phase == UpdatePhase.downloading
+                          ? l.updateDownloading(s.release!.version)
+                          : l.updateVersionAvailable(s.release!.version),
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    TextButton(
+                      onPressed: () => WhatsNewSheet.open(context),
+                      style: TextButton.styleFrom(
+                        padding: EdgeInsets.zero,
+                        visualDensity: VisualDensity.compact,
+                      ),
+                      child: Text(l.updateWhatsNew),
+                    ),
+                  ],
+                ),
+              ),
+              if (s.phase == UpdatePhase.available)
+                FilledButton(
+                  onPressed: ctrl.download,
+                  child: Text(l.updateDownload),
+                ),
+              if (s.phase == UpdatePhase.ready)
+                FilledButton(
+                  onPressed: ctrl.install,
+                  child: Text(l.updateInstallNow),
+                ),
+            ],
+          ),
+          if (s.phase == UpdatePhase.downloading) ...[
+            const SizedBox(height: 8),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(8),
+              child: LinearProgressIndicator(
+                // Tanpa ukuran file, tampilkan animasi tak tentu.
+                value: (s.release!.apkSize ?? 0) > 0 && s.progress > 0
+                    ? s.progress
+                    : null,
+                minHeight: 8,
+                backgroundColor: c.track,
+                color: c.primary,
+              ),
+            ),
+            const SizedBox(height: 6),
+            Row(
               children: [
-                Text(
-                  l.updateVersionAvailable(s.release!.version),
-                  style: const TextStyle(fontWeight: FontWeight.w600),
+                Expanded(
+                  child: Text(
+                    l.updateDownloadProgress(
+                      formatMegabytes(
+                        context,
+                        ((s.release!.apkSize ?? 0) * s.progress).round(),
+                      ),
+                      formatMegabytes(context, s.release!.apkSize ?? 0),
+                    ),
+                    style: subStyle,
+                  ),
                 ),
                 TextButton(
-                  onPressed: () => WhatsNewSheet.open(context),
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    visualDensity: VisualDensity.compact,
-                  ),
-                  child: Text(l.updateWhatsNew),
+                  onPressed: ctrl.cancelDownload,
+                  child: Text(l.updateCancel),
                 ),
               ],
             ),
-          ),
-          if (s.phase == UpdatePhase.available)
-            FilledButton(
-              onPressed: ctrl.download,
-              child: Text(l.updateDownload),
-            ),
+          ],
+          if (updateErrorText(l, s.error) case final error?) ...[
+            const SizedBox(height: 6),
+            Text(error, style: subStyle.copyWith(color: c.expense)),
+          ],
         ],
       ),
       UpdatePhase.upToDate => Row(
@@ -95,7 +152,7 @@ class AboutSection extends ConsumerWidget {
           Expanded(
             child: Text(
               s.error != null
-                  ? l.updateCheckFailed
+                  ? updateCheckErrorText(l, s.error)
                   : lastCheck == null
                   ? ''
                   : l.updateLastChecked(when(lastCheck)),

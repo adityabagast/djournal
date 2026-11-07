@@ -141,6 +141,11 @@ class UpdateController extends Notifier<UpdateState> {
       } else {
         state = UpdateState(phase: UpdatePhase.upToDate, release: release);
       }
+    } on UpdateException catch (e) {
+      state = UpdateState(
+        phase: UpdatePhase.idle,
+        error: silent ? null : e.kind,
+      );
     } on Exception {
       state = UpdateState(
         phase: UpdatePhase.idle,

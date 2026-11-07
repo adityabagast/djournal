@@ -4,6 +4,7 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 
 import '../../core/theme.dart';
+import '../../domain/models/games.dart';
 import '../../l10n/app_localizations.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
@@ -45,7 +46,10 @@ class PromptScreen extends StatefulWidget {
 class _PromptScreenState extends State<PromptScreen> {
   late final math.Random _random = widget.random ?? math.Random();
   PromptCategory _cat = PromptCategory.gratitude;
-  int _index = 0;
+  final _bags = <PromptCategory, ShuffleBag>{};
+
+  /// Pertanyaan yang tampil; null = belum dipilih (dipilih acak saat dibangun).
+  int? _index;
   bool _shuffling = false;
   Timer? _timer;
 
@@ -55,6 +59,9 @@ class _PromptScreenState extends State<PromptScreen> {
     super.dispose();
   }
 
+  ShuffleBag _bag(int count) =>
+      _bags.putIfAbsent(_cat, () => ShuffleBag(count, _random));
+
   void _shuffle(int count) {
     if (_shuffling) return;
     setState(() => _shuffling = true);
@@ -62,13 +69,13 @@ class _PromptScreenState extends State<PromptScreen> {
     _timer = Timer.periodic(const Duration(milliseconds: 90), (t) {
       ticks++;
       if (ticks < 6) {
-        setState(() => _index = (_index + 1) % count);
+        // Hanya efek kocokan; hasilnya baru ditentukan di akhir.
+        setState(() => _index = _random.nextInt(count));
         return;
       }
       t.cancel();
       setState(() {
-        // Selalu beda dari pertanyaan sebelumnya.
-        _index = (_index + 1 + _random.nextInt(count - 1)) % count;
+        _index = _bag(count).next();
         _shuffling = false;
       });
     });
@@ -80,7 +87,8 @@ class _PromptScreenState extends State<PromptScreen> {
     final c = context.colors;
     final t = Theme.of(context).textTheme;
     final questions = _cat.questions(l);
-    final question = questions[_index % questions.length];
+    _index ??= _bag(questions.length).next();
+    final question = questions[_index! % questions.length];
 
     return Scaffold(
       appBar: AppBar(
@@ -109,7 +117,7 @@ class _PromptScreenState extends State<PromptScreen> {
                       ? null
                       : (_) => setState(() {
                           _cat = cat;
-                          _index = 0;
+                          _index = null;
                         }),
                 ),
             ],

@@ -3461,26 +3461,44 @@ abstract class AppLocalizations {
   /// No description provided for @gamePromptGratitudeList.
   ///
   /// In id, this message translates to:
-  /// **'Hal kecil apa yang bikin kamu senyum hari ini?|Siapa yang ingin kamu ucapkan terima kasih hari ini?|Apa hal sederhana yang kamu syukuri minggu ini?|Makanan apa yang paling enak hari ini?'**
+  /// **'Hal kecil apa yang bikin kamu senyum hari ini?|Siapa yang ingin kamu ucapkan terima kasih hari ini, dan kenapa?|Apa hal sederhana yang kamu syukuri minggu ini?|Makanan apa yang paling enak hari ini?|Siapa orang yang kehadirannya bikin harimu lebih ringan?|Apa yang tubuhmu bisa lakukan hari ini dan layak disyukuri?|Kejadian tak terduga apa yang ternyata menyenangkan hari ini?|Barang apa di sekitarmu yang diam-diam sangat membantu hidupmu?|Kebaikan kecil apa yang kamu terima dari orang lain baru-baru ini?|Tempat mana yang membuatmu merasa tenang, dan kenapa kamu bersyukur punya itu?|Apa satu hal dari pagi tadi yang berjalan lebih baik dari dugaanmu?|Siapa guru atau teman yang pelajarannya masih kamu bawa sampai sekarang?|Kenangan lama apa yang masih membuatmu hangat saat diingat?|Masalah apa yang dulu terasa berat, tapi sekarang sudah lewat?|Apa yang kamu punya sekarang yang dulu hanya angan-angan?|Suara, aroma, atau pemandangan apa yang paling kamu nikmati hari ini?|Kesempatan apa yang datang minggu ini dan ingin kamu hargai?|Apa kemudahan kecil yang sering kamu lupakan, seperti air bersih atau kasur empuk?|Siapa yang diam-diam mendukungmu tanpa kamu minta?|Apa yang kamu pelajari dari kesalahan terakhirmu dan layak disyukuri?|Apa bagian dari rutinitasmu yang sebenarnya kamu sukai?|Pujian atau kata baik apa yang terakhir kamu dengar?|Apa yang membuatmu merasa cukup hari ini?|Kalau harus menulis surat terima kasih untuk dirimu sendiri, apa isinya?'**
   String get gamePromptGratitudeList;
 
   /// No description provided for @gamePromptReflectionList.
   ///
   /// In id, this message translates to:
-  /// **'Apa yang kamu pelajari hari ini?|Kalau diulang, apa yang ingin kamu lakukan beda hari ini?|Apa yang paling menguras energimu minggu ini?|Apa satu hal yang ingin kamu lepaskan?'**
+  /// **'Apa yang kamu pelajari hari ini?|Kalau diulang, apa yang ingin kamu lakukan beda hari ini?|Apa yang paling menguras energimu minggu ini?|Apa satu hal yang ingin kamu lepaskan?|Kapan terakhir kali kamu merasa benar-benar jadi dirimu sendiri?|Keputusan apa yang kamu tunda, dan apa yang membuatmu ragu?|Apa yang kamu hindari belakangan ini, dan kenapa?|Hal apa yang kamu lakukan hanya karena kebiasaan, bukan karena mau?|Apa yang sebenarnya kamu butuhkan sekarang, bukan sekadar inginkan?|Kata apa yang paling menggambarkan minggu ini, dan kenapa?|Kebiasaan kecil apa yang paling berpengaruh pada suasana hatimu?|Kapan kamu merasa paling bertenaga hari ini?|Percakapan apa yang masih terngiang di kepalamu?|Apa yang kamu sesali dan apa yang bisa kamu lakukan soal itu?|Batas apa yang perlu kamu tegaskan pada orang lain atau dirimu sendiri?|Apa yang membuatmu bangga bulan ini, sekecil apa pun?|Pekerjaan atau tugas apa yang terasa paling bermakna akhir-akhir ini?|Apa yang kamu cemaskan, dan seberapa besar kemungkinannya terjadi?|Kalau kamu menasihati dirimu setahun lalu, apa katamu?|Apa yang membuatmu merasa terburu-buru, dan apakah itu perlu?|Siapa yang perlu kamu hubungi atau mintai maaf?|Apa yang ingin kamu lakukan lebih sedikit mulai besok?|Pola apa yang kamu lihat saat uangmu terasa cepat habis?|Apa satu langkah kecil yang bisa kamu ambil minggu ini?'**
   String get gamePromptReflectionList;
 
   /// No description provided for @gamePromptRelaxList.
   ///
   /// In id, this message translates to:
-  /// **'Kalau hari ini sebuah lagu, judulnya apa?|Ceritakan satu obrolan lucu hari ini.|Kalau besok libur, kamu mau ke mana?|Apa yang bikin kamu tertawa terakhir kali?'**
+  /// **'Kalau hari ini sebuah lagu, judulnya apa?|Ceritakan satu obrolan lucu hari ini.|Kalau besok libur, kamu mau ke mana?|Apa yang bikin kamu tertawa terakhir kali?|Kalau hari ini sebuah film, genre dan judulnya apa?|Camilan apa yang paling pas menemani hari ini?|Kalau kamu punya satu jam kosong tanpa gangguan, mau diapakan?|Hewan apa yang paling menggambarkan suasana hatimu sekarang?|Warna apa yang cocok untuk harimu, dan kenapa?|Kalau bisa makan siang bersama siapa pun, kamu pilih siapa?|Apa kebiasaan anehmu yang diam-diam kamu sukai?|Lagu apa yang akhir-akhir ini sering kamu putar ulang?|Kalau kamu punya kekuatan super kecil tapi berguna, apa itu?|Tempat jajan favoritmu apa, dan pesananmu biasanya apa?|Ceritakan hal paling absurd yang kamu lihat minggu ini.|Kalau Nyaw bisa menemanimu seharian, kalian akan ngapain?|Apa hal paling nyaman yang bisa kamu lakukan saat hujan?|Kalau hidupmu punya soundtrack, lagu pembukanya apa?|Apa tontonan atau bacaan yang ingin kamu selesaikan?|Kalau kamu buka kedai kecil, kamu jual apa?|Kalau hari ini bebas anggaran tapi hanya boleh beli satu hal, apa yang kamu pilih?|Apa permainan masa kecil yang paling kamu rindukan?|Kalau besok bisa tidur sampai siang, mimpi apa yang kamu harap?|Apa yang membuat akhir pekan terasa seperti akhir pekan bagimu?'**
   String get gamePromptRelaxList;
 
   /// No description provided for @gamePromptDreamsList.
   ///
   /// In id, this message translates to:
-  /// **'Apa satu hal yang ingin kamu capai bulan ini?|Kalau uang bukan masalah, apa yang pertama kamu beli?|Kamu ingin jadi apa lima tahun lagi?|Apa kebiasaan baik yang ingin kamu mulai?'**
+  /// **'Apa satu hal yang ingin kamu capai bulan ini?|Kalau uang bukan masalah, apa yang pertama kamu beli?|Kamu ingin jadi apa lima tahun lagi?|Apa kebiasaan baik yang ingin kamu mulai?|Keterampilan apa yang ingin kamu kuasai tahun ini?|Kota atau negara mana yang ingin kamu kunjungi, dan kenapa?|Seperti apa hari yang sempurna menurutmu, dari bangun sampai tidur?|Apa yang ingin kamu tabung, dan berapa lama kamu rela menunggu?|Kalau kamu bisa mengganti satu hal di hidupmu sekarang, apa itu?|Rumah seperti apa yang kamu impikan?|Proyek kecil apa yang ingin kamu mulai sebelum akhir tahun?|Siapa yang ingin kamu temui atau hubungi lagi?|Apa yang ingin kamu ajarkan pada orang lain suatu hari nanti?|Kalau gagal itu mustahil, apa yang akan kamu coba?|Pengalaman apa yang ingin kamu rasakan sekali seumur hidup?|Apa yang ingin kamu ingat tentang tahun ini?|Buku apa yang ingin kamu baca atau tulis?|Seperti apa pekerjaan idealmu dalam satu kalimat?|Apa satu ketakutan yang ingin kamu taklukkan?|Kebiasaan buruk apa yang ingin kamu ganti dengan yang lebih baik?|Apa tujuan keuanganmu yang paling dekat?|Hal apa yang ingin kamu lakukan bersama keluarga atau teman tahun ini?|Apa yang ingin kamu katakan pada dirimu lima tahun lagi?|Apa satu mimpi lama yang masih ingin kamu hidupkan?'**
   String get gamePromptDreamsList;
+
+  /// No description provided for @updateCheckNotFound.
+  ///
+  /// In id, this message translates to:
+  /// **'Rilis belum ditemukan di GitHub. Coba lagi nanti.'**
+  String get updateCheckNotFound;
+
+  /// No description provided for @updateCheckRateLimited.
+  ///
+  /// In id, this message translates to:
+  /// **'Terlalu sering mengecek. Coba lagi beberapa menit lagi.'**
+  String get updateCheckRateLimited;
+
+  /// No description provided for @updateCheckServer.
+  ///
+  /// In id, this message translates to:
+  /// **'Server GitHub sedang bermasalah. Coba lagi nanti.'**
+  String get updateCheckServer;
 }
 
 class _AppLocalizationsDelegate

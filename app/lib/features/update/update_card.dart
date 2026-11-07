@@ -13,6 +13,15 @@ import 'whats_new_sheet.dart';
 String formatMegabytes(BuildContext context, int bytes) =>
     '${NumberFormat('#,##0.0', context.localeTag).format(bytes / 1048576)} MB';
 
+/// Pesan untuk kegagalan cek update ([UpdateState.error] saat idle).
+String updateCheckErrorText(AppLocalizations l, String? error) =>
+    switch (error) {
+      'notfound' => l.updateCheckNotFound,
+      'ratelimit' => l.updateCheckRateLimited,
+      'server' => l.updateCheckServer,
+      _ => l.updateCheckFailed,
+    };
+
 /// Pesan untuk [UpdateState.error].
 String? updateErrorText(AppLocalizations l, String? error) => switch (error) {
   'network' => l.updateErrorNetwork,

@@ -68,4 +68,22 @@ void main() {
       throwsA(isA<UpdateException>().having((e) => e.kind, 'kind', 'source')),
     );
   });
+
+  test('cek update: kode HTTP dibedakan, bukan semua "jaringan"', () async {
+    for (final (code, kind) in [
+      (404, 'notfound'),
+      (403, 'ratelimit'),
+      (429, 'ratelimit'),
+      (500, 'server'),
+    ]) {
+      final svc = UpdateService(
+        client: MockClient((_) async => http.Response('', code)),
+      );
+      await expectLater(
+        svc.fetchLatest(),
+        throwsA(isA<UpdateException>().having((e) => e.kind, 'kind', kind)),
+        reason: 'HTTP $code',
+      );
+    }
+  });
 }

@@ -6,6 +6,7 @@ import 'package:djournal/features/games/games_screen.dart';
 import 'package:djournal/features/games/memory_screen.dart';
 import 'package:djournal/features/games/prompt_screen.dart';
 import 'package:djournal/l10n/app_localizations.dart';
+import 'package:djournal/l10n/app_localizations_id.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -151,25 +152,53 @@ void main() {
     expect(find.bySemanticsLabel('Kartu terbuka'), findsOneWidget);
   });
 
-  testWidgets('kocok ide: pertanyaan berganti dan kategori bisa dipilih', (
+  test('kantong kocok: semua keluar sebelum ulang, tanpa kembar berurutan', () {
+    final bag = ShuffleBag(5, Random(4));
+    var last = -1;
+    for (var round = 0; round < 20; round++) {
+      final seen = <int>{};
+      for (var k = 0; k < 5; k++) {
+        final v = bag.next();
+        expect(v, isNot(last), reason: 'ronde $round urutan $k');
+        expect(
+          seen.add(v),
+          isTrue,
+          reason: 'tidak boleh ulang dalam satu ronde',
+        );
+        last = v;
+      }
+      expect(seen, {0, 1, 2, 3, 4});
+    }
+  });
+
+  testWidgets('kocok ide: tiap kocok pertanyaan beda, kategori bisa dipilih', (
     tester,
   ) async {
+    final l = AppLocalizationsId();
+    final gratitude = l.gamePromptGratitudeList.split('|');
+    final dreams = l.gamePromptDreamsList.split('|');
+    expect(gratitude.length, greaterThanOrEqualTo(20));
+
+    String shown(List<String> from) =>
+        from.singleWhere((q) => find.text(q).evaluate().isNotEmpty);
+
     await tester.pumpWidget(_wrap(PromptScreen(random: Random(2))));
     await tester.pumpAndSettle();
-    const first = 'Hal kecil apa yang bikin kamu senyum hari ini?';
-    expect(find.text(first), findsOneWidget);
 
-    await tester.tap(find.text('Kocok lagi'));
-    await tester.pump(const Duration(seconds: 1));
-    await tester.pumpAndSettle();
-    expect(find.text(first), findsNothing);
+    final seen = <String>[shown(gratitude)];
+    for (var i = 0; i < 6; i++) {
+      await tester.tap(find.text('Kocok lagi'));
+      await tester.pump(const Duration(seconds: 1));
+      await tester.pumpAndSettle();
+      final q = shown(gratitude);
+      expect(q, isNot(seen.last));
+      seen.add(q);
+    }
+    expect(seen.toSet().length, seen.length, reason: 'belum ada yang berulang');
 
     await tester.tap(find.text('Mimpi'));
     await tester.pump();
-    expect(
-      find.text('Apa satu hal yang ingin kamu capai bulan ini?'),
-      findsOneWidget,
-    );
+    expect(dreams, contains(shown(dreams)));
   });
 
   testWidgets('hub: empat permainan dan kartu rehat di Hari Ini', (
