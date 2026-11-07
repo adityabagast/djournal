@@ -22,6 +22,7 @@ class EntryFormScreen extends ConsumerStatefulWidget {
     super.key,
     this.existing,
     this.initialDate,
+    this.initialTitle,
     this.initialAudioPath,
     this.initialAudioDurationMs,
     this.initialAudioTranscript,
@@ -29,6 +30,9 @@ class EntryFormScreen extends ConsumerStatefulWidget {
 
   final JournalEntry? existing;
   final String? initialDate;
+
+  /// Judul awal entri baru (mis. dari pertanyaan permainan Kocok ide).
+  final String? initialTitle;
   final String? initialAudioPath;
   final int? initialAudioDurationMs;
   final String? initialAudioTranscript;
@@ -37,6 +41,7 @@ class EntryFormScreen extends ConsumerStatefulWidget {
     BuildContext context, {
     JournalEntry? existing,
     String? initialDate,
+    String? initialTitle,
     String? initialAudioPath,
     int? initialAudioDurationMs,
     String? initialAudioTranscript,
@@ -46,6 +51,7 @@ class EntryFormScreen extends ConsumerStatefulWidget {
         builder: (_) => EntryFormScreen(
           existing: existing,
           initialDate: initialDate,
+          initialTitle: initialTitle,
           initialAudioPath: initialAudioPath,
           initialAudioDurationMs: initialAudioDurationMs,
           initialAudioTranscript: initialAudioTranscript,
@@ -86,6 +92,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
     _audioPath = e?.audioPath ?? widget.initialAudioPath;
     _audioDurationMs = e?.audioDurationMs ?? widget.initialAudioDurationMs;
     _audioTranscript = e?.audioTranscript ?? widget.initialAudioTranscript;
+    if (e == null) _title.text = widget.initialTitle ?? '';
     if (e != null) {
       _title.text = e.title ?? '';
       _body.text = e.body ?? '';

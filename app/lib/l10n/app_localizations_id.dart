@@ -1652,4 +1652,252 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get updateSnoozed => 'Oke! Nyaw ingatkan lagi besok.';
+
+  @override
+  String get games => 'Permainan';
+
+  @override
+  String get gamesSub => 'Lagi penat? Rehat sebentar bareng Nyaw.';
+
+  @override
+  String get gameWheel => 'Roda putar';
+
+  @override
+  String get gameRps => 'Batu gunting kertas';
+
+  @override
+  String get gameWheelFood => 'Makan apa?';
+
+  @override
+  String get gameWheelDrink => 'Minum apa?';
+
+  @override
+  String get gameWheelYesNo => 'Ya / Tidak';
+
+  @override
+  String get gameWheelActivity => 'Mau ngapain?';
+
+  @override
+  String get gameWheelFoodDefaults =>
+      'Nasi padang|Bakso|Mie ayam|Soto|Ayam geprek|Gado-gado';
+
+  @override
+  String get gameWheelDrinkDefaults => 'Kopi susu|Es teh|Jus alpukat|Air putih';
+
+  @override
+  String get gameWheelYesNoDefaults => 'Ya|Tidak';
+
+  @override
+  String get gameWheelActivityDefaults =>
+      'Baca buku|Jalan sore|Nonton film|Tidur siang|Beres-beres';
+
+  @override
+  String get gameSpin => 'Putar';
+
+  @override
+  String get gameSpinAgain => 'Putar lagi';
+
+  @override
+  String get gameReady => 'Siap?';
+
+  @override
+  String get gameTapSpin => 'Ketuk Putar';
+
+  @override
+  String get gameSpinning => 'Muter… muter…';
+
+  @override
+  String get gameWait => 'Tunggu ya';
+
+  @override
+  String get gameNyawPicks => 'Nyaw pilih';
+
+  @override
+  String get gameRecordExpense => 'Catat pengeluaran';
+
+  @override
+  String get gameWheelItems => 'Isi roda';
+
+  @override
+  String gameWheelCount(int count, int max) {
+    return '$count dari maks $max';
+  }
+
+  @override
+  String get gameWheelAddHint => 'Tambah pilihan, mis. Bakso';
+
+  @override
+  String gameRemoveOption(String name) {
+    return 'Hapus $name';
+  }
+
+  @override
+  String get gameYou => 'Kamu';
+
+  @override
+  String get gameRock => 'Batu';
+
+  @override
+  String get gameScissors => 'Gunting';
+
+  @override
+  String get gamePaper => 'Kertas';
+
+  @override
+  String get gamePickHand => 'Pilih tanganmu';
+
+  @override
+  String get gameCounting => 'Batu… gunting… kertas!';
+
+  @override
+  String get gameWin => 'Kamu menang!';
+
+  @override
+  String get gameLose => 'Nyaw menang';
+
+  @override
+  String get gameTie => 'Seri, coba lagi';
+
+  @override
+  String get gameTieLabel => 'Seri';
+
+  @override
+  String get gameScore => 'Skor';
+
+  @override
+  String get gameResetScore => 'Ulang';
+
+  @override
+  String get gameHubTitle => 'Rehat dulu, yuk';
+
+  @override
+  String get gameHubHint =>
+      'Lagi penat? Main sebentar bareng Nyaw, nanti lanjut lagi.';
+
+  @override
+  String get gameHubFootnote =>
+      'Skor dan rekor tersimpan di HP-mu saja, tidak ikut tersinkron.';
+
+  @override
+  String get gameRest => 'Rehat sebentar';
+
+  @override
+  String get gameRestAll => 'Semua permainan';
+
+  @override
+  String get gameShortWheel => 'Roda';
+
+  @override
+  String get gameShortRps => 'Suit';
+
+  @override
+  String get gameShortMemory => 'Kartu';
+
+  @override
+  String get gameShortPrompt => 'Kocok ide';
+
+  @override
+  String get gameWheelDesc => 'Bingung mau makan apa? Biar roda yang pilih.';
+
+  @override
+  String get gameRpsDesc => 'Adu hoki lawan Nyaw, skor dihitung.';
+
+  @override
+  String get gameMemory => 'Memory kartu';
+
+  @override
+  String get gameMemoryDesc => 'Cocokkan pasangan pose Nyaw.';
+
+  @override
+  String get gameMemorySub => 'Cocokkan 6 pasang pose Nyaw.';
+
+  @override
+  String gameMemoryRecord(int moves) {
+    return 'Rekor $moves langkah';
+  }
+
+  @override
+  String get gameMoves => 'Langkah';
+
+  @override
+  String get gamePairs => 'Pasangan';
+
+  @override
+  String get gameBest => 'Rekor';
+
+  @override
+  String gameMemoryDone(int moves) {
+    return 'Selesai dalam $moves langkah';
+  }
+
+  @override
+  String gameMemoryNewBest(int moves) {
+    return 'Rekor baru: $moves langkah!';
+  }
+
+  @override
+  String gameMemoryBestLine(int moves) {
+    return 'Rekor terbaikmu $moves langkah.';
+  }
+
+  @override
+  String get gamePlayAgain => 'Main lagi';
+
+  @override
+  String get gameReshuffle => 'Acak ulang';
+
+  @override
+  String gameCardClosed(int n) {
+    return 'Kartu tertutup $n';
+  }
+
+  @override
+  String get gameCardOpen => 'Kartu terbuka';
+
+  @override
+  String get gamePrompt => 'Kocok pertanyaan';
+
+  @override
+  String get gamePromptDesc => 'Bingung mau nulis apa? Ambil satu ide.';
+
+  @override
+  String get gamePromptLabel => 'Pertanyaan untukmu';
+
+  @override
+  String get gamePromptShuffle => 'Kocok lagi';
+
+  @override
+  String get gamePromptWrite => 'Tulis jawabannya';
+
+  @override
+  String get gamePromptNote =>
+      'Pertanyaan dipakai sebagai judul jurnal baru, yang bisa kamu ubah. Tidak ada yang tersimpan sebelum kamu menekan Simpan.';
+
+  @override
+  String get gamePromptGratitude => 'Syukur';
+
+  @override
+  String get gamePromptReflection => 'Refleksi';
+
+  @override
+  String get gamePromptRelax => 'Santai';
+
+  @override
+  String get gamePromptDreams => 'Mimpi';
+
+  @override
+  String get gamePromptGratitudeList =>
+      'Hal kecil apa yang bikin kamu senyum hari ini?|Siapa yang ingin kamu ucapkan terima kasih hari ini?|Apa hal sederhana yang kamu syukuri minggu ini?|Makanan apa yang paling enak hari ini?';
+
+  @override
+  String get gamePromptReflectionList =>
+      'Apa yang kamu pelajari hari ini?|Kalau diulang, apa yang ingin kamu lakukan beda hari ini?|Apa yang paling menguras energimu minggu ini?|Apa satu hal yang ingin kamu lepaskan?';
+
+  @override
+  String get gamePromptRelaxList =>
+      'Kalau hari ini sebuah lagu, judulnya apa?|Ceritakan satu obrolan lucu hari ini.|Kalau besok libur, kamu mau ke mana?|Apa yang bikin kamu tertawa terakhir kali?';
+
+  @override
+  String get gamePromptDreamsList =>
+      'Apa satu hal yang ingin kamu capai bulan ini?|Kalau uang bukan masalah, apa yang pertama kamu beli?|Kamu ingin jadi apa lima tahun lagi?|Apa kebiasaan baik yang ingin kamu mulai?';
 }

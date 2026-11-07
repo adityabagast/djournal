@@ -3031,6 +3031,456 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Oke! Nyaw ingatkan lagi besok.'**
   String get updateSnoozed;
+
+  /// No description provided for @games.
+  ///
+  /// In id, this message translates to:
+  /// **'Permainan'**
+  String get games;
+
+  /// No description provided for @gamesSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Lagi penat? Rehat sebentar bareng Nyaw.'**
+  String get gamesSub;
+
+  /// No description provided for @gameWheel.
+  ///
+  /// In id, this message translates to:
+  /// **'Roda putar'**
+  String get gameWheel;
+
+  /// No description provided for @gameRps.
+  ///
+  /// In id, this message translates to:
+  /// **'Batu gunting kertas'**
+  String get gameRps;
+
+  /// No description provided for @gameWheelFood.
+  ///
+  /// In id, this message translates to:
+  /// **'Makan apa?'**
+  String get gameWheelFood;
+
+  /// No description provided for @gameWheelDrink.
+  ///
+  /// In id, this message translates to:
+  /// **'Minum apa?'**
+  String get gameWheelDrink;
+
+  /// No description provided for @gameWheelYesNo.
+  ///
+  /// In id, this message translates to:
+  /// **'Ya / Tidak'**
+  String get gameWheelYesNo;
+
+  /// No description provided for @gameWheelActivity.
+  ///
+  /// In id, this message translates to:
+  /// **'Mau ngapain?'**
+  String get gameWheelActivity;
+
+  /// No description provided for @gameWheelFoodDefaults.
+  ///
+  /// In id, this message translates to:
+  /// **'Nasi padang|Bakso|Mie ayam|Soto|Ayam geprek|Gado-gado'**
+  String get gameWheelFoodDefaults;
+
+  /// No description provided for @gameWheelDrinkDefaults.
+  ///
+  /// In id, this message translates to:
+  /// **'Kopi susu|Es teh|Jus alpukat|Air putih'**
+  String get gameWheelDrinkDefaults;
+
+  /// No description provided for @gameWheelYesNoDefaults.
+  ///
+  /// In id, this message translates to:
+  /// **'Ya|Tidak'**
+  String get gameWheelYesNoDefaults;
+
+  /// No description provided for @gameWheelActivityDefaults.
+  ///
+  /// In id, this message translates to:
+  /// **'Baca buku|Jalan sore|Nonton film|Tidur siang|Beres-beres'**
+  String get gameWheelActivityDefaults;
+
+  /// No description provided for @gameSpin.
+  ///
+  /// In id, this message translates to:
+  /// **'Putar'**
+  String get gameSpin;
+
+  /// No description provided for @gameSpinAgain.
+  ///
+  /// In id, this message translates to:
+  /// **'Putar lagi'**
+  String get gameSpinAgain;
+
+  /// No description provided for @gameReady.
+  ///
+  /// In id, this message translates to:
+  /// **'Siap?'**
+  String get gameReady;
+
+  /// No description provided for @gameTapSpin.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk Putar'**
+  String get gameTapSpin;
+
+  /// No description provided for @gameSpinning.
+  ///
+  /// In id, this message translates to:
+  /// **'Muter… muter…'**
+  String get gameSpinning;
+
+  /// No description provided for @gameWait.
+  ///
+  /// In id, this message translates to:
+  /// **'Tunggu ya'**
+  String get gameWait;
+
+  /// No description provided for @gameNyawPicks.
+  ///
+  /// In id, this message translates to:
+  /// **'Nyaw pilih'**
+  String get gameNyawPicks;
+
+  /// No description provided for @gameRecordExpense.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat pengeluaran'**
+  String get gameRecordExpense;
+
+  /// No description provided for @gameWheelItems.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi roda'**
+  String get gameWheelItems;
+
+  /// No description provided for @gameWheelCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} dari maks {max}'**
+  String gameWheelCount(int count, int max);
+
+  /// No description provided for @gameWheelAddHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah pilihan, mis. Bakso'**
+  String get gameWheelAddHint;
+
+  /// No description provided for @gameRemoveOption.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus {name}'**
+  String gameRemoveOption(String name);
+
+  /// No description provided for @gameYou.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu'**
+  String get gameYou;
+
+  /// No description provided for @gameRock.
+  ///
+  /// In id, this message translates to:
+  /// **'Batu'**
+  String get gameRock;
+
+  /// No description provided for @gameScissors.
+  ///
+  /// In id, this message translates to:
+  /// **'Gunting'**
+  String get gameScissors;
+
+  /// No description provided for @gamePaper.
+  ///
+  /// In id, this message translates to:
+  /// **'Kertas'**
+  String get gamePaper;
+
+  /// No description provided for @gamePickHand.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih tanganmu'**
+  String get gamePickHand;
+
+  /// No description provided for @gameCounting.
+  ///
+  /// In id, this message translates to:
+  /// **'Batu… gunting… kertas!'**
+  String get gameCounting;
+
+  /// No description provided for @gameWin.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamu menang!'**
+  String get gameWin;
+
+  /// No description provided for @gameLose.
+  ///
+  /// In id, this message translates to:
+  /// **'Nyaw menang'**
+  String get gameLose;
+
+  /// No description provided for @gameTie.
+  ///
+  /// In id, this message translates to:
+  /// **'Seri, coba lagi'**
+  String get gameTie;
+
+  /// No description provided for @gameTieLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Seri'**
+  String get gameTieLabel;
+
+  /// No description provided for @gameScore.
+  ///
+  /// In id, this message translates to:
+  /// **'Skor'**
+  String get gameScore;
+
+  /// No description provided for @gameResetScore.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulang'**
+  String get gameResetScore;
+
+  /// No description provided for @gameHubTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rehat dulu, yuk'**
+  String get gameHubTitle;
+
+  /// No description provided for @gameHubHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Lagi penat? Main sebentar bareng Nyaw, nanti lanjut lagi.'**
+  String get gameHubHint;
+
+  /// No description provided for @gameHubFootnote.
+  ///
+  /// In id, this message translates to:
+  /// **'Skor dan rekor tersimpan di HP-mu saja, tidak ikut tersinkron.'**
+  String get gameHubFootnote;
+
+  /// No description provided for @gameRest.
+  ///
+  /// In id, this message translates to:
+  /// **'Rehat sebentar'**
+  String get gameRest;
+
+  /// No description provided for @gameRestAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua permainan'**
+  String get gameRestAll;
+
+  /// No description provided for @gameShortWheel.
+  ///
+  /// In id, this message translates to:
+  /// **'Roda'**
+  String get gameShortWheel;
+
+  /// No description provided for @gameShortRps.
+  ///
+  /// In id, this message translates to:
+  /// **'Suit'**
+  String get gameShortRps;
+
+  /// No description provided for @gameShortMemory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu'**
+  String get gameShortMemory;
+
+  /// No description provided for @gameShortPrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Kocok ide'**
+  String get gameShortPrompt;
+
+  /// No description provided for @gameWheelDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Bingung mau makan apa? Biar roda yang pilih.'**
+  String get gameWheelDesc;
+
+  /// No description provided for @gameRpsDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Adu hoki lawan Nyaw, skor dihitung.'**
+  String get gameRpsDesc;
+
+  /// No description provided for @gameMemory.
+  ///
+  /// In id, this message translates to:
+  /// **'Memory kartu'**
+  String get gameMemory;
+
+  /// No description provided for @gameMemoryDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Cocokkan pasangan pose Nyaw.'**
+  String get gameMemoryDesc;
+
+  /// No description provided for @gameMemorySub.
+  ///
+  /// In id, this message translates to:
+  /// **'Cocokkan 6 pasang pose Nyaw.'**
+  String get gameMemorySub;
+
+  /// No description provided for @gameMemoryRecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekor {moves} langkah'**
+  String gameMemoryRecord(int moves);
+
+  /// No description provided for @gameMoves.
+  ///
+  /// In id, this message translates to:
+  /// **'Langkah'**
+  String get gameMoves;
+
+  /// No description provided for @gamePairs.
+  ///
+  /// In id, this message translates to:
+  /// **'Pasangan'**
+  String get gamePairs;
+
+  /// No description provided for @gameBest.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekor'**
+  String get gameBest;
+
+  /// No description provided for @gameMemoryDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai dalam {moves} langkah'**
+  String gameMemoryDone(int moves);
+
+  /// No description provided for @gameMemoryNewBest.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekor baru: {moves} langkah!'**
+  String gameMemoryNewBest(int moves);
+
+  /// No description provided for @gameMemoryBestLine.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekor terbaikmu {moves} langkah.'**
+  String gameMemoryBestLine(int moves);
+
+  /// No description provided for @gamePlayAgain.
+  ///
+  /// In id, this message translates to:
+  /// **'Main lagi'**
+  String get gamePlayAgain;
+
+  /// No description provided for @gameReshuffle.
+  ///
+  /// In id, this message translates to:
+  /// **'Acak ulang'**
+  String get gameReshuffle;
+
+  /// No description provided for @gameCardClosed.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu tertutup {n}'**
+  String gameCardClosed(int n);
+
+  /// No description provided for @gameCardOpen.
+  ///
+  /// In id, this message translates to:
+  /// **'Kartu terbuka'**
+  String get gameCardOpen;
+
+  /// No description provided for @gamePrompt.
+  ///
+  /// In id, this message translates to:
+  /// **'Kocok pertanyaan'**
+  String get gamePrompt;
+
+  /// No description provided for @gamePromptDesc.
+  ///
+  /// In id, this message translates to:
+  /// **'Bingung mau nulis apa? Ambil satu ide.'**
+  String get gamePromptDesc;
+
+  /// No description provided for @gamePromptLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Pertanyaan untukmu'**
+  String get gamePromptLabel;
+
+  /// No description provided for @gamePromptShuffle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kocok lagi'**
+  String get gamePromptShuffle;
+
+  /// No description provided for @gamePromptWrite.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis jawabannya'**
+  String get gamePromptWrite;
+
+  /// No description provided for @gamePromptNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Pertanyaan dipakai sebagai judul jurnal baru, yang bisa kamu ubah. Tidak ada yang tersimpan sebelum kamu menekan Simpan.'**
+  String get gamePromptNote;
+
+  /// No description provided for @gamePromptGratitude.
+  ///
+  /// In id, this message translates to:
+  /// **'Syukur'**
+  String get gamePromptGratitude;
+
+  /// No description provided for @gamePromptReflection.
+  ///
+  /// In id, this message translates to:
+  /// **'Refleksi'**
+  String get gamePromptReflection;
+
+  /// No description provided for @gamePromptRelax.
+  ///
+  /// In id, this message translates to:
+  /// **'Santai'**
+  String get gamePromptRelax;
+
+  /// No description provided for @gamePromptDreams.
+  ///
+  /// In id, this message translates to:
+  /// **'Mimpi'**
+  String get gamePromptDreams;
+
+  /// No description provided for @gamePromptGratitudeList.
+  ///
+  /// In id, this message translates to:
+  /// **'Hal kecil apa yang bikin kamu senyum hari ini?|Siapa yang ingin kamu ucapkan terima kasih hari ini?|Apa hal sederhana yang kamu syukuri minggu ini?|Makanan apa yang paling enak hari ini?'**
+  String get gamePromptGratitudeList;
+
+  /// No description provided for @gamePromptReflectionList.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang kamu pelajari hari ini?|Kalau diulang, apa yang ingin kamu lakukan beda hari ini?|Apa yang paling menguras energimu minggu ini?|Apa satu hal yang ingin kamu lepaskan?'**
+  String get gamePromptReflectionList;
+
+  /// No description provided for @gamePromptRelaxList.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau hari ini sebuah lagu, judulnya apa?|Ceritakan satu obrolan lucu hari ini.|Kalau besok libur, kamu mau ke mana?|Apa yang bikin kamu tertawa terakhir kali?'**
+  String get gamePromptRelaxList;
+
+  /// No description provided for @gamePromptDreamsList.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa satu hal yang ingin kamu capai bulan ini?|Kalau uang bukan masalah, apa yang pertama kamu beli?|Kamu ingin jadi apa lima tahun lagi?|Apa kebiasaan baik yang ingin kamu mulai?'**
+  String get gamePromptDreamsList;
 }
 
 class _AppLocalizationsDelegate

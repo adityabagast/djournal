@@ -200,10 +200,9 @@ class BillDetailSheet extends ConsumerWidget {
                 children: [
                   Expanded(
                     child: FilledButton(
-                      onPressed: () {
-                        Navigator.pop(context);
-                        _pay(context, ref);
-                      },
+                      // Sheet ditutup di dalam _pay setelah dibayar; kalau
+                      // ditutup dulu, context & ref-nya sudah mati.
+                      onPressed: () => _pay(context, ref),
                       child: const Text('Bayar'),
                     ),
                   ),
@@ -310,13 +309,16 @@ class BillDetailSheet extends ConsumerWidget {
     final walletId = selectedWalletId;
     if (ok != true || walletId == null) return;
 
+    if (!context.mounted) return;
+    final messenger = ScaffoldMessenger.of(context);
     final next = await ref.read(billRepositoryProvider).payBill(
           billId: bill.id,
           walletId: walletId,
         );
     if (context.mounted) {
+      Navigator.pop(context);
       final nextDue = next == null ? null : DateTime.tryParse(next);
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
           content: Text(
             nextDue == null

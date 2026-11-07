@@ -72,6 +72,12 @@ void main() {
       transactions: [tx],
     );
 
+    // Layar tinggi: kartu Rehat sebentar mendorong timeline ke bawah, dan
+    // ListView hanya membangun yang terlihat.
+    tester.view.physicalSize = const Size(800, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.reset);
+
     await tester.pumpWidget(
       ProviderScope(
         overrides: [

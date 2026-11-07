@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Tambah cepat</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd28f63f6270c6ede0c32193cdae89b5">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}
+.ph{--hero:#1F5F4E;--primary:#1F5F4E;--onprimary:#fff;--psoft:#DCEBE4;--onpsoft:#1F5F4E}
+</style>
+</helmet>
+<div class="ph {{mode}}" style="height: 844px; --hero: {{hero}}; --primary: {{primary}}; --onprimary: {{onprimary}}; --psoft: {{psoft}}; --onpsoft: {{onpsoft}}">
+<div class="body">
+<div class="hdr"><div class="t"><small>Rabu, 21 Oktober 2026</small><h2>Hari Ini</h2></div></div>
+<div class="ghostcard" style="height: 130px"></div>
+<div class="ghostcard" style="height: 200px"></div>
+<div class="ghostcard" style="height: 220px"></div>
+</div>
+<a href="Today.dc.html" class="veil" aria-label="Tutup"></a>
+<div class="sheet">
+<div class="grip"></div>
+<h3>Tambah cepat</h3>
+<a href="TxForm.dc.html" class="qa"><span class="av" style="background: var(--dangersoft); color: var(--expense)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="3"></rect><path d="M3 10h18M16 15h2"></path></svg></span><div><b>Catat transaksi</b><span>Pengeluaran, pemasukan, atau transfer</span></div></a>
+<a href="EntryForm.dc.html" class="qa"><span class="av"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3z"></path><path d="M5 17a3 3 0 013-3h10"></path></svg></span><div><b>Tulis jurnal</b><span>Cerita baru, jam dan mood opsional</span></div></a>
+<a href="Voice.dc.html" class="qa"><span class="av"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5 11a7 7 0 0014 0M12 18v3"></path></svg></span><div><b>Catatan suara</b><span>Rekam cerita &amp; transkripsi otomatis</span></div></a>
+<a href="Spin.dc.html" class="qa"><span class="av" style="background: var(--warnsoft); color: var(--warning)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 8h12a3 3 0 013 3l-1 5a2 2 0 01-3.5.8L15 15H9l-1.5 1.8A2 2 0 014 16l-1-5a3 3 0 013-3zM8 10.5v3M6.5 12h3M15.5 11.5h.01M17.5 13h.01"></path></svg></span><div><b>Main sebentar</b><span>Rehat dari penat: roda putar &amp; suit</span></div></a>
+<div style="display: flex; justify-content: center; padding-top: 4px">
+<a href="Today.dc.html" aria-label="Tutup" style="width: 52px; height: 52px; border-radius: 18px; background: var(--primary); color: var(--onprimary); display: grid; place-items: center"><svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></a>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#1F5F4E","options":["#1F5F4E","#1D4E89","#5B3E9E","#A23B4F"]},"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+renderVals() {
+const a = this.props.accent ?? '#1F5F4E';
+const d = !!this.props.dark;
+const m = (x, y, t) => { const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); const A = p(x), B = p(y); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+return { mode: d ? 'dark' : '', hero: a, primary: d ? m(a, '#ffffff', 0.45) : a, onprimary: d ? m(a, '#000000', 0.62) : '#ffffff', psoft: d ? m(a, '#1A1F1D', 0.68) : m(a, '#ffffff', 0.84), onpsoft: d ? m(a, '#ffffff', 0.6) : a };
+}
+}
+</script>
+</body>
+</html>

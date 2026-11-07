@@ -1684,4 +1684,253 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateSnoozed => 'Okay! Nyaw will remind you tomorrow.';
+
+  @override
+  String get games => 'Games';
+
+  @override
+  String get gamesSub => 'Feeling worn out? Take a short break with Nyaw.';
+
+  @override
+  String get gameWheel => 'Spin wheel';
+
+  @override
+  String get gameRps => 'Rock paper scissors';
+
+  @override
+  String get gameWheelFood => 'What to eat?';
+
+  @override
+  String get gameWheelDrink => 'What to drink?';
+
+  @override
+  String get gameWheelYesNo => 'Yes / No';
+
+  @override
+  String get gameWheelActivity => 'What to do?';
+
+  @override
+  String get gameWheelFoodDefaults =>
+      'Fried rice|Meatball soup|Chicken noodles|Soto|Smashed chicken|Gado-gado';
+
+  @override
+  String get gameWheelDrinkDefaults =>
+      'Iced coffee|Iced tea|Avocado juice|Water';
+
+  @override
+  String get gameWheelYesNoDefaults => 'Yes|No';
+
+  @override
+  String get gameWheelActivityDefaults =>
+      'Read a book|Evening walk|Watch a movie|Take a nap|Tidy up';
+
+  @override
+  String get gameSpin => 'Spin';
+
+  @override
+  String get gameSpinAgain => 'Spin again';
+
+  @override
+  String get gameReady => 'Ready?';
+
+  @override
+  String get gameTapSpin => 'Tap Spin';
+
+  @override
+  String get gameSpinning => 'Spinning…';
+
+  @override
+  String get gameWait => 'Hold on';
+
+  @override
+  String get gameNyawPicks => 'Nyaw picks';
+
+  @override
+  String get gameRecordExpense => 'Record expense';
+
+  @override
+  String get gameWheelItems => 'Wheel options';
+
+  @override
+  String gameWheelCount(int count, int max) {
+    return '$count of max $max';
+  }
+
+  @override
+  String get gameWheelAddHint => 'Add an option, e.g. Pizza';
+
+  @override
+  String gameRemoveOption(String name) {
+    return 'Remove $name';
+  }
+
+  @override
+  String get gameYou => 'You';
+
+  @override
+  String get gameRock => 'Rock';
+
+  @override
+  String get gameScissors => 'Scissors';
+
+  @override
+  String get gamePaper => 'Paper';
+
+  @override
+  String get gamePickHand => 'Pick your hand';
+
+  @override
+  String get gameCounting => 'Rock… paper… scissors!';
+
+  @override
+  String get gameWin => 'You win!';
+
+  @override
+  String get gameLose => 'Nyaw wins';
+
+  @override
+  String get gameTie => 'Tie, try again';
+
+  @override
+  String get gameTieLabel => 'Tie';
+
+  @override
+  String get gameScore => 'Score';
+
+  @override
+  String get gameResetScore => 'Reset';
+
+  @override
+  String get gameHubTitle => 'Time to unwind';
+
+  @override
+  String get gameHubHint =>
+      'Feeling worn out? Play a little with Nyaw, then get back to it.';
+
+  @override
+  String get gameHubFootnote =>
+      'Scores and records stay on your phone and are not synced.';
+
+  @override
+  String get gameRest => 'Take a break';
+
+  @override
+  String get gameRestAll => 'All games';
+
+  @override
+  String get gameShortWheel => 'Wheel';
+
+  @override
+  String get gameShortRps => 'RPS';
+
+  @override
+  String get gameShortMemory => 'Cards';
+
+  @override
+  String get gameShortPrompt => 'Ideas';
+
+  @override
+  String get gameWheelDesc => 'Can\'t decide what to eat? Let the wheel pick.';
+
+  @override
+  String get gameRpsDesc => 'Test your luck against Nyaw, scores are counted.';
+
+  @override
+  String get gameMemory => 'Memory cards';
+
+  @override
+  String get gameMemoryDesc => 'Match the pairs of Nyaw poses.';
+
+  @override
+  String get gameMemorySub => 'Match 6 pairs of Nyaw poses.';
+
+  @override
+  String gameMemoryRecord(int moves) {
+    return 'Record $moves moves';
+  }
+
+  @override
+  String get gameMoves => 'Moves';
+
+  @override
+  String get gamePairs => 'Pairs';
+
+  @override
+  String get gameBest => 'Record';
+
+  @override
+  String gameMemoryDone(int moves) {
+    return 'Done in $moves moves';
+  }
+
+  @override
+  String gameMemoryNewBest(int moves) {
+    return 'New record: $moves moves!';
+  }
+
+  @override
+  String gameMemoryBestLine(int moves) {
+    return 'Your best is $moves moves.';
+  }
+
+  @override
+  String get gamePlayAgain => 'Play again';
+
+  @override
+  String get gameReshuffle => 'Reshuffle';
+
+  @override
+  String gameCardClosed(int n) {
+    return 'Face-down card $n';
+  }
+
+  @override
+  String get gameCardOpen => 'Face-up card';
+
+  @override
+  String get gamePrompt => 'Shuffle a question';
+
+  @override
+  String get gamePromptDesc => 'Not sure what to write? Pick an idea.';
+
+  @override
+  String get gamePromptLabel => 'A question for you';
+
+  @override
+  String get gamePromptShuffle => 'Shuffle again';
+
+  @override
+  String get gamePromptWrite => 'Write the answer';
+
+  @override
+  String get gamePromptNote =>
+      'The question becomes the title of a new journal entry, which you can change. Nothing is saved until you press Save.';
+
+  @override
+  String get gamePromptGratitude => 'Gratitude';
+
+  @override
+  String get gamePromptReflection => 'Reflection';
+
+  @override
+  String get gamePromptRelax => 'Relaxed';
+
+  @override
+  String get gamePromptDreams => 'Dreams';
+
+  @override
+  String get gamePromptGratitudeList =>
+      'What small thing made you smile today?|Who would you like to thank today?|What simple thing are you grateful for this week?|What was the best thing you ate today?';
+
+  @override
+  String get gamePromptReflectionList =>
+      'What did you learn today?|If you could redo today, what would you do differently?|What drained your energy the most this week?|What is one thing you want to let go of?';
+
+  @override
+  String get gamePromptRelaxList =>
+      'If today were a song, what would its title be?|Tell about one funny conversation today.|If tomorrow were a day off, where would you go?|What made you laugh most recently?';
+
+  @override
+  String get gamePromptDreamsList =>
+      'What is one thing you want to achieve this month?|If money were no issue, what would you buy first?|Who do you want to be in five years?|What good habit do you want to start?';
 }

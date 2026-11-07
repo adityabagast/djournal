@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.13.0 — 2026-11-07
+
+**Baru**
+- **Permainan untuk rehat**: kartu **Rehat sebentar** di Hari Ini (dan halaman **Permainan** lewat "Semua permainan") berisi empat permainan kecil: **Roda putar** (Makan apa? / Minum apa? / Ya-Tidak / Mau ngapain?, isinya bisa diubah, hasil makan/minum bisa langsung dicatat sebagai pengeluaran), **Batu gunting kertas** lawan Nyaw dengan skor, **Memory kartu** (cocokkan 6 pasang pose Nyaw, rekor langkah tersimpan), dan **Kocok ide** (pertanyaan acak yang jadi judul jurnal baru). Skor dan rekor tersimpan di HP saja.
+
+**Perbaikan**
+- **Tagihan**: tombol Bayar tidak lagi menutup sheet sebelum pembayaran diproses, jadi pembayaran dan pembaruan data tagihan berjalan benar.
+
 ## 0.12.0 — 2026-11-02
 
 **Baru**

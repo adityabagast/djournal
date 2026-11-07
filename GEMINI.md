@@ -11,6 +11,7 @@ Dokumen ini berisi aturan dan konvensi pengembangan proyek **Nyawtat** untuk dii
 > 2. **Wajib membuat prototipe desain interaktif terlebih dahulu** berupa file HTML/CSS/JS (standalone atau interactive artifact/generative UI), mirip seperti contoh di `docs/accent-prototype/index.html`.
 > 3. Prototipe harus bisa diinteraksikan (klik tombol, preview bodi ponsel/desktop, ganti state/tema) agar user bisa mencoba dan me-review alur secara visual.
 > 4. Tunggu persetujuan atau revisi dari user sebelum mulai mengimplementasikannya ke kode Flutter/backend.
+> 5. **Prototipe dilanjutkan sebagai artboard di canvas Claude Design** (https://claude.ai/artifact/XL1VqmFK6psaUQECnsgm6H), bukan file `docs/*-prototype/` baru. Baca **`docs/design-canvas/README.md`** dulu untuk format, gaya, dan cara menambah artboard.
 
 ---
 

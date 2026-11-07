@@ -9,6 +9,7 @@ import '../../data/money_snapshot.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
+import '../games/games_hub_screen.dart';
 import '../journal/entry_form_screen.dart';
 import '../journal/entry_rows.dart';
 import '../money/tx_form_screen.dart';
@@ -256,6 +257,8 @@ class TodayScreen extends ConsumerWidget {
             const SizedBox(height: 12),
             const UpdateCard(),
             _GreetingCard(now: now, count: timeline.length),
+            const SizedBox(height: 16),
+            const RestCard(),
             const SizedBox(height: 16),
             BudgetWarningBanner(snapshot: snap, now: now),
             if (context.isWide)

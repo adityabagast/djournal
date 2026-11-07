@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Design system Nyawtat</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd28f63f6270c6ede0c32193cdae89b5">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}
+.panel{width:auto!important;border-radius:28px;padding:24px;display:flex;flex-direction:column;gap:16px}
+.lbl{font-size:11px;font-weight:600;letter-spacing:.08em;color:var(--muted)}
+.tok{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.tok div{display:flex;flex-direction:column;gap:4px;font-size:11px;color:var(--muted)}
+.tok i{height:38px;border-radius:10px;border:1px solid var(--line)}
+.cat{height:32px!important;padding:0 11px!important;gap:7px!important}
+.cat i{width:8px;height:8px;border-radius:50%}
+.ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center}
+.ic svg{width:18px;height:18px}
+</style>
+</helmet>
+<div style="width: 1240px; height: 1180px; box-sizing: border-box; padding: 48px; background: #ECEBE6; font-family: 'Poppins', system-ui, sans-serif; color: #1B1F1D; display: flex; flex-direction: column; gap: 28px">
+
+<div style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 28px">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: .1em; color: #5C625F">DESIGN SYSTEM</span>
+<h1 style="margin: 0; font-size: 32px; line-height: 1.1">Nyawtat · simple, bersih, imut</h1>
+<p style="margin: 0; font-size: 13.5px; line-height: 1.6; color: #5C625F; max-width: 56ch">Satu font (Poppins), latar krem hangat, kartu tanpa garis dengan bayangan halus, tombol berbentuk kapsul, dan satu warna aksen. Tiap layar cukup satu sapaan maskot; sisanya ruang kosong yang lega.</p>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E4E1D9; border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: .08em; color: #5C625F">TIPOGRAFI · POPPINS</span>
+<span style="font-size: 28px; font-weight: 700; letter-spacing: -.02em">Rp 1.067.000 <small style="font-size: 11px; font-weight: 500; color: #5C625F">28 / 700 nominal</small></span>
+<span style="font-size: 24px; font-weight: 700">Hari Ini <small style="font-size: 11px; font-weight: 500; color: #5C625F">24 / 700 judul layar</small></span>
+<span style="font-size: 15px; font-weight: 600">Target Budget Global <small style="font-size: 11px; font-weight: 500; color: #5C625F">15 / 600 judul kartu</small></span>
+<span style="font-size: 14px">Makan siang di warung <small style="font-size: 11px; font-weight: 500; color: #5C625F">14 / 400 isi</small></span>
+<span style="font-size: 12px; color: #5C625F">Makan · Tunai · 12:15 <small style="font-size: 11px; font-weight: 500">12 / 400 meta</small></span>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 28px">
+
+<div class="ph panel" style="--hero: #1F5F4E; --primary: #1F5F4E; --onprimary: #ffffff; --psoft: #DCEBE4; --onpsoft: #1F5F4E">
+<div class="ch"><b style="font-size: 18px">Terang</b><span class="state ok">Aksen: Hijau sage</span></div>
+<span class="lbl">WARNA</span>
+<div class="tok">
+<div><i style="background: var(--bg)"></i>bg</div><div><i style="background: var(--surface)"></i>surface</div><div><i style="background: var(--ink)"></i>ink</div><div><i style="background: var(--primary)"></i>primary</div><div><i style="background: var(--psoft)"></i>primary soft</div>
+<div><i style="background: var(--expense)"></i>keluar</div><div><i style="background: var(--income)"></i>masuk</div><div><i style="background: var(--warning)"></i>waspada</div><div><i style="background: var(--track)"></i>track</div><div><i style="background: var(--line)"></i>garis</div>
+</div>
+<span class="lbl">TOMBOL &amp; PILIHAN</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center"><button type="button" class="btn">Simpan</button><button type="button" class="btn soft">+ Nabung</button><button type="button" class="btn ghost">Batal</button><button type="button" class="btn sm">Catat</button></div>
+<div class="chips"><button type="button" class="chip cat on"><i style="background: #C2410C"></i>Makan</button><button type="button" class="chip cat"><i style="background: #1D4E89"></i>Transport</button><button type="button" class="chip cat"><i style="background: #7E3AA8"></i>Belanja</button><span class="state ok">Aman</span><span class="state warn">Waspada</span><span class="state bad">Over</span></div>
+<div style="display: flex; gap: 12px; align-items: center"><div class="seg" style="flex: 1"><button type="button" class="on">Harian</button><button type="button">Mingguan</button><button type="button">Bulanan</button></div><button type="button" class="tgl on" aria-label="Contoh toggle"><i></i></button></div>
+<span class="lbl">KARTU &amp; BARIS</span>
+<div class="card" style="gap: 0; padding: 4px 16px">
+<div class="li"><span class="ic" style="background: color-mix(in srgb, #C2410C 14%, var(--surface)); color: #C2410C"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16a8 8 0 01-16 0z"></path><path d="M8 4l3 6M14 3l-2 7"></path></svg></span><div class="tx"><b>Makan siang</b><span>Makan › Makan siang · Tunai</span></div><span class="amt exp">-Rp 38.000</span></div>
+<div class="li"><span class="ic" style="background: color-mix(in srgb, #17624A 14%, var(--surface)); color: #17624A"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="12" rx="2"></rect><path d="M9 7V5h6v2M3 12h18"></path></svg></span><div class="tx"><b>Gaji Oktober</b><span>Gaji · BCA</span></div><span class="amt inc">+Rp 8.500.000</span></div>
+</div>
+<div class="fld"><label for="dsl">Catatan</label><input id="dsl" class="inp" value="Kopi susu sama teman"></div>
+</div>
+
+<div class="ph dark panel" style="--hero: #1F5F4E; --primary: #7CC7A8; --onprimary: #0D2A20; --psoft: #20352D; --onpsoft: #A6DBC4">
+<div class="ch"><b style="font-size: 18px">Gelap</b><span class="state ok">Aksen: Hijau sage</span></div>
+<span class="lbl">WARNA</span>
+<div class="tok">
+<div><i style="background: var(--bg)"></i>bg</div><div><i style="background: var(--surface)"></i>surface</div><div><i style="background: var(--ink)"></i>ink</div><div><i style="background: var(--primary)"></i>primary</div><div><i style="background: var(--psoft)"></i>primary soft</div>
+<div><i style="background: var(--expense)"></i>keluar</div><div><i style="background: var(--income)"></i>masuk</div><div><i style="background: var(--warning)"></i>waspada</div><div><i style="background: var(--track)"></i>track</div><div><i style="background: var(--line)"></i>garis</div>
+</div>
+<span class="lbl">TOMBOL &amp; PILIHAN</span>
+<div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center"><button type="button" class="btn">Simpan</button><button type="button" class="btn soft">+ Nabung</button><button type="button" class="btn ghost">Batal</button><button type="button" class="btn sm">Catat</button></div>
+<div class="chips"><button type="button" class="chip cat on"><i style="background: #F2A285"></i>Makan</button><button type="button" class="chip cat"><i style="background: #9DC0EA"></i>Transport</button><button type="button" class="chip cat"><i style="background: #C9A3E3"></i>Belanja</button><span class="state ok">Aman</span><span class="state warn">Waspada</span><span class="state bad">Over</span></div>
+<div style="display: flex; gap: 12px; align-items: center"><div class="seg" style="flex: 1"><button type="button" class="on">Harian</button><button type="button">Mingguan</button><button type="button">Bulanan</button></div><button type="button" class="tgl on" aria-label="Contoh toggle"><i></i></button></div>
+<span class="lbl">KARTU &amp; BARIS</span>
+<div class="card" style="gap: 0; padding: 4px 16px">
+<div class="li"><span class="ic" style="background: color-mix(in srgb, #F2A285 16%, var(--surface)); color: #F2A285"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16a8 8 0 01-16 0z"></path><path d="M8 4l3 6M14 3l-2 7"></path></svg></span><div class="tx"><b>Makan siang</b><span>Makan › Makan siang · Tunai</span></div><span class="amt exp">-Rp 38.000</span></div>
+<div class="li"><span class="ic" style="background: color-mix(in srgb, #7DD3AE 16%, var(--surface)); color: #7DD3AE"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="18" height="12" rx="2"></rect><path d="M9 7V5h6v2M3 12h18"></path></svg></span><div class="tx"><b>Gaji Oktober</b><span>Gaji · BCA</span></div><span class="amt inc">+Rp 8.500.000</span></div>
+</div>
+<div class="fld"><label for="dsd">Catatan</label><input id="dsd" class="inp" value="Kopi susu sama teman"></div>
+</div>
+</div>
+
+<div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 28px">
+<div style="background: #FFFFFF; border: 1px solid #E4E1D9; border-radius: 24px; padding: 18px 20px; display: flex; flex-direction: column; gap: 12px">
+<span style="font-size: 11px; font-weight: 600; letter-spacing: .08em; color: #5C625F">IKON KATEGORI · garis 1,8 px, sudut bulat</span>
+<div style="display: flex; gap: 14px; flex-wrap: wrap">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #5C625F"><span class="ic" style="background: #FBE7DC; color: #C2410C"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round"><path d="M4 12h16a8 8 0 01-16 0z"></path><path d="M8 4l3 6M14 3l-2 7"></path></svg></span>Makan</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #5C625F"><span class="ic" style="background: #DFE8F3; color: #1D4E89"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round"><circle cx="6" cy="17" r="2.5"></circle><circle cx="18" cy="17" r="2.5"></circle><path d="M8.5 17h7M15 6h3l2 8M6 14.5L9 10h5"></path></svg></span>Transport</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #5C625F"><span class="ic" style="background: #EEE3F5; color: #7E3AA8"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round"><path d="M5 8h14l-1 12H6z"></path><path d="M9 8V6a3 3 0 016 0v2"></path></svg></span>Belanja</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #5C625F"><span class="ic" style="background: #F5EBDA; color: #9A5B12"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"></path><path d="M9 8h6M9 12h6"></path></svg></span>Tagihan</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #5C625F"><span class="ic" style="background: #F8E1EB; color: #BE185D"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round"><rect x="3" y="6" width="18" height="12" rx="2"></rect><path d="M8 6v12M16 6v12M3 12h5M16 12h5"></path></svg></span>Hiburan</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #5C625F"><span class="ic" style="background: #DCEFEC; color: #0F766E"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.5A4 4 0 0119 10c0 5.5-7 10-7 10z"></path></svg></span>Kesehatan</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #5C625F"><span class="ic" style="background: #DCEBE4; color: #17624A"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round"><rect x="3" y="7" width="18" height="12" rx="2"></rect><path d="M9 7V5h6v2M3 12h18"></path></svg></span>Gaji</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; font-size: 11px; color: #5C625F"><span class="ic" style="background: #DFE8F3; color: #1D4E89"><svg viewBox="0 0 24 24" aria-hidden="true" style="fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round"><path d="M7 4L4 7l3 3M4 7h13M17 20l3-3-3-3M20 17H7"></path></svg></span>Transfer</div>
+</div>
+</div>
+<div style="background: #FFFFFF; border: 1px solid #E4E1D9; border-radius: 24px; padding: 18px 20px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 20px; font-size: 12.5px">
+<span style="grid-column: 1 / -1; font-size: 11px; font-weight: 600; letter-spacing: .08em; color: #5C625F">BENTUK &amp; JARAK</span>
+<span>Kartu: radius 26, tanpa garis</span><span>Hero saldo: radius 28</span>
+<span>Tombol: kapsul, tinggi ≥ 44</span><span>Chip: kapsul, tinggi 32–36</span>
+<span>Sheet: radius 32 atas</span><span>Jarak antar kartu: 16</span>
+<span>Tepi layar: 20</span><span>Dock: kapsul mengambang</span>
+</div>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1240,"height":1180}}'>
+class Component extends DCLogic {
+renderVals() {
+return {};
+}
+}
+</script>
+</body>
+</html>
