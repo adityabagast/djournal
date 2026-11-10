@@ -30,6 +30,30 @@ abstract final class AccentPresets {
 
   static const all = [sage, ocean, violet, rose, pink, amber, teal];
 
+  /// Jumlah warna kustom yang diingat di 'accent_recent'.
+  static const maxRecent = 6;
+
+  /// '#RRGGBB' (tanda # opsional, huruf besar/kecil bebas).
+  static bool isHex(String s) =>
+      RegExp(r'^#?[0-9a-fA-F]{6}$').hasMatch(s.trim());
+
+  /// '1f5f4e' / '#1f5f4e' → '#1F5F4E'. Panggil hanya bila [isHex].
+  static String normalizeHex(String s) =>
+      '#${s.trim().replaceFirst('#', '').toUpperCase()}';
+
+  /// Nilai 'accent_recent' (hex dipisah koma, terbaru dulu) → daftar hex.
+  /// Entri rusak dibuang.
+  static List<String> parseRecent(String? raw) => [
+    for (final s in (raw ?? '').split(','))
+      if (isHex(s)) normalizeHex(s),
+  ].take(maxRecent).toList();
+
+  /// [hex] dipindah ke depan [recent], tanpa duplikat, maksimal [maxRecent].
+  static List<String> addRecent(List<String> recent, String hex) {
+    final h = normalizeHex(hex);
+    return [h, ...recent.where((x) => x != h)].take(maxRecent).toList();
+  }
+
   /// Nilai 'accent_color' di app_settings → warna dasar. Belum dipilih
   /// atau tidak dikenal jatuh ke [sage]; string '#RRGGBB' dibaca sebagai
   /// warna kustom (untuk color picker nanti).
@@ -255,28 +279,37 @@ class AppPalette extends ThemeExtension<AppPalette> {
       final primary = hsl
           .withLightness(hsl.lightness.clamp(0.22, 0.52).toDouble())
           .toColor();
+      final primarySoft = Color.lerp(primary, Colors.white, 0.86)!;
       return copyWith(
         hero: seed,
         onHero: onHero,
         onHeroMuted: onHeroMuted,
         primary: primary,
         onPrimary: readableOn(primary),
-        primarySoft: Color.lerp(primary, Colors.white, 0.86)!,
-        onPrimarySoft: seed,
+        primarySoft: primarySoft,
+        // Warna kustom yang terang digelapkan supaya tetap terbaca.
+        onPrimarySoft: contrastRatio(seed, primarySoft) >= 4.5
+            ? seed
+            : _withContrast(primary, primarySoft),
       );
     }
     // Gelap: primary dinaikkan terangnya dan dijenuhkan sedang, seperti
     // pasangan hijau tua ↔ hijau muda di palet bawaan.
     final saturation = hsl.saturation.clamp(0.30, 0.52).toDouble();
     final primary = hsl.withLightness(0.64).withSaturation(saturation);
+    final primarySoft = Color.lerp(primary.toColor(), surface, 0.78)!;
     return copyWith(
       hero: seed,
       onHero: onHero,
       onHeroMuted: onHeroMuted,
       primary: primary.toColor(),
       onPrimary: hsl.withLightness(0.13).toColor(),
-      primarySoft: Color.lerp(primary.toColor(), surface, 0.78)!,
-      onPrimarySoft: primary.withLightness(0.76).toColor(),
+      primarySoft: primarySoft,
+      onPrimarySoft: _withContrast(
+        primary.withLightness(0.76).toColor(),
+        primarySoft,
+        lighter: true,
+      ),
     );
   }
 
@@ -299,6 +332,33 @@ extension AppPaletteContext on BuildContext {
 
 Color hexColor(String hex) =>
     Color(int.parse('FF${hex.replaceFirst('#', '')}', radix: 16));
+
+/// Rasio kontras WCAG antara dua warna (1–21).
+double contrastRatio(Color a, Color b) {
+  final x = a.computeLuminance(), y = b.computeLuminance();
+  return ((x > y ? x : y) + 0.05) / ((x > y ? y : x) + 0.05);
+}
+
+/// [c] digelapkan (atau diterangkan bila [lighter]) bertahap sampai
+/// kontrasnya dengan [bg] minimal [min].
+Color _withContrast(
+  Color c,
+  Color bg, {
+  double min = 4.5,
+  bool lighter = false,
+}) {
+  var hsl = HSLColor.fromColor(c);
+  while (contrastRatio(hsl.toColor(), bg) < min) {
+    final l = hsl.lightness + (lighter ? 0.02 : -0.02);
+    if (l < 0 || l > 1) break;
+    hsl = hsl.withLightness(l);
+  }
+  return hsl.toColor();
+}
+
+/// Kebalikan [hexColor]: warna → '#RRGGBB' (alpha diabaikan).
+String colorHex(Color c) =>
+    '#${(c.toARGB32() & 0xFFFFFF).toRadixString(16).padLeft(6, '0').toUpperCase()}';
 
 /// Teks/ikon yang paling terbaca di atas [bg]: putih atau tinta gelap,
 /// dipilih berdasarkan rasio kontras WCAG (minimal ~4:1).

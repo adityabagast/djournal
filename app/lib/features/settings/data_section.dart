@@ -202,8 +202,8 @@ class _DataSectionState extends ConsumerState<DataSection> {
                     (drive.displayName?.isNotEmpty ?? false)
                         ? drive.displayName![0].toUpperCase()
                         : (drive.email?.isNotEmpty ?? false)
-                            ? drive.email![0].toUpperCase()
-                            : 'G',
+                        ? drive.email![0].toUpperCase()
+                        : 'G',
                     style: const TextStyle(
                       color: Colors.white,
                       fontWeight: FontWeight.w700,
@@ -260,9 +260,8 @@ class _DataSectionState extends ConsumerState<DataSection> {
                           final msg = e.toString().contains('10')
                               ? 'Gagal masuk (Kode 10: DEVELOPER_ERROR). SHA-1 aplikasi belum didaftarkan di Firebase Console.'
                               : e.toString();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(msg)),
-                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text(msg)));
                         }
                       }
                     },
@@ -404,9 +403,8 @@ class _DataSectionState extends ConsumerState<DataSection> {
               ),
               Switch(
                 value: drive.autoBackup,
-                onChanged: (_) => ref
-                    .read(googleDriveProvider.notifier)
-                    .toggleAutoBackup(),
+                onChanged: (_) =>
+                    ref.read(googleDriveProvider.notifier).toggleAutoBackup(),
               ),
             ],
           ),
@@ -566,17 +564,18 @@ class _DataSectionState extends ConsumerState<DataSection> {
     final l = context.l10n;
     final colors = context.colors;
 
-    Widget tile(String title, String sub, IconData icon, VoidCallback onTap) =>
-        ListTile(
-          onTap: onTap,
-          leading: Icon(icon, color: colors.primary),
-          title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-          subtitle: Text(
-            sub,
-            style: TextStyle(fontSize: 12, color: colors.muted),
-          ),
-          trailing: Icon(Icons.chevron_right, color: colors.muted),
-        );
+    Widget tile(
+      String title,
+      String sub,
+      IconData icon,
+      VoidCallback onTap,
+    ) => ListTile(
+      onTap: onTap,
+      leading: Icon(icon, color: colors.primary),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
+      subtitle: Text(sub, style: TextStyle(fontSize: 12, color: colors.muted)),
+      trailing: Icon(Icons.chevron_right, color: colors.muted),
+    );
 
     return AppCard(
       padding: const EdgeInsets.symmetric(vertical: 4),
@@ -621,11 +620,12 @@ class _DataSectionState extends ConsumerState<DataSection> {
         rawBackupJson: rawJson,
       );
 
-      final success =
-          await ref.read(googleDriveProvider.notifier).backupToDrive(
-                bytes: bytes,
-                fileName: 'Nyawtat_Cadangan_${_stamp()}.xlsx',
-              );
+      final success = await ref
+          .read(googleDriveProvider.notifier)
+          .backupToDrive(
+            bytes: bytes,
+            fileName: 'Nyawtat_Cadangan_${_stamp()}.xlsx',
+          );
 
       if (success && mounted) {
         messenger.showSnackBar(SnackBar(content: Text(l.backupNowSuccess)));
@@ -666,7 +666,9 @@ class _DataSectionState extends ConsumerState<DataSection> {
       final latest = await driveService.getLatestBackup();
       if (latest == null || latest.id == null) {
         messenger.showSnackBar(
-          const SnackBar(content: Text('Tidak ada file cadangan di Google Drive.')),
+          const SnackBar(
+            content: Text('Tidak ada file cadangan di Google Drive.'),
+          ),
         );
         return;
       }
@@ -682,7 +684,9 @@ class _DataSectionState extends ConsumerState<DataSection> {
         final result = await BackupService(ref.read(databaseProvider))
             .importJson(rawJson);
         messenger.showSnackBar(
-          SnackBar(content: Text(l.importDone(result.imported, result.skipped))),
+          SnackBar(
+            content: Text(l.importDone(result.imported, result.skipped)),
+          ),
         );
       } else {
         messenger.showSnackBar(SnackBar(content: Text(l.importInvalid)));
@@ -1037,7 +1041,9 @@ class _DataSectionState extends ConsumerState<DataSection> {
         final result = await BackupService(ref.read(databaseProvider))
             .importJson(content);
         messenger.showSnackBar(
-          SnackBar(content: Text(l.importDone(result.imported, result.skipped))),
+          SnackBar(
+            content: Text(l.importDone(result.imported, result.skipped)),
+          ),
         );
         return;
       } on BackupFormatException {

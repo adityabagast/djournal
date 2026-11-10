@@ -536,6 +536,102 @@ abstract class AppLocalizations {
   /// **'Teal'**
   String get accentTeal;
 
+  /// No description provided for @accentCustom.
+  ///
+  /// In id, this message translates to:
+  /// **'Kustom'**
+  String get accentCustom;
+
+  /// No description provided for @accentCustomA11y.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna kustom, pilih sendiri'**
+  String get accentCustomA11y;
+
+  /// No description provided for @accentCustomHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Kustom {hex} · ketuk Kustom lagi untuk mengubah. Warna pemasukan dan pengeluaran tetap.'**
+  String accentCustomHint(String hex);
+
+  /// No description provided for @accentCustomTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna kustom'**
+  String get accentCustomTitle;
+
+  /// No description provided for @accentCustomSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser untuk memilih, atau ketik kode hex.'**
+  String get accentCustomSub;
+
+  /// No description provided for @accentHue.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna'**
+  String get accentHue;
+
+  /// No description provided for @accentSaturation.
+  ///
+  /// In id, this message translates to:
+  /// **'Kepekatan'**
+  String get accentSaturation;
+
+  /// No description provided for @accentLightness.
+  ///
+  /// In id, this message translates to:
+  /// **'Kecerahan'**
+  String get accentLightness;
+
+  /// No description provided for @accentHexLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Kode hex'**
+  String get accentHexLabel;
+
+  /// No description provided for @accentHexError.
+  ///
+  /// In id, this message translates to:
+  /// **'Format: #RRGGBB, mis. #1F5F4E'**
+  String get accentHexError;
+
+  /// No description provided for @accentRecent.
+  ///
+  /// In id, this message translates to:
+  /// **'Terakhir dipakai'**
+  String get accentRecent;
+
+  /// No description provided for @accentPreviewChip.
+  ///
+  /// In id, this message translates to:
+  /// **'Terpilih'**
+  String get accentPreviewChip;
+
+  /// No description provided for @accentNoteGrey.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna ini hampir abu-abu, jadi aksen kurang menonjol dibanding warna lain.'**
+  String get accentNoteGrey;
+
+  /// No description provided for @accentNoteLight.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna cukup terang. Di mode terang tombol dibuat sedikit lebih gelap supaya teksnya tetap terbaca.'**
+  String get accentNoteLight;
+
+  /// No description provided for @accentNoteDark.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna sangat gelap. Di mode terang tombol dibuat sedikit lebih terang supaya tetap terlihat berwarna.'**
+  String get accentNoteDark;
+
+  /// No description provided for @accentApply.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai warna'**
+  String get accentApply;
+
   /// No description provided for @currency.
   ///
   /// In id, this message translates to:

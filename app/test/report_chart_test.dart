@@ -187,6 +187,12 @@ void main() {
 
   group('ReportScreen Integration', () {
     testWidgets('renders chart card and switches segments', (tester) async {
+      // Laporan dibuka di bulan berjalan: transaksi harus bertanggal hari
+      // ini, bukan tanggal tetap, supaya tes tidak gagal saat ganti bulan.
+      final now = DateTime.now();
+      final today =
+          '${now.year}-${now.month.toString().padLeft(2, '0')}-'
+          '${now.day.toString().padLeft(2, '0')}';
       final snap = MoneySnapshot(
         wallets: [walletCash],
         categories: [catFood, catTransport],
@@ -197,8 +203,8 @@ void main() {
             amount: 250000,
             walletId: 'w-cash',
             categoryId: 'cat-food',
-            occurredAt: DateTime.now(),
-            localDate: '2026-10-14',
+            occurredAt: now,
+            localDate: today,
             createdAt: DateTime.now(),
             updatedAt: DateTime.now(),
             isDirty: false,

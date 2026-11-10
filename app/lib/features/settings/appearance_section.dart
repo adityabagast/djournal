@@ -5,6 +5,7 @@ import '../../core/theme.dart';
 import '../../l10n/app_localizations.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
+import 'custom_accent_sheet.dart';
 
 /// Pengaturan › Tampilan: Sistem / Terang / Gelap (dengan gambar mini layar)
 /// dan pilihan warna aksen.
@@ -15,8 +16,13 @@ class AppearanceSection extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final mode = ref.watch(themeModeProvider).value ?? ThemeMode.system;
-    final accentId =
-        ref.watch(accentIdProvider).value ?? AccentPresets.sage.id;
+    final accentId = ref.watch(accentIdProvider).value ?? AccentPresets.sage.id;
+    final recent = ref.watch(accentRecentProvider).value ?? const <String>[];
+    final customSelected = AccentPresets.isHex(accentId);
+    // Warna tombol Kustom: yang sedang dipakai, atau kustom terakhir.
+    final customHex = customSelected
+        ? AccentPresets.normalizeHex(accentId)
+        : (recent.isEmpty ? null : recent.first);
     final hint = switch (mode) {
       ThemeMode.system => l.themeSystemHint,
       ThemeMode.light => l.themeLightHint,
@@ -25,6 +31,21 @@ class AppearanceSection extends ConsumerWidget {
 
     void pick(ThemeMode m) =>
         ref.read(settingsRepositoryProvider).set('theme_mode', m.name);
+
+    Future<void> pickCustom() async {
+      final settings = ref.read(settingsRepositoryProvider);
+      final hex = await CustomAccentSheet.open(
+        context,
+        initial: AccentPresets.resolve(customHex ?? accentId),
+        recent: recent,
+      );
+      if (hex == null) return;
+      await settings.set('accent_color', hex);
+      await settings.set(
+        'accent_recent',
+        AccentPresets.addRecent(recent, hex).join(','),
+      );
+    }
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -87,13 +108,26 @@ class AppearanceSection extends ConsumerWidget {
                         .set('accent_color', o.id),
                   ),
                 ),
+              SizedBox(
+                width: 88,
+                child: _AccentOption(
+                  label: l.accentCustom,
+                  semanticLabel: l.accentCustomA11y,
+                  color: customHex == null ? null : hexColor(customHex),
+                  icon: customHex == null
+                      ? Icons.add
+                      : (customSelected ? null : Icons.edit_outlined),
+                  selected: customSelected,
+                  onTap: pickCustom,
+                ),
+              ),
             ],
           ),
         ),
         Padding(
           padding: const EdgeInsets.fromLTRB(4, 8, 4, 0),
           child: Text(
-            l.accentHint,
+            customSelected ? l.accentCustomHint(customHex!) : l.accentHint,
             style: TextStyle(fontSize: 13, color: context.colors.muted),
           ),
         ),
@@ -113,29 +147,50 @@ String _accentName(AppLocalizations l, String id) => switch (id) {
   _ => id,
 };
 
+/// Gradasi pelangi tombol Kustom sebelum ada warna kustom.
+const _rainbow = SweepGradient(
+  colors: [
+    Color(0xFFE5484D),
+    Color(0xFFF5A524),
+    Color(0xFF46A758),
+    Color(0xFF0EA5E9),
+    Color(0xFF6E56CF),
+    Color(0xFFE5484D),
+  ],
+);
+
 /// Satu warna aksen: lingkaran warna dengan centang saat terpilih, plus
-/// namanya. Mirip _ModeOption, tapi tanpa gambar mini.
+/// namanya. Mirip _ModeOption, tapi tanpa gambar mini. [color] null =
+/// lingkaran pelangi (tombol Kustom yang belum punya warna); [icon]
+/// tampil saat tidak terpilih.
 class _AccentOption extends StatelessWidget {
   const _AccentOption({
     required this.label,
     required this.color,
     required this.selected,
     required this.onTap,
+    this.icon,
+    this.semanticLabel,
   });
 
   final String label;
-  final Color color;
+  final Color? color;
   final bool selected;
   final VoidCallback onTap;
+  final IconData? icon;
+  final String? semanticLabel;
 
   @override
   Widget build(BuildContext context) {
     final c = context.colors;
+    final color = this.color;
+    final fg = color == null ? Colors.white : readableOn(color);
+    final mark = selected ? Icons.check : icon;
     return Semantics(
       selected: selected,
       inMutuallyExclusiveGroup: true,
       button: true,
-      label: label,
+      label: semanticLabel ?? label,
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
@@ -159,10 +214,9 @@ class _AccentOption extends StatelessWidget {
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
                     color: color,
+                    gradient: color == null ? _rainbow : null,
                   ),
-                  child: selected
-                      ? Icon(Icons.check, size: 18, color: readableOn(color))
-                      : null,
+                  child: mark == null ? null : Icon(mark, size: 18, color: fg),
                 ),
               ),
               const SizedBox(height: 6),

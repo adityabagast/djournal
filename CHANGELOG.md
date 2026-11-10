@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14.0 — 2026-11-10
+
+**Baru**
+- **Warna aksen kustom**: di Pengaturan › Tampilan › Warna aksen ada pilihan **Kustom**. Pilih warna sendiri lewat penggeser Warna, Kepekatan, dan Kecerahan, atau ketik kode hex (`#RRGGBB`). Ada pratinjau langsung (kartu Total saldo, tombol, chip) dan daftar **Terakhir dipakai** (6 warna terakhir).
+- Muncul catatan kalau warna hampir abu-abu, terlalu terang, atau terlalu gelap.
+
+**Perbaikan**
+- Teks di chip/label terpilih kini selalu cukup kontras, juga untuk warna aksen yang terang.
+
 ## 0.13.1 — 2026-11-08
 
 **Perbaikan**

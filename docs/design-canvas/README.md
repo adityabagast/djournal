@@ -62,18 +62,20 @@ Blob hanya tampil di dalam canvas.
 ## Tata letak canvas
 
 - Ukuran layar ponsel: lebar **390**, tinggi 844 (boleh lebih untuk halaman panjang). Jarak antar frame 80 px (x += 470), antar baris 120 px + judul.
-- Penomoran judul: `"NN Nama layar"` melanjutkan nomor terakhir (saat ini terakhir **30 Kocok pertanyaan**).
-- Baris (y frame): Pembuka 0 · Tab utama 1244 · Sub-halaman 3204 · Form & sheet 5164 · Cek update 6564 · Permainan 7808.
+- Penomoran judul: `"NN Nama layar"` melanjutkan nomor terakhir (saat ini terakhir **33 Pengaturan › Warna aksen kustom**).
+- Baris (y frame): Pembuka 0 · Tab utama 1244 · Sub-halaman 3204 · Form & sheet 5164 · Cek update 6564 · Permainan 7808 · Desktop (Windows) 9228, frame 1280 lebar.
   Judul baris = note `kind: "title1"`; perbarui `maxW` bila baris bertambah panjang.
 - Artboard yang bisa diklik diberi `"is_interactive": true`.
 
 ## Daftar artboard (per 2026-11-03)
 
 00 Maskot, 00 Design system · 01 Splash, 02 Kunci PIN, 03 Atur PIN · 04 Hari Ini, 05 Jurnal, 06 Keuangan, 07 Laporan ·
-08 Pencarian, 09 Pengaturan, 10 Masuk Akun, 11 Kelola dompet, 12 Kelola kategori, 13 Budget ·
+08 Pencarian, 09 Pengaturan, 10 Masuk Akun, 11 Kelola dompet, 12 Kelola kategori, 13 Budget,
+33 Pengaturan › Warna aksen kustom (`AccentCustom.dc.html`, x 2820 di baris Sub-halaman — sudah diimplementasi di `app/lib/features/settings/custom_accent_sheet.dart`) ·
 14 Tambah cepat, 15 Catat transaksi, 16 Tulis jurnal, 17 Catatan suara, 18 Detail tagihan, 19 Tagihan baru, 20 Impian baru,
 21 Tambah tabungan, 22 Target budget global, 23 Ubah dompet, 24 Streak, 27 Permainan (hub, `Games.dc.html`), 28 Roda putar & suit (`Spin.dc.html`), 29 Memory kartu, 30 Kocok pertanyaan (semua sudah diimplementasi di `app/lib/features/games/`) ·
-25 Banner versi baru, 26 Pengaturan › Tentang.
+25 Banner versi baru, 26 Pengaturan › Tentang ·
+31 Desktop · aplikasi penuh (`Desktop.dc.html`, 1280×820), 32 Desktop · jendela mini vs widget (`DesktopMini.dc.html`) — belum diimplementasi.
 
 ## Aturan data di prototipe
 

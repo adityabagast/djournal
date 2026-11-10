@@ -240,6 +240,59 @@ class AppLocalizationsId extends AppLocalizations {
   String get accentTeal => 'Teal';
 
   @override
+  String get accentCustom => 'Kustom';
+
+  @override
+  String get accentCustomA11y => 'Warna kustom, pilih sendiri';
+
+  @override
+  String accentCustomHint(String hex) {
+    return 'Kustom $hex · ketuk Kustom lagi untuk mengubah. Warna pemasukan dan pengeluaran tetap.';
+  }
+
+  @override
+  String get accentCustomTitle => 'Warna kustom';
+
+  @override
+  String get accentCustomSub => 'Geser untuk memilih, atau ketik kode hex.';
+
+  @override
+  String get accentHue => 'Warna';
+
+  @override
+  String get accentSaturation => 'Kepekatan';
+
+  @override
+  String get accentLightness => 'Kecerahan';
+
+  @override
+  String get accentHexLabel => 'Kode hex';
+
+  @override
+  String get accentHexError => 'Format: #RRGGBB, mis. #1F5F4E';
+
+  @override
+  String get accentRecent => 'Terakhir dipakai';
+
+  @override
+  String get accentPreviewChip => 'Terpilih';
+
+  @override
+  String get accentNoteGrey =>
+      'Warna ini hampir abu-abu, jadi aksen kurang menonjol dibanding warna lain.';
+
+  @override
+  String get accentNoteLight =>
+      'Warna cukup terang. Di mode terang tombol dibuat sedikit lebih gelap supaya teksnya tetap terbaca.';
+
+  @override
+  String get accentNoteDark =>
+      'Warna sangat gelap. Di mode terang tombol dibuat sedikit lebih terang supaya tetap terlihat berwarna.';
+
+  @override
+  String get accentApply => 'Pakai warna';
+
+  @override
   String get currency => 'Mata uang';
 
   @override

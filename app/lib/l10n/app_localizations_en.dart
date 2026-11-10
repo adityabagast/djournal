@@ -240,6 +240,59 @@ class AppLocalizationsEn extends AppLocalizations {
   String get accentTeal => 'Teal';
 
   @override
+  String get accentCustom => 'Custom';
+
+  @override
+  String get accentCustomA11y => 'Custom color, pick your own';
+
+  @override
+  String accentCustomHint(String hex) {
+    return 'Custom $hex · tap Custom again to change it. Income and expense colors stay the same.';
+  }
+
+  @override
+  String get accentCustomTitle => 'Custom color';
+
+  @override
+  String get accentCustomSub => 'Drag to pick, or type a hex code.';
+
+  @override
+  String get accentHue => 'Hue';
+
+  @override
+  String get accentSaturation => 'Saturation';
+
+  @override
+  String get accentLightness => 'Lightness';
+
+  @override
+  String get accentHexLabel => 'Hex code';
+
+  @override
+  String get accentHexError => 'Format: #RRGGBB, e.g. #1F5F4E';
+
+  @override
+  String get accentRecent => 'Recently used';
+
+  @override
+  String get accentPreviewChip => 'Selected';
+
+  @override
+  String get accentNoteGrey =>
+      'This color is nearly gray, so the accent stands out less than other colors.';
+
+  @override
+  String get accentNoteLight =>
+      'Fairly light color. In light mode, buttons are made a bit darker so their text stays readable.';
+
+  @override
+  String get accentNoteDark =>
+      'Very dark color. In light mode, buttons are made a bit lighter so they still look colored.';
+
+  @override
+  String get accentApply => 'Use color';
+
+  @override
   String get currency => 'Currency';
 
   @override

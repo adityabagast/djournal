@@ -35,6 +35,15 @@ final accentIdProvider = StreamProvider<String>(
       .map((v) => v ?? AccentPresets.sage.id),
 );
 
+/// Warna aksen kustom yang pernah dipakai ('#RRGGBB', terbaru dulu).
+/// Yang pertama juga warna tombol "Kustom" di Pengaturan › Tampilan.
+final accentRecentProvider = StreamProvider<List<String>>(
+  (ref) => ref
+      .watch(settingsRepositoryProvider)
+      .watch('accent_recent')
+      .map(AccentPresets.parseRecent),
+);
+
 /// Mode privasi: sembunyikan semua nominal uang di aplikasi (true = 'Rp •••••').
 final hideAmountsProvider = StreamProvider<bool>(
   (ref) => ref
@@ -42,4 +51,3 @@ final hideAmountsProvider = StreamProvider<bool>(
       .watch('hide_amounts')
       .map((v) => v == 'true'),
 );
-
