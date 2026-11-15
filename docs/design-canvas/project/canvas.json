@@ -1,53 +1,397 @@
 {
-  "v": 3,
-  "createdOnFiles": {"v": 1, "at": "2026-11-02T13:00:00Z"},
-  "title": "Nyawtat Semua Halaman",
-  "launch": {"view": "canvas"},
-  "pages": [],
-  "boards": {
-    "Mascot.dc.html": {"x": 0, "y": -2700, "w": 1240, "h": 900, "title": "00 Maskot Nyaw"},
-    "DesignSystem.dc.html": {"x": 1320, "y": -2700, "w": 1240, "h": 1180, "title": "00 Design system"},
-
-    "Main.dc.html": {"x": 0, "y": 0, "w": 390, "h": 844, "title": "01 Splash", "is_interactive": true},
-    "Lock.dc.html": {"x": 470, "y": 0, "w": 390, "h": 844, "title": "02 Kunci PIN", "is_interactive": true},
-    "PinSetup.dc.html": {"x": 940, "y": 0, "w": 390, "h": 844, "title": "03 Atur PIN", "is_interactive": true},
-
-    "Today.dc.html": {"x": 0, "y": 1244, "w": 390, "h": 1520, "title": "04 Hari Ini", "is_interactive": true},
-    "Journal.dc.html": {"x": 470, "y": 1244, "w": 390, "h": 1420, "title": "05 Jurnal", "is_interactive": true},
-    "Money.dc.html": {"x": 940, "y": 1244, "w": 390, "h": 1200, "title": "06 Keuangan", "is_interactive": true},
-    "Report.dc.html": {"x": 1410, "y": 1244, "w": 390, "h": 1320, "title": "07 Laporan", "is_interactive": true},
-
-    "Search.dc.html": {"x": 0, "y": 3204, "w": 390, "h": 844, "title": "08 Pencarian", "is_interactive": true},
-    "Settings.dc.html": {"x": 470, "y": 3204, "w": 390, "h": 1560, "title": "09 Pengaturan", "is_interactive": true},
-    "SignIn.dc.html": {"x": 940, "y": 3204, "w": 390, "h": 844, "title": "10 Masuk Akun", "is_interactive": true},
-    "Wallets.dc.html": {"x": 1410, "y": 3204, "w": 390, "h": 900, "title": "11 Kelola dompet", "is_interactive": true},
-    "Categories.dc.html": {"x": 1880, "y": 3204, "w": 390, "h": 1140, "title": "12 Kelola kategori", "is_interactive": true},
-    "Budget.dc.html": {"x": 2350, "y": 3204, "w": 390, "h": 960, "title": "13 Budget per kategori", "is_interactive": true},
-
-    "Quick.dc.html": {"x": 0, "y": 5164, "w": 390, "h": 844, "title": "14 Tambah cepat", "is_interactive": true},
-    "TxForm.dc.html": {"x": 470, "y": 5164, "w": 390, "h": 900, "title": "15 Catat transaksi", "is_interactive": true},
-    "EntryForm.dc.html": {"x": 940, "y": 5164, "w": 390, "h": 1000, "title": "16 Tulis jurnal", "is_interactive": true},
-    "Voice.dc.html": {"x": 1410, "y": 5164, "w": 390, "h": 844, "title": "17 Catatan suara", "is_interactive": true},
-    "BillDetail.dc.html": {"x": 1880, "y": 5164, "w": 390, "h": 844, "title": "18 Detail tagihan", "is_interactive": true},
-    "BillForm.dc.html": {"x": 2350, "y": 5164, "w": 390, "h": 844, "title": "19 Tagihan baru", "is_interactive": true},
-    "WishForm.dc.html": {"x": 2820, "y": 5164, "w": 390, "h": 844, "title": "20 Impian baru", "is_interactive": true},
-    "Deposit.dc.html": {"x": 3290, "y": 5164, "w": 390, "h": 844, "title": "21 Tambah tabungan", "is_interactive": true},
-    "GlobalBudget.dc.html": {"x": 3760, "y": 5164, "w": 390, "h": 844, "title": "22 Target budget global", "is_interactive": true},
-    "WalletForm.dc.html": {"x": 4230, "y": 5164, "w": 390, "h": 844, "title": "23 Ubah dompet", "is_interactive": true},
-    "Streak.dc.html": {"x": 4700, "y": 5164, "w": 390, "h": 844, "title": "24 Streak", "is_interactive": true},
-    "Spin.dc.html": {"x": 5170, "y": 5164, "w": 390, "h": 1000, "title": "27 Permainan", "is_interactive": true},
-
-    "UpdateBanner.dc.html": {"x": 0, "y": 6564, "w": 390, "h": 844, "title": "25 Banner versi baru", "is_interactive": true},
-    "UpdateSettings.dc.html": {"x": 470, "y": 6564, "w": 390, "h": 844, "title": "26 Pengaturan › Tentang", "is_interactive": true}
+ "v": 3,
+ "createdOnFiles": {
+  "v": 1,
+  "at": "2026-11-02T13:00:00Z"
+ },
+ "title": "Nyawtat Semua Halaman",
+ "launch": {
+  "view": "canvas"
+ },
+ "pages": [],
+ "boards": {
+  "Mascot.dc.html": {
+   "x": 0,
+   "y": -2700,
+   "w": 1240,
+   "h": 900,
+   "title": "00 Maskot Nyaw"
   },
-  "order": ["Mascot.dc.html", "DesignSystem.dc.html", "Main.dc.html", "Lock.dc.html", "PinSetup.dc.html", "Today.dc.html", "Journal.dc.html", "Money.dc.html", "Report.dc.html", "Search.dc.html", "Settings.dc.html", "SignIn.dc.html", "Wallets.dc.html", "Categories.dc.html", "Budget.dc.html", "Quick.dc.html", "TxForm.dc.html", "EntryForm.dc.html", "Voice.dc.html", "BillDetail.dc.html", "BillForm.dc.html", "WishForm.dc.html", "Deposit.dc.html", "GlobalBudget.dc.html", "WalletForm.dc.html", "Streak.dc.html", "Spin.dc.html", "UpdateBanner.dc.html", "UpdateSettings.dc.html"],
-  "notes": {
-    "rowSystem": {"x": 0, "y": -3000, "text": "Maskot & design system", "kind": "title1", "maxW": 2560},
-    "rowOpen": {"x": 0, "y": -300, "text": "Pembuka", "kind": "title1", "maxW": 1330},
-    "rowTabs": {"x": 0, "y": 944, "text": "Tab utama", "kind": "title1", "maxW": 1800},
-    "rowSub": {"x": 0, "y": 2904, "text": "Sub-halaman", "kind": "title1", "maxW": 2740},
-    "rowForm": {"x": 0, "y": 4864, "text": "Form & sheet", "kind": "title1", "maxW": 5560},
-    "rowUpdate": {"x": 0, "y": 6264, "text": "Cek update", "kind": "title1", "maxW": 860}
+  "DesignSystem.dc.html": {
+   "x": 1320,
+   "y": -2700,
+   "w": 1240,
+   "h": 1180,
+   "title": "00 Design system"
   },
-  "designSystems": []
+  "Main.dc.html": {
+   "x": 0,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "01 Splash",
+   "is_interactive": true
+  },
+  "Lock.dc.html": {
+   "x": 470,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "02 Kunci PIN",
+   "is_interactive": true
+  },
+  "PinSetup.dc.html": {
+   "x": 940,
+   "y": 0,
+   "w": 390,
+   "h": 844,
+   "title": "03 Atur PIN",
+   "is_interactive": true
+  },
+  "Today.dc.html": {
+   "x": 0,
+   "y": 1244,
+   "w": 390,
+   "h": 1660,
+   "title": "04 Hari Ini",
+   "is_interactive": true
+  },
+  "Journal.dc.html": {
+   "x": 470,
+   "y": 1244,
+   "w": 390,
+   "h": 1420,
+   "title": "05 Jurnal",
+   "is_interactive": true
+  },
+  "Money.dc.html": {
+   "x": 940,
+   "y": 1244,
+   "w": 390,
+   "h": 1200,
+   "title": "06 Keuangan",
+   "is_interactive": true
+  },
+  "Report.dc.html": {
+   "x": 1410,
+   "y": 1244,
+   "w": 390,
+   "h": 1320,
+   "title": "07 Laporan",
+   "is_interactive": true
+  },
+  "Search.dc.html": {
+   "x": 0,
+   "y": 3204,
+   "w": 390,
+   "h": 844,
+   "title": "08 Pencarian",
+   "is_interactive": true
+  },
+  "Settings.dc.html": {
+   "x": 470,
+   "y": 3204,
+   "w": 390,
+   "h": 1560,
+   "title": "09 Pengaturan",
+   "is_interactive": true
+  },
+  "SignIn.dc.html": {
+   "x": 940,
+   "y": 3204,
+   "w": 390,
+   "h": 844,
+   "title": "10 Masuk Akun",
+   "is_interactive": true
+  },
+  "Wallets.dc.html": {
+   "x": 1410,
+   "y": 3204,
+   "w": 390,
+   "h": 900,
+   "title": "11 Kelola dompet",
+   "is_interactive": true
+  },
+  "Categories.dc.html": {
+   "x": 1880,
+   "y": 3204,
+   "w": 390,
+   "h": 1140,
+   "title": "12 Kelola kategori",
+   "is_interactive": true
+  },
+  "Budget.dc.html": {
+   "x": 2350,
+   "y": 3204,
+   "w": 390,
+   "h": 960,
+   "title": "13 Budget per kategori",
+   "is_interactive": true
+  },
+  "AccentCustom.dc.html": {
+   "x": 2820,
+   "y": 3204,
+   "w": 390,
+   "h": 844,
+   "title": "33 Pengaturan › Warna aksen kustom",
+   "is_interactive": true
+  },
+  "Quick.dc.html": {
+   "x": 0,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "14 Tambah cepat",
+   "is_interactive": true
+  },
+  "TxForm.dc.html": {
+   "x": 470,
+   "y": 5164,
+   "w": 390,
+   "h": 900,
+   "title": "15 Catat transaksi",
+   "is_interactive": true
+  },
+  "EntryForm.dc.html": {
+   "x": 940,
+   "y": 5164,
+   "w": 390,
+   "h": 1000,
+   "title": "16 Tulis jurnal",
+   "is_interactive": true
+  },
+  "Voice.dc.html": {
+   "x": 1410,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "17 Catatan suara",
+   "is_interactive": true
+  },
+  "BillDetail.dc.html": {
+   "x": 1880,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "18 Detail tagihan",
+   "is_interactive": true
+  },
+  "BillForm.dc.html": {
+   "x": 2350,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "19 Tagihan baru",
+   "is_interactive": true
+  },
+  "WishForm.dc.html": {
+   "x": 2820,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "20 Impian baru",
+   "is_interactive": true
+  },
+  "Deposit.dc.html": {
+   "x": 3290,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "21 Tambah tabungan",
+   "is_interactive": true
+  },
+  "GlobalBudget.dc.html": {
+   "x": 3760,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "22 Target budget global",
+   "is_interactive": true
+  },
+  "WalletForm.dc.html": {
+   "x": 4230,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "23 Ubah dompet",
+   "is_interactive": true
+  },
+  "Streak.dc.html": {
+   "x": 4700,
+   "y": 5164,
+   "w": 390,
+   "h": 844,
+   "title": "24 Streak",
+   "is_interactive": true
+  },
+  "Reminder.dc.html": {
+   "x": 5170,
+   "y": 5164,
+   "w": 390,
+   "h": 900,
+   "title": "34 Pengingat dari jurnal",
+   "is_interactive": true
+  },
+  "UpdateBanner.dc.html": {
+   "x": 0,
+   "y": 6564,
+   "w": 390,
+   "h": 844,
+   "title": "25 Banner versi baru",
+   "is_interactive": true
+  },
+  "UpdateSettings.dc.html": {
+   "x": 470,
+   "y": 6564,
+   "w": 390,
+   "h": 844,
+   "title": "26 Pengaturan › Tentang",
+   "is_interactive": true
+  },
+  "Games.dc.html": {
+   "x": 0,
+   "y": 7808,
+   "w": 390,
+   "h": 844,
+   "title": "27 Permainan",
+   "is_interactive": true
+  },
+  "Spin.dc.html": {
+   "x": 470,
+   "y": 7808,
+   "w": 390,
+   "h": 1000,
+   "title": "28 Roda putar & suit",
+   "is_interactive": true
+  },
+  "Memory.dc.html": {
+   "x": 940,
+   "y": 7808,
+   "w": 390,
+   "h": 900,
+   "title": "29 Memory kartu",
+   "is_interactive": true
+  },
+  "Prompt.dc.html": {
+   "x": 1410,
+   "y": 7808,
+   "w": 390,
+   "h": 844,
+   "title": "30 Kocok pertanyaan",
+   "is_interactive": true
+  },
+  "Desktop.dc.html": {
+   "x": 0,
+   "y": 9228,
+   "w": 1280,
+   "h": 820,
+   "title": "31 Desktop · aplikasi penuh",
+   "is_interactive": true
+  },
+  "DesktopMini.dc.html": {
+   "x": 1360,
+   "y": 9228,
+   "w": 1280,
+   "h": 760,
+   "title": "32 Desktop · jendela mini vs widget",
+   "is_interactive": true
+  }
+ },
+ "order": [
+  "Mascot.dc.html",
+  "DesignSystem.dc.html",
+  "Main.dc.html",
+  "Lock.dc.html",
+  "PinSetup.dc.html",
+  "Today.dc.html",
+  "Journal.dc.html",
+  "Money.dc.html",
+  "Report.dc.html",
+  "Search.dc.html",
+  "Settings.dc.html",
+  "SignIn.dc.html",
+  "Wallets.dc.html",
+  "Categories.dc.html",
+  "Budget.dc.html",
+  "AccentCustom.dc.html",
+  "Quick.dc.html",
+  "TxForm.dc.html",
+  "EntryForm.dc.html",
+  "Voice.dc.html",
+  "BillDetail.dc.html",
+  "BillForm.dc.html",
+  "WishForm.dc.html",
+  "Deposit.dc.html",
+  "GlobalBudget.dc.html",
+  "WalletForm.dc.html",
+  "Streak.dc.html",
+  "Reminder.dc.html",
+  "UpdateBanner.dc.html",
+  "UpdateSettings.dc.html",
+  "Games.dc.html",
+  "Spin.dc.html",
+  "Memory.dc.html",
+  "Prompt.dc.html",
+  "Desktop.dc.html",
+  "DesktopMini.dc.html"
+ ],
+ "notes": {
+  "rowSystem": {
+   "x": 0,
+   "y": -3000,
+   "text": "Maskot & design system",
+   "kind": "title1",
+   "maxW": 2560
+  },
+  "rowOpen": {
+   "x": 0,
+   "y": -300,
+   "text": "Pembuka",
+   "kind": "title1",
+   "maxW": 1330
+  },
+  "rowTabs": {
+   "x": 0,
+   "y": 944,
+   "text": "Tab utama",
+   "kind": "title1",
+   "maxW": 1800
+  },
+  "rowSub": {
+   "x": 0,
+   "y": 2904,
+   "text": "Sub-halaman",
+   "kind": "title1",
+   "maxW": 3210
+  },
+  "rowForm": {
+   "x": 0,
+   "y": 4864,
+   "text": "Form & sheet",
+   "kind": "title1",
+   "maxW": 5560
+  },
+  "rowUpdate": {
+   "x": 0,
+   "y": 6264,
+   "text": "Cek update",
+   "kind": "title1",
+   "maxW": 860
+  },
+  "rowGames": {
+   "x": 0,
+   "y": 7508,
+   "text": "Permainan",
+   "kind": "title1",
+   "maxW": 1800
+  },
+  "rowDesktop": {
+   "x": 0,
+   "y": 8928,
+   "text": "Desktop (Windows)",
+   "kind": "title1",
+   "maxW": 2640
+  }
+ },
+ "designSystems": []
 }

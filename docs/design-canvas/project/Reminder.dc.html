@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Pengingat dari jurnal</title>
+<script src="./support.js"></script>
+<link rel="stylesheet" href="/_blob/dd28f63f6270c6ede0c32193cdae89b5">
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap">
+<style>
+body{margin:0}
+.ph{--hero:#1F5F4E;--primary:#1F5F4E;--onprimary:#fff;--psoft:#DCEBE4;--onpsoft:#1F5F4E;position:relative;overflow:hidden}
+.ic{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;flex:none;background:var(--psoft);color:var(--onpsoft)}
+.ic svg{width:18px;height:18px}
+.ev{display:flex;gap:12px;align-items:flex-start}
+.ev .tt{font-size:15px;font-weight:600;line-height:1.35}
+.ev .wh{font-size:13px;color:var(--ink)}
+.acts{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.note{display:flex;gap:8px;align-items:flex-start;background:var(--warnsoft);color:var(--onwarnsoft);border-radius:14px;padding:10px 12px;font-size:12.5px;line-height:1.45}
+.note svg{width:16px;height:16px;margin-top:2px}
+.hintrow{display:flex;gap:10px;align-items:center;font-size:12.5px;color:var(--muted);line-height:1.5}
+.priv{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--muted);padding:0 4px}
+.priv svg{width:15px;height:15px}
+.veil{border:0}
+.sheet{gap:12px}
+.two{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ph input.inp{min-height:46px}
+.ph textarea.inp{min-height:150px}
+.push{position:absolute;top:14px;left:12px;right:12px;background:var(--surface);border-radius:22px;padding:14px 16px;box-shadow:0 10px 30px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:4px;text-align:left}
+.push .app{display:flex;gap:6px;align-items:center;font-size:11.5px;color:var(--muted)}
+.push .app svg{width:14px;height:14px;color:var(--primary)}
+.push b{font-size:14px;font-weight:600}
+.push span.d{font-size:12.5px;color:var(--muted)}
+.rel{font-size:11.5px;font-weight:600;color:var(--onpsoft);background:var(--psoft);border-radius:999px;padding:3px 9px;white-space:nowrap}
+</style>
+</helmet>
+<div class="ph {{mode}}" style="height: 900px; --hero: {{hero}}; --primary: {{primary}}; --onprimary: {{onprimary}}; --psoft: {{psoft}}; --onpsoft: {{onpsoft}}">
+
+<sc-if value="{{isWrite}}" hint-placeholder-val="{{true}}">
+<div class="body" style="padding-bottom: 28px">
+<div class="hdr"><button type="button" class="ib flat" aria-label="Tutup" onClick="{{goToday}}"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"></path></svg></button><div class="t"><h2 class="s">Tulis jurnal</h2></div><button type="button" class="btn sm" onClick="{{save}}">Simpan</button></div>
+
+<div class="chips">
+<span class="chip"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg>Min, 15 Nov</span>
+<span class="chip on"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"></circle><path d="M12 8v4l3 2"></path></svg>09:00</span>
+</div>
+
+<div class="fld"><label for="story">Cerita</label><textarea id="story" class="inp" value="{{text}}" onInput="{{typed}}" placeholder="Tulis ceritamu. Coba sebut tanggal atau jam."></textarea></div>
+
+<span class="sec">PENGINGAT DARI CERITAMU</span>
+
+<sc-if value="{{none}}" hint-placeholder-val="{{false}}">
+<div class="card"><div class="hintrow"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 0112 0v5l1.5 2h-15zM10 20a2 2 0 004 0"></path></svg></span><span>Belum ada tanggal atau jam di ceritamu. Kalau kamu menyebut rencana, Nyaw menawarkan pengingat di sini.</span></div></div>
+</sc-if>
+
+<sc-for list="{{items}}" as="it" hint-placeholder-count="1">
+<div class="card">
+<div class="ev">
+<span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg></span>
+<div style="flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<span class="sm">{{it.kicker}}</span>
+<span class="tt">{{it.title}}</span>
+<span class="wh">{{it.when}}</span>
+</div>
+<span class="rel">{{it.rel}}</span>
+</div>
+<sc-if value="{{it.amb}}" hint-placeholder-val="{{false}}">
+<div class="fld"><span class="sm">Jamnya belum jelas. Maksudmu yang mana?</span>
+<div class="seg"><button type="button" class="{{it.amCls}}" onClick="{{it.pickAm}}">{{it.amLabel}}</button><button type="button" class="{{it.pmCls}}" onClick="{{it.pickPm}}">{{it.pmLabel}}</button></div></div>
+</sc-if>
+<sc-if value="{{it.hasNote}}" hint-placeholder-val="{{false}}"><div class="note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16.5v.5"></path></svg><span>{{it.note}}</span></div></sc-if>
+<sc-if value="{{it.pending}}" hint-placeholder-val="{{true}}">
+<div class="acts"><button type="button" class="btn sm" onClick="{{it.accept}}">Ingatkan aku</button><button type="button" class="btn sm ghost" onClick="{{it.edit}}">Ubah</button><button type="button" class="btn sm ghost" onClick="{{it.dismiss}}">Abaikan</button></div>
+</sc-if>
+<sc-if value="{{it.acc}}" hint-placeholder-val="{{false}}">
+<div class="acts"><span class="state ok">Pengingat aktif · {{it.lead}}</span><button type="button" class="btn sm ghost" onClick="{{it.edit}}">Ubah</button><button type="button" class="btn sm ghost" onClick="{{it.undo}}">Batal</button></div>
+</sc-if>
+</div>
+</sc-for>
+
+<div class="priv"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 018 0v3"></path></svg><span>Dikenali di HP-mu sendiri, tanpa internet.</span></div>
+
+<span class="sec">CONTOH KALIMAT (HANYA DI PROTOTIPE)</span>
+<div class="chips">
+<sc-for list="{{samples}}" as="s" hint-placeholder-count="4"><button type="button" class="chip" onClick="{{s.add}}">{{s.n}}</button></sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{isToday}}" hint-placeholder-val="{{false}}">
+<div class="body">
+<div class="hdr">
+<div class="t"><small>Minggu, 15 November</small><h2>Hari Ini</h2></div>
+<a href="Settings.dc.html" class="ib" aria-label="Pengaturan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"></path><circle cx="16" cy="7" r="2"></circle><circle cx="10" cy="17" r="2"></circle></svg></a>
+</div>
+
+<div class="card">
+<div class="ch"><span class="h3">Acara mendatang</span><button type="button" class="link" onClick="{{goWrite}}">+ Tulis jurnal</button></div>
+<sc-if value="{{noEvents}}" hint-placeholder-val="{{false}}"><span class="sm">Belum ada acara. Sebut tanggal atau jam di jurnalmu, nanti muncul di sini.</span></sc-if>
+<div>
+<sc-for list="{{events}}" as="e" hint-placeholder-count="2"><button type="button" class="li" onClick="{{e.open}}"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"></rect><path d="M4 10h16M9 3v4M15 3v4"></path></svg></span><div class="tx"><b>{{e.title}}</b><span>{{e.when}}</span></div><span class="rel">{{e.rel}}</span></button></sc-for>
+</div>
+<sc-if value="{{denied}}" hint-placeholder-val="{{false}}">
+<div class="note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 8v5M12 16.5v.5"></path></svg><span>Notifikasi belum diizinkan, jadi acara hanya tampil di daftar ini.</span></div>
+<button type="button" class="btn sm soft" onClick="{{allow}}">Izinkan notifikasi</button>
+</sc-if>
+</div>
+
+<div class="card">
+<div class="ch"><span class="h3">Catatan hari ini</span></div>
+<div>
+<sc-if value="{{justSaved}}" hint-placeholder-val="{{false}}"><div class="li"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3z"></path><path d="M5 17a3 3 0 013-3h10"></path></svg></span><div class="tx"><b>Catatan baru</b><span>09:00 · {{savedInfo}}</span></div></div></sc-if>
+<div class="li"><span class="ic" style="background: color-mix(in srgb, #C2410C 14%, var(--surface)); color: var(--expense)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16a8 8 0 01-16 0z"></path><path d="M8 4l3 6M14 3l-2 7"></path></svg></span><div class="tx"><b>Kopi susu</b><span>07:30 · Makan</span></div><span class="amt exp">-Rp 25.000</span></div>
+</div>
+</div>
+</div>
+
+<nav class="dock" aria-label="Navigasi utama">
+<a href="Today.dc.html" class="on"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11l8-7 8 7v9a1 1 0 01-1 1h-4v-6h-6v6H5a1 1 0 01-1-1z"></path></svg>Hari Ini</a>
+<a href="Journal.dc.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3z"></path><path d="M5 17a3 3 0 013-3h10"></path></svg>Jurnal</a>
+<a href="Quick.dc.html" class="fab" aria-label="Tambah cepat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"></path></svg></a>
+<a href="Money.dc.html"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="6" width="18" height="14" rx="3"></rect><path d="M3 10h18M16 15h2"></path></svg>Keuangan</a>
+<a href="Report.dc.html"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V10M12 20V4M19 20v-7"></path></svg>Laporan</a>
+</nav>
+</sc-if>
+
+<sc-if value="{{editOpen}}" hint-placeholder-val="{{false}}">
+<button type="button" class="veil" aria-label="Tutup" onClick="{{closeSheet}}"></button>
+<div class="sheet" role="dialog" aria-label="Ubah pengingat">
+<div class="grip"></div>
+<h3>Ubah pengingat</h3>
+<p class="sub">Perbaiki kalau tebakan Nyaw kurang pas.</p>
+<div class="fld"><label for="evTitle">Judul acara</label><input id="evTitle" class="inp" value="{{draft.title}}" onInput="{{setTitle}}"></div>
+<div class="two">
+<div class="fld"><label for="evDate">Tanggal</label><input id="evDate" class="inp" type="date" value="{{draft.date}}" onInput="{{setDate}}"></div>
+<div class="fld"><label for="evTime">Jam (kosong = seharian)</label><input id="evTime" class="inp" type="time" value="{{draft.time}}" onInput="{{setTime}}"></div>
+</div>
+<div class="fld"><span class="sm">Ingatkan</span>
+<div class="seg"><sc-for list="{{leads}}" as="l" hint-placeholder-count="3"><button type="button" class="{{l.cls}}" onClick="{{l.pick}}">{{l.n}}</button></sc-for></div></div>
+<div class="row2"><button type="button" class="btn ghost" onClick="{{closeSheet}}">Batal</button><button type="button" class="btn" onClick="{{applyDraft}}">Simpan pengingat</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{permOpen}}" hint-placeholder-val="{{false}}">
+<button type="button" class="veil" aria-label="Tutup" onClick="{{permLater}}"></button>
+<div class="sheet" role="dialog" aria-label="Izin notifikasi">
+<div class="grip"></div>
+<h3>Izinkan notifikasi?</h3>
+<p class="sub">Supaya Nyawtat bisa mengingatkanmu tepat waktu. Hanya ditanya sekali.</p>
+<div class="hintrow"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 0112 0v5l1.5 2h-15zM10 20a2 2 0 004 0"></path></svg></span><span>Tanpa izin, acara tetap tersimpan dan tampil di Hari Ini, tapi tidak ada notifikasi.</span></div>
+<div class="row2"><button type="button" class="btn ghost" onClick="{{permLater}}">Nanti saja</button><button type="button" class="btn" onClick="{{permAllow}}">Izinkan</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{detailOpen}}" hint-placeholder-val="{{false}}">
+<button type="button" class="veil" aria-label="Tutup" onClick="{{closeDetail}}"></button>
+<div class="sheet" role="dialog" aria-label="Detail acara">
+<div class="grip"></div>
+<h3>{{det.title}}</h3>
+<p class="sub">{{det.when}} · {{det.rel}}</p>
+<div class="hintrow"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 0112 0v5l1.5 2h-15zM10 20a2 2 0 004 0"></path></svg></span><span>{{det.leadLine}}</span></div>
+<div class="hintrow"><span class="ic"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 013 3v13H8a3 3 0 01-3-3z"></path><path d="M5 17a3 3 0 013-3h10"></path></svg></span><span>{{det.from}}</span></div>
+<button type="button" class="btn soft block" onClick="{{showPush}}">Lihat contoh notifikasi</button>
+<div class="row2"><button type="button" class="btn ghost danger" onClick="{{removeEvent}}">Hapus pengingat</button><button type="button" class="btn ghost" onClick="{{closeDetail}}">Tutup</button></div>
+</div>
+</sc-if>
+
+<sc-if value="{{pushOpen}}" hint-placeholder-val="{{false}}">
+<button type="button" class="push" aria-label="Tutup contoh notifikasi" onClick="{{closePush}}">
+<span class="app"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 16v-5a6 6 0 0112 0v5l1.5 2h-15zM10 20a2 2 0 004 0"></path></svg>Nyawtat · sekarang</span>
+<b>{{push.title}}</b>
+<span class="d">{{push.body}}</span>
+</button>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"accent":{"editor":"color","default":"#1F5F4E","options":["#1F5F4E","#1D4E89","#5B3E9E","#A23B4F"]},"dark":{"editor":"boolean","default":false},"$preview":{"width":390,"height":900}}'>
+class Component extends DCLogic {
+renderVals() {
+const a = this.props.accent ?? '#1F5F4E';
+const d = !!this.props.dark;
+const m = (x, y, t) => { const p = (h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)); const A = p(x), B = p(y); return '#' + A.map((v, i) => Math.round(v + (B[i] - v) * t).toString(16).padStart(2, '0')).join(''); };
+const st = this.state || {};
+
+// "Hari ini" dikunci supaya prototipe selalu sama: Minggu, 15 Nov 2026.
+const TODAY = new Date(2026, 10, 15);
+const DN = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+const DL = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+const MN = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+const MON = { januari: 0, jan: 0, februari: 1, feb: 1, maret: 2, mar: 2, april: 3, apr: 3, mei: 4, juni: 5, jun: 5, juli: 6, jul: 6, agustus: 7, agu: 7, agt: 7, september: 8, sept: 8, sep: 8, oktober: 9, okt: 9, november: 10, nopember: 10, nov: 10, desember: 11, des: 11 };
+const DAY = { minggu: 0, ahad: 0, senin: 1, selasa: 2, rabu: 3, kamis: 4, jumat: 5, "jum'at": 5, sabtu: 6 };
+const STOP = {}; 'aku saya gue gw kita kami akan mau bakal ada harus perlu ikut hari tanggal tgl nanti yang dan itu ini depan lagi juga ya nih jadi wib insyaallah semoga'.split(' ').forEach((w) => { STOP[w] = 1; });
+const pad = (n) => String(n).padStart(2, '0');
+const iso = (dt) => dt.getFullYear() + '-' + pad(dt.getMonth() + 1) + '-' + pad(dt.getDate());
+const un = (s) => { const p = String(s).split('-').map(Number); return new Date(p[0], p[1] - 1, p[2]); };
+const plus = (n) => new Date(2026, 10, 15 + n);
+const monRe = Object.keys(MON).sort((x, y) => y.length - x.length).join('|');
+const dayRe = "senin|selasa|rabu|kamis|jumat|jum'at|sabtu|minggu|ahad";
+
+const parse = (s) => {
+  const low = s.toLowerCase();
+  if (/\b(kemarin|tadi|barusan)\b/.test(low)) return null;
+  const spans = [];
+  const take = (r) => { if (r) spans.push([r.index, r[0].length]); return r; };
+  let date = null, note = '', explicit = false;
+  let r = take(new RegExp('(?:\\b(?:tanggal|tgl)\\.?\\s*)?\\b(\\d{1,2})\\s+(' + monRe + ')\\b\\.?(?:\\s+(\\d{4}))?').exec(low));
+  if (r) {
+    const y = r[3] ? +r[3] : 2026;
+    date = new Date(y, MON[r[2]], +r[1]);
+    if (date.getDate() !== +r[1]) date = null;
+    else if (!r[3] && date < TODAY) date = new Date(y + 1, MON[r[2]], +r[1]);
+    explicit = !!date;
+  }
+  if (!date) {
+    r = /\b(\d{1,2})[\/-](\d{1,2})(?:[\/-](\d{2,4}))?\b/.exec(low);
+    if (r && +r[2] >= 1 && +r[2] <= 12 && +r[1] >= 1 && +r[1] <= 31) {
+      take(r);
+      const y = r[3] ? (+r[3] < 100 ? 2000 + +r[3] : +r[3]) : 2026;
+      date = new Date(y, +r[2] - 1, +r[1]);
+      if (!r[3] && date < TODAY) date = new Date(y + 1, +r[2] - 1, +r[1]);
+      explicit = true;
+    }
+  }
+  const w = new RegExp('\\b(hari\\s+)?(' + dayRe + ')\\b(?:\\s+(depan|ini|lalu))?').exec(low);
+  let wd = null;
+  if (w && w[3] !== 'lalu' && !(w[2] === 'minggu' && !w[1] && /\d\s*$/.test(low.slice(0, w.index)))) {
+    if (w[2] === 'minggu' && !w[1] && w[3]) { if (w[3] === 'depan' && !date) { date = plus(7); take(w); } }
+    else { wd = DAY[w[2]]; take(w); }
+  }
+  if (date && explicit && wd != null && date.getDay() !== wd) note = date.getDate() + ' ' + MN[date.getMonth()] + ' ' + date.getFullYear() + ' jatuh hari ' + DL[date.getDay()] + ', bukan ' + DL[wd] + '. Nyaw memakai tanggalnya.';
+  let loose = false;
+  if (!date && wd != null) { date = plus(((wd - TODAY.getDay() + 7) % 7) || 7); loose = true; }
+  if (!date) {
+    r = take(/\b(besok lusa|lusa|besok|hari ini|malam ini|nanti (?:pagi|siang|sore|malam))\b/.exec(low));
+    if (r && r[1] === 'besok') date = plus(1);
+    else if (r && /lusa/.test(r[1])) date = plus(2);
+  }
+  let time = '', amb = false, h = null, mi = 0;
+  r = take(/\b(?:jam|pukul|pkl)\.?\s*(\d{1,2})(?:[.:](\d{2}))?(?:\s*(pagi|siang|sore|malam))?/.exec(low));
+  if (!r) r = take(/\b([01]?\d|2[0-3])[.:]([0-5]\d)\b(?:\s*(pagi|siang|sore|malam))?/.exec(low));
+  if (r) { h = +r[1]; mi = r[2] ? +r[2] : 0; if (h > 23 || mi > 59) { h = null; spans.pop(); } }
+  if (h != null) {
+    const per = r[3] || (/\b(pagi|siang|sore|malam)\b/.exec(low) || [])[1];
+    if (per === 'pagi') { if (h === 12) h = 0; }
+    else if (per === 'siang') { if (h <= 6) h += 12; }
+    else if (per === 'sore') { if (h < 12) h += 12; }
+    else if (per === 'malam') { if (h === 12) h = 0; else if (h >= 5 && h < 12) h += 12; }
+    else if (h >= 1 && h <= 11) { amb = true; if (h <= 6) h += 12; }
+    time = pad(h) + ':' + pad(mi);
+  }
+  // Nama hari saja ("Minggu pagi beres-beres") belum tentu rencana: butuh jam atau kata rencana.
+  if (loose && !time && !/\b(akan|mau|bakal|nanti|depan|rencana|jadwal|harus)\b/.test(low)) return null;
+  if (!date && time) date = plus(0);
+  if (!date || date < TODAY) return null;
+  let t = s;
+  spans.sort((x, y) => y[0] - x[0]).forEach((sp) => { t = t.slice(0, sp[0]) + ' ' + t.slice(sp[0] + sp[1]); });
+  const out = [];
+  const words = t.replace(/[.,!?;:()"]/g, ' ').split(/\s+/).filter(Boolean);
+  for (let i = 0; i < words.length; i++) {
+    const k = words[i].toLowerCase();
+    if (k === 'di' || k === 'ke' || k === 'pada') { if (out.length) break; continue; }
+    if (STOP[k]) continue;
+    out.push(words[i]);
+    if (out.length === 4) break;
+  }
+  let title = out.join(' ') || 'Acara';
+  title = title.charAt(0).toUpperCase() + title.slice(1);
+  return { title: title, date: iso(date), time: time, amb: amb, note: note };
+};
+
+const fmtDate = (ds) => { const x = un(ds); return DN[x.getDay()] + ', ' + x.getDate() + ' ' + MN[x.getMonth()] + (x.getFullYear() !== 2026 ? ' ' + x.getFullYear() : ''); };
+const fmtWhen = (e) => fmtDate(e.date) + ' · ' + (e.time ? e.time.replace(':', '.') : 'Sepanjang hari');
+const rel = (ds) => { const n = Math.round((un(ds) - TODAY) / 86400000); return n <= 0 ? 'Hari ini' : n === 1 ? 'Besok' : n + ' hari lagi'; };
+const leadName = (lead, time) => lead === 'd1' ? '1 hari sebelum' : lead === 'h1' && time ? '1 jam sebelum' : time ? 'saat acara' : 'pagi hari-H, 07.00';
+
+const DEFAULT = 'Pagi ini beres-beres kamar. Aku akan ikut workshop menulis pada hari Sabtu tanggal 21 November 2026 jam 1 siang. Semoga lancar.';
+const text = st.text ?? DEFAULT;
+const acc = st.acc || {}, ov = st.ov || {};
+const perm = st.perm || 'unknown';
+const PRE = [{ title: 'Kontrol gigi', date: '2026-11-17', time: '10:00', lead: 'h1', from: 'Dari catatan 12 Nov' }];
+const eventsRaw = st.events || PRE;
+const screen = st.screen || 'write';
+
+const found = text.split(/(?<=[.!?])\s+|\n+/).map((s, i) => { const p = parse(s); return p ? { key: 's' + i, base: p } : null; }).filter(Boolean);
+const merged = found.map((f) => {
+  const o = ov[f.key] || {};
+  const time = o.time != null ? o.time : f.base.time;
+  return { key: f.key, title: o.title != null ? o.title : f.base.title, date: o.date || f.base.date, time: time, lead: o.lead || (time ? 'h1' : 'at'), amb: f.base.amb && o.time == null, note: o.date ? '' : f.base.note, baseTime: f.base.time };
+});
+const visible = merged.filter((e) => acc[e.key] !== false);
+const setOv = (key, patch) => this.setState({ ov: { ...ov, [key]: { ...(ov[key] || {}), ...patch } } });
+const accept = (key) => { if (perm === 'unknown') this.setState({ permFor: key }); else this.setState({ acc: { ...acc, [key]: true } }); };
+
+const items = visible.map((e) => {
+  const hh = e.baseTime ? +e.baseTime.slice(0, 2) % 12 : 0, mm = e.baseTime ? e.baseTime.slice(3) : '00';
+  const am = pad(hh) + ':' + mm, pm = pad(hh + 12) + ':' + mm;
+  return {
+    title: e.title, when: fmtWhen(e), rel: rel(e.date),
+    kicker: acc[e.key] ? 'Akan diingatkan' : 'Terdeteksi acara',
+    amb: e.amb, amLabel: am.replace(':', '.') + (hh < 4 ? ' dini hari' : ' pagi'), pmLabel: pm.replace(':', '.') + (hh < 3 ? ' siang' : hh < 7 ? ' sore' : ' malam'),
+    amCls: '', pmCls: e.time === pm ? 'on' : '',
+    pickAm: () => setOv(e.key, { time: am }), pickPm: () => setOv(e.key, { time: pm }),
+    hasNote: e.note !== '', note: e.note,
+    pending: !acc[e.key], acc: !!acc[e.key], lead: leadName(e.lead, e.time),
+    accept: () => accept(e.key),
+    dismiss: () => this.setState({ acc: { ...acc, [e.key]: false } }),
+    undo: () => { const n = { ...acc }; delete n[e.key]; this.setState({ acc: n }); },
+    edit: () => this.setState({ sheet: e.key, draft: { title: e.title, date: e.date, time: e.time, lead: e.lead } })
+  };
+});
+
+const draft = st.draft || { title: '', date: '', time: '', lead: 'h1' };
+const setDraft = (patch) => this.setState({ draft: { ...draft, ...patch } });
+const leadOpts = draft.time ? [['at', 'Saat acara'], ['h1', '1 jam sebelum'], ['d1', '1 hari sebelum']] : [['at', 'Pagi hari-H'], ['d1', '1 hari sebelum']];
+const draftLead = !draft.time && draft.lead === 'h1' ? 'at' : draft.lead;
+
+const sorted = eventsRaw.map((e, i) => ({ e: e, i: i })).sort((x, y) => (x.e.date + (x.e.time || '00:00')).localeCompare(y.e.date + (y.e.time || '00:00')));
+const cur = st.detail != null ? eventsRaw[st.detail] : null;
+const pushEv = st.push != null ? eventsRaw[st.push] : null;
+const SAMPLES = ['Besok jam 9 pagi servis motor.', 'Jumat jam 7 makan malam sama ibu.', 'Tanggal 3 Desember jam 4 ambil rapor adik.', '25 Desember libur bareng keluarga.', 'Jumat 21 November 2026 jam 10 pagi rapat RT.'];
+
+return {
+  mode: d ? 'dark' : '', hero: a, primary: d ? m(a, '#ffffff', 0.45) : a, onprimary: d ? m(a, '#000000', 0.62) : '#ffffff', psoft: d ? m(a, '#1A1F1D', 0.68) : m(a, '#ffffff', 0.84), onpsoft: d ? m(a, '#ffffff', 0.6) : a,
+  isWrite: screen === 'write', isToday: screen === 'today',
+  text: text, typed: (ev) => this.setState({ text: ev.target.value }),
+  items: items, none: items.length === 0,
+  samples: SAMPLES.map((n) => ({ n: n, add: () => this.setState({ text: (text.trim() ? text.trim() + ' ' : '') + n }) })),
+  save: () => {
+    const fresh = merged.filter((e) => acc[e.key] === true).map((e) => ({ title: e.title, date: e.date, time: e.time, lead: e.lead, from: 'Dari catatan hari ini, 09:00' }));
+    this.setState({ events: eventsRaw.concat(fresh), screen: 'today', text: '', acc: {}, ov: {}, savedCount: fresh.length, justSaved: true });
+  },
+  goToday: () => this.setState({ screen: 'today' }),
+  goWrite: () => this.setState({ screen: 'write', text: st.text ? st.text : '' }),
+  justSaved: !!st.justSaved,
+  savedInfo: (st.savedCount || 0) > 0 ? (st.savedCount + ' pengingat dibuat') : 'tanpa pengingat',
+  events: sorted.map((x) => ({ title: x.e.title, when: fmtWhen(x.e), rel: rel(x.e.date), open: () => this.setState({ detail: x.i }) })),
+  noEvents: sorted.length === 0,
+  denied: perm === 'denied' && sorted.length > 0,
+  allow: () => this.setState({ perm: 'granted' }),
+
+  editOpen: st.sheet != null, draft: draft,
+  setTitle: (ev) => setDraft({ title: ev.target.value }),
+  setDate: (ev) => setDraft({ date: ev.target.value }),
+  setTime: (ev) => setDraft({ time: ev.target.value }),
+  leads: leadOpts.map((l) => ({ n: l[1], cls: draftLead === l[0] ? 'on' : '', pick: () => setDraft({ lead: l[0] }) })),
+  closeSheet: () => this.setState({ sheet: null }),
+  applyDraft: () => {
+    const key = st.sheet;
+    const next = { ...ov, [key]: { title: draft.title.trim() || 'Acara', date: draft.date || undefined, time: draft.time, lead: draftLead } };
+    if (perm === 'unknown') this.setState({ ov: next, sheet: null, permFor: key });
+    else this.setState({ ov: next, sheet: null, acc: { ...acc, [key]: true } });
+  },
+
+  permOpen: st.permFor != null,
+  permAllow: () => this.setState({ perm: 'granted', acc: { ...acc, [st.permFor]: true }, permFor: null }),
+  permLater: () => this.setState({ perm: 'denied', acc: { ...acc, [st.permFor]: true }, permFor: null }),
+
+  detailOpen: !!cur,
+  det: cur ? { title: cur.title, when: fmtWhen(cur), rel: rel(cur.date), leadLine: perm === 'denied' ? 'Notifikasi belum diizinkan' : 'Diingatkan ' + leadName(cur.lead, cur.time), from: cur.from } : { title: '', when: '', rel: '', leadLine: '', from: '' },
+  closeDetail: () => this.setState({ detail: null }),
+  removeEvent: () => this.setState({ events: eventsRaw.filter((x, i) => i !== st.detail), detail: null }),
+  showPush: () => this.setState({ push: st.detail, detail: null }),
+
+  pushOpen: !!pushEv,
+  push: pushEv ? { title: pushEv.title + (pushEv.time ? ' · ' + pushEv.time.replace(':', '.') : ''), body: (pushEv.lead === 'd1' ? 'Besok' : pushEv.lead === 'h1' && pushEv.time ? '1 jam lagi' : pushEv.time ? 'Sekarang' : 'Hari ini') + ' · ' + fmtDate(pushEv.date) } : { title: '', body: '' },
+  closePush: () => this.setState({ push: null })
+};
+}
+}
+</script>
+</body>
+</html>
