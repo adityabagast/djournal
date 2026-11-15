@@ -137,18 +137,25 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
   Future<void> _accept(String key) async {
     final notifier = ref.read(reminderNotifierProvider);
     final settings = ref.read(settingsRepositoryProvider);
-    if (notifier.supported && !await notifier.isAllowed()) {
-      final asked = await settings.watch(_askedKey).first;
-      if (asked == null && mounted) {
-        final allow = await _PermissionSheet.show(context);
-        await settings.set(_askedKey, '1');
-        if (allow == true) {
-          await notifier.requestPermission();
-          ref.invalidate(reminderPermissionProvider);
+    try {
+      if (notifier.supported && !await notifier.isAllowed()) {
+        final asked = await settings.watch(_askedKey).first;
+        if (asked == null && mounted) {
+          final allow = await _PermissionSheet.show(context);
+          await settings.set(_askedKey, '1');
+          if (allow == true) {
+            await notifier.requestPermission();
+            ref.invalidate(reminderPermissionProvider);
+          }
         }
       }
+    } catch (e) {
+      // Notifikasi gagal tidak boleh menghalangi pengingat; acara tetap
+      // tampil di Hari Ini.
+      debugPrint('Izin notifikasi gagal: ${e.runtimeType}');
+    } finally {
+      if (mounted) setState(() => _c._accepted.add(key));
     }
-    if (mounted) setState(() => _c._accepted.add(key));
   }
 
   Future<void> _edit(ReminderDraft d) async {

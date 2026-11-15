@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ikon notifikasi dipanggil lewat nama dari Dart, jadi resource shrinking
+     di build rilis tidak melihatnya dipakai. Tanpa ini ikon terhapus dan
+     plugin notifikasi gagal init. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@drawable/ic_stat_reminder" />

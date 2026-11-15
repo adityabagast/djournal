@@ -37,7 +37,85 @@ class _FakeNotifier implements ReminderNotifier {
   Future<void> cancel(int id) async => scheduled.remove(id);
 }
 
+/// Seperti plugin notifikasi yang gagal init (mis. ikon hilang di build rilis).
+class _BrokenNotifier implements ReminderNotifier {
+  @override
+  bool get supported => true;
+
+  @override
+  Future<bool> isAllowed() async => throw StateError('init gagal');
+
+  @override
+  Future<bool> requestPermission() async => throw StateError('init gagal');
+
+  @override
+  Future<void> schedule({
+    required int id,
+    required DateTime at,
+    required String title,
+    required String body,
+    required bool private,
+  }) async => throw StateError('init gagal');
+
+  @override
+  Future<void> cancel(int id) async => throw StateError('init gagal');
+}
+
 void main() {
+  group('ReminderService dengan notifikasi rusak', () {
+    late AppDatabase db;
+
+    setUp(() => db = AppDatabase(NativeDatabase.memory()));
+    tearDown(() => db.close());
+
+    test('pengingat tetap tersimpan dan bisa dihapus', () async {
+      final service = ReminderService(ReminderRepository(db), _BrokenNotifier());
+      final r = await service.add(
+        entryId: 'e1',
+        title: 'Servis motor',
+        date: '2030-01-10',
+        time: '09:00',
+        lead: ReminderLead.hourBefore,
+        notifTitle: 'judul',
+        notifBody: 'isi',
+        private: false,
+      );
+      expect(await db.select(db.reminders).get(), hasLength(1));
+      await service.delete(r);
+      expect(await db.select(db.reminders).get(), isEmpty);
+    });
+  });
+
+  testWidgets('Ingatkan aku tetap jalan walau notifikasi gagal', (
+    tester,
+  ) async {
+    final controller = ReminderSuggestionController();
+    const text = 'Besok jam 9 pagi servis motor.';
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          reminderNotifierProvider.overrideWithValue(_BrokenNotifier()),
+        ],
+        child: MaterialApp(
+          locale: const Locale('id'),
+          supportedLocales: AppLocalizations.supportedLocales,
+          localizationsDelegates: AppLocalizations.localizationsDelegates,
+          home: Scaffold(
+            body: SingleChildScrollView(
+              child: ReminderSuggestions(controller: controller, text: text),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Ingatkan aku'));
+    await tester.pumpAndSettle();
+    expect(find.text('Pengingat aktif · 1 jam sebelum'), findsOneWidget);
+    expect(controller.acceptedDrafts(text, DateTime.now()), hasLength(1));
+  });
+
   group('ReminderService', () {
     late AppDatabase db;
     late ReminderRepository repo;

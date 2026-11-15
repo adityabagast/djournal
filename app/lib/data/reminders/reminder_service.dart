@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import '../../core/format.dart';
 import '../../domain/models/reminder_parser.dart';
 import '../db/app_database.dart';
@@ -29,18 +31,28 @@ class ReminderService {
       time: time,
       lead: lead,
     );
-    await _notifier.schedule(
-      id: r.notifId,
-      at: reminderFireAt(date, time, lead),
-      title: notifTitle,
-      body: notifBody,
-      private: private,
-    );
+    try {
+      await _notifier.schedule(
+        id: r.notifId,
+        at: reminderFireAt(date, time, lead),
+        title: notifTitle,
+        body: notifBody,
+        private: private,
+      );
+    } catch (e) {
+      // Pengingat tetap tersimpan dan tampil di Hari Ini walau notifikasi
+      // gagal dijadwalkan. Isi pengingat tidak ikut dicatat ke log.
+      debugPrint('Jadwal notifikasi gagal: ${e.runtimeType}');
+    }
     return r;
   }
 
   Future<void> delete(Reminder r) async {
-    await _notifier.cancel(r.notifId);
+    try {
+      await _notifier.cancel(r.notifId);
+    } catch (e) {
+      debugPrint('Batal notifikasi gagal: ${e.runtimeType}');
+    }
     await _repo.delete(r.id);
   }
 

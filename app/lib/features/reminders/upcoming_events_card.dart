@@ -101,7 +101,11 @@ class UpcomingEventsCard extends ConsumerWidget {
                 alignment: Alignment.centerLeft,
                 child: FilledButton.tonal(
                   onPressed: () async {
-                    await notifier.requestPermission();
+                    try {
+                      await notifier.requestPermission();
+                    } catch (e) {
+                      debugPrint('Izin notifikasi gagal: ${e.runtimeType}');
+                    }
                     ref.invalidate(reminderPermissionProvider);
                   },
                   child: Text(l.remAllowButton),
