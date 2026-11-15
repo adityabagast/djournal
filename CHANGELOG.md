@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.15.1 — 2026-11-15
+
+**Perbaikan**
+- **Ingatkan aku** di form jurnal tidak merespons apa pun di 0.15.0. Penyebabnya, ikon notifikasi terbuang saat build rilis sehingga notifikasi gagal disiapkan. Ikonnya kini ikut terpasang.
+- Kalau notifikasi gagal karena sebab lain, pengingat tetap tersimpan dan tampil di **Acara mendatang** di Hari Ini.
+
 ## 0.15.0 — 2026-11-15
 
 **Baru**
