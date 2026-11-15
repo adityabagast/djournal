@@ -6,12 +6,15 @@ import '../../core/theme.dart';
 import '../../data/db/app_database.dart';
 import '../../data/journal_repository.dart';
 import '../../data/money_snapshot.dart';
+import '../../data/security/lock_controller.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/image_viewer.dart';
 import '../../ui/mascot.dart';
 import '../../ui/mood.dart';
 import '../money/tx_form_screen.dart';
+import '../reminders/reminder_format.dart';
+import '../reminders/reminder_suggestions.dart';
 import 'voice/voice_player_card.dart';
 import 'voice/voice_record_sheet.dart';
 
@@ -80,6 +83,12 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
   bool _showEmptyError = false;
   bool _saving = false;
 
+  /// Pilihan pengingat dari cerita selama form terbuka.
+  final _reminders = ReminderSuggestionController();
+
+  /// Pengingat yang sudah dibuat dari entri ini (saat mengedit).
+  List<Reminder> _existingReminders = const [];
+
   bool get _isEdit => widget.existing != null;
 
   @override
@@ -97,6 +106,9 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
       _title.text = e.title ?? '';
       _body.text = e.body ?? '';
       _tags.text = entryTags(e).join(', ');
+      ref.read(reminderRepositoryProvider).forEntry(e.id).then((rows) {
+        if (mounted) setState(() => _existingReminders = rows);
+      });
       ref.read(attachmentRepositoryProvider).getAttachmentsForEntry(e.id).then((atts) {
         if (mounted) {
           setState(() {
@@ -245,10 +257,49 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
 
     if (!mounted) return;
     final l = context.l10n;
+    final drafts = _reminders.acceptedDrafts(
+      _body.text,
+      DateTime.now(),
+      existing: _existingReminders,
+    );
+    final service = ref.read(reminderServiceProvider);
+    final private = ref.read(lockProvider).pinEnabled;
+    // Teks notifikasi disiapkan dulu selagi context masih aktif.
+    final jobs = [
+      for (final d in drafts)
+        (
+          d,
+          d.title.isEmpty ? l.remDefaultTitle : d.title,
+          reminderNotifTexts(
+            context,
+            title: d.title.isEmpty ? l.remDefaultTitle : d.title,
+            date: d.date,
+            time: d.time,
+            lead: d.lead,
+          ),
+        ),
+    ];
+    for (final (d, title, texts) in jobs) {
+      await service.add(
+        entryId: entryId,
+        title: title,
+        date: d.date,
+        time: d.time,
+        lead: d.lead,
+        notifTitle: texts.$1,
+        notifBody: texts.$2,
+        private: private,
+      );
+    }
+
+    if (!mounted) return;
+    final saved = widget.existing == null
+        ? l.toastEntrySaved
+        : l.toastEntryUpdated;
     showMascotSnackBar(
       context,
       MascotPose.senang,
-      widget.existing == null ? l.toastEntrySaved : l.toastEntryUpdated,
+      jobs.isEmpty ? saved : '$saved · ${l.remCreated(jobs.length)}',
     );
     Navigator.of(context).pop();
   }
@@ -276,6 +327,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
     );
     if (ok != true) return;
     await ref.read(journalRepositoryProvider).deleteEntry(widget.existing!.id);
+    await ref.read(reminderServiceProvider).deleteForEntry(widget.existing!.id);
     if (mounted) Navigator.of(context).pop();
   }
 
@@ -525,14 +577,19 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
             maxLines: null,
             keyboardType: TextInputType.multiline,
             textCapitalization: TextCapitalization.sentences,
-            onChanged: (_) {
-              if (_showEmptyError) setState(() => _showEmptyError = false);
-            },
+            // Selalu rebuild: saran pengingat dibaca dari isi cerita.
+            onChanged: (_) => setState(() => _showEmptyError = false),
             style: t.bodyLarge?.copyWith(height: 1.55),
             decoration: InputDecoration(
               hintText: l.storyHint,
               errorText: _showEmptyError ? l.entryEmptyError : null,
             ),
+          ),
+          const SizedBox(height: 16),
+          ReminderSuggestions(
+            controller: _reminders,
+            text: _body.text,
+            existing: _existingReminders,
           ),
           const SizedBox(height: 16),
           label(l.tags, optional: true),

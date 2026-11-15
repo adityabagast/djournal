@@ -1,5 +1,18 @@
 # Changelog
 
+## Belum dirilis
+
+**Baru**
+- **Kalender di Keuangan**: kalender bulanan dengan total keluar/masuk per tanggal. Ketuk tanggal untuk melihat transaksi hari itu, geser bulan dengan panah.
+- **Pengingat dari jurnal**: saat menulis cerita yang menyebut rencana ("besok jam 9 pagi servis motor", "21 November jam 1 siang workshop"), Nyaw menawarkan pengingat. Bisa diterima, diubah (judul, tanggal, jam, kapan diingatkan), atau diabaikan. Kalimatnya dikenali di HP sendiri, tanpa internet, dan untuk saat ini hanya bahasa Indonesia.
+- **Acara mendatang** di Hari Ini: daftar pengingat yang sudah dibuat; ketuk untuk melihat detail atau menghapusnya.
+- Pengingat disimpan di perangkat saja (tidak ikut sinkron, backup, atau ekspor). Kalau PIN aktif, isi notifikasi disembunyikan di layar kunci.
+
+**Izin Android baru**
+- `POST_NOTIFICATIONS`: menampilkan notifikasi pengingat. Hanya diminta saat pertama kali menerima pengingat; tanpa izin, acara tetap tampil di Hari Ini.
+- `RECEIVE_BOOT_COMPLETED`: menjadwalkan ulang pengingat setelah HP dinyalakan lagi.
+- Dependensi baru: `flutter_local_notifications` dan `timezone` (pub.dev). Notifikasi dijadwalkan lokal; tidak ada data yang dikirim ke jaringan.
+
 ## 0.14.0 — 2026-11-10
 
 **Baru**

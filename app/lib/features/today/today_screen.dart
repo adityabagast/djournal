@@ -17,6 +17,7 @@ import '../money/wallets_screen.dart';
 import '../search/search_screen.dart';
 import '../settings/settings_screen.dart';
 import '../update/update_card.dart';
+import '../reminders/upcoming_events_card.dart';
 import 'widgets/bills_card.dart';
 import 'widgets/budget_warning_banner.dart';
 import 'widgets/global_budget_card.dart';
@@ -260,6 +261,7 @@ class TodayScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             const RestCard(),
             const SizedBox(height: 16),
+            const UpcomingEventsCard(),
             BudgetWarningBanner(snapshot: snap, now: now),
             if (context.isWide)
               Row(

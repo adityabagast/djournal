@@ -175,6 +175,32 @@ class Attachments extends Table with SyncColumns {
   IntColumn get height => integer().nullable()();
 }
 
+/// Pengingat acara yang dikenali dari cerita jurnal. Lokal di perangkat,
+/// tidak disinkronkan (notifikasinya juga hanya ada di perangkat ini).
+class Reminders extends Table {
+  TextColumn get id => text()();
+
+  /// Entri jurnal asal; tanpa FK supaya entri boleh dihapus lebih dulu.
+  TextColumn get entryId => text().nullable()();
+  TextColumn get title => text()();
+
+  /// Tanggal acara (YYYY-MM-DD).
+  TextColumn get eventDate => text()();
+
+  /// "HH:mm", atau null untuk acara seharian.
+  TextColumn get eventTime => text().nullable()();
+
+  /// at | h1 | d1 (lihat ReminderLead).
+  TextColumn get lead => text()();
+
+  /// Id notifikasi Android (int 31-bit).
+  IntColumn get notifId => integer()();
+  IntColumn get createdAt => integer().map(const EpochMsConverter())();
+
+  @override
+  Set<Column> get primaryKey => {id};
+}
+
 /// Key-value lokal, tidak disinkronkan.
 class AppSettings extends Table {
   TextColumn get key => text()();

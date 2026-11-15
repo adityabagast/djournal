@@ -19,6 +19,7 @@ String newId() => _uuid.v4();
     Wishlists,
     Bills,
     Attachments,
+    Reminders,
     AppSettings,
   ],
 )
@@ -26,7 +27,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 6;
+  int get schemaVersion => 7;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -62,6 +63,9 @@ class AppDatabase extends _$AppDatabase {
       if (from < 6) {
         await m.addColumn(categories, categories.parentId);
       }
+      if (from < 7) {
+        await m.createTable(reminders);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -83,6 +87,7 @@ class AppDatabase extends _$AppDatabase {
   /// Dipakai saat logout; pengaturan lokal (bahasa, alamat server) tetap.
   Future<void> resetData() => transaction(() async {
     for (final table in <TableInfo>[
+      reminders,
       attachments,
       journalEntries,
       wishlists,

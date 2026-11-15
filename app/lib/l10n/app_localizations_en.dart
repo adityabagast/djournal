@@ -2024,4 +2024,146 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get calNoData => 'no data yet';
+
+  @override
+  String get remSection => 'REMINDERS FROM YOUR STORY';
+
+  @override
+  String get remNone =>
+      'No date or time in your story yet. Mention a plan and Nyaw will offer a reminder here.';
+
+  @override
+  String get remDetected => 'Event detected';
+
+  @override
+  String get remWillRemind => 'Will remind you';
+
+  @override
+  String get remAllDay => 'All day';
+
+  @override
+  String get remTomorrow => 'Tomorrow';
+
+  @override
+  String remDaysLeft(int days) {
+    return 'in $days days';
+  }
+
+  @override
+  String get remAmbiguous => 'The time is unclear. Which one do you mean?';
+
+  @override
+  String remMismatch(String date, String actual, String said) {
+    return '$date falls on $actual, not $said. Nyaw uses the date.';
+  }
+
+  @override
+  String get remAccept => 'Remind me';
+
+  @override
+  String get remEdit => 'Edit';
+
+  @override
+  String get remDismiss => 'Ignore';
+
+  @override
+  String remActive(String lead) {
+    return 'Reminder on · $lead';
+  }
+
+  @override
+  String get remLeadAt => 'at the event';
+
+  @override
+  String get remLeadHour => '1 hour before';
+
+  @override
+  String get remLeadDay => '1 day before';
+
+  @override
+  String get remLeadMorning => 'that morning, 07:00';
+
+  @override
+  String get remLeadMorningShort => 'that morning';
+
+  @override
+  String get remPrivacy => 'Recognized on your own phone, no internet.';
+
+  @override
+  String get remEditTitle => 'Edit reminder';
+
+  @override
+  String get remEditSub => 'Fix it if Nyaw guessed wrong.';
+
+  @override
+  String get remFieldTitle => 'Event title';
+
+  @override
+  String get remFieldDate => 'Date';
+
+  @override
+  String get remFieldTime => 'Time';
+
+  @override
+  String get remFieldLead => 'Remind me';
+
+  @override
+  String get remSave => 'Save reminder';
+
+  @override
+  String get remDefaultTitle => 'Event';
+
+  @override
+  String get remPermTitle => 'Allow notifications?';
+
+  @override
+  String get remPermBody =>
+      'So Nyawtat can remind you on time. Asked only once.';
+
+  @override
+  String get remPermHint =>
+      'Without permission, events are still saved and shown on Today, but there are no notifications.';
+
+  @override
+  String get remPermLater => 'Not now';
+
+  @override
+  String get remPermAllow => 'Allow';
+
+  @override
+  String get remUpcoming => 'Upcoming events';
+
+  @override
+  String get remDenied =>
+      'Notifications are not allowed, so events only appear in this list.';
+
+  @override
+  String get remAllowButton => 'Allow notifications';
+
+  @override
+  String remLeadLine(String lead) {
+    return 'Reminds you $lead';
+  }
+
+  @override
+  String remFrom(String date) {
+    return 'From the entry on $date';
+  }
+
+  @override
+  String get remDelete => 'Delete reminder';
+
+  @override
+  String get remClose => 'Close';
+
+  @override
+  String get remNotifHour => 'In 1 hour';
+
+  @override
+  String get remNotifNow => 'Now';
+
+  @override
+  String remCreated(int count) {
+    return '$count reminders created';
+  }
 }

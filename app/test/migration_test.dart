@@ -14,7 +14,7 @@ void main() {
 
   setUpAll(() => verifier = SchemaVerifier(GeneratedHelper()));
 
-  const latest = 6;
+  const latest = 7;
 
   for (var from = 1; from < latest; from++) {
     test('upgrade v$from -> v$latest menghasilkan schema yang sama', () async {

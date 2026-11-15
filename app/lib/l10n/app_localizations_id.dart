@@ -1992,4 +1992,146 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get calNoData => 'belum ada data';
+
+  @override
+  String get remSection => 'PENGINGAT DARI CERITAMU';
+
+  @override
+  String get remNone =>
+      'Belum ada tanggal atau jam di ceritamu. Kalau kamu menyebut rencana, Nyaw menawarkan pengingat di sini.';
+
+  @override
+  String get remDetected => 'Terdeteksi acara';
+
+  @override
+  String get remWillRemind => 'Akan diingatkan';
+
+  @override
+  String get remAllDay => 'Sepanjang hari';
+
+  @override
+  String get remTomorrow => 'Besok';
+
+  @override
+  String remDaysLeft(int days) {
+    return '$days hari lagi';
+  }
+
+  @override
+  String get remAmbiguous => 'Jamnya belum jelas. Maksudmu yang mana?';
+
+  @override
+  String remMismatch(String date, String actual, String said) {
+    return '$date jatuh hari $actual, bukan $said. Nyaw memakai tanggalnya.';
+  }
+
+  @override
+  String get remAccept => 'Ingatkan aku';
+
+  @override
+  String get remEdit => 'Ubah';
+
+  @override
+  String get remDismiss => 'Abaikan';
+
+  @override
+  String remActive(String lead) {
+    return 'Pengingat aktif · $lead';
+  }
+
+  @override
+  String get remLeadAt => 'saat acara';
+
+  @override
+  String get remLeadHour => '1 jam sebelum';
+
+  @override
+  String get remLeadDay => '1 hari sebelum';
+
+  @override
+  String get remLeadMorning => 'pagi hari-H, 07.00';
+
+  @override
+  String get remLeadMorningShort => 'pagi hari-H';
+
+  @override
+  String get remPrivacy => 'Dikenali di HP-mu sendiri, tanpa internet.';
+
+  @override
+  String get remEditTitle => 'Ubah pengingat';
+
+  @override
+  String get remEditSub => 'Perbaiki kalau tebakan Nyaw kurang pas.';
+
+  @override
+  String get remFieldTitle => 'Judul acara';
+
+  @override
+  String get remFieldDate => 'Tanggal';
+
+  @override
+  String get remFieldTime => 'Jam';
+
+  @override
+  String get remFieldLead => 'Ingatkan';
+
+  @override
+  String get remSave => 'Simpan pengingat';
+
+  @override
+  String get remDefaultTitle => 'Acara';
+
+  @override
+  String get remPermTitle => 'Izinkan notifikasi?';
+
+  @override
+  String get remPermBody =>
+      'Supaya Nyawtat bisa mengingatkanmu tepat waktu. Hanya ditanya sekali.';
+
+  @override
+  String get remPermHint =>
+      'Tanpa izin, acara tetap tersimpan dan tampil di Hari Ini, tapi tidak ada notifikasi.';
+
+  @override
+  String get remPermLater => 'Nanti saja';
+
+  @override
+  String get remPermAllow => 'Izinkan';
+
+  @override
+  String get remUpcoming => 'Acara mendatang';
+
+  @override
+  String get remDenied =>
+      'Notifikasi belum diizinkan, jadi acara hanya tampil di daftar ini.';
+
+  @override
+  String get remAllowButton => 'Izinkan notifikasi';
+
+  @override
+  String remLeadLine(String lead) {
+    return 'Diingatkan $lead';
+  }
+
+  @override
+  String remFrom(String date) {
+    return 'Dari catatan $date';
+  }
+
+  @override
+  String get remDelete => 'Hapus pengingat';
+
+  @override
+  String get remClose => 'Tutup';
+
+  @override
+  String get remNotifHour => '1 jam lagi';
+
+  @override
+  String get remNotifNow => 'Sekarang';
+
+  @override
+  String remCreated(int count) {
+    return '$count pengingat dibuat';
+  }
 }

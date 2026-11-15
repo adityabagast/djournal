@@ -33,6 +33,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // Dibutuhkan flutter_local_notifications (pengingat terjadwal).
+        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
@@ -92,4 +94,5 @@ flutter {
 dependencies {
     // FileProvider untuk membuka APK update di installer Android.
     implementation("androidx.core:core:1.13.1")
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")
 }

@@ -3649,6 +3649,258 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'belum ada data'**
   String get calNoData;
+
+  /// No description provided for @remSection.
+  ///
+  /// In id, this message translates to:
+  /// **'PENGINGAT DARI CERITAMU'**
+  String get remSection;
+
+  /// No description provided for @remNone.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tanggal atau jam di ceritamu. Kalau kamu menyebut rencana, Nyaw menawarkan pengingat di sini.'**
+  String get remNone;
+
+  /// No description provided for @remDetected.
+  ///
+  /// In id, this message translates to:
+  /// **'Terdeteksi acara'**
+  String get remDetected;
+
+  /// No description provided for @remWillRemind.
+  ///
+  /// In id, this message translates to:
+  /// **'Akan diingatkan'**
+  String get remWillRemind;
+
+  /// No description provided for @remAllDay.
+  ///
+  /// In id, this message translates to:
+  /// **'Sepanjang hari'**
+  String get remAllDay;
+
+  /// No description provided for @remTomorrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Besok'**
+  String get remTomorrow;
+
+  /// No description provided for @remDaysLeft.
+  ///
+  /// In id, this message translates to:
+  /// **'{days} hari lagi'**
+  String remDaysLeft(int days);
+
+  /// No description provided for @remAmbiguous.
+  ///
+  /// In id, this message translates to:
+  /// **'Jamnya belum jelas. Maksudmu yang mana?'**
+  String get remAmbiguous;
+
+  /// No description provided for @remMismatch.
+  ///
+  /// In id, this message translates to:
+  /// **'{date} jatuh hari {actual}, bukan {said}. Nyaw memakai tanggalnya.'**
+  String remMismatch(String date, String actual, String said);
+
+  /// No description provided for @remAccept.
+  ///
+  /// In id, this message translates to:
+  /// **'Ingatkan aku'**
+  String get remAccept;
+
+  /// No description provided for @remEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah'**
+  String get remEdit;
+
+  /// No description provided for @remDismiss.
+  ///
+  /// In id, this message translates to:
+  /// **'Abaikan'**
+  String get remDismiss;
+
+  /// No description provided for @remActive.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat aktif · {lead}'**
+  String remActive(String lead);
+
+  /// No description provided for @remLeadAt.
+  ///
+  /// In id, this message translates to:
+  /// **'saat acara'**
+  String get remLeadAt;
+
+  /// No description provided for @remLeadHour.
+  ///
+  /// In id, this message translates to:
+  /// **'1 jam sebelum'**
+  String get remLeadHour;
+
+  /// No description provided for @remLeadDay.
+  ///
+  /// In id, this message translates to:
+  /// **'1 hari sebelum'**
+  String get remLeadDay;
+
+  /// No description provided for @remLeadMorning.
+  ///
+  /// In id, this message translates to:
+  /// **'pagi hari-H, 07.00'**
+  String get remLeadMorning;
+
+  /// No description provided for @remLeadMorningShort.
+  ///
+  /// In id, this message translates to:
+  /// **'pagi hari-H'**
+  String get remLeadMorningShort;
+
+  /// No description provided for @remPrivacy.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikenali di HP-mu sendiri, tanpa internet.'**
+  String get remPrivacy;
+
+  /// No description provided for @remEditTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah pengingat'**
+  String get remEditTitle;
+
+  /// No description provided for @remEditSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbaiki kalau tebakan Nyaw kurang pas.'**
+  String get remEditSub;
+
+  /// No description provided for @remFieldTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Judul acara'**
+  String get remFieldTitle;
+
+  /// No description provided for @remFieldDate.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal'**
+  String get remFieldDate;
+
+  /// No description provided for @remFieldTime.
+  ///
+  /// In id, this message translates to:
+  /// **'Jam'**
+  String get remFieldTime;
+
+  /// No description provided for @remFieldLead.
+  ///
+  /// In id, this message translates to:
+  /// **'Ingatkan'**
+  String get remFieldLead;
+
+  /// No description provided for @remSave.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan pengingat'**
+  String get remSave;
+
+  /// No description provided for @remDefaultTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara'**
+  String get remDefaultTitle;
+
+  /// No description provided for @remPermTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Izinkan notifikasi?'**
+  String get remPermTitle;
+
+  /// No description provided for @remPermBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Supaya Nyawtat bisa mengingatkanmu tepat waktu. Hanya ditanya sekali.'**
+  String get remPermBody;
+
+  /// No description provided for @remPermHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanpa izin, acara tetap tersimpan dan tampil di Hari Ini, tapi tidak ada notifikasi.'**
+  String get remPermHint;
+
+  /// No description provided for @remPermLater.
+  ///
+  /// In id, this message translates to:
+  /// **'Nanti saja'**
+  String get remPermLater;
+
+  /// No description provided for @remPermAllow.
+  ///
+  /// In id, this message translates to:
+  /// **'Izinkan'**
+  String get remPermAllow;
+
+  /// No description provided for @remUpcoming.
+  ///
+  /// In id, this message translates to:
+  /// **'Acara mendatang'**
+  String get remUpcoming;
+
+  /// No description provided for @remDenied.
+  ///
+  /// In id, this message translates to:
+  /// **'Notifikasi belum diizinkan, jadi acara hanya tampil di daftar ini.'**
+  String get remDenied;
+
+  /// No description provided for @remAllowButton.
+  ///
+  /// In id, this message translates to:
+  /// **'Izinkan notifikasi'**
+  String get remAllowButton;
+
+  /// No description provided for @remLeadLine.
+  ///
+  /// In id, this message translates to:
+  /// **'Diingatkan {lead}'**
+  String remLeadLine(String lead);
+
+  /// No description provided for @remFrom.
+  ///
+  /// In id, this message translates to:
+  /// **'Dari catatan {date}'**
+  String remFrom(String date);
+
+  /// No description provided for @remDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus pengingat'**
+  String get remDelete;
+
+  /// No description provided for @remClose.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get remClose;
+
+  /// No description provided for @remNotifHour.
+  ///
+  /// In id, this message translates to:
+  /// **'1 jam lagi'**
+  String get remNotifHour;
+
+  /// No description provided for @remNotifNow.
+  ///
+  /// In id, this message translates to:
+  /// **'Sekarang'**
+  String get remNotifNow;
+
+  /// No description provided for @remCreated.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} pengingat dibuat'**
+  String remCreated(int count);
 }
 
 class _AppLocalizationsDelegate

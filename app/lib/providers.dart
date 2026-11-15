@@ -7,6 +7,7 @@ export 'providers/global_budget_providers.dart';
 export 'providers/google_drive_providers.dart';
 export 'providers/journal_providers.dart';
 export 'providers/money_providers.dart';
+export 'providers/reminder_providers.dart';
 export 'providers/settings_providers.dart';
 export 'providers/streak_providers.dart';
 export 'providers/update_providers.dart';
