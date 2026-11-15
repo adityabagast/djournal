@@ -80,6 +80,14 @@
    "title": "07 Laporan",
    "is_interactive": true
   },
+  "MoneyCalendar.dc.html": {
+   "x": 1880,
+   "y": 1244,
+   "w": 390,
+   "h": 1720,
+   "title": "35 Keuangan · kalender bulanan",
+   "is_interactive": true
+  },
   "Search.dc.html": {
    "x": 0,
    "y": 3204,
@@ -307,6 +315,7 @@
   "Journal.dc.html",
   "Money.dc.html",
   "Report.dc.html",
+  "MoneyCalendar.dc.html",
   "Search.dc.html",
   "Settings.dc.html",
   "SignIn.dc.html",
@@ -355,7 +364,7 @@
    "y": 944,
    "text": "Tab utama",
    "kind": "title1",
-   "maxW": 1800
+   "maxW": 2270
   },
   "rowSub": {
    "x": 0,
