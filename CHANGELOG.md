@@ -1,6 +1,6 @@
 # Changelog
 
-## Belum dirilis
+## 0.15.0 — 2026-11-15
 
 **Baru**
 - **Kalender di Keuangan**: kalender bulanan dengan total keluar/masuk per tanggal. Ketuk tanggal untuk melihat transaksi hari itu, geser bulan dengan panah.
