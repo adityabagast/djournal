@@ -1997,4 +1997,31 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get updateCheckServer => 'GitHub is having problems. Try again later.';
+
+  @override
+  String get calPrevMonth => 'Previous month';
+
+  @override
+  String get calNextMonth => 'Next month';
+
+  @override
+  String get calHint => 'Tap a date to see that day\'s transactions.';
+
+  @override
+  String get calShowAllDays => 'Show all days';
+
+  @override
+  String get calOut => 'Out';
+
+  @override
+  String get calIn => 'In';
+
+  @override
+  String get calDayEmpty => 'No transactions on this date.';
+
+  @override
+  String get calRecord => 'Record';
+
+  @override
+  String get calNoData => 'no data yet';
 }

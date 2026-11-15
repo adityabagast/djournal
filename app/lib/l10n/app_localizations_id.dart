@@ -1965,4 +1965,31 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get updateCheckServer =>
       'Server GitHub sedang bermasalah. Coba lagi nanti.';
+
+  @override
+  String get calPrevMonth => 'Bulan sebelumnya';
+
+  @override
+  String get calNextMonth => 'Bulan berikutnya';
+
+  @override
+  String get calHint => 'Ketuk tanggal untuk melihat transaksi hari itu.';
+
+  @override
+  String get calShowAllDays => 'Tampilkan semua hari';
+
+  @override
+  String get calOut => 'Keluar';
+
+  @override
+  String get calIn => 'Masuk';
+
+  @override
+  String get calDayEmpty => 'Tidak ada transaksi di tanggal ini.';
+
+  @override
+  String get calRecord => 'Catat';
+
+  @override
+  String get calNoData => 'belum ada data';
 }

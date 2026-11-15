@@ -17,14 +17,24 @@ import 'wallet_form_sheet.dart';
 /// Form catat / edit transaksi (pengeluaran, pemasukan, atau transfer antar
 /// dompet). [existing] null = transaksi baru.
 class TxFormScreen extends ConsumerStatefulWidget {
-  const TxFormScreen({super.key, this.existing});
+  const TxFormScreen({super.key, this.existing, this.initialDate});
 
   final MoneyTx? existing;
 
-  static Future<void> open(BuildContext context, {MoneyTx? existing}) {
-    return Navigator.of(
-      context,
-    ).push(MaterialPageRoute(builder: (_) => TxFormScreen(existing: existing)));
+  /// Tanggal awal untuk transaksi baru (mis. dari kalender Keuangan).
+  final DateTime? initialDate;
+
+  static Future<void> open(
+    BuildContext context, {
+    MoneyTx? existing,
+    DateTime? initialDate,
+  }) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) =>
+            TxFormScreen(existing: existing, initialDate: initialDate),
+      ),
+    );
   }
 
   @override
@@ -57,7 +67,8 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     _categoryId = e?.categoryId;
     _walletId = e?.walletId;
     _toWalletId = e?.toWalletId;
-    _occurredAt = e?.occurredAt.toLocal() ?? DateTime.now();
+    _occurredAt =
+        e?.occurredAt.toLocal() ?? widget.initialDate ?? DateTime.now();
     if (e != null) {
       _amount.text = thousands(e.amount);
       _note.text = e.note ?? '';

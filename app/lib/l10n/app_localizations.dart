@@ -3595,6 +3595,60 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Server GitHub sedang bermasalah. Coba lagi nanti.'**
   String get updateCheckServer;
+
+  /// No description provided for @calPrevMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan sebelumnya'**
+  String get calPrevMonth;
+
+  /// No description provided for @calNextMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan berikutnya'**
+  String get calNextMonth;
+
+  /// No description provided for @calHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk tanggal untuk melihat transaksi hari itu.'**
+  String get calHint;
+
+  /// No description provided for @calShowAllDays.
+  ///
+  /// In id, this message translates to:
+  /// **'Tampilkan semua hari'**
+  String get calShowAllDays;
+
+  /// No description provided for @calOut.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar'**
+  String get calOut;
+
+  /// No description provided for @calIn.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get calIn;
+
+  /// No description provided for @calDayEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tidak ada transaksi di tanggal ini.'**
+  String get calDayEmpty;
+
+  /// No description provided for @calRecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat'**
+  String get calRecord;
+
+  /// No description provided for @calNoData.
+  ///
+  /// In id, this message translates to:
+  /// **'belum ada data'**
+  String get calNoData;
 }
 
 class _AppLocalizationsDelegate

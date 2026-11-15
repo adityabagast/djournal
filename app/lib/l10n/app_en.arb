@@ -598,5 +598,14 @@
   "gamePromptDreamsList": "What is one thing you want to achieve this month?|If money were no issue, what would you buy first?|Who do you want to be in five years?|What good habit do you want to start?|Which skill do you want to master this year?|Which city or country do you want to visit, and why?|What does a perfect day look like to you, from waking up to sleeping?|What do you want to save for, and how long are you willing to wait?|If you could change one thing in your life right now, what would it be?|What kind of home do you dream of?|Which small project do you want to start before the year ends?|Who do you want to meet or reconnect with?|What do you want to teach others someday?|If failing were impossible, what would you try?|Which experience do you want to have once in your life?|What do you want to remember about this year?|Which book do you want to read or write?|Describe your ideal job in one sentence.|Which fear do you want to overcome?|Which bad habit do you want to replace with a better one?|What is your nearest financial goal?|What do you want to do with family or friends this year?|What would you like to tell yourself five years from now?|Which old dream do you still want to bring back to life?",
   "updateCheckNotFound": "No release found on GitHub yet. Try again later.",
   "updateCheckRateLimited": "Checked too often. Try again in a few minutes.",
-  "updateCheckServer": "GitHub is having problems. Try again later."
+  "updateCheckServer": "GitHub is having problems. Try again later.",
+  "calPrevMonth": "Previous month",
+  "calNextMonth": "Next month",
+  "calHint": "Tap a date to see that day's transactions.",
+  "calShowAllDays": "Show all days",
+  "calOut": "Out",
+  "calIn": "In",
+  "calDayEmpty": "No transactions on this date.",
+  "calRecord": "Record",
+  "calNoData": "no data yet"
 }

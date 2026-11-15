@@ -669,5 +669,14 @@
   "gamePromptDreamsList": "Apa satu hal yang ingin kamu capai bulan ini?|Kalau uang bukan masalah, apa yang pertama kamu beli?|Kamu ingin jadi apa lima tahun lagi?|Apa kebiasaan baik yang ingin kamu mulai?|Keterampilan apa yang ingin kamu kuasai tahun ini?|Kota atau negara mana yang ingin kamu kunjungi, dan kenapa?|Seperti apa hari yang sempurna menurutmu, dari bangun sampai tidur?|Apa yang ingin kamu tabung, dan berapa lama kamu rela menunggu?|Kalau kamu bisa mengganti satu hal di hidupmu sekarang, apa itu?|Rumah seperti apa yang kamu impikan?|Proyek kecil apa yang ingin kamu mulai sebelum akhir tahun?|Siapa yang ingin kamu temui atau hubungi lagi?|Apa yang ingin kamu ajarkan pada orang lain suatu hari nanti?|Kalau gagal itu mustahil, apa yang akan kamu coba?|Pengalaman apa yang ingin kamu rasakan sekali seumur hidup?|Apa yang ingin kamu ingat tentang tahun ini?|Buku apa yang ingin kamu baca atau tulis?|Seperti apa pekerjaan idealmu dalam satu kalimat?|Apa satu ketakutan yang ingin kamu taklukkan?|Kebiasaan buruk apa yang ingin kamu ganti dengan yang lebih baik?|Apa tujuan keuanganmu yang paling dekat?|Hal apa yang ingin kamu lakukan bersama keluarga atau teman tahun ini?|Apa yang ingin kamu katakan pada dirimu lima tahun lagi?|Apa satu mimpi lama yang masih ingin kamu hidupkan?",
   "updateCheckNotFound": "Rilis belum ditemukan di GitHub. Coba lagi nanti.",
   "updateCheckRateLimited": "Terlalu sering mengecek. Coba lagi beberapa menit lagi.",
-  "updateCheckServer": "Server GitHub sedang bermasalah. Coba lagi nanti."
+  "updateCheckServer": "Server GitHub sedang bermasalah. Coba lagi nanti.",
+  "calPrevMonth": "Bulan sebelumnya",
+  "calNextMonth": "Bulan berikutnya",
+  "calHint": "Ketuk tanggal untuk melihat transaksi hari itu.",
+  "calShowAllDays": "Tampilkan semua hari",
+  "calOut": "Keluar",
+  "calIn": "Masuk",
+  "calDayEmpty": "Tidak ada transaksi di tanggal ini.",
+  "calRecord": "Catat",
+  "calNoData": "belum ada data"
 }

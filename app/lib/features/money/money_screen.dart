@@ -6,10 +6,12 @@ import '../../core/format.dart';
 import '../../core/theme.dart';
 import '../../data/db/app_database.dart';
 import '../../data/money_snapshot.dart';
+import '../../domain/models/money_calendar.dart';
 import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
 import '../search/search_screen.dart';
+import 'money_calendar_card.dart';
 import 'tx_form_screen.dart';
 import 'wallet_form_sheet.dart';
 import 'wallets_screen.dart';
@@ -25,6 +27,12 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
   /// null = semua, 'expense', 'income', 'transfer'
   String? _filter;
 
+  /// Bulan kalender yang dibuka (tanggal 1); null = bulan ini.
+  DateTime? _month;
+
+  /// Tanggal kalender yang dipilih ("YYYY-MM-DD"); null = semua hari.
+  String? _day;
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
@@ -32,23 +40,55 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
     final snapAsync = ref.watch(moneySnapshotProvider);
     final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
     final now = DateTime.now();
-    final monthKey = toMonthKey(now);
+    final thisMonth = DateTime(now.year, now.month);
+    final viewMonth = _month ?? thisMonth;
+    final monthKey = toMonthKey(viewMonth);
 
     return snapAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
       error: (e, _) => Center(child: Text('$e')),
       data: (snap) {
         final month = snap.inMonth(monthKey).toList();
+        // Tanpa tanggal terpilih: bulan yang dibuka lalu hari-hari sebelumnya.
         final filtered = snap.transactions
-            .where((tx) => _filter == null || tx.type == _filter)
+            .where(
+              (tx) =>
+                  (_filter == null || tx.type == _filter) &&
+                  (_day != null
+                      ? tx.localDate == _day
+                      : tx.localDate.substring(0, 7).compareTo(monthKey) <= 0),
+            )
             .toList();
+        final dayIsEmpty = _day != null && snap.onDate(_day!).isEmpty;
+        // Transaksi terurut terbaru dulu, jadi yang terakhir = paling lama.
+        final firstMonth = snap.transactions.isEmpty
+            ? monthKey
+            : snap.transactions.last.localDate.substring(0, 7);
+
+        final calendar = MoneyCalendarCard(
+          month: viewMonth,
+          totals: dailyTotals(snap, monthKey),
+          selectedDate: _day,
+          hideAmounts: hideAmounts,
+          canGoPrev: monthKey.compareTo(firstMonth) > 0,
+          canGoNext: viewMonth.isBefore(thisMonth),
+          onPrev: () => setState(() {
+            _month = DateTime(viewMonth.year, viewMonth.month - 1);
+            _day = null;
+          }),
+          onNext: () => setState(() {
+            _month = DateTime(viewMonth.year, viewMonth.month + 1);
+            _day = null;
+          }),
+          onPick: (d) => setState(() => _day = d),
+        );
         final groups = <String, List<MoneyTx>>{};
         for (final tx in filtered) {
           groups.putIfAbsent(tx.localDate, () => []).add(tx);
         }
 
         final header = ScreenHeader(
-          overline: DateFormat('MMMM y', context.localeTag).format(now),
+          overline: DateFormat('MMMM y', context.localeTag).format(viewMonth),
           title: l.navMoney,
           trailing: const SearchButton(),
         );
@@ -125,8 +165,17 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
               pose: MascotPose.mencari,
               tint: MascotTint.sky,
               title: l.mascotFilterEmptyTitle,
-              message: l.mascotFilterEmptyBody,
+              message: dayIsEmpty ? l.calDayEmpty : l.mascotFilterEmptyBody,
               size: 140,
+              action: dayIsEmpty
+                  ? FilledButton.tonal(
+                      onPressed: () => TxFormScreen.open(
+                        context,
+                        initialDate: _recordAt(_day!),
+                      ),
+                      child: Text('+ ${l.calRecord}'),
+                    )
+                  : null,
             ),
           for (final entry in groups.entries) ...[
             _DayHeader(
@@ -283,6 +332,8 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        calendar,
+                        const SizedBox(height: 16),
                         filterChips,
                         const SizedBox(height: 16),
                         ...txListWidgets,
@@ -322,6 +373,8 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
               ),
             ),
             const SizedBox(height: 16),
+            calendar,
+            const SizedBox(height: 16),
             filterChips,
             const SizedBox(height: 16),
             ...txListWidgets,
@@ -329,6 +382,13 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
         );
       },
     );
+  }
+
+  /// Tanggal [localDate] dengan jam sekarang, untuk catat dari kalender.
+  DateTime _recordAt(String localDate) {
+    final d = parseLocalDate(localDate);
+    final now = DateTime.now();
+    return DateTime(d.year, d.month, d.day, now.hour, now.minute);
   }
 }
 
