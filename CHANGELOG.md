@@ -1,5 +1,10 @@
 # Changelog
 
+## Belum dirilis
+
+**Baru**
+- **Warna roda putar**: pilih palet Pelangi, Aksen, Pastel, Senja, Laut, Hutan, atau **Kustom** (atur 6 warna irisan sendiri). Di warna kustom, tulisan otomatis hitam/putih agar tetap terbaca.
+
 ## 0.15.1 — 2026-11-15
 
 **Perbaikan**
