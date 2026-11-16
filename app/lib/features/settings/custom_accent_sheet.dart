@@ -12,6 +12,8 @@ class CustomAccentSheet extends StatefulWidget {
     super.key,
     required this.initial,
     this.recent = const [],
+    this.title,
+    this.accentPreview = true,
   });
 
   final Color initial;
@@ -19,10 +21,18 @@ class CustomAccentSheet extends StatefulWidget {
   /// Warna kustom yang pernah dipakai ('#RRGGBB').
   final List<String> recent;
 
+  /// Judul lain (mis. warna roda); null = judul aksen.
+  final String? title;
+
+  /// Tampilkan pratinjau & catatan khusus warna aksen.
+  final bool accentPreview;
+
   static Future<String?> open(
     BuildContext context, {
     required Color initial,
     List<String> recent = const [],
+    String? title,
+    bool accentPreview = true,
   }) {
     return showModalBottomSheet<String>(
       context: context,
@@ -31,7 +41,12 @@ class CustomAccentSheet extends StatefulWidget {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
-      builder: (_) => CustomAccentSheet(initial: initial, recent: recent),
+      builder: (_) => CustomAccentSheet(
+        initial: initial,
+        recent: recent,
+        title: title,
+        accentPreview: accentPreview,
+      ),
     );
   }
 
@@ -124,7 +139,7 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
     final pv = (c.isDark ? AppPalette.dark : AppPalette.light).withAccent(
       draft,
     );
-    final note = _note(context);
+    final note = widget.accentPreview ? _note(context) : null;
     final h = _hsl.hue, s = _hsl.saturation, li = _hsl.lightness;
     final hueSat = s < 0.45 ? 0.45 : s;
 
@@ -154,7 +169,7 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
               ),
               const SizedBox(height: 16),
               Text(
-                l.accentCustomTitle,
+                widget.title ?? l.accentCustomTitle,
                 style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 2),
@@ -163,8 +178,10 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
                 style: t.bodySmall?.copyWith(color: c.muted),
               ),
               const SizedBox(height: 14),
-              _Preview(palette: pv),
-              const SizedBox(height: 10),
+              if (widget.accentPreview) ...[
+                _Preview(palette: pv),
+                const SizedBox(height: 10),
+              ],
               _ColorSlider(
                 label: l.accentHue,
                 valueLabel: '${h.round()}°',

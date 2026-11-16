@@ -1818,6 +1818,54 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get gameWheelColors => 'Wheel colors';
+
+  @override
+  String get gameWheelPaletteRainbow => 'Rainbow';
+
+  @override
+  String get gameWheelPaletteAccent => 'Accent';
+
+  @override
+  String get gameWheelPalettePastel => 'Pastel';
+
+  @override
+  String get gameWheelPaletteSunset => 'Sunset';
+
+  @override
+  String get gameWheelPaletteOcean => 'Ocean';
+
+  @override
+  String get gameWheelPaletteForest => 'Forest';
+
+  @override
+  String get gameWheelPaletteCustom => 'Custom';
+
+  @override
+  String get gameWheelCustomHint =>
+      'Tap a slice number, then pick its color. Colors repeat every 6 slices.';
+
+  @override
+  String gameWheelSlot(int n) {
+    return 'Slice color $n';
+  }
+
+  @override
+  String gameWheelUseColor(String hex) {
+    return 'Use color $hex';
+  }
+
+  @override
+  String get gameWheelOtherColor => 'Other color';
+
+  @override
+  String get gameWheelResetColors => 'Reset';
+
+  @override
+  String get gameWheelColorsNote =>
+      'Applies to every wheel. With custom colors, text turns black or white to stay readable.';
+
+  @override
   String get gameYou => 'You';
 
   @override

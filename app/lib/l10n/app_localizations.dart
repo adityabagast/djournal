@@ -3272,6 +3272,90 @@ abstract class AppLocalizations {
   /// **'Hapus {name}'**
   String gameRemoveOption(String name);
 
+  /// No description provided for @gameWheelColors.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna roda'**
+  String get gameWheelColors;
+
+  /// No description provided for @gameWheelPaletteRainbow.
+  ///
+  /// In id, this message translates to:
+  /// **'Pelangi'**
+  String get gameWheelPaletteRainbow;
+
+  /// No description provided for @gameWheelPaletteAccent.
+  ///
+  /// In id, this message translates to:
+  /// **'Aksen'**
+  String get gameWheelPaletteAccent;
+
+  /// No description provided for @gameWheelPalettePastel.
+  ///
+  /// In id, this message translates to:
+  /// **'Pastel'**
+  String get gameWheelPalettePastel;
+
+  /// No description provided for @gameWheelPaletteSunset.
+  ///
+  /// In id, this message translates to:
+  /// **'Senja'**
+  String get gameWheelPaletteSunset;
+
+  /// No description provided for @gameWheelPaletteOcean.
+  ///
+  /// In id, this message translates to:
+  /// **'Laut'**
+  String get gameWheelPaletteOcean;
+
+  /// No description provided for @gameWheelPaletteForest.
+  ///
+  /// In id, this message translates to:
+  /// **'Hutan'**
+  String get gameWheelPaletteForest;
+
+  /// No description provided for @gameWheelPaletteCustom.
+  ///
+  /// In id, this message translates to:
+  /// **'Kustom'**
+  String get gameWheelPaletteCustom;
+
+  /// No description provided for @gameWheelCustomHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk nomor irisan, lalu pilih warnanya. Warna berulang tiap 6 irisan.'**
+  String get gameWheelCustomHint;
+
+  /// No description provided for @gameWheelSlot.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna irisan {n}'**
+  String gameWheelSlot(int n);
+
+  /// No description provided for @gameWheelUseColor.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai warna {hex}'**
+  String gameWheelUseColor(String hex);
+
+  /// No description provided for @gameWheelOtherColor.
+  ///
+  /// In id, this message translates to:
+  /// **'Warna lain'**
+  String get gameWheelOtherColor;
+
+  /// No description provided for @gameWheelResetColors.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur ulang'**
+  String get gameWheelResetColors;
+
+  /// No description provided for @gameWheelColorsNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Berlaku untuk semua roda. Di warna kustom, tulisan otomatis hitam/putih agar tetap terbaca.'**
+  String get gameWheelColorsNote;
+
   /// No description provided for @gameYou.
   ///
   /// In id, this message translates to:

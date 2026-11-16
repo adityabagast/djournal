@@ -14,6 +14,7 @@ import '../../providers.dart';
 import '../../ui/common.dart';
 import '../../ui/mascot.dart';
 import '../money/tx_form_screen.dart';
+import '../settings/custom_accent_sheet.dart';
 
 /// Kunci app_settings (lokal, tidak disinkronkan) untuk isi roda yang diubah
 /// user: JSON {presetId: [pilihan]}.
@@ -26,6 +27,129 @@ final wheelListsProvider = StreamProvider<Map<String, List<String>>>(
     return m.map((k, x) => MapEntry(k, (x as List).cast<String>()));
   }),
 );
+
+/// Kunci app_settings (lokal) untuk palet & warna kustom roda.
+const _wheelColorsKey = 'game_wheel_colors';
+
+final wheelColorsProvider = StreamProvider<WheelColors>(
+  (ref) =>
+      ref.watch(settingsRepositoryProvider).watch(_wheelColorsKey).map((v) {
+        if (v == null) return const WheelColors();
+        try {
+          final j = jsonDecode(v);
+          return j is Map<String, dynamic>
+              ? WheelColors.fromJson(j)
+              : const WheelColors();
+        } on FormatException {
+          return const WheelColors();
+        }
+      }),
+);
+
+const _rainbow = [
+  Color(0xFF1F5F4E),
+  Color(0xFFC2410C),
+  Color(0xFF1D4E89),
+  Color(0xFF9A5B12),
+  Color(0xFF7E3AA8),
+  Color(0xFFBE185D),
+];
+
+/// Palet bertint: (kepekatan, warna dasar).
+const _tints = <String, (double, List<Color>)>{
+  'pastel': (
+    0.30,
+    [
+      Color(0xFFF472B6),
+      Color(0xFFFB923C),
+      Color(0xFFFACC15),
+      Color(0xFF34D399),
+      Color(0xFF38BDF8),
+      Color(0xFFA78BFA),
+    ],
+  ),
+  'sunset': (
+    0.22,
+    [
+      Color(0xFFDC2626),
+      Color(0xFFEA580C),
+      Color(0xFFD97706),
+      Color(0xFFDB2777),
+      Color(0xFF9333EA),
+      Color(0xFFE11D48),
+    ],
+  ),
+  'ocean': (
+    0.22,
+    [
+      Color(0xFF0E7490),
+      Color(0xFF1D4ED8),
+      Color(0xFF0891B2),
+      Color(0xFF4338CA),
+      Color(0xFF0F766E),
+      Color(0xFF2563EB),
+    ],
+  ),
+  'forest': (
+    0.22,
+    [
+      Color(0xFF15803D),
+      Color(0xFF65A30D),
+      Color(0xFF92400E),
+      Color(0xFF047857),
+      Color(0xFF4D7C0F),
+      Color(0xFFA16207),
+    ],
+  ),
+};
+
+/// Contoh warna cepat untuk slot kustom.
+const _swatches = [
+  '#F6B8B8',
+  '#F7D58B',
+  '#B9E3A3',
+  '#9AD8C0',
+  '#A9C8F0',
+  '#CDB4EE',
+  '#F4A6C8',
+  '#C2410C',
+  '#1F5F4E',
+  '#1D4E89',
+  '#7E3AA8',
+  '#3F3F46',
+];
+
+/// Tulisan hitam/putih yang terbaca di atas [bg].
+Color _labelOn(Color bg) =>
+    bg.computeLuminance() > 0.18 ? const Color(0xFF1A1F1D) : Colors.white;
+
+/// Warna irisan + warna tulisannya untuk [palette].
+List<(Color, Color)> _slices(AppPalette c, WheelColors w, [String? palette]) {
+  Color mix(Color base, double t) => Color.lerp(c.surface, base, t)!;
+  final p = palette ?? w.palette;
+  final tint = _tints[p];
+  return switch (p) {
+    'custom' => [
+      for (final h in w.custom) (hexColor(h), _labelOn(hexColor(h))),
+    ],
+    'accent' => [
+      for (final t in const [.12, .26, .18, .32, .15, .22])
+        (mix(c.primary, t), c.ink),
+    ],
+    _ when tint != null => [for (final b in tint.$2) (mix(b, tint.$1), c.ink)],
+    _ => [for (final b in _rainbow) (c.soft(b), c.ink)],
+  };
+}
+
+String _paletteName(AppLocalizations l, String p) => switch (p) {
+  'accent' => l.gameWheelPaletteAccent,
+  'pastel' => l.gameWheelPalettePastel,
+  'sunset' => l.gameWheelPaletteSunset,
+  'ocean' => l.gameWheelPaletteOcean,
+  'forest' => l.gameWheelPaletteForest,
+  'custom' => l.gameWheelPaletteCustom,
+  _ => l.gameWheelPaletteRainbow,
+};
 
 enum _Preset { food, drink, yesNo, activity }
 
@@ -166,6 +290,10 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
         .set(_wheelListsKey, jsonEncode({...all, _preset.name: next}));
   }
 
+  Future<void> _saveColors(WheelColors w) => ref
+      .read(settingsRepositoryProvider)
+      .set(_wheelColorsKey, jsonEncode(w.toJson()));
+
   void _add(Map<String, List<String>> all, List<String> options) {
     final v = _draft.text.trim();
     if (v.isEmpty || _spinning || options.length >= Wheel.maxOptions) return;
@@ -179,6 +307,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
     final l = context.l10n;
     final c = context.colors;
     final all = ref.watch(wheelListsProvider).value ?? const {};
+    final colors = ref.watch(wheelColorsProvider).value ?? const WheelColors();
     final options = all[_preset.name] ?? _preset.defaults(l);
     final n = options.length;
     final done = !_spinning && _result != null && _result! < n;
@@ -235,20 +364,9 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
                         child: CustomPaint(
                           painter: _WheelPainter(
                             options: options,
-                            fills: [
-                              for (final base in const [
-                                Color(0xFF1F5F4E),
-                                Color(0xFFC2410C),
-                                Color(0xFF1D4E89),
-                                Color(0xFF9A5B12),
-                                Color(0xFF7E3AA8),
-                                Color(0xFFBE185D),
-                              ])
-                                c.soft(base),
-                            ],
+                            slices: _slices(c, colors),
                             style: Theme.of(context).textTheme.labelMedium!
                                 .copyWith(
-                                  color: c.ink,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -408,7 +526,365 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
             ],
           ),
         ),
+        const SizedBox(height: 16),
+        _WheelColorsCard(
+          colors: colors,
+          enabled: !_spinning,
+          onChanged: _saveColors,
+        ),
       ],
+    );
+  }
+}
+
+/// Kartu pilih palet roda + atur warna kustom per slot.
+class _WheelColorsCard extends StatefulWidget {
+  const _WheelColorsCard({
+    required this.colors,
+    required this.enabled,
+    required this.onChanged,
+  });
+
+  final WheelColors colors;
+  final bool enabled;
+  final ValueChanged<WheelColors> onChanged;
+
+  @override
+  State<_WheelColorsCard> createState() => _WheelColorsCardState();
+}
+
+class _WheelColorsCardState extends State<_WheelColorsCard> {
+  int _slot = 0;
+
+  void _setSlot(String hex) =>
+      widget.onChanged(widget.colors.withSlot(_slot, hex));
+
+  Future<void> _pickOther() async {
+    final hex = await CustomAccentSheet.open(
+      context,
+      initial: hexColor(widget.colors.custom[_slot]),
+      title: context.l10n.gameWheelSlot(_slot + 1),
+      accentPreview: false,
+    );
+    if (hex != null && mounted) _setSlot(hex);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l = context.l10n;
+    final c = context.colors;
+    final w = widget.colors;
+    final on = widget.enabled;
+    final current = w.custom[_slot];
+
+    return AppCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  l.gameWheelColors,
+                  style: const TextStyle(
+                    fontSize: 14.5,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Text(
+                _paletteName(l, w.palette),
+                style: TextStyle(fontSize: 12, color: c.muted),
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          GridView(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            padding: EdgeInsets.zero,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisExtent: 72,
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+            ),
+            children: [
+              for (final p in WheelColors.palettes)
+                _PaletteTile(
+                  name: _paletteName(l, p),
+                  colors: [for (final s in _slices(c, w, p)) s.$1],
+                  selected: p == w.palette,
+                  onTap: on ? () => widget.onChanged(w.withPalette(p)) : null,
+                ),
+            ],
+          ),
+          if (w.isCustom) ...[
+            Divider(height: 24, color: c.line),
+            Text(
+              l.gameWheelCustomHint,
+              style: TextStyle(fontSize: 12, color: c.muted),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                for (var k = 0; k < w.custom.length; k++)
+                  Expanded(
+                    child: _SlotButton(
+                      number: k + 1,
+                      color: hexColor(w.custom[k]),
+                      selected: k == _slot,
+                      onTap: () => setState(() => _slot = k),
+                    ),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 4),
+            Wrap(
+              children: [
+                for (final h in _swatches)
+                  _SwatchButton(
+                    hex: h,
+                    selected: h == current,
+                    onTap: on ? () => _setSlot(h) : null,
+                  ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                OutlinedButton.icon(
+                  onPressed: on ? _pickOther : null,
+                  icon: const Icon(Icons.palette_outlined, size: 18),
+                  label: Text(l.gameWheelOtherColor),
+                ),
+                const Spacer(),
+                TextButton(
+                  onPressed: on
+                      ? () => widget.onChanged(w.resetCustom())
+                      : null,
+                  child: Text(l.gameWheelResetColors),
+                ),
+              ],
+            ),
+          ],
+          const SizedBox(height: 8),
+          Text(
+            l.gameWheelColorsNote,
+            style: TextStyle(fontSize: 12, color: c.muted),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _PaletteTile extends StatelessWidget {
+  const _PaletteTile({
+    required this.name,
+    required this.colors,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String name;
+  final List<Color> colors;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final shape = RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(14),
+      side: BorderSide(
+        color: selected ? c.primary : Colors.transparent,
+        width: 2,
+      ),
+    );
+    return Semantics(
+      selected: selected,
+      inMutuallyExclusiveGroup: true,
+      child: Material(
+        color: selected ? c.primarySoft : c.subtle,
+        shape: shape,
+        child: InkWell(
+          onTap: onTap,
+          customBorder: shape,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CustomPaint(
+                size: const Size.square(30),
+                painter: _SwatchPainter(colors, ring: c.surface),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 12.5,
+                  fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
+                  color: selected ? c.onPrimarySoft : c.ink,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Lingkaran mini berisi warna-warna palet.
+class _SwatchPainter extends CustomPainter {
+  _SwatchPainter(this.colors, {required this.ring});
+
+  final List<Color> colors;
+  final Color ring;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final r = size.width / 2;
+    final rect = Rect.fromCircle(center: Offset(r, r), radius: r);
+    final sweep = 2 * math.pi / colors.length;
+    for (var i = 0; i < colors.length; i++) {
+      canvas.drawArc(
+        rect,
+        -math.pi / 2 + i * sweep,
+        sweep,
+        true,
+        Paint()..color = colors[i],
+      );
+    }
+    canvas.drawCircle(
+      Offset(r, r),
+      r,
+      Paint()
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 2
+        ..color = ring,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_SwatchPainter old) =>
+      !listEquals(old.colors, colors) || old.ring != ring;
+}
+
+/// Tombol slot kustom bernomor.
+class _SlotButton extends StatelessWidget {
+  const _SlotButton({
+    required this.number,
+    required this.color,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final int number;
+  final Color color;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Semantics(
+      label: context.l10n.gameWheelSlot(number),
+      selected: selected,
+      button: true,
+      excludeSemantics: true,
+      child: InkResponse(
+        onTap: onTap,
+        radius: 24,
+        child: SizedBox(
+          height: 48,
+          child: Center(
+            child: Container(
+              width: 40,
+              height: 40,
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: selected ? c.primary : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: color,
+                  border: Border.all(color: c.line),
+                ),
+                child: Center(
+                  child: Text(
+                    '$number',
+                    style: TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w700,
+                      color: _labelOn(color),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Contoh warna cepat untuk slot terpilih.
+class _SwatchButton extends StatelessWidget {
+  const _SwatchButton({
+    required this.hex,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String hex;
+  final bool selected;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Semantics(
+      label: context.l10n.gameWheelUseColor(hex),
+      selected: selected,
+      button: true,
+      excludeSemantics: true,
+      child: InkResponse(
+        onTap: onTap,
+        radius: 22,
+        child: SizedBox.square(
+          dimension: 44,
+          child: Center(
+            child: Container(
+              width: 34,
+              height: 34,
+              padding: const EdgeInsets.all(2),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  color: selected ? c.ink : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: hexColor(hex),
+                  border: Border.all(color: c.line),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -416,19 +892,18 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
 class _WheelPainter extends CustomPainter {
   _WheelPainter({
     required this.options,
-    required this.fills,
+    required this.slices,
     required this.style,
   });
 
   final List<String> options;
-  final List<Color> fills;
+
+  /// (warna irisan, warna tulisan) per slot.
+  final List<(Color, Color)> slices;
   final TextStyle style;
 
-  /// Warna irisan; irisan terakhir tidak boleh sama dengan irisan pertama.
-  Color _fill(int i, int n) {
-    final k = i % fills.length;
-    return i == n - 1 && n > 1 && k == 0 ? fills[2] : fills[k];
-  }
+  (Color, Color) _slice(int i, int n) =>
+      slices[Wheel.colorSlot(i, n, slots: slices.length)];
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -442,13 +917,16 @@ class _WheelPainter extends CustomPainter {
         -math.pi / 2 + i * sweep,
         sweep,
         true,
-        Paint()..color = _fill(i, n),
+        Paint()..color = _slice(i, n).$1,
       );
     }
     final maxWidth = math.min(r * 0.66, 2 * r * 0.8 * math.sin(sweep / 2));
     for (var i = 0; i < n; i++) {
       final tp = TextPainter(
-        text: TextSpan(text: options[i], style: style),
+        text: TextSpan(
+          text: options[i],
+          style: style.copyWith(color: _slice(i, n).$2),
+        ),
         textDirection: TextDirection.ltr,
         textAlign: TextAlign.center,
         maxLines: 1,
@@ -467,7 +945,7 @@ class _WheelPainter extends CustomPainter {
   @override
   bool shouldRepaint(_WheelPainter old) =>
       !listEquals(old.options, options) ||
-      !listEquals(old.fills, fills) ||
+      !listEquals(old.slices, slices) ||
       old.style != style;
 }
 

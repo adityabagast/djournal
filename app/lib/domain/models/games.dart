@@ -38,6 +38,76 @@ abstract final class Wheel {
     final top = (index + 0.2 + random.nextDouble() * 0.6) / count;
     return current.floorToDouble() + spins + (1 - top);
   }
+
+  /// Jumlah warna per palet roda.
+  static const colorSlots = 6;
+
+  /// Slot warna irisan [i]; irisan terakhir tidak sama dengan irisan pertama.
+  static int colorSlot(int i, int count, {int slots = colorSlots}) {
+    final k = i % slots;
+    return i == count - 1 && count > 1 && k == 0 ? 2 % slots : k;
+  }
+}
+
+/// Pilihan warna roda (palet + warna kustom).
+class WheelColors {
+  const WheelColors({this.palette = defaultPalette, this.custom = defaults});
+
+  static const defaultPalette = 'rainbow';
+  static const palettes = [
+    'rainbow',
+    'accent',
+    'pastel',
+    'sunset',
+    'ocean',
+    'forest',
+    'custom',
+  ];
+
+  static const defaults = [
+    '#9AD8C0',
+    '#F6B8B8',
+    '#A9C8F0',
+    '#F7D58B',
+    '#CDB4EE',
+    '#B9E3A3',
+  ];
+
+  final String palette;
+  final List<String> custom;
+
+  bool get isCustom => palette == 'custom';
+
+  static final _hex = RegExp(r'^#[0-9A-F]{6}$');
+
+  /// Data tidak valid → nilai bawaan.
+  factory WheelColors.fromJson(Map<String, dynamic> j) {
+    final p = j['palette'];
+    final c = j['custom'];
+    final list = c is List
+        ? [for (final x in c) x is String ? x.toUpperCase() : '']
+        : const <String>[];
+    return WheelColors(
+      palette: palettes.contains(p) ? p as String : defaultPalette,
+      custom: list.length == Wheel.colorSlots && list.every(_hex.hasMatch)
+          ? List.unmodifiable(list)
+          : defaults,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {'palette': palette, 'custom': custom};
+
+  WheelColors withPalette(String p) => WheelColors(palette: p, custom: custom);
+
+  WheelColors withSlot(int slot, String hex) => WheelColors(
+    palette: palette,
+    custom: [
+      for (var i = 0; i < custom.length; i++)
+        i == slot ? hex.toUpperCase() : custom[i],
+    ],
+  );
+
+  WheelColors resetCustom() => WheelColors(palette: palette);
 }
 
 /// Memory kartu: 6 pasang, kartu terbuka dua-dua. Pasangan yang cocok tetap

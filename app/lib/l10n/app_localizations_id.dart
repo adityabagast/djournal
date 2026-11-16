@@ -1785,6 +1785,54 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
+  String get gameWheelColors => 'Warna roda';
+
+  @override
+  String get gameWheelPaletteRainbow => 'Pelangi';
+
+  @override
+  String get gameWheelPaletteAccent => 'Aksen';
+
+  @override
+  String get gameWheelPalettePastel => 'Pastel';
+
+  @override
+  String get gameWheelPaletteSunset => 'Senja';
+
+  @override
+  String get gameWheelPaletteOcean => 'Laut';
+
+  @override
+  String get gameWheelPaletteForest => 'Hutan';
+
+  @override
+  String get gameWheelPaletteCustom => 'Kustom';
+
+  @override
+  String get gameWheelCustomHint =>
+      'Ketuk nomor irisan, lalu pilih warnanya. Warna berulang tiap 6 irisan.';
+
+  @override
+  String gameWheelSlot(int n) {
+    return 'Warna irisan $n';
+  }
+
+  @override
+  String gameWheelUseColor(String hex) {
+    return 'Pakai warna $hex';
+  }
+
+  @override
+  String get gameWheelOtherColor => 'Warna lain';
+
+  @override
+  String get gameWheelResetColors => 'Atur ulang';
+
+  @override
+  String get gameWheelColorsNote =>
+      'Berlaku untuk semua roda. Di warna kustom, tulisan otomatis hitam/putih agar tetap terbaca.';
+
+  @override
   String get gameYou => 'Kamu';
 
   @override

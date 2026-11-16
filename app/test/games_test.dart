@@ -15,6 +15,9 @@ Widget _wrap(Widget home) => ProviderScope(
   overrides: [
     // Tanpa database: daftar bawaan dipakai.
     wheelListsProvider.overrideWithValue(const AsyncValue.data({})),
+    wheelColorsProvider.overrideWithValue(
+      const AsyncValue.data(WheelColors(palette: 'custom')),
+    ),
     memoryBestProvider.overrideWithValue(const AsyncValue.data(null)),
   ],
   child: MaterialApp(
@@ -45,6 +48,44 @@ void main() {
         expect(turns, greaterThan(5));
       }
     }
+  });
+
+  test('warna roda: irisan terakhir tidak sama dengan irisan pertama', () {
+    expect(Wheel.colorSlot(6, 7), 2);
+    expect(Wheel.colorSlot(6, 8), 0);
+    expect(Wheel.colorSlot(5, 6), 5);
+    expect(Wheel.colorSlot(0, 1), 0);
+  });
+
+  test('warna roda: JSON rusak jatuh ke bawaan, slot diubah', () {
+    final bad = WheelColors.fromJson({
+      'palette': 'neon',
+      'custom': ['#zzz'],
+    });
+    expect(bad.palette, WheelColors.defaultPalette);
+    expect(bad.custom, WheelColors.defaults);
+
+    final w = const WheelColors(palette: 'custom').withSlot(2, '#abcdef');
+    expect(w.custom[2], '#ABCDEF');
+    final back = WheelColors.fromJson(w.toJson());
+    expect(back.palette, 'custom');
+    expect(back.custom, w.custom);
+    expect(w.resetCustom().custom, WheelColors.defaults);
+  });
+
+  testWidgets('roda: kartu warna kustom menampilkan slot & palet', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app());
+    await tester.scrollUntilVisible(
+      find.text('Atur ulang'),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
+    expect(find.text('Warna roda'), findsOneWidget);
+    expect(find.text('Pelangi'), findsOneWidget);
+    expect(find.bySemanticsLabel('Warna irisan 6'), findsOneWidget);
+    expect(find.bySemanticsLabel('Pakai warna #3F3F46'), findsOneWidget);
   });
 
   testWidgets('roda: putar lalu Nyaw mengumumkan pilihan', (tester) async {
