@@ -112,7 +112,10 @@ Platform: **Android** (utama) dan **Web**. iOS belum diuji.
 
 ```
 djournal/
-├─ app/        # Aplikasi Flutter, lihat app/README.md
+├─ app/        # Aplikasi Flutter (feature-first), lihat app/README.md
+│  ├─ lib/core/              # Database, storage, widget bersama
+│  ├─ lib/features/<fitur>/  # data/ domain/ providers/ presentation/ per fitur
+│  └─ test/                  # Mengikuti struktur lib/: core/ dan features/<fitur>/
 ├─ supabase/   # Migrasi SQL + uji sync, lihat supabase/README.md
 ├─ server/     # Backend .NET lama (diarsipkan)
 └─ docs/

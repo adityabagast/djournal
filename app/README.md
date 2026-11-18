@@ -13,29 +13,43 @@ Web butuh `web/sqlite3.wasm` dan `web/drift_worker.js` yang versinya cocok denga
 
 ## Struktur kode
 
+Feature-first: semua kode satu fitur ada di `lib/features/<fitur>/`. Bug di fitur X → mulai cari di `lib/features/X/`, tesnya di `test/features/X/`.
+
 ```
 lib/
 ├─ main.dart, app.dart     # Inisialisasi Supabase, MaterialApp, LockGate
-├─ providers.dart          # Semua provider Riverpod (database, repository, stream data)
-├─ config.dart             # URL + publishable key Supabase (publik by design)
-├─ core/                   # Format Rupiah/tanggal, tema
-├─ data/
-│  ├─ db/                  # Skema Drift (tables.dart) + kode hasil generate
-│  ├─ money_repository.dart, journal_repository.dart, settings_repository.dart
-│  ├─ wishlist_repository.dart, bill_repository.dart # Target wishlist & tagihan
-│  ├─ attachment_repository.dart # Kompresi & penyimpanan gambar/struk
-│  ├─ google_drive_service.dart   # Otentikasi Google & Google Drive API (.xlsx)
-│  ├─ money_snapshot.dart  # Saldo, budget, ringkasan: dihitung dari transaksi
-│  ├─ sync/                # Supabase backend, sync engine (push dirty → pull)
-│  ├─ security/            # PIN (hash di secure storage) + status kunci
-│  ├─ backup_service.dart  # Backup/impor JSON dengan filter rentang
-│  ├─ excel_report.dart    # Ekspor Excel multi-sheet (Google Sheets ready)
-│  └─ home_widget_sync.dart  # Data untuk widget layar utama Android
-├─ domain/models/          # Model bisnis murni: MoneySnapshot, BackupPeriod, GlobalBudget, StreakInfo
-├─ features/               # Satu folder per layar: today, journal, money, report, settings, lock, account, shell
-├─ l10n/                   # app_id.arb (template) + app_en.arb, kode hasil generate
-└─ ui/                     # Komponen bersama, image viewer, maskot, wajah mood
+├─ providers.dart          # Barrel: ekspor semua provider Riverpod
+├─ core/                   # Dipakai banyak fitur
+│  ├─ database/            # Drift AppDatabase, tables.dart + kode generate, databaseProvider, row_json
+│  ├─ storage/             # Settings key-value (tabel app_settings)
+│  ├─ attachments/         # Kompresi & penyimpanan gambar/struk + provider
+│  ├─ widgets/             # Komponen bersama, image viewer, maskot
+│  ├─ platform/            # PlatformInfo (Android vs desktop)
+│  └─ theme.dart, format.dart, config.dart  # Tema, format Rupiah/tanggal, URL + publishable key Supabase
+├─ features/<fitur>/
+│  ├─ data/                # Repository & service (Drift, Supabase, file, API)
+│  ├─ domain/              # Logika bisnis murni, tanpa Flutter UI
+│  ├─ providers/           # Provider & Notifier/controller fitur ini
+│  └─ presentation/        # Screen, sheet, widget
+└─ l10n/                   # app_id.arb (template) + app_en.arb, kode hasil generate
 ```
+
+| Fitur | Isi |
+|---|---|
+| `journal` | Entri jurnal, mood, voice note |
+| `money` | Transaksi, dompet, kategori, budget, tagihan, wishlist, kalender; `MoneySnapshot` (saldo dihitung dari transaksi) |
+| `today` | Beranda harian, streak, kartu ringkasan |
+| `report` | Grafik & insight |
+| `search` | Pencarian jurnal + transaksi |
+| `reminders` | Pengingat, parser teks, notifikasi |
+| `backup` | Backup/restore JSON, Google Drive, ekspor Excel, impor Money Manager |
+| `account` | Login + sync Supabase (push dirty → pull) |
+| `lock` | PIN (hash di secure storage), layar kunci |
+| `settings` | Tampilan, bahasa, warna aksen, tentang |
+| `update` | Cek & unduh update dari GitHub Releases |
+| `games` | Mini game |
+| `home_widget` | Data widget layar utama Android |
+| `shell`, `splash` | Navigasi utama, splash |
 
 Aturan data (UUID, nominal integer, soft delete, sync last-write-wins) ada di [docs/data-model.md](../docs/data-model.md).
 
