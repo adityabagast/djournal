@@ -43,7 +43,7 @@ Aturan data (UUID, nominal integer, soft delete, sync last-write-wins) ada di [d
 
 | Yang diubah | Jalankan |
 |---|---|
-| `lib/data/db/tables.dart` | `dart run build_runner build` (dan naikkan `schemaVersion` + migrasi) |
+| `lib/core/database/tables.dart` | `dart run build_runner build` (dan naikkan `schemaVersion` + migrasi) |
 | `lib/l10n/*.arb` | `flutter gen-l10n` |
 | `tool/icon/*.svg` (icon app) | `flutter test tool/render_icons_test.dart` lalu `dart run flutter_launcher_icons`; batalkan perubahan `ASSETCATALOG…` yang ikut diubah di `ios/Runner.xcodeproj` |
 | `assets/mascot/*.svg` yang dipakai widget | `flutter test tool/render_widget_mascots_test.dart` |
@@ -58,14 +58,14 @@ flutter analyze
 flutter test
 ```
 
-`test/sync_e2e_test.dart` memakai Supabase sungguhan dan membuat akun uji `djournal.e2e.<waktu>@gmail.com`.
+`test/features/account/sync_e2e_test.dart` memakai Supabase sungguhan dan membuat akun uji `djournal.e2e.<waktu>@gmail.com`.
 
-Widget test yang memakai database Drift sungguhan di dalam `testWidgets` bisa macet; override provider dengan data palsu seperti di `test/journal_filter_test.dart`.
+Widget test yang memakai database Drift sungguhan di dalam `testWidgets` bisa macet; override provider dengan data palsu seperti di `test/features/journal/journal_filter_test.dart`.
 
 ## Widget layar utama (Android)
 
 ```
-lib/data/home_widget_sync.dart        →  SharedPreferences (home_widget)  →  NyawtatWidgets.kt
+lib/features/home_widget/data/home_widget_sync.dart        →  SharedPreferences (home_widget)  →  NyawtatWidgets.kt
 (string siap tampil, sudah diterjemahkan)                                     (RemoteViews)
 ```
 

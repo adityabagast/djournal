@@ -4,8 +4,8 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'app.dart';
-import 'config.dart';
-import 'data/sync/backend.dart';
+import 'core/config.dart';
+import 'features/account/data/backend.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

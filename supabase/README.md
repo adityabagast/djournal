@@ -16,7 +16,7 @@ supabase/
 1. Buat project (paket Free, region Southeast Asia / Singapore).
 2. **Authentication → Sign In / Providers → Email**: matikan **Confirm email** (server email bawaan paket gratis sangat dibatasi).
 3. **SQL Editor → New query**: tempel isi `migrations/20261008000000_init.sql`, lalu **Run**.
-4. Salin **Project URL** (tanpa `/rest/v1/`) dan **Publishable key** ke `app/lib/config.dart`, atau berikan saat build:
+4. Salin **Project URL** (tanpa `/rest/v1/`) dan **Publishable key** ke `app/lib/core/config.dart`, atau berikan saat build:
 
    ```powershell
    flutter run --dart-define=SUPABASE_URL=https://xxxx.supabase.co --dart-define=SUPABASE_KEY=sb_publishable_xxx

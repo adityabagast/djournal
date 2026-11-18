@@ -71,7 +71,7 @@ Blob hanya tampil di dalam canvas.
 
 00 Maskot, 00 Design system · 01 Splash, 02 Kunci PIN, 03 Atur PIN · 04 Hari Ini, 05 Jurnal, 06 Keuangan, 07 Laporan ·
 08 Pencarian, 09 Pengaturan, 10 Masuk Akun, 11 Kelola dompet, 12 Kelola kategori, 13 Budget,
-33 Pengaturan › Warna aksen kustom (`AccentCustom.dc.html`, x 2820 di baris Sub-halaman — sudah diimplementasi di `app/lib/features/settings/custom_accent_sheet.dart`) ·
+33 Pengaturan › Warna aksen kustom (`AccentCustom.dc.html`, x 2820 di baris Sub-halaman — sudah diimplementasi di `app/lib/features/settings/presentation/custom_accent_sheet.dart`) ·
 14 Tambah cepat, 15 Catat transaksi, 16 Tulis jurnal, 17 Catatan suara, 18 Detail tagihan, 19 Tagihan baru, 20 Impian baru,
 21 Tambah tabungan, 22 Target budget global, 23 Ubah dompet, 24 Streak, 27 Permainan (hub, `Games.dc.html`), 28 Roda putar & suit (`Spin.dc.html`), 29 Memory kartu, 30 Kocok pertanyaan (semua sudah diimplementasi di `app/lib/features/games/`) ·
 25 Banner versi baru, 26 Pengaturan › Tentang ·
