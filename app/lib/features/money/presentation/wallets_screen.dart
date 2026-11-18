@@ -9,6 +9,7 @@ import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
 import 'wallet_form_sheet.dart';
+import '../../../core/tokens.dart';
 
 /// Halaman "Kelola dompet": daftar dompet aktif dan arsip, tambah dompet,
 /// dan pintu ke lembar ubah/arsip/hapus. Dibuka dari Keuangan.
@@ -38,7 +39,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
       style: t.bodySmall?.copyWith(
         fontWeight: FontWeight.w600,
         color: context.colors.muted,
-        fontSize: 13,
+        fontSize: AppFontSize.body,
       ),
     );
 
@@ -50,7 +51,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: AppSpace.md),
             child: FilledButton.icon(
               onPressed: () => WalletFormSheet.open(context),
               icon: const Icon(Icons.add, size: 18),
@@ -62,12 +63,12 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
       body: snap == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
               children: [
                 AppCard(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                    horizontal: AppSpace.lg,
+                    vertical: AppSpace.lg,
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -76,7 +77,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                         l.walletsTotal(snap.wallets.length),
                         style: t.bodySmall?.copyWith(
                           color: context.colors.muted,
-                          fontSize: 13,
+                          fontSize: AppFontSize.body,
                         ),
                       ),
                       Text(
@@ -88,13 +89,13 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: AppSpace.xl),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+                  padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
                   child: sectionTitle(l.activeWallets),
                 ),
                 AppCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                   child: Column(
                     children: [
                       for (final (i, w) in snap.wallets.indexed)
@@ -107,14 +108,14 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                   ),
                 ),
                 if (snap.archivedWallets.isNotEmpty) ...[
-                  const SizedBox(height: 12),
+                  const SizedBox(height: AppSpace.md),
                   InkWell(
                     onTap: () => setState(() => _archiveOpen = !_archiveOpen),
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 4,
-                        vertical: 10,
+                        horizontal: AppSpace.xs,
+                        vertical: AppSpace.md,
                       ),
                       child: Row(
                         children: [
@@ -127,7 +128,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                           ),
                           AnimatedRotation(
                             turns: _archiveOpen ? 0.5 : 0,
-                            duration: const Duration(milliseconds: 150),
+                            duration: AppMotion.short,
                             child: Icon(
                               Icons.expand_more,
                               color: context.colors.muted,
@@ -139,7 +140,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                   ),
                   if (_archiveOpen) ...[
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+                      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
                       child: Text(
                         l.archiveWalletHint,
                         style: t.bodySmall?.copyWith(
@@ -148,10 +149,10 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                       decoration: BoxDecoration(
                         color: context.colors.subtle,
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
                         border: Border.all(color: context.colors.handle),
                       ),
                       child: Column(
@@ -211,7 +212,7 @@ class _WalletRow extends ConsumerWidget {
     return InkWell(
       onTap: () => WalletFormSheet.open(context, existing: wallet),
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
         decoration: BoxDecoration(
           border: showDivider
               ? Border(bottom: BorderSide(color: context.colors.divider))
@@ -224,11 +225,11 @@ class _WalletRow extends ConsumerWidget {
               height: 40,
               decoration: BoxDecoration(
                 color: context.colors.soft(raw),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Icon(icon, color: fg, size: 22),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -246,7 +247,7 @@ class _WalletRow extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpace.sm),
             Text(
               signedRupiah(balance, hide: hideAmounts),
               style: t.bodyMedium?.copyWith(
@@ -281,7 +282,7 @@ class _ArchivedRow extends ConsumerWidget {
     final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
       decoration: BoxDecoration(
         border: showDivider
             ? Border(bottom: BorderSide(color: context.colors.divider))
@@ -293,7 +294,7 @@ class _ArchivedRow extends ConsumerWidget {
             child: InkWell(
               onTap: () => WalletFormSheet.open(context, existing: wallet),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
+                padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -318,7 +319,7 @@ class _ArchivedRow extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpace.sm),
           OutlinedButton(
             onPressed: () async {
               await ref

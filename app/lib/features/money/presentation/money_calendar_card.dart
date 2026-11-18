@@ -5,6 +5,7 @@ import '../../../core/format.dart';
 import '../../../core/theme.dart';
 import '../domain/money_calendar.dart';
 import '../../../core/widgets/common.dart';
+import '../../../core/tokens.dart';
 
 /// Kalender bulanan di layar Keuangan: tiap tanggal menampilkan total keluar
 /// dan masuk secara ringkas. Ketuk tanggal untuk memfilter daftar transaksi.
@@ -70,7 +71,7 @@ class MoneyCalendarCard extends StatelessWidget {
     }
 
     return AppCard(
-      padding: const EdgeInsets.fromLTRB(12, 8, 12, 14),
+      padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.md, AppSpace.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -100,18 +101,18 @@ class MoneyCalendarCard extends StatelessWidget {
               for (final d in dow)
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
+                    padding: const EdgeInsets.only(bottom: AppSpace.xs),
                     child: Text(
                       d,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 11, color: c.muted),
+                      style: TextStyle(fontSize: AppFontSize.caption, color: c.muted),
                     ),
                   ),
                 ),
             ],
           ),
           ...rows,
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           if (selectedDate == null)
             Text(
               l.calHint,
@@ -122,7 +123,7 @@ class MoneyCalendarCard extends StatelessWidget {
             Row(
               children: [
                 _sum(context, l.calOut, sel?.expense ?? 0, c.expense),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpace.sm),
                 _sum(context, l.calIn, sel?.income ?? 0, c.income),
               ],
             ),
@@ -142,21 +143,21 @@ class MoneyCalendarCard extends StatelessWidget {
     final c = context.colors;
     return Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
         decoration: BoxDecoration(
           color: c.subtle,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(label, style: TextStyle(fontSize: 11.5, color: c.muted)),
+            Text(label, style: TextStyle(fontSize: AppFontSize.caption, color: c.muted)),
             FittedBox(
               fit: BoxFit.scaleDown,
               child: Text(
                 rupiah(value, hide: hideAmounts),
                 style: TextStyle(
-                  fontSize: 14,
+                  fontSize: AppFontSize.bodyLg,
                   fontWeight: FontWeight.w600,
                   color: color,
                 ),
@@ -185,7 +186,7 @@ class MoneyCalendarCard extends StatelessWidget {
         text,
         maxLines: 1,
         style: TextStyle(
-          fontSize: 10,
+          fontSize: AppFontSize.caption,
           height: 1.25,
           fontWeight: FontWeight.w500,
           color: color,
@@ -210,15 +211,15 @@ class MoneyCalendarCard extends StatelessWidget {
       excludeSemantics: true,
       child: Material(
         color: selected ? c.primarySoft : Colors.transparent,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         child: InkWell(
           key: ValueKey('cal-$date'),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           onTap: isFuture ? null : () => onPick(selected ? null : date),
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 60),
             child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 1),
+              padding: const EdgeInsets.symmetric(vertical: AppSpace.xs, horizontal: 1),
               child: Column(
                 children: [
                   Container(
@@ -232,7 +233,7 @@ class MoneyCalendarCard extends StatelessWidget {
                     child: Text(
                       '$day',
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppFontSize.body,
                         fontWeight: isFuture
                             ? FontWeight.w400
                             : FontWeight.w600,

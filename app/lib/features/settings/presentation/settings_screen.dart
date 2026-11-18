@@ -9,6 +9,7 @@ import 'about_section.dart';
 import 'appearance_section.dart';
 import '../../backup/presentation/data_section.dart';
 import '../../lock/presentation/security_section.dart';
+import '../../../core/tokens.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -24,13 +25,13 @@ class SettingsScreen extends ConsumerWidget {
     final lang = context.localeTag;
 
     Widget sectionTitle(String text) => Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
       child: Text(
         text.toUpperCase(),
         style: t.bodySmall?.copyWith(
           fontWeight: FontWeight.w600,
           color: context.colors.muted,
-          fontSize: 13,
+          fontSize: AppFontSize.body,
         ),
       ),
     );
@@ -43,17 +44,17 @@ class SettingsScreen extends ConsumerWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
         children: [
           const AccountCard(),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           sectionTitle(l.language),
           AppCard(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.xs),
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
                   child: Row(
                     children: [
                       Expanded(
@@ -78,7 +79,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 Divider(height: 1, color: context.colors.divider),
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpace.lg),
                   child: Row(
                     children: [
                       Expanded(
@@ -97,16 +98,16 @@ class SettingsScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           sectionTitle(l.appearance),
           const AppearanceSection(),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           sectionTitle(l.security),
           const SecuritySection(),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           sectionTitle(l.data),
           const DataSection(),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           sectionTitle(l.aboutTitle),
           const AboutSection(),
         ],

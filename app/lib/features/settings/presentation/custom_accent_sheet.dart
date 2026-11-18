@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../core/format.dart';
 import '../../../core/theme.dart';
 import '../../../core/widgets/common.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 /// Pengaturan â€º Tampilan â€º Kustom: pilih warna aksen sendiri lewat geser
 /// warna/kepekatan/kecerahan atau kode hex, dengan pratinjau langsung.
@@ -34,13 +36,9 @@ class CustomAccentSheet extends StatefulWidget {
     String? title,
     bool accentPreview = true,
   }) {
-    return showModalBottomSheet<String>(
+    return showAppSheet<String>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) => CustomAccentSheet(
         initial: initial,
         recent: recent,
@@ -157,30 +155,21 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: c.handle,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SheetHandle(),
+              const SizedBox(height: AppSpace.lg),
               Text(
                 widget.title ?? l.accentCustomTitle,
                 style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpace.xxs),
               Text(
                 l.accentCustomSub,
                 style: t.bodySmall?.copyWith(color: c.muted),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpace.lg),
               if (widget.accentPreview) ...[
                 _Preview(palette: pv),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpace.md),
               ],
               _ColorSlider(
                 label: l.accentHue,
@@ -222,7 +211,7 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
                 ],
                 onChanged: (v) => _slide(_hsl.withLightness(v)),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -231,11 +220,11 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
                     height: 52,
                     decoration: BoxDecoration(
                       color: draft,
-                      borderRadius: BorderRadius.circular(16),
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
                       border: Border.all(color: c.line),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: TextField(
                       controller: _hex,
@@ -255,7 +244,7 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
                 ],
               ),
               if (widget.recent.isNotEmpty) ...[
-                const SizedBox(height: 14),
+                const SizedBox(height: AppSpace.lg),
                 Text(
                   l.accentRecent,
                   style: t.bodySmall?.copyWith(
@@ -263,7 +252,7 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
                     color: c.muted,
                   ),
                 ),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpace.sm),
                 Wrap(
                   spacing: 4,
                   children: [
@@ -277,21 +266,21 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
                 ),
               ],
               if (note != null) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpace.md),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 10,
+                    horizontal: AppSpace.md,
+                    vertical: AppSpace.md,
                   ),
                   decoration: BoxDecoration(
                     color: c.warnSoft,
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Icon(Icons.info_outline, size: 18, color: c.onWarnSoft),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpace.sm),
                       Expanded(
                         child: Text(
                           note,
@@ -302,7 +291,7 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
                   ),
                 ),
               ],
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpace.xl),
               Row(
                 children: [
                   Expanded(
@@ -314,7 +303,7 @@ class _CustomAccentSheetState extends State<CustomAccentSheet> {
                       child: Text(l.cancel),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: FilledButton(
                       onPressed: _canApply
@@ -352,22 +341,22 @@ class _Preview extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 14),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.lg),
             decoration: BoxDecoration(
               color: p.hero,
-              borderRadius: BorderRadius.circular(20),
+              borderRadius: BorderRadius.circular(AppRadius.lg),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   l.totalBalance,
-                  style: TextStyle(fontSize: 12, color: p.onHeroMuted),
+                  style: TextStyle(fontSize: AppFontSize.meta, color: p.onHeroMuted),
                 ),
                 Text(
                   rupiah(2450000),
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: AppFontSize.display,
                     fontWeight: FontWeight.w700,
                     color: p.onHero,
                   ),
@@ -375,17 +364,17 @@ class _Preview extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           Row(
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: AppSpace.lg,
                   vertical: 9,
                 ),
                 decoration: BoxDecoration(
                   color: p.primary,
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
                 child: Text(
                   l.save,
@@ -395,15 +384,15 @@ class _Preview extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
+                  horizontal: AppSpace.lg,
                   vertical: 9,
                 ),
                 decoration: BoxDecoration(
                   color: p.primarySoft,
-                  borderRadius: BorderRadius.circular(999),
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
                 ),
                 child: Text(
                   l.accentPreviewChip,
@@ -446,7 +435,7 @@ class _ColorSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     final muted = context.colors.muted;
     final style = TextStyle(
-      fontSize: 12,
+      fontSize: AppFontSize.meta,
       fontWeight: FontWeight.w500,
       color: muted,
     );
@@ -454,7 +443,7 @@ class _ColorSlider extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Padding(
-          padding: const EdgeInsets.only(top: 6),
+          padding: const EdgeInsets.only(top: AppSpace.sm),
           child: Row(
             children: [
               Expanded(child: Text(label, style: style)),
@@ -602,7 +591,7 @@ class _RecentSwatch extends StatelessWidget {
             child: Container(
               width: 36,
               height: 36,
-              padding: const EdgeInsets.all(3),
+              padding: const EdgeInsets.all(AppSpace.xxs),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(

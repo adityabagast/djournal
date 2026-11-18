@@ -9,6 +9,8 @@ import '../domain/reminder_parser.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import 'reminder_format.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 /// Tebakan acara dari satu kalimat, setelah digabung dengan koreksi user.
 class ReminderDraft {
@@ -187,14 +189,14 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
             letterSpacing: 0.6,
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
         if (drafts.isEmpty)
           AppCard(
-            padding: const EdgeInsets.all(14),
+            padding: const EdgeInsets.all(AppSpace.lg),
             child: Row(
               children: [
                 const ReminderIconDot(Icons.notifications_none_rounded),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Text(
                     l.remNone,
@@ -206,17 +208,17 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
           ),
         for (final d in drafts) ...[
           _card(context, d),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
         ],
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
         Row(
           children: [
             Icon(Icons.lock_outline_rounded, size: 15, color: c.muted),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpace.sm),
             Expanded(
               child: Text(
                 l.remPrivacy,
-                style: TextStyle(fontSize: 12, color: c.muted),
+                style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
               ),
             ),
           ],
@@ -233,7 +235,7 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
 
     return AppCard(
       key: ValueKey('rem-${d.key}'),
-      padding: const EdgeInsets.all(14),
+      padding: const EdgeInsets.all(AppSpace.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -241,48 +243,48 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const ReminderIconDot(Icons.event_outlined),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       accepted ? l.remWillRemind : l.remDetected,
-                      style: TextStyle(fontSize: 12, color: c.muted),
+                      style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                     ),
                     Text(
                       title,
                       style: const TextStyle(
-                        fontSize: 15,
+                        fontSize: AppFontSize.title,
                         fontWeight: FontWeight.w600,
                         height: 1.35,
                       ),
                     ),
                     Text(
                       reminderWhen(context, d.date, d.time),
-                      style: TextStyle(fontSize: 13, color: c.ink),
+                      style: TextStyle(fontSize: AppFontSize.body, color: c.ink),
                     ),
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               RelPill(reminderRel(context, d.date)),
             ],
           ),
           if (d.ambiguous && d.baseTime != null) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpace.md),
             Text(
               l.remAmbiguous,
-              style: TextStyle(fontSize: 12, color: c.muted),
+              style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpace.sm),
             _amPm(context, d),
           ],
           if (d.saidWeekday != null) ...[
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpace.md),
             _mismatchNote(context, d),
           ],
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           Wrap(
             spacing: 4,
             runSpacing: 4,
@@ -290,11 +292,11 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
             children: [
               if (accepted)
                 Padding(
-                  padding: const EdgeInsets.only(right: 6),
+                  padding: const EdgeInsets.only(right: AppSpace.sm),
                   child: Text(
                     l.remActive(reminderLeadName(l, d.lead, d.time)),
                     style: TextStyle(
-                      fontSize: 12.5,
+                      fontSize: AppFontSize.meta,
                       fontWeight: FontWeight.w600,
                       color: c.income,
                     ),
@@ -345,7 +347,7 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
     return Row(
       children: [
         for (final time in [am, pm]) ...[
-          if (time == pm) const SizedBox(width: 8),
+          if (time == pm) const SizedBox(width: AppSpace.sm),
           Expanded(
             child: OutlinedButton(
               onPressed: () => pick(time),
@@ -365,16 +367,16 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
     String dayName(int weekday) =>
         DateFormat.EEEE(tag).format(DateTime(2026, 1, 4 + weekday));
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
       decoration: BoxDecoration(
         color: c.warnSoft,
-        borderRadius: BorderRadius.circular(14),
+        borderRadius: BorderRadius.circular(AppRadius.md),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Icon(Icons.info_outline_rounded, size: 16, color: c.onWarnSoft),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpace.sm),
           Expanded(
             child: Text(
               context.l10n.remMismatch(
@@ -383,7 +385,7 @@ class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
                 dayName(d.saidWeekday!),
               ),
               style: TextStyle(
-                fontSize: 12.5,
+                fontSize: AppFontSize.meta,
                 height: 1.45,
                 color: c.onWarnSoft,
               ),
@@ -420,15 +422,15 @@ class RelPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
+    padding: const EdgeInsets.symmetric(horizontal: 9, vertical: AppSpace.xxs),
     decoration: BoxDecoration(
       color: context.colors.primarySoft,
-      borderRadius: BorderRadius.circular(999),
+      borderRadius: BorderRadius.circular(AppRadius.pill),
     ),
     child: Text(
       text,
       style: TextStyle(
-        fontSize: 11.5,
+        fontSize: AppFontSize.caption,
         fontWeight: FontWeight.w600,
         color: context.colors.onPrimarySoft,
       ),
@@ -437,13 +439,9 @@ class RelPill extends StatelessWidget {
 }
 
 Future<T?> showReminderSheet<T>(BuildContext context, Widget child) =>
-    showModalBottomSheet<T>(
+    showAppSheet<T>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) => child,
     );
 
@@ -473,27 +471,18 @@ class ReminderSheetBody extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colors.line,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SheetHandle(),
+          const SizedBox(height: AppSpace.lg),
           Text(
             title,
             style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpace.xs),
           Text(
             subtitle,
             style: t.bodySmall?.copyWith(color: context.colors.muted),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           ...children,
         ],
       ),
@@ -518,12 +507,12 @@ class _PermissionSheet extends StatelessWidget {
         Row(
           children: [
             const ReminderIconDot(Icons.notifications_none_rounded),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Text(
                 l.remPermHint,
                 style: TextStyle(
-                  fontSize: 12.5,
+                  fontSize: AppFontSize.meta,
                   height: 1.5,
                   color: context.colors.muted,
                 ),
@@ -531,7 +520,7 @@ class _PermissionSheet extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         Row(
           children: [
             Expanded(
@@ -540,7 +529,7 @@ class _PermissionSheet extends StatelessWidget {
                 child: Text(l.remPermLater),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: FilledButton(
                 onPressed: () => Navigator.pop(context, true),
@@ -623,11 +612,11 @@ class _EditSheetState extends State<_EditSheet> {
     ];
 
     Widget label(String text) => Padding(
-      padding: const EdgeInsets.only(bottom: 6),
+      padding: const EdgeInsets.only(bottom: AppSpace.sm),
       child: Text(
         text,
         style: TextStyle(
-          fontSize: 13,
+          fontSize: AppFontSize.body,
           fontWeight: FontWeight.w600,
           color: c.muted,
         ),
@@ -645,7 +634,7 @@ class _EditSheetState extends State<_EditSheet> {
           controller: _title,
           textCapitalization: TextCapitalization.sentences,
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -662,7 +651,7 @@ class _EditSheetState extends State<_EditSheet> {
                 ],
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -687,7 +676,7 @@ class _EditSheetState extends State<_EditSheet> {
             ),
           ],
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: AppSpace.lg),
         label(l.remFieldLead),
         SegmentedButton<ReminderLead>(
           showSelectedIcon: false,
@@ -698,14 +687,14 @@ class _EditSheetState extends State<_EditSheet> {
                 label: Text(
                   cap(reminderLeadName(l, v, _time, short: true)),
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 12.5),
+                  style: const TextStyle(fontSize: AppFontSize.meta),
                 ),
               ),
           ],
           selected: {lead},
           onSelectionChanged: (s) => setState(() => _lead = s.first),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: AppSpace.lg),
         Row(
           children: [
             Expanded(
@@ -714,7 +703,7 @@ class _EditSheetState extends State<_EditSheet> {
                 child: Text(l.cancel),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: FilledButton(
                 onPressed: () => Navigator.pop(

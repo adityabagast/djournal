@@ -5,6 +5,7 @@ import 'package:just_audio/just_audio.dart';
 
 import '../../../../core/theme.dart';
 import '../../../../core/widgets/common.dart';
+import '../../../../core/tokens.dart';
 
 class VoicePlayerCard extends StatefulWidget {
   const VoicePlayerCard({
@@ -150,16 +151,16 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
 
     if (_hasError) {
       return Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpace.md),
         decoration: BoxDecoration(
           color: colors.surface,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: colors.divider),
         ),
         child: Row(
           children: [
             Icon(Icons.broken_image_outlined, size: 20, color: colors.muted),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpace.sm),
             Expanded(
               child: Text(
                 'File audio tidak ditemukan',
@@ -183,10 +184,10 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
     if (widget.compact) {
       // Mini player untuk tampilan feed
       return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
         decoration: BoxDecoration(
           color: colors.background,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: colors.divider),
         ),
         child: Row(
@@ -196,7 +197,7 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
               onTap: _togglePlay,
               size: 36,
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -208,14 +209,14 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                     onSeek: _seek,
                     height: 24,
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpace.xxs),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
                         _formatDuration(_position),
                         style: t.bodySmall?.copyWith(
-                          fontSize: 11,
+                          fontSize: AppFontSize.caption,
                           color: colors.muted,
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),
@@ -223,7 +224,7 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                       Text(
                         _formatDuration(_duration),
                         style: t.bodySmall?.copyWith(
-                          fontSize: 11,
+                          fontSize: AppFontSize.caption,
                           color: colors.muted,
                           fontFeatures: const [FontFeature.tabularFigures()],
                         ),
@@ -241,10 +242,10 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
     return Container(
       decoration: BoxDecoration(
         color: colors.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: colors.divider),
       ),
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpace.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -255,7 +256,7 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                 onTap: _togglePlay,
                 size: 44,
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpace.lg),
               Expanded(
                 child: _WaveformSeeker(
                   position: _position,
@@ -266,7 +267,7 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -282,20 +283,20 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                 children: [
                   InkWell(
                     onTap: _cycleSpeed,
-                    borderRadius: BorderRadius.circular(8),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 3,
+                        horizontal: AppSpace.sm,
+                        vertical: AppSpace.xxs,
                       ),
                       decoration: BoxDecoration(
                         color: colors.primarySoft,
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(AppRadius.sm),
                       ),
                       child: Text(
                         '${_speed}x',
                         style: t.bodySmall?.copyWith(
-                          fontSize: 11,
+                          fontSize: AppFontSize.caption,
                           fontWeight: FontWeight.w700,
                           color: colors.primary,
                         ),
@@ -303,12 +304,12 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                     ),
                   ),
                   if (widget.onDelete != null) ...[
-                    const SizedBox(width: 12),
+                    const SizedBox(width: AppSpace.md),
                     InkWell(
                       onTap: widget.onDelete,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
                       child: Padding(
-                        padding: const EdgeInsets.all(4),
+                        padding: const EdgeInsets.all(AppSpace.xs),
                         child: Row(
                           children: [
                             Icon(
@@ -316,11 +317,11 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                               size: 16,
                               color: colors.expense,
                             ),
-                            const SizedBox(width: 4),
+                            const SizedBox(width: AppSpace.xs),
                             Text(
                               l.delete,
                               style: t.bodySmall?.copyWith(
-                                fontSize: 12,
+                                fontSize: AppFontSize.meta,
                                 fontWeight: FontWeight.w600,
                                 color: colors.expense,
                               ),
@@ -335,13 +336,13 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
             ],
           ),
           if (hasTranscript) ...[
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpace.lg),
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpace.md),
               decoration: BoxDecoration(
                 color: colors.primarySoft.withValues(alpha: 0.5),
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -356,13 +357,13 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                             size: 16,
                             color: colors.primary,
                           ),
-                          const SizedBox(width: 4),
+                          const SizedBox(width: AppSpace.xs),
                           Text(
                             'Transkripsi Suara',
                             style: t.bodySmall?.copyWith(
                               fontWeight: FontWeight.w700,
                               color: colors.primary,
-                              fontSize: 11.5,
+                              fontSize: AppFontSize.caption,
                             ),
                           ),
                         ],
@@ -371,11 +372,11 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                         InkWell(
                           onTap: () =>
                               widget.onCopyToNotes!(widget.transcript!),
-                          borderRadius: BorderRadius.circular(6),
+                          borderRadius: BorderRadius.circular(AppRadius.sm),
                           child: Padding(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 2,
+                              horizontal: AppSpace.sm,
+                              vertical: AppSpace.xxs,
                             ),
                             child: Row(
                               children: [
@@ -384,11 +385,11 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                                   size: 12,
                                   color: colors.primary,
                                 ),
-                                const SizedBox(width: 4),
+                                const SizedBox(width: AppSpace.xs),
                                 Text(
                                   'Salin ke catatan',
                                   style: t.bodySmall?.copyWith(
-                                    fontSize: 11,
+                                    fontSize: AppFontSize.caption,
                                     fontWeight: FontWeight.w600,
                                     color: colors.primary,
                                   ),
@@ -399,11 +400,11 @@ class _VoicePlayerCardState extends State<VoicePlayerCard> {
                         ),
                     ],
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: AppSpace.sm),
                   Text(
                     widget.transcript!,
                     style: t.bodyMedium?.copyWith(
-                      fontSize: 13,
+                      fontSize: AppFontSize.body,
                       height: 1.5,
                       color: colors.ink,
                     ),
@@ -515,7 +516,7 @@ class _WaveformSeeker extends StatelessWidget {
                     color: isPlayed
                         ? colors.primary
                         : colors.primary.withValues(alpha: 0.22),
-                    borderRadius: BorderRadius.circular(3),
+                    borderRadius: BorderRadius.circular(AppRadius.xs),
                   ),
                 );
               }),

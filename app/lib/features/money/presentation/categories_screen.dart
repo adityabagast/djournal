@@ -11,6 +11,8 @@ import 'category_icons.dart';
 import '../../../core/widgets/common.dart';
 import 'money_widgets.dart';
 import '../../../core/widgets/mascot.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 /// Pilihan warna kategori: 10 warna yang mudah dibedakan, termasuk warna
 /// beberapa kategori bawaan.
@@ -92,7 +94,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
       style: t.bodySmall?.copyWith(
         fontWeight: FontWeight.w600,
         color: context.colors.muted,
-        fontSize: 13,
+        fontSize: AppFontSize.body,
       ),
     );
 
@@ -120,7 +122,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
         ),
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: AppSpace.md),
             child: FilledButton.icon(
               onPressed: () => CategoryFormSheet.open(context, kind: _kind),
               icon: const Icon(Icons.add, size: 18),
@@ -132,7 +134,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
       body: snap == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
               children: [
                 _KindTabs(
                   value: _kind,
@@ -141,20 +143,20 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                     _pendingOrder = null;
                   }),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpace.md),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
                   child: Text(
                     l.categoryReorderHint,
                     style: t.bodySmall?.copyWith(color: context.colors.muted),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpace.md),
                 AppCard(
-                  padding: const EdgeInsets.fromLTRB(4, 2, 8, 2),
+                  padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xxs, AppSpace.sm, AppSpace.xxs),
                   // Latar baris tidak boleh keluar dari sudut kartu.
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                     child: ReorderableListView(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
@@ -178,14 +180,14 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpace.md),
                 InkWell(
                   onTap: () => setState(() => _hiddenOpen = !_hiddenOpen),
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 4,
-                      vertical: 10,
+                      horizontal: AppSpace.xs,
+                      vertical: AppSpace.md,
                     ),
                     child: Row(
                       children: [
@@ -196,7 +198,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                         ),
                         AnimatedRotation(
                           turns: _hiddenOpen ? 0.5 : 0,
-                          duration: const Duration(milliseconds: 150),
+                          duration: AppMotion.short,
                           child: Icon(
                             Icons.expand_more,
                             color: context.colors.muted,
@@ -208,22 +210,22 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
                 ),
                 if (_hiddenOpen) ...[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 0, 4, 8),
+                    padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
                     child: Text(
                       l.hiddenCategoriesHint,
                       style: t.bodySmall?.copyWith(color: context.colors.muted),
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                     decoration: BoxDecoration(
                       color: context.colors.subtle,
-                      borderRadius: BorderRadius.circular(18),
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
                       border: Border.all(color: context.colors.handle),
                     ),
                     child: hidden.isEmpty
                         ? Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            padding: const EdgeInsets.symmetric(vertical: AppSpace.lg),
                             child: Text(
                               l.noHiddenCategories,
                               style: t.bodySmall?.copyWith(
@@ -259,10 +261,10 @@ class _KindTabs extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     return Container(
-      padding: const EdgeInsets.all(4),
+      padding: const EdgeInsets.all(AppSpace.xs),
       decoration: BoxDecoration(
         color: context.colors.track,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
       ),
       child: Row(
         children: [
@@ -280,14 +282,14 @@ class _KindTabs extends StatelessWidget {
                     onChanged(kind);
                   },
                   child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 150),
+                    duration: AppMotion.short,
                     height: 40,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       color: value == kind
                           ? context.colors.raised
                           : Colors.transparent,
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(AppRadius.lg),
                       boxShadow: value == kind
                           ? [
                               BoxShadow(
@@ -380,11 +382,11 @@ class _CategoryRow extends StatelessWidget {
                       existing: category,
                     ),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
                       child: Row(
                         children: [
                           CategoryBadge(category: category, size: 36),
-                          const SizedBox(width: 12),
+                          const SizedBox(width: AppSpace.md),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
@@ -402,10 +404,10 @@ class _CategoryRow extends StatelessWidget {
                                       ),
                                     ),
                                     if (category.systemKey != null) ...[
-                                      const SizedBox(width: 6),
+                                      const SizedBox(width: AppSpace.sm),
                                       Container(
                                         padding: const EdgeInsets.symmetric(
-                                          horizontal: 6,
+                                          horizontal: AppSpace.sm,
                                           vertical: 1,
                                         ),
                                         decoration: BoxDecoration(
@@ -417,7 +419,7 @@ class _CategoryRow extends StatelessWidget {
                                         child: Text(
                                           l.categorySystemBadge,
                                           style: TextStyle(
-                                            fontSize: 11,
+                                            fontSize: AppFontSize.caption,
                                             fontWeight: FontWeight.w600,
                                             color: context.colors.muted,
                                           ),
@@ -445,7 +447,7 @@ class _CategoryRow extends StatelessWidget {
                   onPressed: onToggle,
                   icon: AnimatedRotation(
                     turns: expanded ? 0.5 : 0,
-                    duration: const Duration(milliseconds: 150),
+                    duration: AppMotion.short,
                     child: Icon(Icons.expand_more, color: context.colors.muted),
                   ),
                 ),
@@ -481,8 +483,8 @@ class _SubcategoryList extends StatelessWidget {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
     return Container(
-      margin: const EdgeInsets.fromLTRB(52, 0, 12, 10),
-      padding: const EdgeInsets.only(left: 12),
+      margin: const EdgeInsets.fromLTRB(52, 0, AppSpace.md, AppSpace.md),
+      padding: const EdgeInsets.only(left: AppSpace.md),
       decoration: BoxDecoration(
         border: Border(left: BorderSide(color: context.colors.line, width: 2)),
       ),
@@ -562,7 +564,7 @@ class _HiddenRow extends ConsumerWidget {
     final name = categoryLabel(l, category);
 
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
       decoration: BoxDecoration(
         border: showDivider
             ? Border(bottom: BorderSide(color: context.colors.divider))
@@ -578,7 +580,7 @@ class _HiddenRow extends ConsumerWidget {
                 existing: category,
               ),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6),
+                padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -600,7 +602,7 @@ class _HiddenRow extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpace.sm),
           OutlinedButton(
             onPressed: () async {
               await ref
@@ -643,13 +645,9 @@ class CategoryFormSheet extends ConsumerStatefulWidget {
     Category? existing,
     Category? parent,
   }) {
-    return showModalBottomSheet(
+    return showAppSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) =>
           CategoryFormSheet(kind: kind, existing: existing, parent: parent),
     );
@@ -741,33 +739,29 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
             if (s.id != e.id) s,
       ],
     ];
-    final target = await showModalBottomSheet<Category>(
+    final target = await showAppSheet<Category>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (ctx) => DraggableScrollableSheet(
         expand: false,
         initialChildSize: 0.6,
         maxChildSize: 0.9,
         builder: (ctx, controller) => ListView(
           controller: controller,
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xl, AppSpace.xl, AppSpace.xxl),
           children: [
             Text(
               l.mergeCategoryTitle(name),
               style: Theme.of(ctx).textTheme.titleMedium
                   ?.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
             Text(
               l.mergeCategoryHint(txCount, name),
               style: Theme.of(ctx).textTheme.bodySmall
                   ?.copyWith(color: context.colors.muted),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             for (final c in targets)
               ListTile(
                 contentPadding: EdgeInsets.zero,
@@ -866,17 +860,8 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: context.colors.handle,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 16),
+            const SheetHandle(),
+            const SizedBox(height: AppSpace.lg),
             Row(
               children: [
                 Container(
@@ -885,7 +870,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                   alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: context.colors.soft(raw),
-                    borderRadius: BorderRadius.circular(13),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                   child: _icon != null
                       ? Icon(categoryIcons[_icon], color: fg, size: 24)
@@ -893,12 +878,12 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                           letter,
                           style: TextStyle(
                             color: fg,
-                            fontSize: 18,
+                            fontSize: AppFontSize.heading,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Text(
                     title,
@@ -907,7 +892,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                 ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             TextField(
               controller: _name,
               enabled: !_isSystem,
@@ -921,7 +906,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                 helperText: _isSystem ? l.systemCategoryNameNote : null,
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             Text(
               '${l.categoryIcon} ${l.optional}',
               style: t.bodySmall?.copyWith(
@@ -929,7 +914,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                 color: context.colors.muted,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             GridView.count(
               crossAxisCount: 7,
               shrinkWrap: true,
@@ -949,7 +934,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                         ? Text(
                             letter,
                             style: const TextStyle(
-                              fontSize: 15,
+                              fontSize: AppFontSize.title,
                               fontWeight: FontWeight.w700,
                             ),
                           )
@@ -957,7 +942,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                   ),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             if (_parent != null)
               Text(
                 l.subcategoryColorNote(parentName),
@@ -971,7 +956,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                   color: context.colors.muted,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               GridView.count(
                 crossAxisCount: 5,
                 shrinkWrap: true,
@@ -989,7 +974,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: context.colors.fg(hexColor(hex)),
-                            borderRadius: BorderRadius.circular(12),
+                            borderRadius: BorderRadius.circular(AppRadius.md),
                             border: Border.all(
                               color: hex == _color
                                   ? context.colors.ink
@@ -1011,7 +996,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
                 ],
               ),
             ],
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpace.xl),
             FilledButton(
               onPressed: _save,
               style: FilledButton.styleFrom(
@@ -1020,7 +1005,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
               child: Text(l.save),
             ),
             if (e != null && snap != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               Divider(color: context.colors.divider),
               action(
                 e.isArchived
@@ -1042,7 +1027,7 @@ class _CategoryFormSheetState extends ConsumerState<CategoryFormSheet> {
               ),
               if (!canDelete)
                 Padding(
-                  padding: const EdgeInsets.only(left: 12),
+                  padding: const EdgeInsets.only(left: AppSpace.md),
                   child: Text(
                     _isSystem
                         ? l.deleteSystemCategoryHint
@@ -1085,7 +1070,7 @@ class _IconChoice extends StatelessWidget {
         child: Material(
           color: selected ? context.colors.soft(color) : context.colors.surface,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             side: BorderSide(
               color: selected ? color : context.colors.line,
               width: 2,
@@ -1093,7 +1078,7 @@ class _IconChoice extends StatelessWidget {
           ),
           child: InkWell(
             onTap: onTap,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             child: IconTheme.merge(
               data: IconThemeData(
                 color: selected ? color : context.colors.muted,

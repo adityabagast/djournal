@@ -8,6 +8,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../providers.dart';
 import '../../../money/presentation/bill_detail_sheet.dart';
 import '../../../money/presentation/bill_form_sheet.dart';
+import '../../../../core/tokens.dart';
 
 class BillsCard extends ConsumerWidget {
   const BillsCard({super.key, required this.now});
@@ -31,7 +32,7 @@ class BillsCard extends ConsumerWidget {
               Expanded(
                 child: Row(
                   children: [
-                    const Text('🔔 ', style: TextStyle(fontSize: 15)),
+                    const Text('🔔 ', style: TextStyle(fontSize: AppFontSize.title)),
                     Flexible(
                       child: Text(
                         'Tagihan Mendatang',
@@ -44,9 +45,9 @@ class BillsCard extends ConsumerWidget {
               ),
               InkWell(
                 onTap: () => BillFormSheet.open(context),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
                   child: Text(
                     '+ Tambah',
                     style: t.bodySmall?.copyWith(
@@ -58,10 +59,10 @@ class BillsCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           if (bills.isEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
               child: Text(
                 'Tidak ada tagihan yang belum dibayar. Bersih! 🎉',
                 style: t.bodySmall?.copyWith(color: context.colors.muted),
@@ -110,10 +111,10 @@ class BillsCard extends ConsumerWidget {
     final wallet = bill.walletId != null ? snap?.walletById[bill.walletId!] : null;
 
     return InkWell(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       onTap: () => BillDetailSheet.open(context, bill: bill, now: now, moneySnap: snap),
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 2),
+        padding: const EdgeInsets.symmetric(vertical: AppSpace.xxs),
         child: Row(
           children: [
             Container(
@@ -121,13 +122,13 @@ class BillsCard extends ConsumerWidget {
               height: 36,
               decoration: BoxDecoration(
                 color: context.colors.subtle,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
               ),
               child: const Center(
-                child: Text('📄', style: TextStyle(fontSize: 18)),
+                child: Text('📄', style: TextStyle(fontSize: AppFontSize.heading)),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -141,7 +142,7 @@ class BillsCard extends ConsumerWidget {
                     style: t.bodySmall?.copyWith(
                       color: dueColor,
                       fontWeight: isUrgent ? FontWeight.w700 : FontWeight.w500,
-                      fontSize: 11.5,
+                      fontSize: AppFontSize.caption,
                     ),
                   ),
                   if (wallet != null)
@@ -149,7 +150,7 @@ class BillsCard extends ConsumerWidget {
                       'Bayar via: ${wallet.name}',
                       style: t.bodySmall?.copyWith(
                         color: context.colors.muted,
-                        fontSize: 10.5,
+                        fontSize: AppFontSize.caption,
                       ),
                     ),
                 ],
@@ -162,7 +163,7 @@ class BillsCard extends ConsumerWidget {
                   rupiah(bill.amount, hide: hide),
                   style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpace.xs),
                 SizedBox(
                   height: 28,
                   child: FilledButton.tonal(
@@ -173,8 +174,8 @@ class BillsCard extends ConsumerWidget {
                       moneySnap: snap,
                     ),
                     style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      textStyle: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.w600),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                      textStyle: const TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w600),
                     ),
                     child: const Text('Detail'),
                   ),

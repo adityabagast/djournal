@@ -6,6 +6,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import 'custom_accent_sheet.dart';
+import '../../../core/tokens.dart';
 
 /// Pengaturan › Tampilan: Sistem / Terang / Gelap (dengan gambar mini layar)
 /// dan pilihan warna aksen.
@@ -51,7 +52,7 @@ class AppearanceSection extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppCard(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(AppSpace.lg),
           child: Row(
             children: [
               for (final (m, label) in [
@@ -59,7 +60,7 @@ class AppearanceSection extends ConsumerWidget {
                 (ThemeMode.light, l.themeLight),
                 (ThemeMode.dark, l.themeDark),
               ]) ...[
-                if (m != ThemeMode.system) const SizedBox(width: 10),
+                if (m != ThemeMode.system) const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: _ModeOption(
                     mode: m,
@@ -73,25 +74,25 @@ class AppearanceSection extends ConsumerWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 8, 4, 0),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, 0),
           child: Text(
             hint,
-            style: TextStyle(fontSize: 13, color: context.colors.muted),
+            style: TextStyle(fontSize: AppFontSize.body, color: context.colors.muted),
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 20, 4, 8),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.xl, AppSpace.xs, AppSpace.sm),
           child: Text(
             l.accentTitle,
             style: TextStyle(
-              fontSize: 13,
+              fontSize: AppFontSize.body,
               fontWeight: FontWeight.w600,
               color: context.colors.muted,
             ),
           ),
         ),
         AppCard(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(AppSpace.lg),
           child: Wrap(
             spacing: 8,
             runSpacing: 12,
@@ -125,10 +126,10 @@ class AppearanceSection extends ConsumerWidget {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.fromLTRB(4, 8, 4, 0),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.sm, AppSpace.xs, 0),
           child: Text(
             customSelected ? l.accentCustomHint(customHex!) : l.accentHint,
-            style: TextStyle(fontSize: 13, color: context.colors.muted),
+            style: TextStyle(fontSize: AppFontSize.body, color: context.colors.muted),
           ),
         ),
       ],
@@ -194,15 +195,15 @@ class _AccentOption extends StatelessWidget {
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         child: Padding(
-          padding: const EdgeInsets.all(2),
+          padding: const EdgeInsets.all(AppSpace.xxs),
           child: Column(
             children: [
               Container(
                 width: 40,
                 height: 40,
-                padding: const EdgeInsets.all(3),
+                padding: const EdgeInsets.all(AppSpace.xxs),
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   border: Border.all(
@@ -219,13 +220,13 @@ class _AccentOption extends StatelessWidget {
                   child: mark == null ? null : Icon(mark, size: 18, color: fg),
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpace.sm),
               Text(
                 label,
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppFontSize.meta,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                 ),
               ),
@@ -262,7 +263,7 @@ class _ModeOption extends StatelessWidget {
       child: Material(
         color: selected ? c.primarySoft : Colors.transparent,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           side: BorderSide(
             color: selected ? c.primary : c.line,
             width: selected ? 2 : 1,
@@ -270,13 +271,13 @@ class _ModeOption extends StatelessWidget {
         ),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(4, 10, 4, 8),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, AppSpace.sm),
             child: Column(
               children: [
                 _MiniScreen(mode: mode),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpace.sm),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -302,13 +303,13 @@ class _ModeOption extends StatelessWidget {
                             )
                           : null,
                     ),
-                    const SizedBox(width: 6),
+                    const SizedBox(width: AppSpace.sm),
                     Flexible(
                       child: Text(
                         label,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontSize: 13,
+                          fontSize: AppFontSize.body,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -335,7 +336,7 @@ class _MiniScreen extends StatelessWidget {
       child: ColoredBox(
         color: p.background,
         child: Padding(
-          padding: EdgeInsets.only(left: left ? 7 : 0, top: 8),
+          padding: EdgeInsets.only(left: left ? AppSpace.sm : 0, top: AppSpace.sm),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -346,30 +347,30 @@ class _MiniScreen extends StatelessWidget {
                         width: 22,
                         decoration: BoxDecoration(
                           color: p.ink,
-                          borderRadius: BorderRadius.circular(3),
+                          borderRadius: BorderRadius.circular(AppRadius.xs),
                         ),
                       )
                     : null,
               ),
-              const SizedBox(height: 5),
+              const SizedBox(height: AppSpace.xs),
               for (final h in [16.0, 24.0]) ...[
                 Container(
                   height: h,
-                  margin: EdgeInsets.only(right: split && left ? 0 : 7),
+                  margin: EdgeInsets.only(right: split && left ? 0 : AppSpace.sm),
                   decoration: BoxDecoration(
                     color: p.surface,
                     borderRadius: split
                         ? (left
                               ? const BorderRadius.horizontal(
-                                  left: Radius.circular(5),
+                                  left: Radius.circular(AppRadius.xs),
                                 )
                               : const BorderRadius.horizontal(
-                                  right: Radius.circular(5),
+                                  right: Radius.circular(AppRadius.xs),
                                 ))
-                        : BorderRadius.circular(5),
+                        : BorderRadius.circular(AppRadius.xs),
                   ),
                 ),
-                const SizedBox(height: 5),
+                const SizedBox(height: AppSpace.xs),
               ],
             ],
           ),
@@ -387,7 +388,7 @@ class _MiniScreen extends StatelessWidget {
       height: 92,
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         border: Border.all(color: context.colors.line),
       ),
       child: Row(

@@ -5,6 +5,8 @@ import '../../../../core/theme.dart';
 import '../../domain/streak_info.dart';
 import '../../../../providers.dart';
 import '../../../../core/widgets/mascot.dart';
+import '../../../../core/tokens.dart';
+import '../../../../core/widgets/app_sheet.dart';
 
 class StreakBadge extends ConsumerWidget {
   const StreakBadge({super.key});
@@ -18,12 +20,12 @@ class StreakBadge extends ConsumerWidget {
 
     return InkWell(
       onTap: () => _showStreakSheet(context, streak, routine),
-      borderRadius: BorderRadius.circular(999),
+      borderRadius: BorderRadius.circular(AppRadius.pill),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
         decoration: BoxDecoration(
           color: flameBg,
-          borderRadius: BorderRadius.circular(999),
+          borderRadius: BorderRadius.circular(AppRadius.pill),
           border: Border.all(color: flameColor.withValues(alpha: 0.4), width: 1.5),
         ),
         child: Row(
@@ -32,7 +34,7 @@ class StreakBadge extends ConsumerWidget {
             Text(
               '🔥',
               style: TextStyle(
-                fontSize: 15,
+                fontSize: AppFontSize.title,
                 shadows: streak.isTodayActive
                     ? [
                         Shadow(
@@ -43,11 +45,11 @@ class StreakBadge extends ConsumerWidget {
                     : null,
               ),
             ),
-            const SizedBox(width: 4),
+            const SizedBox(width: AppSpace.xs),
             Text(
               '${streak.currentStreak} Hari',
               style: TextStyle(
-                fontSize: 12,
+                fontSize: AppFontSize.meta,
                 fontWeight: FontWeight.w700,
                 color: flameColor,
               ),
@@ -66,44 +68,31 @@ class StreakBadge extends ConsumerWidget {
     final t = Theme.of(context).textTheme;
     final flameColor = const Color(0xFFEA580C);
 
-    showModalBottomSheet(
+    showAppSheet(
       context: context,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) {
         return Padding(
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 28),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xl, AppSpace.xl, AppSpace.xxxl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: context.colors.line,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SheetHandle(),
+              const SizedBox(height: AppSpace.lg),
               Row(
                 children: [
                   Mascot(
                     streak.isTodayActive ? MascotPose.senang : MascotPose.halo,
                     size: 48,
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
-                            const Text('🔥 ', style: TextStyle(fontSize: 18)),
+                            const Text('🔥 ', style: TextStyle(fontSize: AppFontSize.heading)),
                             Text(
                               '${streak.currentStreak} Hari Berturut-turut',
                               style: t.titleMedium?.copyWith(
@@ -124,12 +113,12 @@ class StreakBadge extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpace.xl),
               Text(
                 'Rutinitas Nyawtat Hari Ini',
                 style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: AppSpace.md),
               _RoutineItem(
                 title: 'Tulis minimal 1 jurnal',
                 isDone: routine.hasJournalToday,
@@ -142,12 +131,12 @@ class StreakBadge extends ConsumerWidget {
                 title: 'Sisihkan tabungan wishlist',
                 isDone: routine.hasSavingsToday,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppSpace.md),
                 decoration: BoxDecoration(
                   color: context.colors.subtle,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -181,7 +170,7 @@ class _RoutineItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final flameColor = const Color(0xFFEA580C);
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
       child: Row(
         children: [
           Container(
@@ -189,7 +178,7 @@ class _RoutineItem extends StatelessWidget {
             height: 22,
             decoration: BoxDecoration(
               color: isDone ? flameColor : Colors.transparent,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
               border: Border.all(
                 color: isDone ? flameColor : context.colors.line,
                 width: 1.5,
@@ -199,12 +188,12 @@ class _RoutineItem extends StatelessWidget {
                 ? const Icon(Icons.check, size: 14, color: Colors.white)
                 : null,
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: Text(
               title,
               style: TextStyle(
-                fontSize: 13,
+                fontSize: AppFontSize.body,
                 decoration: isDone ? TextDecoration.lineThrough : null,
                 color: isDone ? context.colors.muted : context.colors.ink,
               ),

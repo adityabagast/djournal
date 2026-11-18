@@ -8,6 +8,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
 import 'whats_new_sheet.dart';
+import '../../../core/tokens.dart';
 
 /// "24,0 MB" sesuai bahasa app.
 String formatMegabytes(BuildContext context, int bytes) =>
@@ -44,7 +45,7 @@ class UpdateCard extends ConsumerWidget {
     final c = context.colors;
     final ctrl = ref.read(updateProvider.notifier);
     final error = updateErrorText(l, s.error);
-    final small = TextStyle(fontSize: 12.5, height: 1.45, color: c.muted);
+    final small = TextStyle(fontSize: AppFontSize.meta, height: 1.45, color: c.muted);
 
     Future<void> snooze() async {
       await ctrl.snooze();
@@ -58,9 +59,9 @@ class UpdateCard extends ConsumerWidget {
         MascotPose.sinkron,
         l.updateDownloading(r.version),
         <Widget>[
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           ClipRRect(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
             child: LinearProgressIndicator(
               value: s.progress,
               minHeight: 8,
@@ -68,7 +69,7 @@ class UpdateCard extends ConsumerWidget {
               color: c.primary,
             ),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           Text(
             l.updateDownloadProgress(
               formatMegabytes(context, ((r.apkSize ?? 0) * s.progress).round()),
@@ -90,9 +91,9 @@ class UpdateCard extends ConsumerWidget {
         MascotPose.senang,
         l.updateReadyTitle,
         <Widget>[
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpace.xs),
           Text(l.updateReadyBody, style: small),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -110,7 +111,7 @@ class UpdateCard extends ConsumerWidget {
         MascotPose.senang,
         l.updateAvailableTitle,
         <Widget>[
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpace.xs),
           Text(
             l.updateAvailableBody(
               r.version,
@@ -120,7 +121,7 @@ class UpdateCard extends ConsumerWidget {
             ),
             style: small,
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           Wrap(
             spacing: 8,
             runSpacing: 8,
@@ -140,17 +141,17 @@ class UpdateCard extends ConsumerWidget {
     };
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpace.lg),
       child: AppCard(
-        padding: const EdgeInsets.fromLTRB(6, 14, 14, 0),
+        padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.lg, AppSpace.lg, 0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Mascot(pose, size: 80),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpace.sm),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.only(bottom: 14),
+                padding: const EdgeInsets.only(bottom: AppSpace.lg),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -160,7 +161,7 @@ class UpdateCard extends ConsumerWidget {
                           child: Text(
                             title,
                             style: const TextStyle(
-                              fontSize: 15.5,
+                              fontSize: AppFontSize.title,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -176,7 +177,7 @@ class UpdateCard extends ConsumerWidget {
                     ),
                     ...content,
                     if (error != null) ...[
-                      const SizedBox(height: 8),
+                      const SizedBox(height: AppSpace.sm),
                       Text(error, style: small.copyWith(color: c.expense)),
                     ],
                   ],

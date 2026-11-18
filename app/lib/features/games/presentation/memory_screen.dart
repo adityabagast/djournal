@@ -9,6 +9,7 @@ import '../domain/games.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
+import '../../../core/tokens.dart';
 
 /// Kunci app_settings (lokal) untuk rekor memory: jumlah langkah tersedikit.
 const memoryBestKey = 'game_memory_best';
@@ -103,10 +104,10 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xs, AppSpace.xl, AppSpace.xxxl),
         children: [
-          Text(l.gameMemorySub, style: TextStyle(color: c.muted, fontSize: 13)),
-          const SizedBox(height: 14),
+          Text(l.gameMemorySub, style: TextStyle(color: c.muted, fontSize: AppFontSize.body)),
+          const SizedBox(height: AppSpace.lg),
           Row(
             spacing: 10,
             children: [
@@ -118,7 +119,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
               _Stat(value: best == null ? '–' : '$best', label: l.gameBest),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           GridView.count(
             crossAxisCount: 3,
             mainAxisSpacing: 10,
@@ -139,14 +140,14 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           if (_game.won)
             AppCard(
-              padding: const EdgeInsets.fromLTRB(8, 12, 16, 12),
+              padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.md, AppSpace.lg, AppSpace.md),
               child: Row(
                 children: [
                   const Mascot(MascotPose.senang, size: 64),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Semantics(
                       liveRegion: true,
@@ -158,7 +159,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                                 ? l.gameMemoryNewBest(_game.moves)
                                 : l.gameMemoryDone(_game.moves),
                             style: const TextStyle(
-                              fontSize: 15,
+                              fontSize: AppFontSize.title,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -166,7 +167,7 @@ class _MemoryScreenState extends ConsumerState<MemoryScreen> {
                             l.gameMemoryBestLine(
                               math.min(best ?? _game.moves, _game.moves),
                             ),
-                            style: TextStyle(fontSize: 12, color: c.muted),
+                            style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                           ),
                         ],
                       ),
@@ -202,22 +203,22 @@ class _Stat extends StatelessWidget {
       child: DecoratedBox(
         decoration: BoxDecoration(
           color: c.surface,
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           boxShadow: cardShadow(c),
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
           child: Column(
             children: [
               Text(
                 value,
                 style: const TextStyle(
-                  fontSize: 20,
+                  fontSize: AppFontSize.display,
                   fontWeight: FontWeight.w700,
                   fontFeatures: [FontFeature.tabularFigures()],
                 ),
               ),
-              Text(label, style: TextStyle(fontSize: 11.5, color: c.muted)),
+              Text(label, style: TextStyle(fontSize: AppFontSize.caption, color: c.muted)),
             ],
           ),
         ),
@@ -251,7 +252,7 @@ class _MemoryCard extends StatelessWidget {
       onTap: onTap,
       child: DecoratedBox(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           boxShadow: cardShadow(c),
         ),
         child: Material(
@@ -260,7 +261,7 @@ class _MemoryCard extends StatelessWidget {
               : faceUp
               ? c.surface
               : c.primary,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           clipBehavior: Clip.antiAlias,
           child: InkWell(
             onTap: onTap,

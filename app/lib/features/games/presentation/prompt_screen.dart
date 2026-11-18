@@ -9,6 +9,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
 import '../../journal/presentation/entry_form_screen.dart';
+import '../../../core/tokens.dart';
 
 enum PromptCategory { gratitude, reflection, relax, dreams }
 
@@ -98,13 +99,13 @@ class _PromptScreenState extends State<PromptScreen> {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xs, AppSpace.xl, AppSpace.xxxl),
         children: [
           Text(
             l.gamePromptDesc,
-            style: TextStyle(color: c.muted, fontSize: 13),
+            style: TextStyle(color: c.muted, fontSize: AppFontSize.body),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           Wrap(
             spacing: 6,
             runSpacing: 6,
@@ -122,16 +123,16 @@ class _PromptScreenState extends State<PromptScreen> {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           AppCard(
-            padding: const EdgeInsets.fromLTRB(18, 22, 18, 18),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 22, AppSpace.lg, AppSpace.lg),
             child: Column(
               children: [
                 const Mascot(MascotPose.menulis, size: 104),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpace.sm),
                 Text(
                   l.gamePromptLabel,
-                  style: TextStyle(fontSize: 12, color: c.muted),
+                  style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                 ),
                 ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 150),
@@ -140,12 +141,12 @@ class _PromptScreenState extends State<PromptScreen> {
                       liveRegion: true,
                       child: AnimatedOpacity(
                         opacity: _shuffling ? 0.45 : 1,
-                        duration: const Duration(milliseconds: 150),
+                        duration: AppMotion.short,
                         child: Text(
                           question,
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 20,
+                            fontSize: AppFontSize.display,
                             height: 1.4,
                             fontWeight: FontWeight.w700,
                           ),
@@ -157,7 +158,7 @@ class _PromptScreenState extends State<PromptScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           Row(
             spacing: 8,
             children: [
@@ -182,11 +183,11 @@ class _PromptScreenState extends State<PromptScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           Text(
             l.gamePromptNote,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: c.muted),
+            style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
           ),
         ],
       ),

@@ -7,6 +7,7 @@ import '../../../money/domain/global_budget.dart';
 import '../../../money/domain/money_snapshot.dart';
 import '../../../../providers.dart';
 import '../../../money/presentation/global_budget_sheet.dart';
+import '../../../../core/tokens.dart';
 
 class GlobalBudgetCard extends ConsumerWidget {
   const GlobalBudgetCard({
@@ -90,9 +91,9 @@ class GlobalBudgetCard extends ConsumerWidget {
               ),
               InkWell(
                 onTap: () => GlobalBudgetSheet.open(context),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
                   child: Text(
                     'Atur Target',
                     style: t.bodySmall?.copyWith(
@@ -104,13 +105,13 @@ class GlobalBudgetCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           // Segmented Switcher
           Container(
-            padding: const EdgeInsets.all(3),
+            padding: const EdgeInsets.all(AppSpace.xxs),
             decoration: BoxDecoration(
               color: context.colors.subtle,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               border: Border.all(color: context.colors.line),
             ),
             child: Row(
@@ -121,7 +122,7 @@ class GlobalBudgetCard extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
@@ -130,10 +131,10 @@ class GlobalBudgetCard extends ConsumerWidget {
                 rupiah(spent, hide: hideAmounts),
                 style: t.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w700,
-                  fontSize: 22,
+                  fontSize: AppFontSize.display,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               Text(
                 limit > 0 ? 'dari ${rupiah(limit, hide: hideAmounts)}' : 'belum ada target',
                 style: t.bodySmall?.copyWith(color: context.colors.muted),
@@ -150,9 +151,9 @@ class GlobalBudgetCard extends ConsumerWidget {
             ],
           ),
           if (limit > 0) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             ClipRRect(
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 8,
@@ -160,7 +161,7 @@ class GlobalBudgetCard extends ConsumerWidget {
                 color: progressColor,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -199,7 +200,7 @@ class GlobalBudgetCard extends ConsumerWidget {
               ],
             ),
           ] else ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpace.sm),
             Text(
               'Tekan "Atur Target" di atas untuk menetapkan batas anggaran.',
               style: t.bodySmall?.copyWith(color: context.colors.muted),
@@ -222,10 +223,10 @@ class GlobalBudgetCard extends ConsumerWidget {
       child: GestureDetector(
         onTap: () => ref.read(budgetPeriodProvider.notifier).setPeriod(target),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 6),
+          padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
           decoration: BoxDecoration(
             color: isSelected ? context.colors.surface : Colors.transparent,
-            borderRadius: BorderRadius.circular(9),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
             boxShadow: isSelected
                 ? [
                     BoxShadow(
@@ -240,7 +241,7 @@ class GlobalBudgetCard extends ConsumerWidget {
             label,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 12,
+              fontSize: AppFontSize.meta,
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
               color: isSelected ? context.colors.ink : context.colors.muted,
             ),

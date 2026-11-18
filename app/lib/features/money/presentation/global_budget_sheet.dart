@@ -4,18 +4,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/format.dart';
 import '../../../core/theme.dart';
 import '../../../providers.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 class GlobalBudgetSheet extends ConsumerStatefulWidget {
   const GlobalBudgetSheet({super.key});
 
   static Future<void> open(BuildContext context) {
-    return showModalBottomSheet(
+    return showAppSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) => const GlobalBudgetSheet(),
     );
   }
@@ -61,27 +59,18 @@ class _GlobalBudgetSheetState extends ConsumerState<GlobalBudgetSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colors.line,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SheetHandle(),
+          const SizedBox(height: AppSpace.lg),
           Text(
             'Target Budget Global',
             style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           Text(
             'Tentukan batas pengeluaran menyeluruh untuk mengontrol keuangan harian, mingguan, atau bulanan.',
             style: t.bodySmall?.copyWith(color: context.colors.muted),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           TextField(
             controller: _dailyController,
             keyboardType: TextInputType.number,
@@ -92,7 +81,7 @@ class _GlobalBudgetSheetState extends ConsumerState<GlobalBudgetSheet> {
               hintText: 'Misal: 75.000',
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           TextField(
             controller: _weeklyController,
             keyboardType: TextInputType.number,
@@ -103,7 +92,7 @@ class _GlobalBudgetSheetState extends ConsumerState<GlobalBudgetSheet> {
               hintText: 'Misal: 500.000',
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           TextField(
             controller: _monthlyController,
             keyboardType: TextInputType.number,
@@ -114,7 +103,7 @@ class _GlobalBudgetSheetState extends ConsumerState<GlobalBudgetSheet> {
               hintText: 'Misal: 2.500.000',
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           FilledButton(
             onPressed: _save,
             child: const Text('Simpan Target Budget'),

@@ -6,6 +6,7 @@ import '../../../../core/theme.dart';
 import '../../../money/domain/global_budget.dart';
 import '../../../money/domain/money_snapshot.dart';
 import '../../../../providers.dart';
+import '../../../../core/tokens.dart';
 
 class BudgetWarningBanner extends ConsumerWidget {
   const BudgetWarningBanner({
@@ -42,18 +43,18 @@ class BudgetWarningBanner extends ConsumerWidget {
               ? 'jatuh tempo HARI INI'
               : 'segera jatuh tempo';
       return Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        margin: const EdgeInsets.only(bottom: AppSpace.lg),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
         decoration: BoxDecoration(
           color: context.colors.isDark ? const Color(0xFF381A1A) : const Color(0xFFFEF2F2),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: context.colors.expense.withValues(alpha: 0.5), width: 1.5),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('⚡ ', style: TextStyle(fontSize: 18)),
-            const SizedBox(width: 8),
+            const Text('⚡ ', style: TextStyle(fontSize: AppFontSize.heading)),
+            const SizedBox(width: AppSpace.sm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +66,7 @@ class BudgetWarningBanner extends ConsumerWidget {
                       color: context.colors.expense,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpace.xxs),
                   Text(
                     '${bill.title} (${rupiah(bill.amount, hide: hide)}) $when.',
                     style: t.bodySmall?.copyWith(
@@ -87,18 +88,18 @@ class BudgetWarningBanner extends ConsumerWidget {
 
     if (dailyLevel == BudgetAlertLevel.danger) {
       return Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        margin: const EdgeInsets.only(bottom: AppSpace.lg),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
         decoration: BoxDecoration(
           color: context.colors.isDark ? const Color(0xFF381A1A) : const Color(0xFFFEF2F2),
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: context.colors.expense.withValues(alpha: 0.5), width: 1.5),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('🚨 ', style: TextStyle(fontSize: 18)),
-            const SizedBox(width: 8),
+            const Text('🚨 ', style: TextStyle(fontSize: AppFontSize.heading)),
+            const SizedBox(width: AppSpace.sm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -110,7 +111,7 @@ class BudgetWarningBanner extends ConsumerWidget {
                       color: context.colors.expense,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpace.xxs),
                   Text(
                     'Pengeluaran hari ini sudah melebihi batas jatah sebesar ${rupiah(todaySpent - dailyLimit, hide: hide)}.',
                     style: t.bodySmall?.copyWith(color: context.colors.expense),
@@ -123,18 +124,18 @@ class BudgetWarningBanner extends ConsumerWidget {
       );
     } else if (dailyLevel == BudgetAlertLevel.warning) {
       return Container(
-        margin: const EdgeInsets.only(bottom: 14),
-        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+        margin: const EdgeInsets.only(bottom: AppSpace.lg),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
         decoration: BoxDecoration(
           color: context.colors.warnSoft,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           border: Border.all(color: context.colors.warning.withValues(alpha: 0.5), width: 1.5),
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('⚠️ ', style: TextStyle(fontSize: 18)),
-            const SizedBox(width: 8),
+            const Text('⚠️ ', style: TextStyle(fontSize: AppFontSize.heading)),
+            const SizedBox(width: AppSpace.sm),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -146,7 +147,7 @@ class BudgetWarningBanner extends ConsumerWidget {
                       color: context.colors.warning,
                     ),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpace.xxs),
                   Text(
                     'Sisa jatah belanja hari ini tinggal ${rupiah(dailyLimit - todaySpent, hide: hide)}.',
                     style: t.bodySmall?.copyWith(color: context.colors.warning),

@@ -9,6 +9,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../providers.dart';
 import '../domain/money_snapshot.dart';
 import 'category_icons.dart';
+import '../../../core/tokens.dart';
 
 /// Nama kategori bawaan diterjemahkan; kategori buatan user apa adanya.
 String categoryLabel(AppLocalizations l, Category c) => switch (c.systemKey) {
@@ -144,7 +145,7 @@ class TxRow extends ConsumerWidget {
             WidgetSpan(
               alignment: PlaceholderAlignment.middle,
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.xxs),
                 child: Icon(
                   Icons.arrow_forward,
                   size: 12,
@@ -174,7 +175,7 @@ class TxRow extends ConsumerWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
         decoration: BoxDecoration(
           border: showDivider
               ? Border(bottom: BorderSide(color: context.colors.divider))
@@ -197,7 +198,7 @@ class TxRow extends ConsumerWidget {
               TransferBadge(size: leadingTime ? 36 : 40)
             else
               CategoryBadge(category: cat, size: leadingTime ? 36 : 40),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -215,7 +216,7 @@ class TxRow extends ConsumerWidget {
                         ),
                       ),
                       if (receipt != null && receipt.localPath != null) ...[
-                        const SizedBox(width: 4),
+                        const SizedBox(width: AppSpace.xs),
                         Icon(
                           Icons.receipt_long_rounded,
                           size: 14,
@@ -240,7 +241,7 @@ class TxRow extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpace.sm),
             Text(
               amountText,
               style: t.bodyMedium?.copyWith(

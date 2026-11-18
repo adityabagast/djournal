@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme.dart';
+import '../tokens.dart';
 
 /// Pose maskot kucing-halaman; nama = file di assets/mascot/.
 enum MascotPose {
@@ -106,17 +107,17 @@ class MascotEmpty extends StatelessWidget {
     // Lebar penuh supaya tetap di tengah walau induknya rata kiri.
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.lg),
       child: Column(
         children: [
           MascotBadge(pose, tint: tint, size: size),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           Text(
             title,
             textAlign: TextAlign.center,
             style: t.titleMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: AppSpace.xs),
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 280),
             child: Text(
@@ -125,7 +126,7 @@ class MascotEmpty extends StatelessWidget {
               style: t.bodyMedium?.copyWith(color: context.colors.muted),
             ),
           ),
-          if (action != null) ...[const SizedBox(height: 14), action!],
+          if (action != null) ...[const SizedBox(height: AppSpace.lg), action!],
         ],
       ),
     );
@@ -146,18 +147,18 @@ void showMascotSnackBar(
     ..showSnackBar(
       SnackBar(
         behavior: SnackBarBehavior.floating,
-        margin: EdgeInsets.fromLTRB(16, 0, 16, bottom),
-        padding: const EdgeInsets.fromLTRB(8, 4, 16, 4),
+        margin: EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, bottom),
+        padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.xs, AppSpace.lg, AppSpace.xs),
         backgroundColor: context.colors.surface,
         elevation: 4,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           side: BorderSide(color: context.colors.line),
         ),
         content: Row(
           children: [
             Mascot(pose, size: 44),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Text(
                 text,

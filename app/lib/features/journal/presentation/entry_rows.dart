@@ -11,6 +11,7 @@ import '../../../core/widgets/common.dart';
 import '../../../core/widgets/image_viewer.dart';
 import 'mood.dart';
 import 'voice/voice_player_card.dart';
+import '../../../core/tokens.dart';
 
 String _titleOf(BuildContext context, JournalEntry e) =>
     e.title ?? context.l10n.untitled;
@@ -44,7 +45,7 @@ class EntryTimelineRow extends ConsumerWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
         decoration: BoxDecoration(
           border: showDivider
               ? Border(bottom: BorderSide(color: context.colors.divider))
@@ -68,7 +69,7 @@ class EntryTimelineRow extends ConsumerWidget {
               height: 36,
               decoration: BoxDecoration(
                 color: context.colors.primarySoft,
-                borderRadius: BorderRadius.circular(11),
+                borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Icon(
                 hasAudio ? Icons.mic_rounded : Icons.menu_book_outlined,
@@ -76,7 +77,7 @@ class EntryTimelineRow extends ConsumerWidget {
                 color: context.colors.primary,
               ),
             ),
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -131,7 +132,7 @@ class EntryListRow extends ConsumerWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: AppSpace.lg),
         decoration: BoxDecoration(
           border: showDivider
               ? Border(bottom: BorderSide(color: context.colors.divider))
@@ -143,7 +144,7 @@ class EntryListRow extends ConsumerWidget {
             SizedBox(
               width: 46,
               child: Padding(
-                padding: const EdgeInsets.only(top: 2),
+                padding: const EdgeInsets.only(top: AppSpace.xxs),
                 child: Text(
                   entry.entryTime ?? '',
                   style: t.bodySmall?.copyWith(
@@ -160,12 +161,12 @@ class EntryListRow extends ConsumerWidget {
                   Text(
                     _titleOf(context, entry),
                     style: t.titleSmall?.copyWith(
-                      fontSize: 16,
+                      fontSize: AppFontSize.title,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   if (entry.body != null) ...[
-                    const SizedBox(height: 4),
+                    const SizedBox(height: AppSpace.xs),
                     Text(
                       entry.body!,
                       maxLines: 2,
@@ -176,13 +177,13 @@ class EntryListRow extends ConsumerWidget {
                     ),
                   ],
                   if (imagePaths.isNotEmpty) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpace.sm),
                     SizedBox(
                       height: 58,
                       child: ListView.separated(
                         scrollDirection: Axis.horizontal,
                         itemCount: imagePaths.length,
-                        separatorBuilder: (_, index) => const SizedBox(width: 6),
+                        separatorBuilder: (_, index) => const SizedBox(width: AppSpace.sm),
                         itemBuilder: (context, i) {
                           final f = File(imagePaths[i]);
                           return GestureDetector(
@@ -192,7 +193,7 @@ class EntryListRow extends ConsumerWidget {
                               initialIndex: i,
                             ),
                             child: ClipRRect(
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(AppRadius.sm),
                               child: SizedBox(
                                 width: 58,
                                 height: 58,
@@ -228,7 +229,7 @@ class EntryListRow extends ConsumerWidget {
                   ],
                   if (entry.audioPath != null &&
                       entry.audioPath!.isNotEmpty) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpace.sm),
                     VoicePlayerCard(
                       audioPath: entry.audioPath!,
                       durationMs: entry.audioDurationMs,
@@ -238,7 +239,7 @@ class EntryListRow extends ConsumerWidget {
                   if (entry.audioPath != null ||
                       entry.mood != null ||
                       tags.isNotEmpty) ...[
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpace.sm),
                     Wrap(
                       spacing: 6,
                       runSpacing: 4,
@@ -248,12 +249,12 @@ class EntryListRow extends ConsumerWidget {
                             entry.audioPath!.isNotEmpty)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
+                              horizontal: AppSpace.sm,
+                              vertical: AppSpace.xxs,
                             ),
                             decoration: BoxDecoration(
                               color: context.colors.primarySoft,
-                              borderRadius: BorderRadius.circular(6),
+                              borderRadius: BorderRadius.circular(AppRadius.sm),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
@@ -263,11 +264,11 @@ class EntryListRow extends ConsumerWidget {
                                   size: 12,
                                   color: context.colors.primary,
                                 ),
-                                const SizedBox(width: 3),
+                                const SizedBox(width: AppSpace.xxs),
                                 Text(
                                   context.l10n.voiceNote,
                                   style: TextStyle(
-                                    fontSize: 11,
+                                    fontSize: AppFontSize.caption,
                                     fontWeight: FontWeight.w600,
                                     color: context.colors.primary,
                                   ),
@@ -285,11 +286,11 @@ class EntryListRow extends ConsumerWidget {
                                 size: 16,
                                 strokeWidth: 1.8,
                               ),
-                              const SizedBox(width: 4),
+                              const SizedBox(width: AppSpace.xs),
                               Text(
                                 moodLabel(context.l10n, entry.mood!),
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: AppFontSize.meta,
                                   fontWeight: FontWeight.w600,
                                   color: context.colors.primary,
                                 ),
@@ -299,19 +300,19 @@ class EntryListRow extends ConsumerWidget {
                         for (final tag in tags)
                           Container(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 8,
-                              vertical: 2,
+                              horizontal: AppSpace.sm,
+                              vertical: AppSpace.xxs,
                             ),
                             decoration: BoxDecoration(
                               color: context.colors.isDark
                                   ? context.colors.primarySoft
                                   : const Color(0xFFEEF5F1),
-                              borderRadius: BorderRadius.circular(8),
+                              borderRadius: BorderRadius.circular(AppRadius.sm),
                             ),
                             child: Text(
                               '#$tag',
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: AppFontSize.meta,
                                 fontWeight: FontWeight.w600,
                                 color: context.colors.primary,
                               ),

@@ -17,6 +17,7 @@ import '../../search/presentation/search_screen.dart';
 import 'entry_form_screen.dart';
 import 'entry_rows.dart';
 import 'voice/voice_player_card.dart';
+import '../../../core/tokens.dart';
 
 class JournalScreen extends ConsumerStatefulWidget {
   const JournalScreen({super.key});
@@ -104,7 +105,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
             padding: context.screenPadding,
             children: [
               header,
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -115,13 +116,13 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         weekStripWidget,
-                        const SizedBox(height: 14),
+                        const SizedBox(height: AppSpace.lg),
                         if (_selected != null) ...[
                           _FilterBar(
                             date: _selected!,
                             onClear: () => setState(() => _selected = null),
                           ),
-                          const SizedBox(height: 14),
+                          const SizedBox(height: AppSpace.lg),
                         ],
                         if (entries.isEmpty)
                           MascotEmpty(
@@ -159,8 +160,8 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                           ),
                           AppCard(
                             padding: const EdgeInsets.symmetric(
-                              horizontal: 10,
-                              vertical: 4,
+                              horizontal: AppSpace.md,
+                              vertical: AppSpace.xs,
                             ),
                             child: Column(
                               children: [
@@ -176,12 +177,12 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                               ],
                             ),
                           ),
-                          const SizedBox(height: 14),
+                          const SizedBox(height: AppSpace.lg),
                         ],
                       ],
                     ),
                   ),
-                  const SizedBox(width: 18),
+                  const SizedBox(width: AppSpace.lg),
                   // Right Detail Reader Pane
                   Expanded(
                     flex: 7,
@@ -201,13 +202,13 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
           padding: context.screenPadding,
           children: [
             header,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             if (entries.isNotEmpty) ...[
               const _PromptCard(),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
             ],
             weekStripWidget,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             if (_selected != null)
               _FilterBar(
                 date: _selected!,
@@ -242,8 +243,8 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
               _DayHeader(date: date, entries: entries, snapshot: snap),
               AppCard(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 2,
+                  horizontal: AppSpace.lg,
+                  vertical: AppSpace.xxs,
                 ),
                 child: Column(
                   children: [
@@ -257,7 +258,7 @@ class _JournalScreenState extends ConsumerState<JournalScreen> {
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
             ],
           ],
         );
@@ -287,12 +288,12 @@ class _MasterEntryItem extends StatelessWidget {
 
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 11),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: 11),
         decoration: BoxDecoration(
           color: isSelected ? c.primarySoft : Colors.transparent,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(AppRadius.sm),
           border: isSelected
               ? Border.all(color: c.primary.withValues(alpha: 0.3))
               : (showDivider
@@ -310,18 +311,18 @@ class _MasterEntryItem extends StatelessWidget {
                     color: isSelected ? c.primary : c.muted,
                     size: 16,
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpace.sm),
                 ],
                 Text(
                   entry.entryTime ?? '',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppFontSize.caption,
                     fontWeight: FontWeight.w600,
                     color: isSelected ? c.primary : c.muted,
                   ),
                 ),
                 if (hasAudio) ...[
-                  const SizedBox(width: 6),
+                  const SizedBox(width: AppSpace.sm),
                   Icon(
                     Icons.mic_rounded,
                     size: 14,
@@ -330,24 +331,24 @@ class _MasterEntryItem extends StatelessWidget {
                 ],
               ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
             Text(
               entry.title ?? context.l10n.untitled,
               style: t.titleSmall?.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                fontSize: 14,
+                fontSize: AppFontSize.bodyLg,
                 color: isSelected ? c.primary : c.ink,
               ),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
             if (entry.body != null && entry.body!.trim().isNotEmpty) ...[
-              const SizedBox(height: 2),
+              const SizedBox(height: AppSpace.xxs),
               Text(
                 entry.body!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 12, color: c.muted, height: 1.3),
+                style: TextStyle(fontSize: AppFontSize.meta, color: c.muted, height: 1.3),
               ),
             ],
           ],
@@ -376,22 +377,22 @@ class _JournalDetailPane extends ConsumerWidget {
 
     if (entry == null) {
       return AppCard(
-        padding: const EdgeInsets.all(32),
+        padding: const EdgeInsets.all(AppSpace.xxxl),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Mascot(MascotPose.menulis, size: 100),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               Text(
                 'Pilih Catatan',
                 style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpace.sm),
               Text(
                 'Pilih catatan di sebelah kiri untuk membaca detailnya.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: c.muted, fontSize: 13),
+                style: TextStyle(color: c.muted, fontSize: AppFontSize.body),
               ),
             ],
           ),
@@ -412,11 +413,11 @@ class _JournalDetailPane extends ConsumerWidget {
             children: [
               if (e.mood != null) ...[
                 MoodFace(mood: e.mood!, color: c.primary, size: 20),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpace.sm),
                 Text(
                   moodLabel(l, e.mood!),
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppFontSize.body,
                     fontWeight: FontWeight.w600,
                     color: c.primary,
                   ),
@@ -426,7 +427,7 @@ class _JournalDetailPane extends ConsumerWidget {
               Text(
                 '${dayLabel(context, e.entryDate)}${e.entryTime != null ? ', ${e.entryTime}' : ''}',
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: AppFontSize.body,
                   fontWeight: FontWeight.w500,
                   color: c.muted,
                 ),
@@ -438,7 +439,7 @@ class _JournalDetailPane extends ConsumerWidget {
                 icon: const Icon(Icons.edit_outlined, size: 18),
                 visualDensity: VisualDensity.compact,
               ),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpace.sm),
               IconButton.outlined(
                 tooltip: l.delete,
                 onPressed: () async {
@@ -472,16 +473,16 @@ class _JournalDetailPane extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           Text(
             e.title ?? l.untitled,
             style: t.headlineSmall?.copyWith(
               fontWeight: FontWeight.w700,
-              fontSize: 22,
+              fontSize: AppFontSize.display,
             ),
           ),
           if (e.audioPath != null && e.audioPath!.isNotEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             VoicePlayerCard(
               audioPath: e.audioPath!,
               durationMs: e.audioDurationMs,
@@ -489,18 +490,18 @@ class _JournalDetailPane extends ConsumerWidget {
             ),
           ],
           if (e.body != null && e.body!.trim().isNotEmpty) ...[
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             Text(
               e.body!,
               style: t.bodyLarge?.copyWith(
                 height: 1.6,
-                fontSize: 15,
+                fontSize: AppFontSize.title,
                 color: c.ink,
               ),
             ),
           ],
           if (tags.isNotEmpty) ...[
-            const SizedBox(height: 18),
+            const SizedBox(height: AppSpace.lg),
             Wrap(
               spacing: 6,
               runSpacing: 6,
@@ -508,18 +509,18 @@ class _JournalDetailPane extends ConsumerWidget {
                 for (final tag in tags)
                   Container(
                     padding: const EdgeInsets.symmetric(
-                      horizontal: 10,
-                      vertical: 4,
+                      horizontal: AppSpace.md,
+                      vertical: AppSpace.xs,
                     ),
                     decoration: BoxDecoration(
                       color: c.isDark ? c.subtle : const Color(0xFFF1F5F2),
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
                       border: Border.all(color: c.line),
                     ),
                     child: Text(
                       '#$tag',
                       style: TextStyle(
-                        fontSize: 12,
+                        fontSize: AppFontSize.meta,
                         fontWeight: FontWeight.w500,
                         color: c.primary,
                       ),
@@ -529,9 +530,9 @@ class _JournalDetailPane extends ConsumerWidget {
             ),
           ],
           if (dayTx.isNotEmpty) ...[
-            const SizedBox(height: 24),
+            const SizedBox(height: AppSpace.xxl),
             Divider(color: c.line),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpace.md),
             Text(
               l.dayTransactions,
               style: t.titleSmall?.copyWith(
@@ -539,7 +540,7 @@ class _JournalDetailPane extends ConsumerWidget {
                 color: c.muted,
               ),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             for (final tx in dayTx)
               TxRow(
                 tx: tx,
@@ -575,31 +576,31 @@ class _PromptCard extends StatelessWidget {
     final day = now.difference(DateTime(now.year)).inDays;
     return Container(
       clipBehavior: Clip.antiAlias,
-      padding: const EdgeInsets.fromLTRB(6, 12, 16, 0),
+      padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.md, AppSpace.lg, 0),
       decoration: BoxDecoration(
         color: c.primarySoft,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           const Mascot(MascotPose.menulis, size: 82),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 12),
+              padding: const EdgeInsets.only(bottom: AppSpace.md),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     l.journalPromptTitle,
-                    style: TextStyle(fontSize: 12, color: c.onPrimarySoft),
+                    style: TextStyle(fontSize: AppFontSize.meta, color: c.onPrimarySoft),
                   ),
-                  const SizedBox(height: 2),
+                  const SizedBox(height: AppSpace.xxs),
                   Text(
                     prompts[day % prompts.length],
                     style: TextStyle(
-                      fontSize: 14.5,
+                      fontSize: AppFontSize.bodyLg,
                       fontWeight: FontWeight.w600,
                       height: 1.35,
                       color: c.onPrimarySoft,
@@ -656,7 +657,7 @@ class _WeekStrip extends StatelessWidget {
         '${DateFormat('d MMM y', context.localeTag).format(sunday)}';
 
     return AppCard(
-      padding: const EdgeInsets.fromLTRB(8, 4, 8, 12),
+      padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.xs, AppSpace.sm, AppSpace.md),
       child: Column(
         children: [
           Row(
@@ -672,7 +673,7 @@ class _WeekStrip extends StatelessWidget {
                   range,
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppFontSize.body,
                     fontWeight: FontWeight.w600,
                     color: context.colors.muted,
                   ),
@@ -708,11 +709,11 @@ class _WeekStrip extends StatelessWidget {
                           Text(
                             dayName.format(day),
                             style: TextStyle(
-                              fontSize: 12,
+                              fontSize: AppFontSize.meta,
                               color: context.colors.muted,
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpace.xs),
                           Material(
                             color: isSelected
                                 ? context.colors.primary
@@ -750,7 +751,7 @@ class _WeekStrip extends StatelessWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 4),
+                          const SizedBox(height: AppSpace.xs),
                           Container(
                             width: 6,
                             height: 6,
@@ -784,15 +785,15 @@ class _FilterBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 0, 8),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, 0, AppSpace.sm),
       child: Row(
         children: [
           Icon(Icons.filter_list, size: 18, color: context.colors.muted),
-          const SizedBox(width: 6),
+          const SizedBox(width: AppSpace.sm),
           Expanded(
             child: Text(
               dayLabel(context, date),
-              style: TextStyle(fontSize: 13, color: context.colors.muted),
+              style: TextStyle(fontSize: AppFontSize.body, color: context.colors.muted),
             ),
           ),
           TextButton(
@@ -831,7 +832,7 @@ class _DayHeader extends ConsumerWidget {
     ].join(' · ');
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 4, 6),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.baseline,
         textBaseline: TextBaseline.alphabetic,
@@ -839,12 +840,12 @@ class _DayHeader extends ConsumerWidget {
           Expanded(
             child: Text(
               dayLabel(context, date),
-              style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+              style: const TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w600),
             ),
           ),
           Text(
             summary,
-            style: TextStyle(fontSize: 12, color: context.colors.muted),
+            style: TextStyle(fontSize: AppFontSize.meta, color: context.colors.muted),
           ),
         ],
       ),

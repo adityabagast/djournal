@@ -7,6 +7,8 @@ import '../../../core/theme.dart';
 import '../../../core/database/app_database.dart';
 import '../../../providers.dart';
 import 'bill_form_sheet.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 /// Sheet detail tagihan: info lengkap + aksi Bayar / Edit / Hapus.
 class BillDetailSheet extends ConsumerWidget {
@@ -27,13 +29,9 @@ class BillDetailSheet extends ConsumerWidget {
     required DateTime now,
     dynamic moneySnap,
   }) {
-    return showModalBottomSheet(
+    return showAppSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) => BillDetailSheet(bill: bill, now: now, moneySnap: moneySnap),
     );
   }
@@ -72,37 +70,28 @@ class BillDetailSheet extends ConsumerWidget {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Center(
-              child: Container(
-                width: 40,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: context.colors.line,
-                  borderRadius: BorderRadius.circular(2),
-                ),
-              ),
-            ),
-            const SizedBox(height: 14),
+            const SheetHandle(),
+            const SizedBox(height: AppSpace.lg),
             Text(
               'Detail Tagihan',
               style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
             Text(
               'Kelola tagihan ini: bayar, ubah, atau hapus.',
               style: t.bodySmall?.copyWith(color: context.colors.muted),
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpace.lg),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpace.md),
               decoration: BoxDecoration(
                 color: context.colors.subtle,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
                 border: Border.all(color: context.colors.line),
               ),
               child: Row(
@@ -112,11 +101,11 @@ class BillDetailSheet extends ConsumerWidget {
                     height: 48,
                     decoration: BoxDecoration(
                       color: context.colors.primarySoft,
-                      borderRadius: BorderRadius.circular(14),
+                      borderRadius: BorderRadius.circular(AppRadius.md),
                     ),
-                    child: const Center(child: Text('📄', style: TextStyle(fontSize: 22))),
+                    child: const Center(child: Text('📄', style: TextStyle(fontSize: AppFontSize.display))),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,7 +115,7 @@ class BillDetailSheet extends ConsumerWidget {
                           style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
                           overflow: TextOverflow.ellipsis,
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpace.xxs),
                         Text(
                           rupiah(bill.amount),
                           style: t.titleLarge?.copyWith(
@@ -138,14 +127,14 @@ class BillDetailSheet extends ConsumerWidget {
                     ),
                   ),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
                     decoration: BoxDecoration(
                       color: bill.isPaid
                           ? context.colors.income.withValues(alpha: 0.14)
                           : _isUrgent
                               ? context.colors.expense.withValues(alpha: 0.14)
                               : context.colors.warnSoft,
-                      borderRadius: BorderRadius.circular(999),
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
                     ),
                     child: Text(
                       bill.isPaid
@@ -154,7 +143,7 @@ class BillDetailSheet extends ConsumerWidget {
                               ? (_daysLeft <= 0 ? 'Hari ini' : '$_daysLeft hari')
                               : '$_daysLeft hari',
                       style: TextStyle(
-                        fontSize: 11,
+                        fontSize: AppFontSize.caption,
                         fontWeight: FontWeight.w700,
                         color: bill.isPaid
                             ? context.colors.income
@@ -167,12 +156,12 @@ class BillDetailSheet extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpace.md),
             _kv(context, 'Jatuh tempo', _dueText),
             _kv(context, 'Rencana bayar', wallet?.name ?? '—'),
             _kv(context, 'Pengulangan', _repeatLabel),
             _kv(context, 'Status', bill.isPaid ? 'Sudah dibayar' : 'Belum dibayar'),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             if (bill.isPaid)
               Row(
                 children: [
@@ -182,7 +171,7 @@ class BillDetailSheet extends ConsumerWidget {
                       child: const Text('Tutup'),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: FilledButton(
                       style: FilledButton.styleFrom(
@@ -206,7 +195,7 @@ class BillDetailSheet extends ConsumerWidget {
                       child: const Text('Bayar'),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpace.sm),
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () async {
@@ -216,7 +205,7 @@ class BillDetailSheet extends ConsumerWidget {
                       child: const Text('Edit'),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpace.sm),
                   Expanded(
                     child: FilledButton(
                       style: FilledButton.styleFrom(
@@ -238,12 +227,12 @@ class BillDetailSheet extends ConsumerWidget {
   Widget _kv(BuildContext context, String k, String v) {
     final t = Theme.of(context).textTheme;
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(k, style: t.bodySmall?.copyWith(color: context.colors.muted)),
-          const SizedBox(width: 12),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: Text(
               v,
@@ -275,7 +264,7 @@ class BillDetailSheet extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text('Konfirmasi pembayaran ${bill.title} sebesar ${rupiah(bill.amount)}?'),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpace.lg),
               if (activeWallets.isNotEmpty)
                 DropdownButtonFormField<String>(
                   initialValue: selectedWalletId,

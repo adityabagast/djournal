@@ -7,6 +7,8 @@ import '../../../core/database/app_database.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 /// Bottom sheet untuk menambah dompet baru, atau mengubah, mengarsipkan,
 /// atau menghapus dompet [existing].
@@ -16,13 +18,9 @@ class WalletFormSheet extends ConsumerStatefulWidget {
   final Wallet? existing;
 
   static Future<void> open(BuildContext context, {Wallet? existing}) {
-    return showModalBottomSheet(
+    return showAppSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) => WalletFormSheet(existing: existing),
     );
   }
@@ -179,22 +177,13 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: context.colors.handle,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SheetHandle(),
+              const SizedBox(height: AppSpace.lg),
               Text(
                 _isEdit ? l.editWallet : l.addWallet,
                 style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               TextField(
                 controller: _name,
                 autofocus: !_isEdit,
@@ -208,7 +197,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                   errorText: _showNameError ? l.walletNameRequired : null,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               Text(
                 l.walletType,
                 style: t.bodySmall?.copyWith(
@@ -216,7 +205,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                   color: context.colors.muted,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpace.sm),
               Wrap(
                 spacing: 8,
                 children: [
@@ -229,7 +218,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                     ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               TextField(
                 controller: _balance,
                 keyboardType: const TextInputType.numberWithOptions(signed: true),
@@ -241,7 +230,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                   prefixText: 'Rp ',
                 ),
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: AppSpace.xl),
               FilledButton(
                 onPressed: _save,
                 style: FilledButton.styleFrom(
@@ -250,7 +239,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                 child: Text(l.save),
               ),
               if (_isEdit && !lastActive) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpace.sm),
                 OutlinedButton.icon(
                   onPressed: () => _setArchived(!archived),
                   style: OutlinedButton.styleFrom(
@@ -264,7 +253,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                 ),
                 if (!archived)
                   Padding(
-                    padding: const EdgeInsets.only(top: 4),
+                    padding: const EdgeInsets.only(top: AppSpace.xs),
                     child: Text(
                       l.archiveWalletHint,
                       textAlign: TextAlign.center,
@@ -273,7 +262,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                   ),
               ],
               if (canDelete) ...[
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpace.sm),
                 TextButton.icon(
                   onPressed: () => _delete(txCount),
                   style: TextButton.styleFrom(
@@ -284,7 +273,7 @@ class _WalletFormSheetState extends ConsumerState<WalletFormSheet> {
                   label: Text(l.deleteWallet),
                 ),
               ] else if (_isEdit) ...[
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpace.md),
                 Text(
                   l.lastWalletCantDelete,
                   textAlign: TextAlign.center,

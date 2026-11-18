@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/theme.dart';
 import '../../../core/widgets/common.dart';
+import '../../../core/tokens.dart';
 
 /// Warna latar splash, sama dengan latar icon dan splash bawaan Android
 /// (lihat flutter_native_splash di pubspec.yaml). Mode gelap memakai latar
@@ -218,7 +219,7 @@ class _SplashOverlayState extends ConsumerState<SplashOverlay>
                             context.l10n.splashTagline,
                             style: TextStyle(
                               fontFamily: font,
-                              fontSize: 13,
+                              fontSize: AppFontSize.body,
                               fontWeight: FontWeight.w500,
                               color: c.isDark
                                   ? c.muted
@@ -321,7 +322,7 @@ class _CatPainter extends CustomPainter {
         ..close(),
     );
 
-    final body = RRect.fromLTRBR(34, 39, 74, 82, const Radius.circular(14));
+    final body = RRect.fromLTRBR(34, 39, 74, 82, const Radius.circular(AppRadius.md));
     canvas
       ..drawRRect(body, _fill(_paper))
       ..drawRRect(body, _stroke(2.2));

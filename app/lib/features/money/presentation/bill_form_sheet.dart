@@ -6,6 +6,8 @@ import '../../../core/format.dart';
 import '../../../core/theme.dart';
 import '../../../core/database/app_database.dart';
 import '../../../providers.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 class BillFormSheet extends ConsumerStatefulWidget {
   const BillFormSheet({super.key, this.existing});
@@ -13,13 +15,9 @@ class BillFormSheet extends ConsumerStatefulWidget {
   final Bill? existing;
 
   static Future<void> open(BuildContext context, {Bill? existing}) {
-    return showModalBottomSheet(
+    return showAppSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) => BillFormSheet(existing: existing),
     );
   }
@@ -86,17 +84,8 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colors.line,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SheetHandle(),
+          const SizedBox(height: AppSpace.lg),
           Row(
             children: [
               Expanded(
@@ -113,7 +102,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           TextField(
             controller: _titleController,
             textCapitalization: TextCapitalization.sentences,
@@ -126,7 +115,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
               if (_showTitleError) setState(() => _showTitleError = false);
             },
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           TextField(
             controller: _amountController,
             keyboardType: TextInputType.number,
@@ -136,7 +125,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
               prefixText: 'Rp ',
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<String>(
             initialValue: _selectedWalletId,
             decoration: const InputDecoration(
@@ -151,10 +140,10 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
             ],
             onChanged: (val) => setState(() => _selectedWalletId = val),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           InkWell(
             onTap: _pickDate,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             child: InputDecorator(
               decoration: const InputDecoration(
                 labelText: 'Tanggal Jatuh Tempo',
@@ -166,7 +155,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
               ),
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<String>(
             initialValue: _repeatInterval,
             decoration: const InputDecoration(
@@ -179,7 +168,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
             ],
             onChanged: (val) => setState(() => _repeatInterval = val ?? 'monthly'),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           FilledButton(
             onPressed: _save,
             child: Text(_isEdit ? 'Simpan Perubahan' : 'Jadwalkan Tagihan'),

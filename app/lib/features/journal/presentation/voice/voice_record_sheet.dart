@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme.dart';
 import '../../../../core/widgets/common.dart';
 import '../../data/voice_recorder_service.dart';
+import '../../../../core/tokens.dart';
 
 enum VoiceRecordMode {
   voiceOnly,
@@ -147,7 +148,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
     return Container(
       decoration: BoxDecoration(
         color: colors.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
         border: Border(top: BorderSide(color: colors.divider)),
         boxShadow: const [
           BoxShadow(
@@ -186,16 +187,16 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                 ),
               ],
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
 
             // Mode Selector Segmented Control
             Container(
               decoration: BoxDecoration(
                 color: colors.background,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(color: colors.divider),
               ),
-              padding: const EdgeInsets.all(3),
+              padding: const EdgeInsets.all(AppSpace.xxs),
               child: Row(
                 children: [
                   _ModeButton(
@@ -213,14 +214,14 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                 ],
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpace.xl),
 
             if (_errorMessage != null) ...[
               Container(
-                padding: const EdgeInsets.all(14),
+                padding: const EdgeInsets.all(AppSpace.lg),
                 decoration: BoxDecoration(
                   color: colors.expense.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppRadius.lg),
                 ),
                 child: Row(
                   children: [
@@ -229,7 +230,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                       color: colors.expense,
                       size: 22,
                     ),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: AppSpace.md),
                     Expanded(
                       child: Text(
                         _errorMessage!,
@@ -239,7 +240,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                   ],
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
             ] else ...[
               // Mic Pulsing Ring Animation
               Center(
@@ -285,7 +286,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                   ],
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpace.lg),
 
               // Timer
               Text(
@@ -296,7 +297,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                   letterSpacing: -0.5,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpace.xs),
 
               // Status label
               Text(
@@ -307,7 +308,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                         : 'Mendengarkan & mentranskripsi suara...'),
                 style: t.bodySmall?.copyWith(color: colors.muted),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: AppSpace.lg),
 
               // Visualizer Box
               if (_mode == VoiceRecordMode.voiceOnly) ...[
@@ -317,10 +318,10 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                   height: 72,
                   decoration: BoxDecoration(
                     color: colors.background,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     border: Border.all(color: colors.divider),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -338,7 +339,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                         height: barHeight,
                         decoration: BoxDecoration(
                           color: colors.primary,
-                          borderRadius: BorderRadius.circular(4),
+                          borderRadius: BorderRadius.circular(AppRadius.xs),
                         ),
                       );
                     }),
@@ -351,10 +352,10 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                   constraints: const BoxConstraints(minHeight: 76, maxHeight: 120),
                   decoration: BoxDecoration(
                     color: colors.background,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     border: Border.all(color: colors.divider),
                   ),
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppSpace.md),
                   child: SingleChildScrollView(
                     reverse: true,
                     child: Column(
@@ -363,12 +364,12 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                         Text(
                           'Transkripsi Langsung:',
                           style: t.bodySmall?.copyWith(
-                            fontSize: 11,
+                            fontSize: AppFontSize.caption,
                             fontWeight: FontWeight.w700,
                             color: colors.muted,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpace.xs),
                         Text(
                           _recorder.liveTranscript.isEmpty
                               ? 'Mulai berbicara, ucapan Anda akan muncul di sini...'
@@ -380,7 +381,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                             fontStyle: _recorder.liveTranscript.isEmpty
                                 ? FontStyle.italic
                                 : FontStyle.normal,
-                            fontSize: 13,
+                            fontSize: AppFontSize.body,
                             height: 1.45,
                           ),
                         ),
@@ -391,7 +392,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
               ],
             ],
 
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpace.xl),
 
             // Action Buttons
             Row(
@@ -402,9 +403,9 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                     style: OutlinedButton.styleFrom(
                       foregroundColor: colors.expense,
                       side: BorderSide(color: colors.divider),
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpace.lg),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
                     ),
                     child: Text(
@@ -413,7 +414,7 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   flex: 2,
                   child: FilledButton.icon(
@@ -428,9 +429,9 @@ class _VoiceRecordSheetState extends State<VoiceRecordSheet>
                     style: FilledButton.styleFrom(
                       backgroundColor: colors.primary,
                       foregroundColor: colors.onPrimary,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpace.lg),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
+                        borderRadius: BorderRadius.circular(AppRadius.md),
                       ),
                     ),
                   ),
@@ -466,11 +467,11 @@ class _ModeButton extends StatelessWidget {
       child: GestureDetector(
         onTap: onTap,
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
-          padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 4),
+          duration: AppMotion.short,
+          padding: const EdgeInsets.symmetric(vertical: AppSpace.sm, horizontal: AppSpace.xs),
           decoration: BoxDecoration(
             color: selected ? colors.surface : Colors.transparent,
-            borderRadius: BorderRadius.circular(11),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             boxShadow: selected
                 ? [
                     BoxShadow(
@@ -487,7 +488,7 @@ class _ModeButton extends StatelessWidget {
                 title,
                 textAlign: TextAlign.center,
                 style: t.bodySmall?.copyWith(
-                  fontSize: 11.5,
+                  fontSize: AppFontSize.caption,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   color: selected ? colors.ink : colors.muted,
                 ),
@@ -497,7 +498,7 @@ class _ModeButton extends StatelessWidget {
                 sub,
                 textAlign: TextAlign.center,
                 style: t.bodySmall?.copyWith(
-                  fontSize: 10,
+                  fontSize: AppFontSize.caption,
                   color: selected ? colors.primary : colors.muted,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w400,
                 ),

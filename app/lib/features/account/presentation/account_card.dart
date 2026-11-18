@@ -15,6 +15,7 @@ import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
 import 'sign_in_screen.dart';
+import '../../../core/tokens.dart';
 
 /// Kartu akun di Pengaturan: menampilkan status akun terpadu
 /// (Google Drive Backup dan/atau Server Supabase), atau ajakan masuk jika mode tamu.
@@ -60,7 +61,7 @@ class AccountCard extends ConsumerWidget {
             Row(
               children: [
                 avatar,
-                const SizedBox(width: 12),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,7 +70,7 @@ class AccountCard extends ConsumerWidget {
                         l.guestMode,
                         style: const TextStyle(fontWeight: FontWeight.w700),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpace.xxs),
                       Text(
                         l.guestModePrompt,
                         style: t.bodySmall?.copyWith(color: context.colors.muted),
@@ -79,13 +80,13 @@ class AccountCard extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpace.lg),
             FilledButton(
               onPressed: () => SignInScreen.open(context),
               style: FilledButton.styleFrom(
                 minimumSize: const Size.fromHeight(44),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
               ),
               child: Text(l.signInAccount),
@@ -111,7 +112,7 @@ class AccountCard extends ConsumerWidget {
           style: const TextStyle(
             color: Color(0xFF1A73E8),
             fontWeight: FontWeight.w700,
-            fontSize: 18,
+            fontSize: AppFontSize.heading,
           ),
         ),
       );
@@ -127,7 +128,7 @@ class AccountCard extends ConsumerWidget {
           style: TextStyle(
             color: context.colors.primary,
             fontWeight: FontWeight.w700,
-            fontSize: 18,
+            fontSize: AppFontSize.heading,
           ),
         ),
       );
@@ -155,7 +156,7 @@ class AccountCard extends ConsumerWidget {
           Row(
             children: [
               avatar,
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,7 +165,7 @@ class AccountCard extends ConsumerWidget {
                       displayName,
                       style: const TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 15,
+                        fontSize: AppFontSize.title,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -175,76 +176,22 @@ class AccountCard extends ConsumerWidget {
                       overflow: TextOverflow.ellipsis,
                       style: t.bodySmall?.copyWith(color: context.colors.muted),
                     ),
-                    const SizedBox(height: 5),
+                    const SizedBox(height: AppSpace.xs),
                     Wrap(
                       spacing: 6,
                       runSpacing: 4,
                       children: [
                         if (drive.isConnected)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 7,
-                              vertical: 2.5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE6F4EA),
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: const Color(0xFFCEEAD6),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.cloud_done_rounded,
-                                  size: 12,
-                                  color: Color(0xFF137333),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  l.googleDriveConnectedBadge,
-                                  style: const TextStyle(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF137333),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          _StatusBadge(
+                            icon: Icons.cloud_done_rounded,
+                            label: l.googleDriveConnectedBadge,
+                            tone: _BadgeTone.green,
                           ),
                         if (account.loggedIn)
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 7,
-                              vertical: 2.5,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFEFF6FF),
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(
-                                color: const Color(0xFFBFDBFE),
-                              ),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(
-                                  Icons.dns_rounded,
-                                  size: 12,
-                                  color: Color(0xFF2563EB),
-                                ),
-                                const SizedBox(width: 4),
-                                Text(
-                                  l.nyawtatServerConnected,
-                                  style: const TextStyle(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w700,
-                                    color: Color(0xFF2563EB),
-                                  ),
-                                ),
-                              ],
-                            ),
+                          _StatusBadge(
+                            icon: Icons.dns_rounded,
+                            label: l.nyawtatServerConnected,
+                            tone: _BadgeTone.blue,
                           ),
                       ],
                     ),
@@ -255,7 +202,7 @@ class AccountCard extends ConsumerWidget {
           ),
           Divider(height: 24, color: context.colors.divider),
           _buildStatusAndActions(context, ref, account, drive),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           Align(
             alignment: Alignment.centerLeft,
             child: TextButton(
@@ -311,7 +258,7 @@ class AccountCard extends ConsumerWidget {
                 : context.colors.primary,
             size: 20,
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpace.sm),
           Expanded(
             child: Text(
               status,
@@ -324,7 +271,7 @@ class AccountCard extends ConsumerWidget {
               overflow: TextOverflow.ellipsis,
             ),
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpace.sm),
           account.error == ApiError.sessionExpired
               ? OutlinedButton(
                   onPressed: () => SignInScreen.open(context),
@@ -357,7 +304,7 @@ class AccountCard extends ConsumerWidget {
           color: context.colors.primary,
           size: 20,
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpace.sm),
         Expanded(
           child: Text(
             status,
@@ -366,7 +313,7 @@ class AccountCard extends ConsumerWidget {
             overflow: TextOverflow.ellipsis,
           ),
         ),
-        const SizedBox(width: 8),
+        const SizedBox(width: AppSpace.sm),
         OutlinedButton(
           onPressed: drive.isUploading
               ? null
@@ -452,21 +399,21 @@ class AccountCard extends ConsumerWidget {
             SimpleDialogOption(
               onPressed: () => Navigator.pop(ctx, 'google'),
               child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
+                padding: EdgeInsets.symmetric(vertical: AppSpace.xs),
                 child: Text('Putuskan Google Drive Saja'),
               ),
             ),
             SimpleDialogOption(
               onPressed: () => Navigator.pop(ctx, 'server'),
               child: const Padding(
-                padding: EdgeInsets.symmetric(vertical: 4),
+                padding: EdgeInsets.symmetric(vertical: AppSpace.xs),
                 child: Text('Keluar dari Server Saja'),
               ),
             ),
             SimpleDialogOption(
               onPressed: () => Navigator.pop(ctx, 'both'),
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
+                padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
                 child: Text(
                   'Keluar dari Semua Akun',
                   style: TextStyle(color: context.colors.expense),
@@ -545,4 +492,65 @@ class AccountCard extends ConsumerWidget {
     );
     if (ok == true) await controller.signOut();
   }
+}
+
+/// Badge kecil "terhubung" di kartu akun (Google Drive, server Nyawtat).
+class _StatusBadge extends StatelessWidget {
+  const _StatusBadge({
+    required this.icon,
+    required this.label,
+    required this.tone,
+  });
+
+  final IconData icon;
+  final String label;
+  final _BadgeTone tone;
+
+  @override
+  Widget build(BuildContext context) {
+    final colors = context.colors.isDark ? tone.dark : tone.light;
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpace.sm,
+        vertical: AppSpace.xxs,
+      ),
+      decoration: BoxDecoration(
+        color: colors.bg,
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        border: Border.all(color: colors.border),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 12, color: colors.fg),
+          const SizedBox(width: AppSpace.xs),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: AppFontSize.caption,
+              fontWeight: FontWeight.w700,
+              color: colors.fg,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Warna badge status untuk mode terang dan gelap.
+enum _BadgeTone {
+  green(
+    (bg: Color(0xFFE6F4EA), border: Color(0xFFCEEAD6), fg: Color(0xFF137333)),
+    (bg: Color(0xFF173A26), border: Color(0xFF23543A), fg: Color(0xFF7DD3AE)),
+  ),
+  blue(
+    (bg: Color(0xFFEFF6FF), border: Color(0xFFBFDBFE), fg: Color(0xFF2563EB)),
+    (bg: Color(0xFF172A4A), border: Color(0xFF284873), fg: Color(0xFF93C5FD)),
+  );
+
+  const _BadgeTone(this.light, this.dark);
+
+  final ({Color bg, Color border, Color fg}) light;
+  final ({Color bg, Color border, Color fg}) dark;
 }

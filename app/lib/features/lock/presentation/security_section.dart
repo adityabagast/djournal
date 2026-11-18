@@ -6,6 +6,7 @@ import '../providers/lock_controller.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import 'pin_setup_screen.dart';
+import '../../../core/tokens.dart';
 
 /// Bagian "Keamanan" di Pengaturan: PIN, biometrik, kunci sekarang, sembunyikan nominal.
 class SecuritySection extends ConsumerWidget {
@@ -19,7 +20,7 @@ class SecuritySection extends ConsumerWidget {
     final controller = ref.read(lockProvider.notifier);
     final divider = Divider(height: 1, color: context.colors.divider);
     const titleStyle = TextStyle(fontWeight: FontWeight.w500);
-    final subStyle = TextStyle(fontSize: 12, color: context.colors.muted);
+    final subStyle = TextStyle(fontSize: AppFontSize.meta, color: context.colors.muted);
 
     Future<void> togglePin(bool on) async {
       if (on) {
@@ -38,7 +39,7 @@ class SecuritySection extends ConsumerWidget {
     }
 
     return AppCard(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs, vertical: AppSpace.xs),
       child: Column(
         children: [
           SwitchListTile(
