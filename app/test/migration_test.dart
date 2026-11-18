@@ -1,4 +1,4 @@
-import 'package:djournal/data/db/app_database.dart';
+import 'package:djournal/core/database/app_database.dart';
 import 'package:drift/drift.dart' hide isNull, isNotNull;
 import 'package:drift_dev/api/migrations_native.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'generated_migrations/schema.dart';
 
 // Schema lama ada di drift_schemas/. Setelah menaikkan schemaVersion:
-//   dart run drift_dev schema dump lib/data/db/app_database.dart drift_schemas/drift_schema_vN.json
+//   dart run drift_dev schema dump lib/core/database/app_database.dart drift_schemas/drift_schema_vN.json
 //   dart run drift_dev schema generate drift_schemas/ test/generated_migrations/
 void main() {
   driftRuntimeOptions.dontWarnAboutMultipleDatabases = true;

@@ -15,7 +15,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-// Widget layar utama. Isinya ditulis Flutter (lib/data/home_widget_sync.dart)
+// Widget layar utama. Isinya ditulis Flutter (lib/features/home_widget/data/home_widget_sync.dart)
 // sebagai string yang sudah jadi; di sini hanya ditampilkan, plus menangani
 // hari/bulan yang sudah berganti sejak app terakhir dibuka.
 

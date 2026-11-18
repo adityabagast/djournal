@@ -4,9 +4,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'core/theme.dart';
-import 'features/lock/lock_gate.dart';
-import 'features/shell/home_shell.dart';
-import 'features/splash/splash_overlay.dart';
+import 'features/lock/presentation/lock_gate.dart';
+import 'features/shell/presentation/home_shell.dart';
+import 'features/splash/presentation/splash_overlay.dart';
 import 'l10n/app_localizations.dart';
 import 'providers.dart';
 

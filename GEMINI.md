@@ -17,12 +17,19 @@ Dokumen ini berisi aturan dan konvensi pengembangan proyek **Nyawtat** untuk dii
 
 ## 🏗️ 2. Arsitektur Kode (Clean Architecture & Feature-First)
 
-1. **Struktur Multi-Layer:**
-   - `lib/domain/models/`: Logika bisnis murni (misal `MoneySnapshot`, kalkulasi saldo & budget). Bebas dependensi Flutter UI.
-   - `lib/data/`: Akses data (Drift SQLite lokal, sinkronisasi backend, secure storage, export service).
-   - `lib/providers/`: Registrasi Riverpod providers yang terbagi modular (`database_providers`, `money_providers`, `journal_providers`, `settings_providers`).
-   - `lib/features/`: Tampilan layar per fitur (Today, Journal, Money, Report, Settings, Lock, Shell).
-   - `lib/core/`: Format rupiah/tanggal, tema aplikasi, dan `PlatformInfo`.
+1. **Struktur Feature-First:** semua kode satu fitur ada di `lib/features/<fitur>/`. Bug di fitur X → mulai cari di `lib/features/X/`.
+   ```
+   lib/features/<fitur>/
+   ├─ data/          # repository & service (Drift, Supabase, file, API)
+   ├─ domain/        # logika bisnis murni, tanpa Flutter UI (mis. MoneySnapshot)
+   ├─ providers/     # Riverpod provider & Notifier/controller fitur ini
+   └─ presentation/  # screen, sheet, widget
+   ```
+   - Fitur: `journal`, `money` (dompet, kategori, budget, tagihan, wishlist), `today`, `report`, `search`, `reminders`, `backup` (backup/restore, Google Drive, ekspor Excel, impor Money Manager), `account` (login + sync Supabase), `lock` (PIN), `settings`, `update`, `games`, `home_widget`, `shell`, `splash`.
+   - `lib/core/`: yang dipakai banyak fitur — `database/` (Drift `AppDatabase`, tabel, `databaseProvider`), `storage/` (settings key-value), `attachments/`, `widgets/` (common, mascot, image viewer), `platform/`, `theme.dart`, `format.dart`, `config.dart`.
+   - `lib/providers.dart`: barrel yang mengekspor semua provider; provider baru tetap ditulis di folder fiturnya lalu ditambahkan ke barrel.
+   - Tes mengikuti struktur yang sama: `test/features/<fitur>/`, `test/core/`.
+   - `core/` tidak boleh bergantung pada UI fitur; fitur boleh memakai `core/` dan `domain`/`providers` fitur lain.
 
 2. **Dukungan Multi-Platform (Android & Desktop):**
    - Selalu gunakan `PlatformInfo` dari `core/platform/platform_info.dart` untuk memisahkan fitur khusus platform.

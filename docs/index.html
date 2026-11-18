@@ -83,12 +83,15 @@ section { padding: 96px var(--edge) 0; }
 .sec-head h2, .h2 { font-size: clamp(30px, 4vw, 46px); line-height: 1.12; }
 .sec-head > p:last-child, .sub { margin-top: 14px; color: var(--muted); }
 mark { background: var(--mint); color: var(--acc); border-radius: 16px; padding: 0 .16em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+/* Latar mark lebih tinggi dari line-height judul; taruh di belakang teks baris atas agar ekor huruf (g, y) tidak tertimpa. */
+h1:has(mark), h2:has(mark) { position: relative; z-index: 0; }
+h1 mark, h2 mark { position: relative; z-index: -1; }
 
 /* ===== Hero =================================================================== */
 .hero { display: grid; grid-template-columns: 1.05fr .95fr; gap: 40px; align-items: center; padding-top: 48px; }
 .eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: #fff; box-shadow: 0 0 0 1px var(--line); font-size: 13.5px; font-weight: 500; color: var(--muted); }
 .eyebrow i { width: 8px; height: 8px; border-radius: 50%; background: #3fae85; box-shadow: 0 0 0 3px rgba(63,174,133,.2); }
-.hero h1 { margin-top: 20px; font-size: clamp(38px, 5.4vw, 66px); line-height: 1.1; font-weight: 800; letter-spacing: -.035em; }
+.hero h1 { margin-top: 20px; font-size: clamp(38px, 5.4vw, 66px); line-height: 1.25; font-weight: 800; letter-spacing: -.035em; }
 .lede { margin-top: 22px; max-width: 32em; color: var(--muted); font-size: 17.5px; }
 .ctas { margin-top: 30px; display: flex; flex-wrap: wrap; gap: 12px; }
 .fine { margin-top: 16px; color: var(--muted); font-size: 13.5px; }
