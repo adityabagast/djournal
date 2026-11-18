@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.16.1 — 2026-11-19
+
+**Perbaikan tampilan**
+- Ukuran teks, jarak, dan sudut membulat dirapikan di semua layar supaya lebih konsisten. Teks paling kecil sedikit lebih besar sehingga lebih mudah dibaca.
+- Semua lembar bawah (bottom sheet) kini punya bentuk sudut dan pegangan yang sama.
+- Badge **Google Drive terhubung** dan **Server terhubung** di kartu akun kini ikut mode gelap.
+
+**Di balik layar**
+- Kode aplikasi ditata ulang per fitur dan memakai token desain bersama. Tidak ada perubahan fungsi, izin, atau dependensi.
+
 ## 0.16.0 — 2026-11-16
 
 **Baru**
