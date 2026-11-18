@@ -30,6 +30,7 @@ Dokumen ini berisi aturan dan konvensi pengembangan proyek **Nyawtat** untuk dii
    - `lib/providers.dart`: barrel yang mengekspor semua provider; provider baru tetap ditulis di folder fiturnya lalu ditambahkan ke barrel.
    - Tes mengikuti struktur yang sama: `test/features/<fitur>/`, `test/core/`.
    - `core/` tidak boleh bergantung pada UI fitur; fitur boleh memakai `core/` dan `domain`/`providers` fitur lain.
+   - **UI:** warna dari `context.colors` (`AppPalette`); spasi, radius, ukuran font, dan durasi animasi dari token di `core/tokens.dart` (`AppSpace`, `AppRadius`, `AppFontSize`, `AppMotion`), bukan angka langsung. Bottom sheet pakai `showAppSheet()` + `SheetHandle` dari `core/widgets/app_sheet.dart`.
 
 2. **Dukungan Multi-Platform (Android & Desktop):**
    - Selalu gunakan `PlatformInfo` dari `core/platform/platform_info.dart` untuk memisahkan fitur khusus platform.

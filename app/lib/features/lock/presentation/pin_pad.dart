@@ -5,6 +5,7 @@ import '../../../core/theme.dart';
 import '../data/pin_store.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
+import '../../../core/tokens.dart';
 
 /// Layar PIN hijau seperti desain: maskot gembok, judul, 4 titik, keypad.
 /// Dipakai untuk membuka kunci, membuat PIN, dan konfirmasi PIN.
@@ -94,7 +95,7 @@ class _PinPadState extends State<PinPad> {
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: box.maxHeight),
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(32, 16, 32, 24),
+                padding: const EdgeInsets.fromLTRB(AppSpace.xxxl, AppSpace.lg, AppSpace.xxxl, AppSpace.xxl),
                 child: Column(
                   children: [
                     Align(
@@ -108,9 +109,9 @@ class _PinPadState extends State<PinPad> {
                               icon: const Icon(Icons.arrow_back),
                             ),
                     ),
-                    const SizedBox(height: 8),
+                    const SizedBox(height: AppSpace.sm),
                     const Mascot(MascotPose.gembok, size: 128),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpace.lg),
                     Text(
                       widget.title,
                       textAlign: TextAlign.center,
@@ -120,13 +121,13 @@ class _PinPadState extends State<PinPad> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(height: 6),
+                    const SizedBox(height: AppSpace.sm),
                     Text(
                       widget.message,
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: onDark, fontSize: 15),
+                      style: TextStyle(color: onDark, fontSize: AppFontSize.title),
                     ),
-                    const SizedBox(height: 28),
+                    const SizedBox(height: AppSpace.xxxl),
                     Semantics(
                       label: '${_pin.length} / ${PinStore.pinLength}',
                       child: Row(
@@ -136,7 +137,7 @@ class _PinPadState extends State<PinPad> {
                             Container(
                               width: 14,
                               height: 14,
-                              margin: const EdgeInsets.symmetric(horizontal: 8),
+                              margin: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 border: Border.all(color: c.primary, width: 2),
@@ -156,7 +157,7 @@ class _PinPadState extends State<PinPad> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: c.expense,
-                            fontSize: 14,
+                            fontSize: AppFontSize.bodyLg,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -172,19 +173,19 @@ class _PinPadState extends State<PinPad> {
                         children: [
                           for (final d in row) ...[
                             key(d),
-                            if (d != row.last) const SizedBox(width: 28),
+                            if (d != row.last) const SizedBox(width: AppSpace.xxxl),
                           ],
                         ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppSpace.lg),
                     ],
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         const SizedBox(width: 72),
-                        const SizedBox(width: 28),
+                        const SizedBox(width: AppSpace.xxxl),
                         key('0'),
-                        const SizedBox(width: 28),
+                        const SizedBox(width: AppSpace.xxxl),
                         _KeyButton(
                           label: l.deleteDigit,
                           filled: false,
@@ -197,7 +198,7 @@ class _PinPadState extends State<PinPad> {
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: AppSpace.lg),
                     ?widget.footer,
                   ],
                 ),
@@ -259,7 +260,7 @@ class PinFooterButton extends StatelessWidget {
         foregroundColor: context.colors.primary,
         textStyle: buttonTextStyle(
           context,
-          const TextStyle(fontSize: 14, fontWeight: FontWeight.w600),
+          const TextStyle(fontSize: AppFontSize.bodyLg, fontWeight: FontWeight.w600),
         ),
       ),
       child: Text(label),

@@ -6,6 +6,7 @@ import '../../../core/theme.dart';
 import '../../../core/database/app_database.dart';
 import '../../../core/widgets/common.dart';
 import '../../money/presentation/money_widgets.dart';
+import '../../../core/tokens.dart';
 
 class CategorySpend {
   const CategorySpend({
@@ -89,7 +90,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                 ),
                 // Center info display
                 Padding(
-                  padding: const EdgeInsets.all(28.0),
+                  padding: const EdgeInsets.all(AppSpace.xxxl),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -103,7 +104,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpace.xxs),
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
@@ -113,17 +114,17 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpace.xxs),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
                           decoration: BoxDecoration(
                             color: context.colors.soft(hexColor(selected.category.color)),
-                            borderRadius: BorderRadius.circular(6),
+                            borderRadius: BorderRadius.circular(AppRadius.sm),
                           ),
                           child: Text(
                             '${selected.percentage.toStringAsFixed(1)}%',
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: AppFontSize.caption,
                               fontWeight: FontWeight.w700,
                               color: context.colors.fg(hexColor(selected.category.color)),
                             ),
@@ -134,10 +135,10 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                           l.totalExpense,
                           style: t.bodySmall?.copyWith(
                             color: context.colors.muted,
-                            fontSize: 11,
+                            fontSize: AppFontSize.caption,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpace.xxs),
                         FittedBox(
                           fit: BoxFit.scaleDown,
                           child: Text(
@@ -147,12 +148,12 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                             ),
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: AppSpace.xxs),
                         Text(
                           l.categoryCount(items.length),
                           style: t.bodySmall?.copyWith(
                             color: context.colors.muted,
-                            fontSize: 11,
+                            fontSize: AppFontSize.caption,
                           ),
                         ),
                       ],
@@ -163,14 +164,14 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: AppSpace.xl),
 
         // List item kategori terurut
         ListView.separated(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
           itemCount: displayItems.length,
-          separatorBuilder: (_, _) => const SizedBox(height: 8),
+          separatorBuilder: (_, _) => const SizedBox(height: AppSpace.sm),
           itemBuilder: (context, index) {
             final item = displayItems[index];
             final isSelected = item.category.id == selectedId;
@@ -181,15 +182,15 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                 final next = isSelected ? null : item.category.id;
                 widget.onSelectCategory?.call(next);
               },
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               child: AnimatedContainer(
                 duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
                 decoration: BoxDecoration(
                   color: isSelected
                       ? context.colors.soft(catColor)
                       : context.colors.surface,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                   border: Border.all(
                     color: isSelected
                         ? context.colors.fg(catColor)
@@ -200,7 +201,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                 child: Row(
                   children: [
                     CategoryBadge(category: item.category, size: 34),
-                    const SizedBox(width: 10),
+                    const SizedBox(width: AppSpace.md),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -212,7 +213,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                                   categoryLabel(l, item.category),
                                   style: TextStyle(
                                     fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
-                                    fontSize: 13,
+                                    fontSize: AppFontSize.body,
                                   ),
                                   maxLines: 1,
                                   overflow: TextOverflow.ellipsis,
@@ -221,16 +222,16 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                               Text(
                                 '${item.percentage.toStringAsFixed(1)}%',
                                 style: TextStyle(
-                                  fontSize: 12,
+                                  fontSize: AppFontSize.meta,
                                   fontWeight: FontWeight.w700,
                                   color: context.colors.fg(catColor),
                                 ),
                               ),
                             ],
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: AppSpace.sm),
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(3),
+                            borderRadius: BorderRadius.circular(AppRadius.xs),
                             child: LinearProgressIndicator(
                               value: (item.percentage / 100.0).clamp(0.0, 1.0),
                               minHeight: 4,
@@ -243,12 +244,12 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                         ],
                       ),
                     ),
-                    const SizedBox(width: 14),
+                    const SizedBox(width: AppSpace.lg),
                     Text(
                       rupiah(item.spent, hide: widget.hideAmounts),
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 13,
+                        fontSize: AppFontSize.body,
                         color: isSelected ? context.colors.ink : context.colors.ink,
                       ),
                     ),
@@ -261,7 +262,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
 
         // Tombol expand/collapse jika lebih dari 5 kategori
         if (items.length > 5) ...[
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           Center(
             child: TextButton.icon(
               onPressed: () => setState(() => _showAll = !_showAll),
@@ -273,7 +274,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                 _showAll
                     ? l.chartShowLess
                     : l.chartAllCategories(items.length),
-                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: AppFontSize.body),
               ),
             ),
           ),
@@ -437,8 +438,8 @@ class WeeklyBarChart extends StatelessWidget {
       children: [
         // Bar diagram container
         Container(
-          height: 190,
-          padding: const EdgeInsets.fromLTRB(8, 12, 8, 4),
+          height: 196,
+          padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.md, AppSpace.sm, AppSpace.xs),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
@@ -453,19 +454,19 @@ class WeeklyBarChart extends StatelessWidget {
                     hideAmounts: hideAmounts,
                   ),
                 ),
-                if (i < weekRanges.length - 1) const SizedBox(width: 8),
+                if (i < weekRanges.length - 1) const SizedBox(width: AppSpace.sm),
               ],
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
 
         // Ringkasan statistik mingguan
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
           decoration: BoxDecoration(
             color: context.colors.surface,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             border: Border.all(color: context.colors.line),
           ),
           child: Row(
@@ -476,32 +477,32 @@ class WeeklyBarChart extends StatelessWidget {
                   children: [
                     Text(
                       l.chartAvgWeekly,
-                      style: t.bodySmall?.copyWith(color: context.colors.muted, fontSize: 11),
+                      style: t.bodySmall?.copyWith(color: context.colors.muted, fontSize: AppFontSize.caption),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpace.xxs),
                     Text(
                       rupiah(avgWeekly, hide: hideAmounts),
-                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                      style: const TextStyle(fontWeight: FontWeight.w700, fontSize: AppFontSize.body),
                     ),
                   ],
                 ),
               ),
               Container(width: 1, height: 26, color: context.colors.divider),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpace.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       l.chartHighestWeek(highestWeekIdx + 1),
-                      style: t.bodySmall?.copyWith(color: context.colors.muted, fontSize: 11),
+                      style: t.bodySmall?.copyWith(color: context.colors.muted, fontSize: AppFontSize.caption),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpace.xxs),
                     Text(
                       rupiah(maxSpent, hide: hideAmounts),
                       style: TextStyle(
                         fontWeight: FontWeight.w700,
-                        fontSize: 13,
+                        fontSize: AppFontSize.body,
                         color: maxSpent > 0 ? context.colors.expense : null,
                       ),
                     ),
@@ -555,14 +556,14 @@ class _WeekBar extends StatelessWidget {
             child: Text(
               spent == 0 ? '−' : (hideAmounts ? '••••' : rupiah(spent)),
               style: TextStyle(
-                fontSize: 10,
+                fontSize: AppFontSize.caption,
                 fontWeight: isHighest ? FontWeight.w700 : FontWeight.w500,
                 color: isHighest ? context.colors.expense : context.colors.muted,
               ),
             ),
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: AppSpace.sm),
 
         // Track bar
         Container(
@@ -573,7 +574,7 @@ class _WeekBar extends StatelessWidget {
             color: context.colors.isDark
                 ? const Color(0xFF1F2421)
                 : const Color(0xFFEEF3F0),
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
           ),
           child: TweenAnimationBuilder<double>(
             tween: Tween(begin: 0.0, end: barHeight),
@@ -585,20 +586,20 @@ class _WeekBar extends StatelessWidget {
                 height: height,
                 decoration: BoxDecoration(
                   color: barColor,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
               );
             },
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: AppSpace.sm),
 
         // Label minggu & rentang tanggal
         Text(
           'M$weekNumber',
           style: TextStyle(
             fontWeight: FontWeight.w700,
-            fontSize: 12,
+            fontSize: AppFontSize.meta,
             color: isHighest ? context.colors.expense : context.colors.ink,
           ),
         ),
@@ -606,7 +607,7 @@ class _WeekBar extends StatelessWidget {
           range,
           style: t.bodySmall?.copyWith(
             color: context.colors.muted,
-            fontSize: 10,
+            fontSize: AppFontSize.caption,
           ),
         ),
       ],

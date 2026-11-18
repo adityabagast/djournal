@@ -5,6 +5,8 @@ import '../../../core/format.dart';
 import '../../../core/theme.dart';
 import '../../../core/database/app_database.dart';
 import '../../../providers.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 class WishlistDepositSheet extends ConsumerStatefulWidget {
   const WishlistDepositSheet({super.key, required this.wishlist});
@@ -12,13 +14,9 @@ class WishlistDepositSheet extends ConsumerStatefulWidget {
   final Wishlist wishlist;
 
   static Future<void> open(BuildContext context, {required Wishlist wishlist}) {
-    return showModalBottomSheet(
+    return showAppSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) => WishlistDepositSheet(wishlist: wishlist),
     );
   }
@@ -73,22 +71,13 @@ class _WishlistDepositSheetState extends ConsumerState<WishlistDepositSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colors.line,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SheetHandle(),
+          const SizedBox(height: AppSpace.lg),
           Text(
             'Setor Tabungan Wishlist',
             style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           Text(
             widget.wishlist.title,
             style: t.bodyMedium?.copyWith(
@@ -101,7 +90,7 @@ class _WishlistDepositSheetState extends ConsumerState<WishlistDepositSheet> {
               'Disimpan di: ${targetWallet.name}',
               style: t.bodySmall?.copyWith(color: context.colors.muted),
             ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<String>(
             initialValue: _sourceWalletId,
             decoration: const InputDecoration(
@@ -116,7 +105,7 @@ class _WishlistDepositSheetState extends ConsumerState<WishlistDepositSheet> {
             ],
             onChanged: (val) => setState(() => _sourceWalletId = val),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           TextField(
             controller: _amountController,
             keyboardType: TextInputType.number,
@@ -126,7 +115,7 @@ class _WishlistDepositSheetState extends ConsumerState<WishlistDepositSheet> {
               prefixText: 'Rp ',
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           FilledButton(
             onPressed: _submit,
             child: const Text('Konfirmasi Setor'),

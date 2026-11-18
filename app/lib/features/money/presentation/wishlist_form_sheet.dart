@@ -5,6 +5,8 @@ import '../../../core/format.dart';
 import '../../../core/theme.dart';
 import '../../../core/database/app_database.dart';
 import '../../../providers.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 class WishlistFormSheet extends ConsumerStatefulWidget {
   const WishlistFormSheet({super.key, this.existing});
@@ -12,13 +14,9 @@ class WishlistFormSheet extends ConsumerStatefulWidget {
   final Wishlist? existing;
 
   static Future<void> open(BuildContext context, {Wishlist? existing}) {
-    return showModalBottomSheet(
+    return showAppSheet(
       context: context,
       isScrollControlled: true,
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (_) => WishlistFormSheet(existing: existing),
     );
   }
@@ -96,17 +94,8 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Center(
-            child: Container(
-              width: 40,
-              height: 4,
-              decoration: BoxDecoration(
-                color: context.colors.line,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
+          const SheetHandle(),
+          const SizedBox(height: AppSpace.lg),
           Row(
             children: [
               Expanded(
@@ -123,7 +112,7 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           TextField(
             controller: _titleController,
             textCapitalization: TextCapitalization.sentences,
@@ -136,7 +125,7 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
               if (_showTitleError) setState(() => _showTitleError = false);
             },
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           TextField(
             controller: _amountController,
             keyboardType: TextInputType.number,
@@ -147,7 +136,7 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
             ),
             onChanged: (_) => setState(() {}),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<String>(
             initialValue: _selectedWalletId,
             decoration: const InputDecoration(
@@ -162,7 +151,7 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
             ],
             onChanged: (val) => setState(() => _selectedWalletId = val),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<int>(
             initialValue: _selectedMonths,
             decoration: const InputDecoration(
@@ -178,18 +167,18 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
             onChanged: (val) => setState(() => _selectedMonths = val ?? 12),
           ),
           if (_parsedAmount > 0) ...[
-            const SizedBox(height: 14),
+            const SizedBox(height: AppSpace.lg),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpace.md),
               decoration: BoxDecoration(
                 color: context.colors.primarySoft,
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(color: context.colors.primary.withValues(alpha: 0.3)),
               ),
               child: Row(
                 children: [
                   Icon(Icons.lightbulb_outline, size: 20, color: context.colors.primary),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpace.sm),
                   Expanded(
                     child: Text(
                       'Rincian Tabungan: ${rupiah(_monthlyEstimate)} / bulan '
@@ -204,7 +193,7 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
               ),
             ),
           ],
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           FilledButton(
             onPressed: _save,
             child: Text(_isEdit ? 'Simpan Perubahan' : 'Tambah Wishlist'),

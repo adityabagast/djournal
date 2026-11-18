@@ -9,6 +9,7 @@ import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import 'reminder_format.dart';
 import 'reminder_suggestions.dart';
+import '../../../core/tokens.dart';
 
 /// Kartu "Acara mendatang" di Hari Ini: pengingat yang dibuat dari jurnal.
 /// Tidak tampil kalau belum ada acara.
@@ -29,7 +30,7 @@ class UpcomingEventsCard extends ConsumerWidget {
         ref.watch(reminderPermissionProvider).value == false;
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: AppSpace.lg),
       child: AppCard(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -38,18 +39,18 @@ class UpcomingEventsCard extends ConsumerWidget {
               l.remUpcoming,
               style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpace.sm),
             for (final e in events)
               InkWell(
                 key: ValueKey('event-${e.id}'),
                 onTap: () => _DetailSheet.show(context, e),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
                   child: Row(
                     children: [
                       const ReminderIconDot(Icons.event_outlined),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: AppSpace.md),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,44 +60,44 @@ class UpcomingEventsCard extends ConsumerWidget {
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: const TextStyle(
-                                fontSize: 14,
+                                fontSize: AppFontSize.bodyLg,
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
                             Text(
                               reminderWhen(context, e.eventDate, e.eventTime),
-                              style: TextStyle(fontSize: 12.5, color: c.muted),
+                              style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                             ),
                           ],
                         ),
                       ),
-                      const SizedBox(width: 8),
+                      const SizedBox(width: AppSpace.sm),
                       RelPill(reminderRel(context, e.eventDate)),
                     ],
                   ),
                 ),
               ),
             if (denied) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               Container(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 10,
+                  horizontal: AppSpace.md,
+                  vertical: AppSpace.md,
                 ),
                 decoration: BoxDecoration(
                   color: c.warnSoft,
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: Text(
                   l.remDenied,
                   style: TextStyle(
-                    fontSize: 12.5,
+                    fontSize: AppFontSize.meta,
                     height: 1.45,
                     color: c.onWarnSoft,
                   ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               Align(
                 alignment: Alignment.centerLeft,
                 child: FilledButton.tonal(
@@ -138,15 +139,15 @@ class _DetailSheet extends ConsumerWidget {
     final lead = ReminderLead.fromCode(event.lead);
 
     Widget row(IconData icon, String text) => Padding(
-      padding: const EdgeInsets.only(bottom: 10),
+      padding: const EdgeInsets.only(bottom: AppSpace.md),
       child: Row(
         children: [
           ReminderIconDot(icon),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: Text(
               text,
-              style: TextStyle(fontSize: 12.5, height: 1.5, color: c.muted),
+              style: TextStyle(fontSize: AppFontSize.meta, height: 1.5, color: c.muted),
             ),
           ),
         ],
@@ -174,7 +175,7 @@ class _DetailSheet extends ConsumerWidget {
             ).format(event.createdAt.toLocal()),
           ),
         ),
-        const SizedBox(height: 6),
+        const SizedBox(height: AppSpace.sm),
         Row(
           children: [
             Expanded(
@@ -187,7 +188,7 @@ class _DetailSheet extends ConsumerWidget {
                 child: Text(l.remDelete),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: OutlinedButton(
                 onPressed: () => Navigator.pop(context),

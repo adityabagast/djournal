@@ -7,6 +7,7 @@ import '../../../../core/database/app_database.dart';
 import '../../../../providers.dart';
 import '../../../money/presentation/wishlist_deposit_sheet.dart';
 import '../../../money/presentation/wishlist_form_sheet.dart';
+import '../../../../core/tokens.dart';
 
 class WishlistCard extends ConsumerWidget {
   const WishlistCard({super.key});
@@ -29,7 +30,7 @@ class WishlistCard extends ConsumerWidget {
               Expanded(
                 child: Row(
                   children: [
-                    const Text('✨ ', style: TextStyle(fontSize: 15)),
+                    const Text('✨ ', style: TextStyle(fontSize: AppFontSize.title)),
                     Flexible(
                       child: Text(
                         'Wishlist & Target Impian',
@@ -42,9 +43,9 @@ class WishlistCard extends ConsumerWidget {
               ),
               InkWell(
                 onTap: () => WishlistFormSheet.open(context),
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
                   child: Text(
                     '+ Tambah',
                     style: t.bodySmall?.copyWith(
@@ -56,10 +57,10 @@ class WishlistCard extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           if (activeWishlists.isEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8),
+              padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
               child: Text(
                 'Belum ada impian yang ditambahkan. Tambahkan wishlist pertamamu!',
                 style: t.bodySmall?.copyWith(color: context.colors.muted),
@@ -67,7 +68,7 @@ class WishlistCard extends ConsumerWidget {
             )
           else
             for (var i = 0; i < activeWishlists.length; i++) ...[
-              if (i > 0) const SizedBox(height: 12),
+              if (i > 0) const SizedBox(height: AppSpace.md),
               _buildWishlistItem(context, ref, activeWishlists[i], snap, hide),
             ],
         ],
@@ -100,12 +101,12 @@ class WishlistCard extends ConsumerWidget {
 
     return InkWell(
       onTap: () => WishlistFormSheet.open(context, existing: w),
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       child: Container(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(AppSpace.md),
         decoration: BoxDecoration(
           color: context.colors.subtle,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           border: Border.all(color: context.colors.line),
         ),
         child: Column(
@@ -129,26 +130,26 @@ class WishlistCard extends ConsumerWidget {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
             if (targetWallet != null)
               Container(
-                margin: const EdgeInsets.only(bottom: 6),
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                margin: const EdgeInsets.only(bottom: AppSpace.sm),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
                 decoration: BoxDecoration(
                   color: context.colors.primarySoft,
-                  borderRadius: BorderRadius.circular(6),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: Text(
                   '🏦 Disimpan di: ${targetWallet.name}',
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppFontSize.caption,
                     fontWeight: FontWeight.w600,
                     color: context.colors.primary,
                   ),
                 ),
               ),
             ClipRRect(
-              borderRadius: BorderRadius.circular(4),
+              borderRadius: BorderRadius.circular(AppRadius.xs),
               child: LinearProgressIndicator(
                 value: progress,
                 minHeight: 6,
@@ -156,34 +157,34 @@ class WishlistCard extends ConsumerWidget {
                 color: context.colors.primary,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpace.sm),
             Row(
               children: [
                 Expanded(
                   child: Text(
                     'Terkumpul: ${rupiah(w.savedAmount, hide: hide)} ($pct%)',
                     overflow: TextOverflow.ellipsis,
-                    style: t.bodySmall?.copyWith(fontSize: 11.5, color: context.colors.muted),
+                    style: t.bodySmall?.copyWith(fontSize: AppFontSize.caption, color: context.colors.muted),
                   ),
                 ),
-                const SizedBox(width: 8),
+                const SizedBox(width: AppSpace.sm),
                 Flexible(
                   child: Text(
                     'Kurang: ${rupiah(shortfall, hide: hide)}',
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.end,
-                    style: t.bodySmall?.copyWith(fontSize: 11.5, color: context.colors.muted),
+                    style: t.bodySmall?.copyWith(fontSize: AppFontSize.caption, color: context.colors.muted),
                   ),
                 ),
               ],
             ),
             if (monthly > 0) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.sm),
                 decoration: BoxDecoration(
                   color: context.colors.surface,
-                  borderRadius: BorderRadius.circular(8),
+                  borderRadius: BorderRadius.circular(AppRadius.sm),
                 ),
                 child: Row(
                   children: [
@@ -193,20 +194,20 @@ class WishlistCard extends ConsumerWidget {
                         overflow: TextOverflow.ellipsis,
                         maxLines: 2,
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: AppFontSize.caption,
                           color: context.colors.ink,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpace.sm),
                     SizedBox(
                       height: 32,
                       child: FilledButton(
                         onPressed: () => WishlistDepositSheet.open(context, wishlist: w),
                         style: FilledButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: 12),
-                          textStyle: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600),
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
+                          textStyle: const TextStyle(fontSize: AppFontSize.caption, fontWeight: FontWeight.w600),
                         ),
                         child: const Text('+ Nabung'),
                       ),

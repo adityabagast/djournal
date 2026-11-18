@@ -15,6 +15,7 @@ import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
 import '../../money/presentation/tx_form_screen.dart';
 import '../../settings/presentation/custom_accent_sheet.dart';
+import '../../../core/tokens.dart';
 
 /// Kunci app_settings (lokal, tidak disinkronkan) untuk isi roda yang diubah
 /// user: JSON {presetId: [pilihan]}.
@@ -209,13 +210,13 @@ class _WheelRpsScreenState extends State<WheelRpsScreen> {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xs, AppSpace.xl, AppSpace.xxxl),
         children: [
           Text(
             l.gamesSub,
-            style: TextStyle(color: context.colors.muted, fontSize: 13),
+            style: TextStyle(color: context.colors.muted, fontSize: AppFontSize.body),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
           SegmentedButton<int>(
             showSelectedIcon: false,
             segments: [
@@ -225,7 +226,7 @@ class _WheelRpsScreenState extends State<WheelRpsScreen> {
             selected: {_tab},
             onSelectionChanged: (s) => setState(() => _tab = s.first),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: AppSpace.lg),
           // Offstage menjaga skor & isi roda saat pindah tab.
           Offstage(
             offstage: _tab != 0,
@@ -333,7 +334,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
               ),
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         Center(
           child: SizedBox(
             width: 288,
@@ -355,7 +356,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
                       child: Container(
                         width: 288,
                         height: 288,
-                        padding: const EdgeInsets.all(6),
+                        padding: const EdgeInsets.all(AppSpace.sm),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: c.surface,
@@ -367,7 +368,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
                             slices: _slices(c, colors),
                             style: Theme.of(context).textTheme.labelMedium!
                                 .copyWith(
-                                  fontSize: 12,
+                                  fontSize: AppFontSize.meta,
                                   fontWeight: FontWeight.w600,
                                 ),
                           ),
@@ -400,13 +401,13 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
             ),
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         AppCard(
-          padding: const EdgeInsets.fromLTRB(8, 12, 16, 12),
+          padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.md, AppSpace.lg, AppSpace.md),
           child: Row(
             children: [
               Mascot(done ? MascotPose.senang : MascotPose.halo, size: 68),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Semantics(
                   liveRegion: true,
@@ -419,7 +420,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
                             : done
                             ? l.gameNyawPicks
                             : l.gameReady,
-                        style: TextStyle(fontSize: 12, color: c.muted),
+                        style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                       ),
                       Text(
                         _spinning
@@ -428,12 +429,12 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
                             ? options[_result!]
                             : l.gameTapSpin,
                         style: const TextStyle(
-                          fontSize: 20,
+                          fontSize: AppFontSize.display,
                           fontWeight: FontWeight.w700,
                         ),
                       ),
                       if (done) ...[
-                        const SizedBox(height: 8),
+                        const SizedBox(height: AppSpace.sm),
                         Wrap(
                           spacing: 8,
                           runSpacing: 8,
@@ -457,7 +458,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         AppCard(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -468,18 +469,18 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
                     child: Text(
                       l.gameWheelItems,
                       style: const TextStyle(
-                        fontSize: 14.5,
+                        fontSize: AppFontSize.bodyLg,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
                   Text(
                     l.gameWheelCount(n, Wheel.maxOptions),
-                    style: TextStyle(fontSize: 12, color: c.muted),
+                    style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               Wrap(
                 spacing: 6,
                 runSpacing: 6,
@@ -499,7 +500,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
                     ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               Row(
                 children: [
                   Expanded(
@@ -514,7 +515,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
                       decoration: InputDecoration(hintText: l.gameWheelAddHint),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppSpace.sm),
                   FilledButton(
                     onPressed: n < Wheel.maxOptions
                         ? () => _add(all, options)
@@ -526,7 +527,7 @@ class _WheelGameState extends ConsumerState<_WheelGame> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         _WheelColorsCard(
           colors: colors,
           enabled: !_spinning,
@@ -587,18 +588,18 @@ class _WheelColorsCardState extends State<_WheelColorsCard> {
                 child: Text(
                   l.gameWheelColors,
                   style: const TextStyle(
-                    fontSize: 14.5,
+                    fontSize: AppFontSize.bodyLg,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
               ),
               Text(
                 _paletteName(l, w.palette),
-                style: TextStyle(fontSize: 12, color: c.muted),
+                style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
               ),
             ],
           ),
-          const SizedBox(height: 12),
+          const SizedBox(height: AppSpace.md),
           GridView(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
@@ -623,9 +624,9 @@ class _WheelColorsCardState extends State<_WheelColorsCard> {
             Divider(height: 24, color: c.line),
             Text(
               l.gameWheelCustomHint,
-              style: TextStyle(fontSize: 12, color: c.muted),
+              style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             Row(
               children: [
                 for (var k = 0; k < w.custom.length; k++)
@@ -639,7 +640,7 @@ class _WheelColorsCardState extends State<_WheelColorsCard> {
                   ),
               ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
             Wrap(
               children: [
                 for (final h in _swatches)
@@ -650,7 +651,7 @@ class _WheelColorsCardState extends State<_WheelColorsCard> {
                   ),
               ],
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             Row(
               children: [
                 OutlinedButton.icon(
@@ -668,10 +669,10 @@ class _WheelColorsCardState extends State<_WheelColorsCard> {
               ],
             ),
           ],
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           Text(
             l.gameWheelColorsNote,
-            style: TextStyle(fontSize: 12, color: c.muted),
+            style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
           ),
         ],
       ),
@@ -696,7 +697,7 @@ class _PaletteTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final c = context.colors;
     final shape = RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(14),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       side: BorderSide(
         color: selected ? c.primary : Colors.transparent,
         width: 2,
@@ -718,13 +719,13 @@ class _PaletteTile extends StatelessWidget {
                 size: const Size.square(30),
                 painter: _SwatchPainter(colors, ring: c.surface),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpace.sm),
               Text(
                 name,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 12.5,
+                  fontSize: AppFontSize.meta,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                   color: selected ? c.onPrimarySoft : c.ink,
                 ),
@@ -804,7 +805,7 @@ class _SlotButton extends StatelessWidget {
             child: Container(
               width: 40,
               height: 40,
-              padding: const EdgeInsets.all(2),
+              padding: const EdgeInsets.all(AppSpace.xxs),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -822,7 +823,7 @@ class _SlotButton extends StatelessWidget {
                   child: Text(
                     '$number',
                     style: TextStyle(
-                      fontSize: 13,
+                      fontSize: AppFontSize.body,
                       fontWeight: FontWeight.w700,
                       color: _labelOn(color),
                     ),
@@ -866,7 +867,7 @@ class _SwatchButton extends StatelessWidget {
             child: Container(
               width: 34,
               height: 34,
-              padding: const EdgeInsets.all(2),
+              padding: const EdgeInsets.all(AppSpace.xxs),
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border: Border.all(
@@ -1054,7 +1055,7 @@ class _RpsGameState extends State<_RpsGame> {
                     child: _HandBox(label: l.gameYou, hand: _me),
                   ),
                   Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
                     child: Text(
                       'VS',
                       style: TextStyle(
@@ -1072,23 +1073,23 @@ class _RpsGameState extends State<_RpsGame> {
                   ),
                 ],
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               Semantics(
                 liveRegion: true,
                 child: Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 4,
+                    horizontal: AppSpace.md,
+                    vertical: AppSpace.xs,
                   ),
                   decoration: BoxDecoration(
                     color: statusBg,
-                    borderRadius: BorderRadius.circular(999),
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
                   ),
                   child: Text(
                     statusText,
                     style: TextStyle(
                       color: statusFg,
-                      fontSize: 12,
+                      fontSize: AppFontSize.meta,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -1097,11 +1098,11 @@ class _RpsGameState extends State<_RpsGame> {
             ],
           ),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         Row(
           children: [
             for (final h in Hand.values) ...[
-              if (h != Hand.values.first) const SizedBox(width: 10),
+              if (h != Hand.values.first) const SizedBox(width: AppSpace.md),
               Expanded(
                 child: _HandButton(
                   hand: h,
@@ -1112,9 +1113,9 @@ class _RpsGameState extends State<_RpsGame> {
             ],
           ],
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: AppSpace.lg),
         AppCard(
-          padding: const EdgeInsets.fromLTRB(18, 8, 8, 16),
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.sm, AppSpace.sm, AppSpace.lg),
           child: Column(
             children: [
               Row(
@@ -1123,7 +1124,7 @@ class _RpsGameState extends State<_RpsGame> {
                     child: Text(
                       l.gameScore,
                       style: const TextStyle(
-                        fontSize: 14.5,
+                        fontSize: AppFontSize.bodyLg,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -1151,7 +1152,7 @@ class _RpsGameState extends State<_RpsGame> {
                           ),
                           Text(
                             label,
-                            style: TextStyle(fontSize: 12, color: c.muted),
+                            style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                           ),
                         ],
                       ),
@@ -1190,15 +1191,15 @@ class _HandBox extends StatelessWidget {
     final c = context.colors;
     final h = hand;
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 4),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.lg, horizontal: AppSpace.xs),
       decoration: BoxDecoration(
         color: c.subtle,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
       child: Column(
         children: [
-          Text(label, style: TextStyle(fontSize: 12, color: c.muted)),
-          const SizedBox(height: 6),
+          Text(label, style: TextStyle(fontSize: AppFontSize.meta, color: c.muted)),
+          const SizedBox(height: AppSpace.sm),
           Icon(
             h != null
                 ? _handIcon(h)
@@ -1208,7 +1209,7 @@ class _HandBox extends StatelessWidget {
             size: 40,
             color: c.ink,
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           Text(
             h != null ? _handName(context.l10n, h) : (pending ? '…' : '?'),
             style: const TextStyle(fontWeight: FontWeight.w600),
@@ -1236,27 +1237,27 @@ class _HandButton extends StatelessWidget {
     final fg = selected ? c.onPrimarySoft : c.ink;
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         boxShadow: cardShadow(c),
       ),
       child: Material(
         color: selected ? c.primarySoft : c.surface,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           child: ConstrainedBox(
             constraints: const BoxConstraints(minHeight: 96),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(_handIcon(hand), size: 34, color: fg),
-                const SizedBox(height: 6),
+                const SizedBox(height: AppSpace.sm),
                 Text(
                   _handName(context.l10n, hand),
                   style: TextStyle(
                     color: fg,
-                    fontSize: 12.5,
+                    fontSize: AppFontSize.meta,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

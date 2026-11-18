@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../theme.dart';
+import '../tokens.dart';
+import 'app_sheet.dart';
 
 /// Membuka dialog fullscreen untuk melihat gambar dengan kemampuan zoom & swipe.
 void openImageViewer(
@@ -108,18 +110,18 @@ class _ImageViewerScreenState extends State<_ImageViewerScreen> {
                   if (widget.paths.length > 1)
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 14,
-                        vertical: 6,
+                        horizontal: AppSpace.lg,
+                        vertical: AppSpace.sm,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.black54,
-                        borderRadius: BorderRadius.circular(20),
+                        borderRadius: BorderRadius.circular(AppRadius.lg),
                       ),
                       child: Text(
                         '${_currentIndex + 1} / ${widget.paths.length}',
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 13,
+                          fontSize: AppFontSize.body,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -137,78 +139,65 @@ class _ImageViewerScreenState extends State<_ImageViewerScreen> {
 /// Modal bottom sheet untuk memilih sumber gambar: Galeri atau Kamera.
 Future<ImageSource?> showImageSourcePicker(BuildContext context) {
   final c = context.colors;
-  return showModalBottomSheet<ImageSource>(
+  return showAppSheet<ImageSource>(
     context: context,
-    backgroundColor: c.surface,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-    ),
     builder: (context) {
       return SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.xl, vertical: AppSpace.lg),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: c.handle,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SheetHandle(),
+              const SizedBox(height: AppSpace.lg),
               Text(
                 'Ambil Gambar',
                 style: TextStyle(
-                  fontSize: 16,
+                  fontSize: AppFontSize.title,
                   fontWeight: FontWeight.w700,
                   color: c.ink,
                 ),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               ListTile(
                 leading: Container(
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
                     color: c.primarySoft,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
                   child: Icon(Icons.photo_library_rounded, color: c.primary),
                 ),
                 title: Text(
                   'Galeri Foto',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: c.ink),
+                  style: TextStyle(fontSize: AppFontSize.title, fontWeight: FontWeight.w600, color: c.ink),
                 ),
                 subtitle: Text(
                   'Pilih foto dari penyimpanan perangkat',
-                  style: TextStyle(fontSize: 12, color: c.muted),
+                  style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                 ),
                 onTap: () => Navigator.of(context).pop(ImageSource.gallery),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpace.sm),
               ListTile(
                 leading: Container(
                   width: 40,
                   height: 40,
                   decoration: BoxDecoration(
                     color: c.primarySoft,
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(AppRadius.sm),
                   ),
                   child: Icon(Icons.camera_alt_rounded, color: c.primary),
                 ),
                 title: Text(
                   'Kamera',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: c.ink),
+                  style: TextStyle(fontSize: AppFontSize.title, fontWeight: FontWeight.w600, color: c.ink),
                 ),
                 subtitle: Text(
                   'Ambil foto baru secara langsung',
-                  style: TextStyle(fontSize: 12, color: c.muted),
+                  style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                 ),
                 onTap: () => Navigator.of(context).pop(ImageSource.camera),
               ),
@@ -253,7 +242,7 @@ class JournalImageGrid extends StatelessWidget {
                 onTap: () => onAddImage(),
               ),
             ),
-            const SizedBox(width: 8),
+            const SizedBox(width: AppSpace.sm),
             Expanded(
               child: _ActionImageButton(
                 icon: Icons.camera_alt_rounded,
@@ -263,7 +252,7 @@ class JournalImageGrid extends StatelessWidget {
             ),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
 
         // Grid Thumbnail
         if (imagePaths.isNotEmpty || canAddMore)
@@ -292,7 +281,7 @@ class JournalImageGrid extends StatelessWidget {
                           initialIndex: index,
                         ),
                         child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(AppRadius.md),
                           child: file.existsSync()
                               ? Image.file(
                                   file,
@@ -333,7 +322,7 @@ class JournalImageGrid extends StatelessWidget {
                           '${index + 1}',
                           style: TextStyle(
                             color: c.onPrimary,
-                            fontSize: 10,
+                            fontSize: AppFontSize.caption,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -370,7 +359,7 @@ class JournalImageGrid extends StatelessWidget {
                 onTap: onAddImage,
                 child: Container(
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                     border: Border.all(
                       color: c.line,
                       width: 1.5,
@@ -382,11 +371,11 @@ class JournalImageGrid extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.add_rounded, size: 24, color: c.muted),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: AppSpace.xxs),
                       Text(
                         'Tambah',
                         style: TextStyle(
-                          fontSize: 11,
+                          fontSize: AppFontSize.caption,
                           fontWeight: FontWeight.w600,
                           color: c.muted,
                         ),
@@ -398,10 +387,10 @@ class JournalImageGrid extends StatelessWidget {
             },
           ),
 
-        const SizedBox(height: 4),
+        const SizedBox(height: AppSpace.xs),
         Text(
           'Maks $maxImages gambar · JPEG dikompres ke 1600px',
-          style: TextStyle(fontSize: 11, color: c.muted),
+          style: TextStyle(fontSize: AppFontSize.caption, color: c.muted),
         ),
       ],
     );
@@ -424,21 +413,21 @@ class _ActionImageButton extends StatelessWidget {
     final c = context.colors;
     return Material(
       color: c.primarySoft,
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(AppRadius.md),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(AppRadius.md),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: AppSpace.md, horizontal: AppSpace.md),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, size: 18, color: c.primary),
-              const SizedBox(width: 6),
+              const SizedBox(width: AppSpace.sm),
               Text(
                 label,
                 style: TextStyle(
-                  fontSize: 13,
+                  fontSize: AppFontSize.body,
                   fontWeight: FontWeight.w600,
                   color: c.primary,
                 ),
@@ -472,15 +461,15 @@ class TxReceiptSection extends StatelessWidget {
     if (path == null) {
       return Material(
         color: c.primarySoft,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         child: InkWell(
           onTap: onPickReceipt,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(AppRadius.lg),
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+            padding: const EdgeInsets.symmetric(vertical: AppSpace.xxl, horizontal: AppSpace.lg),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(AppRadius.lg),
               border: Border.all(
                 color: c.primary.withValues(alpha: 0.4),
                 width: 1.5,
@@ -490,20 +479,20 @@ class TxReceiptSection extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Icon(Icons.receipt_long_rounded, size: 36, color: c.primary),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpace.sm),
                 Text(
                   'Foto Struk Belanja',
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: AppFontSize.bodyLg,
                     fontWeight: FontWeight.w600,
                     color: c.primary,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpace.xxs),
                 Text(
                   'Ambil dari kamera atau galeri',
                   style: TextStyle(
-                    fontSize: 12,
+                    fontSize: AppFontSize.meta,
                     color: c.primary.withValues(alpha: 0.8),
                   ),
                 ),
@@ -517,7 +506,7 @@ class TxReceiptSection extends StatelessWidget {
     final file = File(path);
     return Container(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: c.line),
       ),
       child: Column(
@@ -527,7 +516,7 @@ class TxReceiptSection extends StatelessWidget {
           GestureDetector(
             onTap: () => openImageViewer(context, paths: [path]),
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(AppRadius.lg)),
               child: SizedBox(
                 width: double.infinity,
                 height: 180,
@@ -551,16 +540,16 @@ class TxReceiptSection extends StatelessWidget {
 
           // Action row di bawah struk: Ganti & Hapus
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
             child: Row(
               children: [
                 Icon(Icons.check_circle_rounded, size: 16, color: c.primary),
-                const SizedBox(width: 6),
+                const SizedBox(width: AppSpace.sm),
                 Expanded(
                   child: Text(
                     'Struk terlampir (ketuk untuk perbesar)',
                     style: TextStyle(
-                      fontSize: 12,
+                      fontSize: AppFontSize.meta,
                       fontWeight: FontWeight.w500,
                       color: c.ink,
                     ),
@@ -569,7 +558,7 @@ class TxReceiptSection extends StatelessWidget {
                 TextButton.icon(
                   onPressed: onPickReceipt,
                   icon: const Icon(Icons.swap_horiz_rounded, size: 16),
-                  label: const Text('Ganti', style: TextStyle(fontSize: 12)),
+                  label: const Text('Ganti', style: TextStyle(fontSize: AppFontSize.meta)),
                   style: TextButton.styleFrom(
                     visualDensity: VisualDensity.compact,
                     foregroundColor: c.primary,

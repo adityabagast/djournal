@@ -22,6 +22,8 @@ import '../../report/presentation/report_screen.dart';
 import '../../search/presentation/search_screen.dart';
 import '../../settings/presentation/settings_screen.dart';
 import '../../today/presentation/today_screen.dart';
+import '../../../core/tokens.dart';
+import '../../../core/widgets/app_sheet.dart';
 
 /// Kerangka utama: 4 tab yang bisa digeser + floating dock dengan tombol
 /// tambah di tengah.
@@ -102,37 +104,24 @@ class _HomeShellState extends ConsumerState<HomeShell> {
 
   Future<void> _openQuickAdd() async {
     final l = context.l10n;
-    final choice = await showModalBottomSheet<String>(
+    final choice = await showAppSheet<String>(
       context: context,
       constraints: const BoxConstraints(maxWidth: 480),
-      backgroundColor: context.colors.surface,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
       builder: (ctx) => SafeArea(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.xxl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Center(
-                child: Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: context.colors.handle,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
+              const SheetHandle(),
+              const SizedBox(height: AppSpace.lg),
               Text(
                 l.quickAdd,
                 style: Theme.of(ctx).textTheme.titleMedium
                     ?.copyWith(fontWeight: FontWeight.w700),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               _QuickAction(
                 icon: Icons.account_balance_wallet_outlined,
                 fg: context.colors.fg(const Color(0xFF9A3412)),
@@ -143,7 +132,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 subtitle: l.quickAddTxSub,
                 onTap: () => Navigator.pop(ctx, 'tx'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               _QuickAction(
                 icon: Icons.menu_book_outlined,
                 fg: context.colors.onPrimarySoft,
@@ -152,7 +141,7 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                 subtitle: l.quickAddJournalSub,
                 onTap: () => Navigator.pop(ctx, 'journal'),
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: AppSpace.md),
               _QuickAction(
                 icon: Icons.mic_rounded,
                 fg: context.colors.primary,
@@ -324,7 +313,7 @@ class _DesktopSidebar extends StatelessWidget {
         color: sidebarBg,
         border: Border(right: BorderSide(color: c.line)),
       ),
-      padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xl, AppSpace.lg, AppSpace.lg),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -335,12 +324,12 @@ class _DesktopSidebar extends StatelessWidget {
                 height: 38,
                 decoration: BoxDecoration(
                   color: const Color(0xFFFFF9F0),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                   border: Border.all(color: c.line),
                 ),
                 child: const Center(child: Mascot(MascotPose.halo, size: 26)),
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -348,64 +337,64 @@ class _DesktopSidebar extends StatelessWidget {
                     Text(
                       'Nyawtat',
                       style: TextStyle(
-                        fontSize: 16,
+                        fontSize: AppFontSize.title,
                         fontWeight: FontWeight.w700,
                         color: c.ink,
                         letterSpacing: -0.3,
                       ),
                     ),
-                    const SizedBox(height: 2),
+                    const SizedBox(height: AppSpace.xxs),
                     _SyncStatusBadge(account: account),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: AppSpace.lg),
           Material(
             color: c.primary,
-            borderRadius: BorderRadius.circular(12),
+            borderRadius: BorderRadius.circular(AppRadius.md),
             elevation: 2,
             shadowColor: c.primary.withValues(alpha: 0.3),
             child: InkWell(
               onTap: onAdd,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
+                  horizontal: AppSpace.lg,
                   vertical: 11,
                 ),
                 child: Row(
                   children: [
                     Icon(Icons.add, color: c.onPrimary, size: 18),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpace.sm),
                     Expanded(
                       child: Text(
                         l.quickAdd,
                         style: TextStyle(
                           color: c.onPrimary,
-                          fontSize: 13,
+                          fontSize: AppFontSize.body,
                           fontWeight: FontWeight.w600,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: AppSpace.sm),
                     Container(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 6,
-                        vertical: 2,
+                        horizontal: AppSpace.sm,
+                        vertical: AppSpace.xxs,
                       ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.22),
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(AppRadius.xs),
                       ),
                       child: Text(
                         'Ctrl+N',
                         style: TextStyle(
                           color: c.onPrimary,
-                          fontSize: 10,
+                          fontSize: AppFontSize.caption,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -415,7 +404,7 @@ class _DesktopSidebar extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: AppSpace.lg),
           for (var i = 0; i < items.length; i++) ...[
             _DesktopNavItem(
               icon: items[i].$1,
@@ -424,11 +413,11 @@ class _DesktopSidebar extends StatelessWidget {
               selected: selectedIndex == i,
               onTap: () => onSelect(i),
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
           ],
           const Spacer(),
           Divider(color: c.line, height: 1),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           _DesktopNavItem(
             icon: Icons.settings_outlined,
             label: l.settings,
@@ -462,25 +451,25 @@ class _DesktopNavItem extends StatelessWidget {
     final c = context.colors;
     return Material(
       color: selected ? c.surface : Colors.transparent,
-      borderRadius: BorderRadius.circular(10),
+      borderRadius: BorderRadius.circular(AppRadius.sm),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(AppRadius.sm),
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
+            borderRadius: BorderRadius.circular(AppRadius.sm),
             border: Border.all(color: selected ? c.line : Colors.transparent),
           ),
           child: Row(
             children: [
               Icon(icon, size: 20, color: selected ? c.primary : c.muted),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Text(
                   label,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppFontSize.body,
                     fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                     color: selected ? c.primary : c.muted,
                   ),
@@ -489,7 +478,7 @@ class _DesktopNavItem extends StatelessWidget {
               if (shortcut.isNotEmpty)
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 5,
+                    horizontal: AppSpace.xs,
                     vertical: 1.5,
                   ),
                   decoration: BoxDecoration(
@@ -498,12 +487,12 @@ class _DesktopNavItem extends StatelessWidget {
                         : (c.isDark
                               ? Colors.white10
                               : Colors.black.withValues(alpha: 0.05)),
-                    borderRadius: BorderRadius.circular(4),
+                    borderRadius: BorderRadius.circular(AppRadius.xs),
                   ),
                   child: Text(
                     shortcut,
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: AppFontSize.caption,
                       fontWeight: FontWeight.w500,
                       color: selected ? c.onPrimarySoft : c.faint,
                     ),
@@ -537,11 +526,11 @@ class _SyncStatusBadge extends StatelessWidget {
               color: c.primary,
             ),
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: AppSpace.xs),
           Text(
             'Menyinkronkan...',
             style: TextStyle(
-              fontSize: 11,
+              fontSize: AppFontSize.caption,
               color: c.muted,
               fontWeight: FontWeight.w500,
             ),
@@ -558,12 +547,12 @@ class _SyncStatusBadge extends StatelessWidget {
             height: 6,
             decoration: BoxDecoration(color: c.income, shape: BoxShape.circle),
           ),
-          const SizedBox(width: 5),
+          const SizedBox(width: AppSpace.xs),
           Flexible(
             child: Text(
               'Tersinkron',
               style: TextStyle(
-                fontSize: 11,
+                fontSize: AppFontSize.caption,
                 color: c.income,
                 fontWeight: FontWeight.w600,
               ),
@@ -582,12 +571,12 @@ class _SyncStatusBadge extends StatelessWidget {
           height: 6,
           decoration: BoxDecoration(color: c.faint, shape: BoxShape.circle),
         ),
-        const SizedBox(width: 5),
+        const SizedBox(width: AppSpace.xs),
         Flexible(
           child: Text(
             'Offline (Lokal)',
             style: TextStyle(
-              fontSize: 11,
+              fontSize: AppFontSize.caption,
               color: c.muted,
               fontWeight: FontWeight.w500,
             ),
@@ -650,7 +639,7 @@ class _Dock extends StatelessWidget {
 
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(36),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
         boxShadow: [
           BoxShadow(
             color: c.shadow.withValues(alpha: c.isDark ? 0.45 : 0.16),
@@ -665,17 +654,17 @@ class _Dock extends StatelessWidget {
         ],
       ),
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(36),
+        borderRadius: BorderRadius.circular(AppRadius.pill),
         child: BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
           child: Container(
             height: 72,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
             decoration: BoxDecoration(
               color: c.isDark
                   ? const Color(0xFF1E2421).withValues(alpha: 0.88)
                   : Colors.white.withValues(alpha: 0.86),
-              borderRadius: BorderRadius.circular(36),
+              borderRadius: BorderRadius.circular(AppRadius.pill),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -690,10 +679,10 @@ class _Dock extends StatelessWidget {
                     shadowColor: c.isDark
                         ? Colors.black
                         : c.primary.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(27),
+                    borderRadius: BorderRadius.circular(AppRadius.pill),
                     child: InkWell(
                       onTap: onAdd,
-                      borderRadius: BorderRadius.circular(27),
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
                       child: SizedBox(
                         width: 54,
                         height: 54,
@@ -738,26 +727,26 @@ class _DockTab extends StatelessWidget {
       excludeSemantics: true,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(24),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: AppMotion.short,
           width: 64,
           height: 54,
           decoration: BoxDecoration(
             color: selected ? context.colors.primarySoft : Colors.transparent,
-            borderRadius: BorderRadius.circular(24),
+            borderRadius: BorderRadius.circular(AppRadius.xl),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Icon(icon, color: color, size: 24),
-              const SizedBox(height: 3),
+              const SizedBox(height: AppSpace.xxs),
               Text(
                 label,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontSize: 11,
+                  fontSize: AppFontSize.caption,
                   fontWeight: FontWeight.w600,
                   color: color,
                 ),
@@ -792,14 +781,14 @@ class _QuickAction extends StatelessWidget {
     return Material(
       color: context.colors.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         side: BorderSide(color: context.colors.line),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         child: Padding(
-          padding: const EdgeInsets.all(14),
+          padding: const EdgeInsets.all(AppSpace.lg),
           child: Row(
             children: [
               Container(
@@ -807,11 +796,11 @@ class _QuickAction extends StatelessWidget {
                 height: 44,
                 decoration: BoxDecoration(
                   color: bg,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
                 child: Icon(icon, color: fg, size: 22),
               ),
-              const SizedBox(width: 14),
+              const SizedBox(width: AppSpace.lg),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -823,7 +812,7 @@ class _QuickAction extends StatelessWidget {
                     Text(
                       subtitle,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppFontSize.body,
                         color: context.colors.muted,
                       ),
                     ),

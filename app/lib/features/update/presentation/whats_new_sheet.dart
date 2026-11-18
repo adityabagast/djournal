@@ -8,6 +8,7 @@ import '../providers/update_controller.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
 import 'update_card.dart';
+import '../../../core/tokens.dart';
 
 /// Sheet "Apa yang baru": catatan rilis, ukuran, dan tombol unduh.
 class WhatsNewSheet extends ConsumerWidget {
@@ -46,12 +47,12 @@ class WhatsNewSheet extends ConsumerWidget {
       maxChildSize: 0.92,
       builder: (context, scroll) => ListView(
         controller: scroll,
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, 0, AppSpace.xl, AppSpace.xxl),
         children: [
           Row(
             children: [
               const Mascot(MascotPose.senang, size: 60),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -59,36 +60,36 @@ class WhatsNewSheet extends ConsumerWidget {
                     Text(
                       l.updateWhatsNewTitle(r.version),
                       style: const TextStyle(
-                        fontSize: 18,
+                        fontSize: AppFontSize.heading,
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     if (meta.isNotEmpty)
                       Text(
                         meta,
-                        style: TextStyle(fontSize: 12.5, color: c.muted),
+                        style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
                       ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          Text(r.notes, style: const TextStyle(fontSize: 14, height: 1.55)),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
+          Text(r.notes, style: const TextStyle(fontSize: AppFontSize.bodyLg, height: 1.55)),
+          const SizedBox(height: AppSpace.lg),
           if (inApp)
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(AppSpace.md),
               decoration: BoxDecoration(
                 color: c.subtle,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(AppRadius.lg),
               ),
               child: Text(
                 l.updateInstallHint,
-                style: TextStyle(fontSize: 12.5, height: 1.5, color: c.muted),
+                style: TextStyle(fontSize: AppFontSize.meta, height: 1.5, color: c.muted),
               ),
             ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           FilledButton(
             onPressed: () {
               Navigator.of(context).pop();
@@ -109,7 +110,7 @@ class WhatsNewSheet extends ConsumerWidget {
                   : l.updateDownloadAndInstall,
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           OutlinedButton(
             onPressed: () {
               Navigator.of(context).pop();

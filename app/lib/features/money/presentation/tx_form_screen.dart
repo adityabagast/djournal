@@ -14,6 +14,7 @@ import '../../../core/widgets/image_viewer.dart';
 import '../../../core/widgets/mascot.dart';
 import 'categories_screen.dart';
 import 'wallet_form_sheet.dart';
+import '../../../core/tokens.dart';
 
 /// Form catat / edit transaksi (pengeluaran, pemasukan, atau transfer antar
 /// dompet). [existing] null = transaksi baru.
@@ -301,7 +302,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
     Widget label(String text) => Text(
       text,
       style: t.bodySmall?.copyWith(
-        fontSize: 13,
+        fontSize: AppFontSize.body,
         fontWeight: FontWeight.w600,
         color: context.colors.muted,
       ),
@@ -323,14 +324,14 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 20),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xl),
         children: [
           // Jenis transaksi: segmented control seperti desain.
           Container(
-            padding: const EdgeInsets.all(4),
+            padding: const EdgeInsets.all(AppSpace.xs),
             decoration: BoxDecoration(
               color: context.colors.track,
-              borderRadius: BorderRadius.circular(24),
+              borderRadius: BorderRadius.circular(AppRadius.xl),
             ),
             child: Row(
               children: [
@@ -349,7 +350,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           label(l.amount),
           Row(
             crossAxisAlignment: CrossAxisAlignment.baseline,
@@ -362,7 +363,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               Expanded(
                 child: TextField(
                   controller: _amount,
@@ -378,7 +379,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                   decoration: InputDecoration(
                     hintText: '0',
                     filled: false,
-                    contentPadding: const EdgeInsets.only(bottom: 6),
+                    contentPadding: const EdgeInsets.only(bottom: AppSpace.sm),
                     border: UnderlineInputBorder(
                       borderSide: BorderSide(
                         color: _showAmountError
@@ -410,13 +411,13 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           ),
           if (_showAmountError)
             Padding(
-              padding: const EdgeInsets.only(top: 4),
+              padding: const EdgeInsets.only(top: AppSpace.xs),
               child: Text(
                 l.amountRequired,
                 style: t.bodySmall?.copyWith(color: context.colors.expense),
               ),
             ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           if (isTransfer)
             _TransferWallets(
               wallets: wallets,
@@ -448,7 +449,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: t.bodySmall?.copyWith(
-                        fontSize: 13,
+                        fontSize: AppFontSize.body,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
@@ -464,7 +465,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                 ),
               ],
             ),
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
             Wrap(
               spacing: 6,
               runSpacing: 6,
@@ -484,29 +485,29 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                 selectedId: _categoryId,
                 onSelect: (id) => setState(() => _categoryId = id),
               ),
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpace.xl),
             label(l.wallet),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             _WalletChips(
               wallets: wallets,
               selectedId: _walletId,
               onSelect: (id) => setState(() => _walletId = id),
             ),
           ],
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           Material(
             color: context.colors.surface,
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               side: BorderSide(color: context.colors.line),
             ),
             child: InkWell(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppRadius.md),
               onTap: _pickDateTime,
               child: Padding(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 14,
+                  horizontal: AppSpace.lg,
+                  vertical: AppSpace.lg,
                 ),
                 child: Row(
                   children: [
@@ -518,7 +519,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const SizedBox(width: 4),
+                    const SizedBox(width: AppSpace.xs),
                     Icon(
                       Icons.chevron_right,
                       size: 20,
@@ -529,9 +530,9 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               ),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           label(l.note),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           TextField(
             controller: _note,
             textCapitalization: TextCapitalization.sentences,
@@ -539,9 +540,9 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               hintText: isTransfer ? l.transferNoteHint : l.noteHint,
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
           label('Foto Struk / Bukti Transaksi'),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           TxReceiptSection(
             receiptPath: _receiptPath,
             onPickReceipt: _pickReceipt,
@@ -565,12 +566,12 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
           style: FilledButton.styleFrom(
             minimumSize: const Size.fromHeight(52),
             shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(14),
+              borderRadius: BorderRadius.circular(AppRadius.md),
             ),
           ),
           child: Text(
             isTransfer ? l.saveTransfer : l.saveTx,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+            style: const TextStyle(fontSize: AppFontSize.title, fontWeight: FontWeight.w700),
           ),
         ),
       ),
@@ -600,12 +601,12 @@ class _Segment extends StatelessWidget {
           onTap();
         },
         child: AnimatedContainer(
-          duration: const Duration(milliseconds: 150),
+          duration: AppMotion.short,
           height: 40,
           alignment: Alignment.center,
           decoration: BoxDecoration(
             color: selected ? context.colors.raised : Colors.transparent,
-            borderRadius: BorderRadius.circular(20),
+            borderRadius: BorderRadius.circular(AppRadius.lg),
             boxShadow: selected
                 ? [
                     BoxShadow(
@@ -660,7 +661,7 @@ class _CategoryPill extends StatelessWidget {
             onTap();
           },
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.sm),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -672,11 +673,11 @@ class _CategoryPill extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                 ),
-                const SizedBox(width: 7),
+                const SizedBox(width: AppSpace.sm),
                 Text(
                   categoryLabel(context.l10n, category),
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppFontSize.body,
                     fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
                     color: selected
                         ? context.colors.onPrimarySoft
@@ -712,8 +713,8 @@ class _SubcategoryRow extends StatelessWidget {
   Widget build(BuildContext context) {
     final l = context.l10n;
     return Container(
-      margin: const EdgeInsets.only(top: 10, left: 4),
-      padding: const EdgeInsets.only(left: 12),
+      margin: const EdgeInsets.only(top: AppSpace.md, left: AppSpace.xs),
+      padding: const EdgeInsets.only(left: AppSpace.md),
       decoration: BoxDecoration(
         border: Border(left: BorderSide(color: context.colors.line, width: 2)),
       ),
@@ -736,7 +737,7 @@ class _SubcategoryRow extends StatelessWidget {
                   constraints: const BoxConstraints(minHeight: 36),
                   alignment: Alignment.center,
                   child: Container(
-                    padding: const EdgeInsets.only(bottom: 2),
+                    padding: const EdgeInsets.only(bottom: AppSpace.xxs),
                     decoration: BoxDecoration(
                       border: Border(
                         bottom: BorderSide(
@@ -750,7 +751,7 @@ class _SubcategoryRow extends StatelessWidget {
                     child: Text(
                       text,
                       style: TextStyle(
-                        fontSize: 13,
+                        fontSize: AppFontSize.body,
                         fontWeight: id == selectedId
                             ? FontWeight.w600
                             : FontWeight.w400,
@@ -874,21 +875,21 @@ class _TransferWallets extends StatelessWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(14, 14, 14, 16),
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.lg),
       decoration: BoxDecoration(
         color: context.colors.surface,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: context.colors.line),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           header(l.transferFrom, fromId),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           _WalletChips(wallets: wallets, selectedId: fromId, onSelect: onFrom),
           if (from != null && hasTo && amount > balanceOf(from.id))
             Padding(
-              padding: const EdgeInsets.only(top: 8),
+              padding: const EdgeInsets.only(top: AppSpace.sm),
               child: Text(
                 l.transferOverdraw(from.name),
                 style: small?.copyWith(color: context.colors.warning),
@@ -916,7 +917,7 @@ class _TransferWallets extends StatelessWidget {
             ),
           ),
           header(l.transferTo, toId),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           if (wallets.length >= 2)
             _WalletChips(
               wallets: wallets,
@@ -926,10 +927,10 @@ class _TransferWallets extends StatelessWidget {
             )
           else
             Container(
-              padding: const EdgeInsets.fromLTRB(12, 6, 6, 6),
+              padding: const EdgeInsets.fromLTRB(AppSpace.md, AppSpace.sm, AppSpace.sm, AppSpace.sm),
               decoration: BoxDecoration(
                 color: context.colors.warnSoft,
-                borderRadius: BorderRadius.circular(14),
+                borderRadius: BorderRadius.circular(AppRadius.md),
               ),
               child: Row(
                 children: [

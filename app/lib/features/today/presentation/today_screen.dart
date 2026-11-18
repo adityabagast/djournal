@@ -24,6 +24,7 @@ import 'widgets/budget_warning_banner.dart';
 import 'widgets/global_budget_card.dart';
 import 'widgets/streak_badge.dart';
 import 'widgets/wishlist_card.dart';
+import '../../../core/tokens.dart';
 
 class TodayScreen extends ConsumerWidget {
   const TodayScreen({super.key});
@@ -90,10 +91,10 @@ class TodayScreen extends ConsumerWidget {
                               l.todaySpent,
                               style: t.bodySmall?.copyWith(
                                 color: context.colors.muted,
-                                fontSize: 13,
+                                fontSize: AppFontSize.body,
                               ),
                             ),
-                            const SizedBox(width: 6),
+                            const SizedBox(width: AppSpace.sm),
                             InkWell(
                               onTap: () => ref
                                   .read(settingsRepositoryProvider)
@@ -101,9 +102,9 @@ class TodayScreen extends ConsumerWidget {
                                     'hide_amounts',
                                     (!hideAmounts).toString(),
                                   ),
-                              borderRadius: BorderRadius.circular(10),
+                              borderRadius: BorderRadius.circular(AppRadius.sm),
                               child: Padding(
-                                padding: const EdgeInsets.all(2),
+                                padding: const EdgeInsets.all(AppSpace.xxs),
                                 child: Icon(
                                   hideAmounts
                                       ? Icons.visibility_off_outlined
@@ -130,7 +131,7 @@ class TodayScreen extends ConsumerWidget {
                             l.monthSpent(rupiah(monthOut, hide: hideAmounts)),
                             style: t.bodySmall?.copyWith(
                               color: context.colors.muted,
-                              fontSize: 13,
+                              fontSize: AppFontSize.body,
                             ),
                           ),
                       ],
@@ -143,9 +144,9 @@ class TodayScreen extends ConsumerWidget {
                 ],
               ),
               if (budget > 0) ...[
-                const SizedBox(height: 14),
+                const SizedBox(height: AppSpace.lg),
                 ClipRRect(
-                  borderRadius: BorderRadius.circular(4),
+                  borderRadius: BorderRadius.circular(AppRadius.xs),
                   child: LinearProgressIndicator(
                     value: (monthOut / budget).clamp(0, 1).toDouble(),
                     minHeight: 8,
@@ -155,7 +156,7 @@ class TodayScreen extends ConsumerWidget {
                         : context.colors.primary,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: AppSpace.sm),
                 Text(
                   l.budgetUsage(
                     DateFormat('MMMM', context.localeTag).format(now),
@@ -167,7 +168,7 @@ class TodayScreen extends ConsumerWidget {
                   ),
                   style: t.bodySmall?.copyWith(
                     color: context.colors.muted,
-                    fontSize: 13,
+                    fontSize: AppFontSize.body,
                   ),
                 ),
               ],
@@ -176,7 +177,7 @@ class TodayScreen extends ConsumerWidget {
         );
 
         final timelineCard = AppCard(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 6),
+          padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -196,12 +197,12 @@ class TodayScreen extends ConsumerWidget {
                       backgroundColor: context.colors.primarySoft,
                       foregroundColor: context.colors.primary,
                       minimumSize: const Size(0, 36),
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
+                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
                       shape: const StadiumBorder(),
                       textStyle: buttonTextStyle(
                         context,
                         const TextStyle(
-                          fontSize: 13,
+                          fontSize: AppFontSize.body,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -256,12 +257,12 @@ class TodayScreen extends ConsumerWidget {
                 ],
               ),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             const UpdateCard(),
             _GreetingCard(now: now, count: timeline.length),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             const RestCard(),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             const UpcomingEventsCard(),
             BudgetWarningBanner(snapshot: snap, now: now),
             if (context.isWide)
@@ -273,31 +274,31 @@ class TodayScreen extends ConsumerWidget {
                     child: Column(
                       children: [
                         spentCard,
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         GlobalBudgetCard(
                           snapshot: snap,
                           now: now,
                           hideAmounts: hideAmounts,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         timelineCard,
                       ],
                     ),
                   ),
-                  const SizedBox(width: 18),
+                  const SizedBox(width: AppSpace.lg),
                   Expanded(
                     flex: 4,
                     child: Column(
                       children: [
                         BillsCard(now: now),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         const WishlistCard(),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         _TodayWalletsCard(
                           snapshot: snap,
                           hideAmounts: hideAmounts,
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         _TodayTipCard(todayOut: todayOut, budget: budget),
                       ],
                     ),
@@ -306,17 +307,17 @@ class TodayScreen extends ConsumerWidget {
               )
             else ...[
               spentCard,
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               GlobalBudgetCard(
                 snapshot: snap,
                 now: now,
                 hideAmounts: hideAmounts,
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               timelineCard,
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               BillsCard(now: now),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               const WishlistCard(),
             ],
           ],
@@ -345,34 +346,34 @@ class _GreetingCard extends StatelessWidget {
     };
     return Container(
       clipBehavior: Clip.antiAlias,
-      padding: const EdgeInsets.fromLTRB(8, 14, 18, 0),
+      padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.lg, AppSpace.lg, 0),
       decoration: BoxDecoration(
         color: c.primarySoft,
-        borderRadius: BorderRadius.circular(28),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Mascot(count == 0 ? MascotPose.tidur : MascotPose.halo, size: 86),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: Padding(
-              padding: const EdgeInsets.only(bottom: 18),
+              padding: const EdgeInsets.only(bottom: AppSpace.lg),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     greeting,
                     style: TextStyle(
-                      fontSize: 17,
+                      fontSize: AppFontSize.heading,
                       fontWeight: FontWeight.w700,
                       color: c.onPrimarySoft,
                     ),
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: AppSpace.xs),
                   Text(
                     count == 0 ? l.greetingEmpty : l.greetingCount(count),
-                    style: TextStyle(fontSize: 13, color: c.onPrimarySoft),
+                    style: TextStyle(fontSize: AppFontSize.body, color: c.onPrimarySoft),
                   ),
                 ],
               ),
@@ -411,12 +412,12 @@ class _TodayWalletsCard extends StatelessWidget {
                 onPressed: () => WalletsScreen.open(context),
                 style: TextButton.styleFrom(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
+                    horizontal: AppSpace.sm,
+                    vertical: AppSpace.xs,
                   ),
                   minimumSize: const Size(0, 30),
                   textStyle: const TextStyle(
-                    fontSize: 12,
+                    fontSize: AppFontSize.meta,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -424,22 +425,22 @@ class _TodayWalletsCard extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           if (snapshot.wallets.isEmpty)
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
+              padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
               child: Text(
                 'Belum ada dompet',
-                style: TextStyle(color: c.muted, fontSize: 13),
+                style: TextStyle(color: c.muted, fontSize: AppFontSize.body),
               ),
             ),
           for (final w in snapshot.wallets) ...[
             Container(
-              margin: const EdgeInsets.only(bottom: 8),
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+              margin: const EdgeInsets.only(bottom: AppSpace.sm),
+              padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
               decoration: BoxDecoration(
                 color: c.isDark ? c.subtle : const Color(0xFFF7FAF8),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(AppRadius.md),
                 border: Border.all(color: c.line),
               ),
               child: Row(
@@ -449,7 +450,7 @@ class _TodayWalletsCard extends StatelessWidget {
                     height: 32,
                     decoration: BoxDecoration(
                       color: c.primarySoft,
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(AppRadius.sm),
                     ),
                     child: Center(
                       child: Icon(
@@ -463,7 +464,7 @@ class _TodayWalletsCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(width: 10),
+                  const SizedBox(width: AppSpace.md),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -471,7 +472,7 @@ class _TodayWalletsCard extends StatelessWidget {
                         Text(
                           w.name,
                           style: const TextStyle(
-                            fontSize: 13,
+                            fontSize: AppFontSize.body,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -479,7 +480,7 @@ class _TodayWalletsCard extends StatelessWidget {
                           w.type == 'cash'
                               ? 'Tunai'
                               : (w.type == 'bank' ? 'Rekening' : 'E-Wallet'),
-                          style: TextStyle(fontSize: 11, color: c.muted),
+                          style: TextStyle(fontSize: AppFontSize.caption, color: c.muted),
                         ),
                       ],
                     ),
@@ -487,7 +488,7 @@ class _TodayWalletsCard extends StatelessWidget {
                   Text(
                     rupiah(snapshot.balanceOf(w.id), hide: hideAmounts),
                     style: const TextStyle(
-                      fontSize: 13,
+                      fontSize: AppFontSize.body,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -515,17 +516,17 @@ class _TodayTipCard extends StatelessWidget {
         : 'Pengeluaran hari ini masih terkendali dan rapi. Semangat mencatat!';
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpace.lg),
       decoration: BoxDecoration(
         color: c.primarySoft,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         border: Border.all(color: c.primary.withValues(alpha: 0.15)),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Mascot(MascotPose.senang, size: 44),
-          const SizedBox(width: 14),
+          const SizedBox(width: AppSpace.lg),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -533,15 +534,15 @@ class _TodayTipCard extends StatelessWidget {
                 Text(
                   'Tips Hari Ini',
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppFontSize.body,
                     fontWeight: FontWeight.w700,
                     color: c.onPrimarySoft,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: AppSpace.xs),
                 Text(
                   message,
-                  style: TextStyle(fontSize: 12, color: c.muted, height: 1.4),
+                  style: TextStyle(fontSize: AppFontSize.meta, color: c.muted, height: 1.4),
                 ),
               ],
             ),

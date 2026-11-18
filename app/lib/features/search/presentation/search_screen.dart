@@ -16,6 +16,7 @@ import '../../../core/widgets/mascot.dart';
 import '../../journal/presentation/mood.dart';
 import '../../journal/presentation/entry_form_screen.dart';
 import '../../money/presentation/tx_form_screen.dart';
+import '../../../core/tokens.dart';
 
 /// Kunci app_settings (lokal) untuk pencarian terakhir.
 const _recentKey = 'search_recent';
@@ -123,7 +124,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       ),
       shape: const StadiumBorder(),
       labelStyle: TextStyle(
-        fontSize: 13,
+        fontSize: AppFontSize.body,
         fontWeight: FontWeight.w600,
         color: selected ? context.colors.onPrimary : context.colors.ink,
       ),
@@ -153,7 +154,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       );
       body = results.hits.isEmpty
           ? ListView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(AppSpace.xl),
               children: [
                 MascotEmpty(
                   pose: MascotPose.mencari,
@@ -178,7 +179,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
       appBar: AppBar(
         titleSpacing: 0,
         title: Padding(
-          padding: const EdgeInsets.only(right: 16),
+          padding: const EdgeInsets.only(right: AppSpace.lg),
           child: TextField(
             controller: _query,
             autofocus: true,
@@ -196,17 +197,17 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
                       onPressed: () => _setQuery(''),
                       icon: const Icon(Icons.close, size: 20),
                     ),
-              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+              contentPadding: const EdgeInsets.symmetric(vertical: AppSpace.md),
               border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(AppRadius.xl),
                 borderSide: BorderSide(color: context.colors.primary),
               ),
               enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(AppRadius.xl),
                 borderSide: BorderSide(color: context.colors.line),
               ),
               focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(24),
+                borderRadius: BorderRadius.circular(AppRadius.xl),
                 borderSide: BorderSide(
                   color: context.colors.primary,
                   width: 1.5,
@@ -219,7 +220,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           preferredSize: const Size.fromHeight(52),
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.fromLTRB(16, 4, 16, 8),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.xs, AppSpace.lg, AppSpace.sm),
             child: Row(
               spacing: 8,
               children: [
@@ -295,7 +296,7 @@ class _StartView extends ConsumerWidget {
     ];
 
     Widget sectionTitle(String text, {Widget? trailing}) => Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 0, 6),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, 0, AppSpace.sm),
       child: Row(
         children: [
           Expanded(
@@ -304,7 +305,7 @@ class _StartView extends ConsumerWidget {
               style: t.bodySmall?.copyWith(
                 fontWeight: FontWeight.w600,
                 color: context.colors.muted,
-                fontSize: 13,
+                fontSize: AppFontSize.body,
               ),
             ),
           ),
@@ -314,7 +315,7 @@ class _StartView extends ConsumerWidget {
     );
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
       children: [
         if (recent.isNotEmpty) ...[
           sectionTitle(
@@ -326,7 +327,7 @@ class _StartView extends ConsumerWidget {
             ),
           ),
           AppCard(
-            padding: const EdgeInsets.symmetric(horizontal: 4),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
             child: Column(
               children: [
                 for (final (i, r) in recent.indexed)
@@ -349,7 +350,7 @@ class _StartView extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppSpace.xl),
         ],
         if (suggestions.isNotEmpty) ...[
           sectionTitle(l.trySearching),
@@ -365,7 +366,7 @@ class _StartView extends ConsumerWidget {
                   side: BorderSide.none,
                   shape: const StadiumBorder(),
                   labelStyle: TextStyle(
-                    fontSize: 13,
+                    fontSize: AppFontSize.body,
                     fontWeight: FontWeight.w600,
                     color: color,
                   ),
@@ -413,10 +414,10 @@ class _Results extends ConsumerWidget {
     }
 
     return ListView(
-      padding: const EdgeInsets.fromLTRB(20, 8, 20, 32),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -425,7 +426,7 @@ class _Results extends ConsumerWidget {
                   count,
                   style: t.bodySmall?.copyWith(
                     fontWeight: FontWeight.w600,
-                    fontSize: 13,
+                    fontSize: AppFontSize.body,
                   ),
                 ),
               ),
@@ -437,20 +438,20 @@ class _Results extends ConsumerWidget {
             ],
           ),
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: AppSpace.md),
         for (final entry in groups.entries) ...[
           Padding(
-            padding: const EdgeInsets.fromLTRB(4, 0, 4, 6),
+            padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
             child: Text(
               dayLabel(context, entry.key),
               style: t.bodySmall?.copyWith(
                 color: context.colors.muted,
-                fontSize: 13,
+                fontSize: AppFontSize.body,
               ),
             ),
           ),
           AppCard(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg),
             child: Column(
               children: [
                 for (final (i, hit) in entry.value.indexed)
@@ -464,7 +465,7 @@ class _Results extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 14),
+          const SizedBox(height: AppSpace.lg),
         ],
       ],
     );
@@ -550,7 +551,7 @@ class _HitRow extends ConsumerWidget {
         height: 36,
         decoration: BoxDecoration(
           color: context.colors.primarySoft,
-          borderRadius: BorderRadius.circular(11),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Icon(
           Icons.menu_book_outlined,
@@ -610,7 +611,7 @@ class _HitRow extends ConsumerWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12),
+        padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
         decoration: BoxDecoration(
           border: showDivider
               ? Border(bottom: BorderSide(color: context.colors.divider))
@@ -622,7 +623,7 @@ class _HitRow extends ConsumerWidget {
               : CrossAxisAlignment.center,
           children: [
             badge,
-            const SizedBox(width: 12),
+            const SizedBox(width: AppSpace.md),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -650,7 +651,7 @@ class _HitRow extends ConsumerWidget {
                       ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: metaStyle?.copyWith(fontSize: 13),
+                      style: metaStyle?.copyWith(fontSize: AppFontSize.body),
                     ),
                   if (meta.isNotEmpty)
                     Text.rich(
@@ -673,7 +674,7 @@ class _HitRow extends ConsumerWidget {
                 ],
               ),
             ),
-            if (trailing != null) ...[const SizedBox(width: 8), trailing],
+            if (trailing != null) ...[const SizedBox(width: AppSpace.sm), trailing],
           ],
         ),
       ),

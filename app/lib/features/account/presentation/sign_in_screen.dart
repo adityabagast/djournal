@@ -7,6 +7,7 @@ import '../data/backend.dart';
 import '../../../l10n/app_localizations.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
+import '../../../core/tokens.dart';
 
 String apiErrorText(AppLocalizations l, ApiError e) => switch (e) {
   ApiError.network => l.errNetwork,
@@ -112,39 +113,39 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
       ),
       body: AutofillGroup(
         child: ListView(
-          padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+          padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
           children: [
             Text(
               l.signInPrompt,
               style: t.bodyMedium?.copyWith(color: context.colors.muted),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             OutlinedButton.icon(
               onPressed: _busy ? null : _signInWithGoogle,
               style: OutlinedButton.styleFrom(
                 minimumSize: const Size.fromHeight(48),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppRadius.md),
                 ),
               ),
               icon: const SizedBox.square(
                 dimension: 20,
                 child: Center(
-                  child: Text('G', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue, fontSize: 18)),
+                  child: Text('G', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue, fontSize: AppFontSize.heading)),
                 ),
               ),
               label: Text(l.googleSignIn, style: const TextStyle(fontWeight: FontWeight.w600)),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             Row(
               children: [
                 Expanded(child: Divider(color: context.colors.divider)),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
                   child: Text(
                     'ATAU',
                     style: TextStyle(
-                      fontSize: 11,
+                      fontSize: AppFontSize.caption,
                       fontWeight: FontWeight.w600,
                       color: context.colors.muted,
                     ),
@@ -153,7 +154,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 Expanded(child: Divider(color: context.colors.divider)),
               ],
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             TextField(
               controller: _email,
               keyboardType: TextInputType.emailAddress,
@@ -162,7 +163,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               textInputAction: TextInputAction.next,
               decoration: InputDecoration(labelText: l.email),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSpace.md),
             TextField(
               controller: _password,
               obscureText: _obscure,
@@ -186,13 +187,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               ),
             ),
             if (_error != null) ...[
-              const SizedBox(height: 8),
+              const SizedBox(height: AppSpace.sm),
               Text(
                 _error!,
                 style: t.bodyMedium?.copyWith(color: context.colors.expense),
               ),
             ],
-            const SizedBox(height: 20),
+            const SizedBox(height: AppSpace.xl),
             FilledButton(
               onPressed: _busy ? null : _submit,
               style: FilledButton.styleFrom(
@@ -209,7 +210,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                     )
                   : Text(_register ? l.register : l.signIn),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             TextButton(
               onPressed: _busy
                   ? null

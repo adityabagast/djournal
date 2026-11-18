@@ -5,6 +5,7 @@ import '../format.dart';
 import '../platform/platform_info.dart';
 import '../theme.dart';
 import '../../l10n/app_localizations.dart';
+import '../tokens.dart';
 
 extension L10nX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this);
@@ -21,7 +22,7 @@ extension ResponsiveX on BuildContext {
 
   /// Padding standar layar yang adaptif.
   EdgeInsets get screenPadding =>
-      EdgeInsets.fromLTRB(20, 24, 20, bottomDockPadding);
+      EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xxl, AppSpace.xl, bottomDockPadding);
 }
 
 /// "Hari ini · Kamis, 8 Okt"
@@ -64,7 +65,7 @@ class ScreenHeader extends StatelessWidget {
                 overline,
                 style: t.bodySmall?.copyWith(
                   color: context.colors.muted,
-                  fontSize: 13,
+                  fontSize: AppFontSize.body,
                 ),
               ),
               Text(
@@ -93,7 +94,7 @@ class EmptyNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16),
+      padding: const EdgeInsets.symmetric(vertical: AppSpace.lg),
       child: Text(
         text,
         style: Theme.of(context).textTheme.bodyMedium

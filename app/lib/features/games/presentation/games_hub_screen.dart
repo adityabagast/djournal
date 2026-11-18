@@ -7,6 +7,7 @@ import '../../../core/widgets/mascot.dart';
 import 'games_screen.dart';
 import 'memory_screen.dart';
 import 'prompt_screen.dart';
+import '../../../core/tokens.dart';
 
 const _blue = Color(0xFF1D4E89);
 
@@ -68,23 +69,23 @@ class GamesHubScreen extends ConsumerWidget {
         ),
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 4, 20, 32),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.xs, AppSpace.xl, AppSpace.xxxl),
         children: [
           Container(
-            padding: const EdgeInsets.fromLTRB(8, 14, 18, 0),
+            padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.lg, AppSpace.lg, 0),
             clipBehavior: Clip.antiAlias,
             decoration: BoxDecoration(
               color: c.primarySoft,
-              borderRadius: BorderRadius.circular(28),
+              borderRadius: BorderRadius.circular(AppRadius.xl),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 const Mascot(MascotPose.tidur, size: 92),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 Expanded(
                   child: Padding(
-                    padding: const EdgeInsets.only(bottom: 14),
+                    padding: const EdgeInsets.only(bottom: AppSpace.lg),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -92,16 +93,16 @@ class GamesHubScreen extends ConsumerWidget {
                           l.gameHubTitle,
                           style: TextStyle(
                             color: c.onPrimarySoft,
-                            fontSize: 17,
+                            fontSize: AppFontSize.heading,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: AppSpace.xs),
                         Text(
                           l.gameHubHint,
                           style: TextStyle(
                             color: c.onPrimarySoft,
-                            fontSize: 13,
+                            fontSize: AppFontSize.body,
                             height: 1.45,
                           ),
                         ),
@@ -112,7 +113,7 @@ class GamesHubScreen extends ConsumerWidget {
               ],
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           GridView.count(
             crossAxisCount: 2,
             mainAxisSpacing: 14,
@@ -122,11 +123,11 @@ class GamesHubScreen extends ConsumerWidget {
             physics: const NeverScrollableScrollPhysics(),
             children: tiles,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           Text(
             l.gameHubFootnote,
             textAlign: TextAlign.center,
-            style: TextStyle(fontSize: 12, color: c.muted),
+            style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
           ),
         ],
       ),
@@ -158,17 +159,17 @@ class _GameTile extends StatelessWidget {
     final c = context.colors;
     return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         boxShadow: cardShadow(c),
       ),
       child: Material(
         color: c.surface,
-        borderRadius: BorderRadius.circular(26),
+        borderRadius: BorderRadius.circular(AppRadius.xl),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(26),
+          borderRadius: BorderRadius.circular(AppRadius.xl),
           child: Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(AppSpace.lg),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -178,34 +179,34 @@ class _GameTile extends StatelessWidget {
                   decoration: BoxDecoration(color: bg, shape: BoxShape.circle),
                   child: Icon(icon, color: fg, size: 22),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpace.md),
                 Text(
                   title,
                   style: const TextStyle(
-                    fontSize: 14.5,
+                    fontSize: AppFontSize.bodyLg,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpace.xxs),
                 Text(
                   desc,
-                  style: TextStyle(fontSize: 12, height: 1.45, color: c.muted),
+                  style: TextStyle(fontSize: AppFontSize.meta, height: 1.45, color: c.muted),
                 ),
                 const Spacer(),
                 if (badge != null)
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 9,
-                      vertical: 3,
+                      vertical: AppSpace.xxs,
                     ),
                     decoration: BoxDecoration(
                       color: c.primarySoft,
-                      borderRadius: BorderRadius.circular(999),
+                      borderRadius: BorderRadius.circular(AppRadius.pill),
                     ),
                     child: Text(
                       badge!,
                       style: TextStyle(
-                        fontSize: 11.5,
+                        fontSize: AppFontSize.caption,
                         fontWeight: FontWeight.w600,
                         color: c.onPrimarySoft,
                       ),
@@ -259,7 +260,7 @@ class RestCard extends StatelessWidget {
       ),
     ];
     return AppCard(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.lg, AppSpace.md),
       child: Column(
         children: [
           Row(
@@ -268,7 +269,7 @@ class RestCard extends StatelessWidget {
                 child: Text(
                   l.gameRest,
                   style: const TextStyle(
-                    fontSize: 14.5,
+                    fontSize: AppFontSize.bodyLg,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -285,9 +286,9 @@ class RestCard extends StatelessWidget {
                 Expanded(
                   child: InkWell(
                     onTap: onTap,
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppRadius.lg),
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 6),
+                      padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
                       child: Column(
                         children: [
                           Container(
@@ -299,13 +300,13 @@ class RestCard extends StatelessWidget {
                             ),
                             child: Icon(icon, color: fg, size: 21),
                           ),
-                          const SizedBox(height: 6),
+                          const SizedBox(height: AppSpace.sm),
                           Text(
                             label,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
-                              fontSize: 11.5,
+                              fontSize: AppFontSize.caption,
                               fontWeight: FontWeight.w500,
                             ),
                           ),

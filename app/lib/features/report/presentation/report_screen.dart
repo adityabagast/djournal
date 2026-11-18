@@ -13,6 +13,7 @@ import '../../../core/widgets/mascot.dart';
 import '../../money/presentation/budget_screen.dart';
 
 import 'report_charts.dart';
+import '../../../core/tokens.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -97,7 +98,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           bool last = false,
           bool bold = false,
         }) => Container(
-          padding: const EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
           decoration: BoxDecoration(
             border: last
                 ? null
@@ -141,17 +142,17 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             children: [
               if (!isCurrentMonth)
                 Padding(
-                  padding: const EdgeInsets.only(right: 2),
+                  padding: const EdgeInsets.only(right: AppSpace.xxs),
                   child: TextButton(
                     onPressed: _jumpToThisMonth,
                     style: TextButton.styleFrom(
                       padding: const EdgeInsets.symmetric(
-                        horizontal: 8,
-                        vertical: 4,
+                        horizontal: AppSpace.sm,
+                        vertical: AppSpace.xs,
                       ),
                       minimumSize: const Size(0, 32),
                       textStyle: const TextStyle(
-                        fontSize: 12,
+                        fontSize: AppFontSize.meta,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -184,7 +185,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         );
 
         final overviewCard = AppCard(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.sm),
           child: Column(
             children: [
               row(
@@ -228,7 +229,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                         label: Text(
                           l.chartDistribution,
                           style: const TextStyle(
-                            fontSize: 12,
+                            fontSize: AppFontSize.meta,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -238,7 +239,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                         label: Text(
                           l.chartWeekly,
                           style: const TextStyle(
-                            fontSize: 12,
+                            fontSize: AppFontSize.meta,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -252,16 +253,16 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                       visualDensity: VisualDensity.compact,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       padding: const WidgetStatePropertyAll(
-                        EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.xs),
                       ),
                     ),
                   ),
                 ],
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               if (monthOut == 0)
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  padding: const EdgeInsets.symmetric(vertical: AppSpace.xl),
                   child: Center(child: EmptyNote(l.reportEmpty)),
                 )
               else if (_chartViewIndex == 0)
@@ -312,7 +313,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               ),
               if (budgetRows.isEmpty) EmptyNote(l.reportEmpty),
               for (final (cat, spent, budget) in budgetRows) ...[
-                const SizedBox(height: 10),
+                const SizedBox(height: AppSpace.md),
                 BudgetRow(category: cat, spent: spent, budget: budget),
               ],
             ],
@@ -329,7 +330,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             padding: context.screenPadding,
             children: [
               header,
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -340,12 +341,12 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         chartsCard,
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         budgetCard,
                       ],
                     ),
                   ),
-                  const SizedBox(width: 18),
+                  const SizedBox(width: AppSpace.lg),
                   // Right Column: Ringkasan Saldo & Mood
                   Expanded(
                     flex: 4,
@@ -353,9 +354,9 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         overviewCard,
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         budgetMoodCard,
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         moodSpendingCard,
                       ],
                     ),
@@ -370,15 +371,15 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           padding: context.screenPadding,
           children: [
             header,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             budgetMoodCard,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             overviewCard,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             chartsCard,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             budgetCard,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             moodSpendingCard,
           ],
         );
@@ -410,10 +411,10 @@ class _MoodSpendingCard extends ConsumerWidget {
 
     Widget stat(String label, int? value) => Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
         decoration: BoxDecoration(
           color: context.colors.surface,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -432,10 +433,10 @@ class _MoodSpendingCard extends ConsumerWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(AppSpace.lg),
       decoration: BoxDecoration(
         color: context.colors.primarySoft,
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -447,18 +448,18 @@ class _MoodSpendingCard extends ConsumerWidget {
               color: deep,
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           IntrinsicHeight(
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 stat(l.avgGoodMood, good),
-                const SizedBox(width: 10),
+                const SizedBox(width: AppSpace.md),
                 stat(l.avgLowMood, low),
               ],
             ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: AppSpace.md),
           Text(text, style: t.bodyMedium?.copyWith(color: deep)),
         ],
       ),
@@ -513,15 +514,15 @@ class _BudgetMood extends StatelessWidget {
           );
 
     return Container(
-      padding: const EdgeInsets.fromLTRB(8, 10, 16, 10),
+      padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.md, AppSpace.lg, AppSpace.md),
       decoration: BoxDecoration(
         color: context.colors.tint(tint),
-        borderRadius: BorderRadius.circular(18),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
       child: Row(
         children: [
           Mascot(pose, size: 80),
-          const SizedBox(width: 8),
+          const SizedBox(width: AppSpace.sm),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -530,7 +531,7 @@ class _BudgetMood extends StatelessWidget {
                   title,
                   style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600),
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpace.xxs),
                 Text(
                   body,
                   style: t.bodySmall?.copyWith(color: context.colors.ink),

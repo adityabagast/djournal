@@ -12,6 +12,7 @@ import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
 import '../../update/presentation/update_card.dart';
 import '../../update/presentation/whats_new_sheet.dart';
+import '../../../core/tokens.dart';
 
 /// Bagian "Tentang" di Pengaturan: versi, cek update, dan tautan rilis.
 class AboutSection extends ConsumerWidget {
@@ -31,7 +32,7 @@ class AboutSection extends ConsumerWidget {
     final ctrl = ref.read(updateProvider.notifier);
     final divider = Divider(height: 1, color: c.divider);
     const titleStyle = TextStyle(fontWeight: FontWeight.w500);
-    final subStyle = TextStyle(fontSize: 12, color: c.muted);
+    final subStyle = TextStyle(fontSize: AppFontSize.meta, color: c.muted);
 
     String when(DateTime t) => toLocalDate(t) == toLocalDate(DateTime.now())
         ? '${l.today.toLowerCase()}, ${hhmm(t)}'
@@ -41,7 +42,7 @@ class AboutSection extends ConsumerWidget {
       UpdatePhase.checking => Row(
         children: [
           const Mascot(MascotPose.mencari, size: 40),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Text(l.updateChecking),
         ],
       ),
@@ -58,7 +59,7 @@ class AboutSection extends ConsumerWidget {
                     : MascotPose.senang,
                 size: 40,
               ),
-              const SizedBox(width: 10),
+              const SizedBox(width: AppSpace.md),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -93,9 +94,9 @@ class AboutSection extends ConsumerWidget {
             ],
           ),
           if (s.phase == UpdatePhase.downloading) ...[
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             ClipRRect(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(AppRadius.sm),
               child: LinearProgressIndicator(
                 // Tanpa ukuran file, tampilkan animasi tak tentu.
                 value: (s.release!.apkSize ?? 0) > 0 && s.progress > 0
@@ -106,7 +107,7 @@ class AboutSection extends ConsumerWidget {
                 color: c.primary,
               ),
             ),
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpace.sm),
             Row(
               children: [
                 Expanded(
@@ -129,7 +130,7 @@ class AboutSection extends ConsumerWidget {
             ),
           ],
           if (updateErrorText(l, s.error) case final error?) ...[
-            const SizedBox(height: 6),
+            const SizedBox(height: AppSpace.sm),
             Text(error, style: subStyle.copyWith(color: c.expense)),
           ],
         ],
@@ -137,7 +138,7 @@ class AboutSection extends ConsumerWidget {
       UpdatePhase.upToDate => Row(
         children: [
           const Mascot(MascotPose.senang, size: 40),
-          const SizedBox(width: 10),
+          const SizedBox(width: AppSpace.md),
           Expanded(
             child: Text(
               l.updateUpToDate,
@@ -167,7 +168,7 @@ class AboutSection extends ConsumerWidget {
     };
 
     return AppCard(
-      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.xs, vertical: AppSpace.xs),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -189,11 +190,11 @@ class AboutSection extends ConsumerWidget {
                   ),
           ),
           Container(
-            margin: const EdgeInsets.fromLTRB(12, 0, 12, 8),
-            padding: const EdgeInsets.fromLTRB(14, 10, 10, 10),
+            margin: const EdgeInsets.fromLTRB(AppSpace.md, 0, AppSpace.md, AppSpace.sm),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.md, AppSpace.md, AppSpace.md),
             decoration: BoxDecoration(
               color: c.subtle,
-              borderRadius: BorderRadius.circular(18),
+              borderRadius: BorderRadius.circular(AppRadius.lg),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -202,7 +203,7 @@ class AboutSection extends ConsumerWidget {
                 if (updateErrorText(l, s.error) case final e?
                     when s.phase != UpdatePhase.idle)
                   Padding(
-                    padding: const EdgeInsets.only(top: 6),
+                    padding: const EdgeInsets.only(top: AppSpace.sm),
                     child: Text(e, style: subStyle.copyWith(color: c.expense)),
                   ),
               ],
@@ -218,7 +219,7 @@ class AboutSection extends ConsumerWidget {
               activeTrackColor: c.primary,
             ),
           Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 10),
+            padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.md),
             child: Text(l.updatePrivacyNote, style: subStyle),
           ),
           divider,

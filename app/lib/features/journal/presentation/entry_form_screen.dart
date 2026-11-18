@@ -18,6 +18,7 @@ import '../../reminders/presentation/reminder_format.dart';
 import '../../reminders/presentation/reminder_suggestions.dart';
 import 'voice/voice_player_card.dart';
 import 'voice/voice_record_sheet.dart';
+import '../../../core/tokens.dart';
 
 /// Form tulis / edit entri jurnal. [existing] null = entri baru;
 /// [initialDate] (YYYY-MM-DD) = tanggal awal entri baru, default hari ini.
@@ -350,7 +351,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
         ],
       ),
       style: t.bodySmall?.copyWith(
-        fontSize: 13,
+        fontSize: AppFontSize.body,
         fontWeight: FontWeight.w600,
         color: context.colors.muted,
       ),
@@ -361,10 +362,10 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
       backgroundColor: context.colors.surface,
       foregroundColor: context.colors.primary,
       side: BorderSide(color: context.colors.line),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
       textStyle: buttonTextStyle(
         context,
-        const TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+        const TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w600),
       ),
     );
 
@@ -382,7 +383,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
               icon: const Icon(Icons.delete_outline),
             ),
           Padding(
-            padding: const EdgeInsets.only(right: 12),
+            padding: const EdgeInsets.only(right: AppSpace.md),
             child: FilledButton(
               onPressed: _saving ? null : _save,
               style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
@@ -392,7 +393,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
         ],
       ),
       body: ListView(
-        padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
         children: [
           // Tanggal entri; bisa diganti untuk mencatat hari yang lalu.
           Align(
@@ -408,9 +409,9 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
               label: Text(dayLabel(context, _date)),
             ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           label(l.entryTime, optional: true),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           Row(
             children: [
               OutlinedButton.icon(
@@ -429,7 +430,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               OutlinedButton(
                 onPressed: () =>
                     setState(() => _time = _formatTime(TimeOfDay.now())),
@@ -444,7 +445,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                     textStyle: buttonTextStyle(
                       context,
                       const TextStyle(
-                        fontSize: 13,
+                        fontSize: AppFontSize.body,
                         fontWeight: FontWeight.w600,
                         decoration: TextDecoration.underline,
                       ),
@@ -454,13 +455,13 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                 ),
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           label(l.mood, optional: true),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           Row(
             children: [
               for (var v = 1; v <= 5; v++) ...[
-                if (v > 1) const SizedBox(width: 6),
+                if (v > 1) const SizedBox(width: AppSpace.sm),
                 Expanded(
                   child: _MoodChoice(
                     mood: v,
@@ -472,9 +473,9 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
               ],
             ],
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           label(l.entryTitle),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           TextField(
             controller: _title,
             textCapitalization: TextCapitalization.sentences,
@@ -484,15 +485,15 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
             style: t.titleMedium?.copyWith(fontWeight: FontWeight.w600),
             decoration: InputDecoration(hintText: l.entryTitleHint),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           label('Lampiran Gambar', optional: true),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppSpace.sm),
           JournalImageGrid(
             imagePaths: _imagePaths,
             onAddImage: _pickImage,
             onRemoveImage: _removeImage,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -505,7 +506,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                     style: TextButton.styleFrom(
                       foregroundColor: context.colors.primary,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                          horizontal: AppSpace.sm, vertical: AppSpace.xs),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
@@ -513,18 +514,18 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                     label: const Text(
                       'Dikte',
                       style: TextStyle(
-                        fontSize: 12.5,
+                        fontSize: AppFontSize.meta,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 4),
+                  const SizedBox(width: AppSpace.xs),
                   TextButton.icon(
                     onPressed: _recordVoice,
                     style: TextButton.styleFrom(
                       foregroundColor: context.colors.primary,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 8, vertical: 4),
+                          horizontal: AppSpace.sm, vertical: AppSpace.xs),
                       minimumSize: Size.zero,
                       tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     ),
@@ -537,7 +538,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                     label: Text(
                       _audioPath != null ? l.recordAgain : l.recordVoice,
                       style: const TextStyle(
-                        fontSize: 12.5,
+                        fontSize: AppFontSize.meta,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -546,7 +547,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
               ),
             ],
           ),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           if (_audioPath != null) ...[
             VoicePlayerCard(
               audioPath: _audioPath!,
@@ -570,7 +571,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                 );
               },
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: AppSpace.md),
           ],
           TextField(
             controller: _body,
@@ -586,20 +587,20 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
               errorText: _showEmptyError ? l.entryEmptyError : null,
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           ReminderSuggestions(
             controller: _reminders,
             text: _body.text,
             existing: _existingReminders,
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           label(l.tags, optional: true),
-          const SizedBox(height: 6),
+          const SizedBox(height: AppSpace.sm),
           TextField(
             controller: _tags,
             decoration: InputDecoration(hintText: l.tagsHint),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           if (snap != null) _DayTransactions(date: _date, snapshot: snap),
         ],
       ),
@@ -630,27 +631,27 @@ class _MoodChoice extends StatelessWidget {
       child: Material(
         color: selected ? context.colors.primarySoft : context.colors.surface,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           side: BorderSide(
             color: selected ? context.colors.primary : context.colors.line,
           ),
         ),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(AppRadius.md),
           child: SizedBox(
             height: 64,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 MoodFace(mood: mood, color: color, size: 26),
-                const SizedBox(height: 2),
+                const SizedBox(height: AppSpace.xxs),
                 Text(
                   text,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(
-                    fontSize: 11,
+                    fontSize: AppFontSize.caption,
                     fontWeight: FontWeight.w600,
                     color: color,
                   ),
@@ -681,7 +682,7 @@ class _DayTransactions extends ConsumerWidget {
     final out = MoneySnapshot.sumOf(txs, 'expense');
 
     return AppCard(
-      padding: const EdgeInsets.fromLTRB(16, 14, 16, 6),
+      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

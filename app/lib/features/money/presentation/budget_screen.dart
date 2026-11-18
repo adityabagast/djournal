@@ -9,6 +9,7 @@ import '../domain/money_snapshot.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import 'money_widgets.dart';
+import '../../../core/tokens.dart';
 
 /// Atur budget bulanan per kategori pengeluaran.
 class BudgetScreen extends ConsumerWidget {
@@ -35,17 +36,17 @@ class BudgetScreen extends ConsumerWidget {
       body: snap == null
           ? const Center(child: CircularProgressIndicator())
           : ListView(
-              padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+              padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
               children: [
                 Text(
                   l.budgetSubtitle,
                   style: t.bodyMedium?.copyWith(color: context.colors.muted),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpace.md),
                 AppCard(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
+                    horizontal: AppSpace.lg,
+                    vertical: AppSpace.lg,
                   ),
                   child: Row(
                     children: [
@@ -62,11 +63,11 @@ class BudgetScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: AppSpace.md),
                 AppCard(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 4,
+                    horizontal: AppSpace.lg,
+                    vertical: AppSpace.xs,
                   ),
                   child: Column(
                     children: [
@@ -76,7 +77,7 @@ class BudgetScreen extends ConsumerWidget {
                         InkWell(
                           onTap: () => _edit(context, ref, c, snap, monthKey),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8),
+                            padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
                             child: BudgetRow(
                               category: c,
                               spent: snap.spentIn(c.id, monthKey),
@@ -134,10 +135,10 @@ class BudgetScreen extends ConsumerWidget {
               ),
               onSubmitted: (v) => Navigator.pop(ctx, parseAmount(v)),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: AppSpace.sm),
             Text(
               l.budgetAppliesFrom(monthName),
-              style: TextStyle(fontSize: 12, color: context.colors.muted),
+              style: TextStyle(fontSize: AppFontSize.meta, color: context.colors.muted),
             ),
           ],
         ),
@@ -212,13 +213,13 @@ class BudgetRow extends ConsumerWidget {
                     hasBudget
                         ? '${rupiah(spent, hide: hideAmounts)} / ${rupiah(budget, hide: hideAmounts)}'
                         : rupiah(spent, hide: hideAmounts),
-                    style: TextStyle(fontSize: 13, color: context.colors.muted),
+                    style: TextStyle(fontSize: AppFontSize.body, color: context.colors.muted),
                   ),
                 ],
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: AppSpace.sm),
               ClipRRect(
-                borderRadius: BorderRadius.circular(4),
+                borderRadius: BorderRadius.circular(AppRadius.xs),
                 child: LinearProgressIndicator(
                   value: hasBudget
                       ? (spent / budget).clamp(0, 1).toDouble()
@@ -228,18 +229,18 @@ class BudgetRow extends ConsumerWidget {
                   color: over ? context.colors.expense : catColor,
                 ),
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: AppSpace.xs),
               Text(
                 note,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: AppFontSize.meta,
                   color: over ? context.colors.expense : context.colors.muted,
                 ),
               ),
             ],
           ),
         ),
-        if (trailing != null) ...[const SizedBox(width: 8), trailing!],
+        if (trailing != null) ...[const SizedBox(width: AppSpace.sm), trailing!],
       ],
     );
   }

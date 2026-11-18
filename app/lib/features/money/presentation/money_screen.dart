@@ -16,6 +16,7 @@ import 'money_calendar_card.dart';
 import 'tx_form_screen.dart';
 import 'wallet_form_sheet.dart';
 import 'wallets_screen.dart';
+import '../../../core/tokens.dart';
 
 class MoneyScreen extends ConsumerStatefulWidget {
   const MoneyScreen({super.key});
@@ -115,7 +116,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
             TextButton(
               onPressed: () => WalletsScreen.open(context),
               style: TextButton.styleFrom(
-                padding: const EdgeInsets.only(left: 8, right: 0),
+                padding: const EdgeInsets.only(left: AppSpace.sm, right: 0),
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -186,8 +187,8 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
             ),
             AppCard(
               padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 4,
+                horizontal: AppSpace.lg,
+                vertical: AppSpace.xs,
               ),
               child: Column(
                 children: [
@@ -204,7 +205,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
           ],
         ];
 
@@ -213,7 +214,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
             padding: context.screenPadding,
             children: [
               header,
-              const SizedBox(height: 16),
+              const SizedBox(height: AppSpace.lg),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -224,26 +225,26 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         balanceCard,
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         AppCard(
-                          padding: const EdgeInsets.all(16),
+                          padding: const EdgeInsets.all(AppSpace.lg),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               walletsHeader,
-                              const SizedBox(height: 10),
+                              const SizedBox(height: AppSpace.md),
                               for (final w in snap.wallets) ...[
                                 Container(
-                                  margin: const EdgeInsets.only(bottom: 8),
+                                  margin: const EdgeInsets.only(bottom: AppSpace.sm),
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 12,
-                                    vertical: 10,
+                                    horizontal: AppSpace.md,
+                                    vertical: AppSpace.md,
                                   ),
                                   decoration: BoxDecoration(
                                     color: context.colors.isDark
                                         ? context.colors.subtle
                                         : const Color(0xFFF7FAF8),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(AppRadius.md),
                                     border: Border.all(
                                       color: context.colors.line,
                                     ),
@@ -261,7 +262,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                                           decoration: BoxDecoration(
                                             color: context.colors.primarySoft,
                                             borderRadius:
-                                                BorderRadius.circular(8),
+                                                BorderRadius.circular(AppRadius.sm),
                                           ),
                                           child: Center(
                                             child: Icon(
@@ -278,7 +279,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                                             ),
                                           ),
                                         ),
-                                        const SizedBox(width: 10),
+                                        const SizedBox(width: AppSpace.md),
                                         Expanded(
                                           child: Column(
                                             crossAxisAlignment:
@@ -287,7 +288,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                                               Text(
                                                 w.name,
                                                 style: const TextStyle(
-                                                  fontSize: 13,
+                                                  fontSize: AppFontSize.body,
                                                   fontWeight: FontWeight.w600,
                                                 ),
                                               ),
@@ -298,7 +299,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                                                         ? 'Rekening'
                                                         : 'E-Wallet'),
                                                 style: TextStyle(
-                                                  fontSize: 11,
+                                                  fontSize: AppFontSize.caption,
                                                   color: context.colors.muted,
                                                 ),
                                               ),
@@ -311,7 +312,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                                             hide: hideAmounts,
                                           ),
                                           style: const TextStyle(
-                                            fontSize: 13,
+                                            fontSize: AppFontSize.body,
                                             fontWeight: FontWeight.w700,
                                           ),
                                         ),
@@ -326,7 +327,7 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(width: 18),
+                  const SizedBox(width: AppSpace.lg),
                   // Right Column: Filter & Transaksi
                   Expanded(
                     flex: 6,
@@ -334,9 +335,9 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         calendar,
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         filterChips,
-                        const SizedBox(height: 16),
+                        const SizedBox(height: AppSpace.lg),
                         ...txListWidgets,
                       ],
                     ),
@@ -351,18 +352,18 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
           padding: context.screenPadding,
           children: [
             header,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             balanceCard,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             walletsHeader,
-            const SizedBox(height: 4),
+            const SizedBox(height: AppSpace.xs),
             SizedBox(
               height: 64,
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
                   for (final (i, w) in snap.wallets.indexed) ...[
-                    if (i > 0) const SizedBox(width: 10),
+                    if (i > 0) const SizedBox(width: AppSpace.md),
                     _WalletCard(
                       name: w.name,
                       balance: snap.balanceOf(w.id),
@@ -373,11 +374,11 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             calendar,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             filterChips,
-            const SizedBox(height: 16),
+            const SizedBox(height: AppSpace.lg),
             ...txListWidgets,
           ],
         );
@@ -415,10 +416,10 @@ class _BalanceCard extends StatelessWidget {
 
     Widget stat(String label, int value) => Expanded(
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
         decoration: BoxDecoration(
           color: context.colors.onHero.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppRadius.md),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -443,10 +444,10 @@ class _BalanceCard extends StatelessWidget {
     );
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppSpace.xl),
       decoration: BoxDecoration(
         color: context.colors.hero,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -457,12 +458,12 @@ class _BalanceCard extends StatelessWidget {
                 l.totalBalance,
                 style: t.bodySmall?.copyWith(color: context.colors.onHeroMuted),
               ),
-              const SizedBox(width: 8),
+              const SizedBox(width: AppSpace.sm),
               InkWell(
                 onTap: onToggleHide,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(AppRadius.sm),
                 child: Padding(
-                  padding: const EdgeInsets.all(2),
+                  padding: const EdgeInsets.all(AppSpace.xxs),
                   child: Icon(
                     hideAmounts
                         ? Icons.visibility_off_outlined
@@ -485,11 +486,11 @@ class _BalanceCard extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 16),
+          const SizedBox(height: AppSpace.lg),
           Row(
             children: [
               stat(l.income, monthIn),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppSpace.md),
               stat(l.expense, monthOut),
             ],
           ),
@@ -518,15 +519,15 @@ class _WalletCard extends StatelessWidget {
     return Material(
       color: context.colors.surface,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         side: BorderSide(color: context.colors.line),
       ),
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(AppRadius.lg),
         child: Container(
           width: 140,
-          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.md),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -537,7 +538,7 @@ class _WalletCard extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: t.bodySmall?.copyWith(
                   color: context.colors.muted,
-                  fontSize: 13,
+                  fontSize: AppFontSize.body,
                 ),
               ),
               FittedBox(
@@ -580,7 +581,7 @@ class _FilterChip extends StatelessWidget {
       ),
       shape: const StadiumBorder(),
       labelStyle: TextStyle(
-        fontSize: 13,
+        fontSize: AppFontSize.body,
         fontWeight: FontWeight.w600,
         color: selected ? context.colors.onPrimary : context.colors.ink,
       ),
@@ -602,9 +603,9 @@ class _DayHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final style = Theme.of(context).textTheme.bodySmall
-        ?.copyWith(color: context.colors.muted, fontSize: 13);
+        ?.copyWith(color: context.colors.muted, fontSize: AppFontSize.body);
     return Padding(
-      padding: const EdgeInsets.fromLTRB(4, 0, 4, 6),
+      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
       child: Row(
         children: [
           Expanded(child: Text(label, style: style)),

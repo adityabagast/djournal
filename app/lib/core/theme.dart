@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'tokens.dart';
+
 /// Warna merek yang sama di mode terang dan gelap: kartu Total saldo,
 /// layar kunci, dan splash. Sekaligus warna aksen bawaan ("Hijau sage").
 abstract final class AppColors {
@@ -418,7 +420,7 @@ ThemeData buildTheme(Brightness brightness, {Color accent = AppColors.hero}) {
   final text = base.textTheme.apply(bodyColor: c.ink, displayColor: c.ink);
   // Isian bergaya lembut: latar sedikit lebih gelap, tanpa garis tepi.
   const inputBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.all(Radius.circular(16)),
+    borderRadius: BorderRadius.all(Radius.circular(AppRadius.lg)),
     borderSide: BorderSide.none,
   );
   return base.copyWith(
@@ -435,7 +437,7 @@ ThemeData buildTheme(Brightness brightness, {Color accent = AppColors.hero}) {
       backgroundColor: c.surface,
       surfaceTintColor: Colors.transparent,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(32)),
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppRadius.xl)),
       ),
     ),
     popupMenuTheme: PopupMenuThemeData(
@@ -449,14 +451,17 @@ ThemeData buildTheme(Brightness brightness, {Color accent = AppColors.hero}) {
       enabledBorder: inputBorder,
       disabledBorder: inputBorder,
       focusedBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        borderRadius: const BorderRadius.all(Radius.circular(AppRadius.lg)),
         borderSide: BorderSide(color: c.primary, width: 1.5),
       ),
       errorBorder: OutlineInputBorder(
-        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        borderRadius: const BorderRadius.all(Radius.circular(AppRadius.lg)),
         borderSide: BorderSide(color: c.expense),
       ),
-      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: AppSpace.lg,
+        vertical: AppSpace.lg,
+      ),
     ),
     // Tombol berbentuk kapsul.
     filledButtonTheme: FilledButtonThemeData(
@@ -520,13 +525,13 @@ class AppCard extends StatelessWidget {
   const AppCard({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(18),
+    this.padding = const EdgeInsets.all(AppSpace.lg),
   });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
 
-  static const radius = 24.0;
+  static const radius = AppRadius.xl;
 
   @override
   Widget build(BuildContext context) {
