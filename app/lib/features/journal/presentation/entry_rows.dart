@@ -12,9 +12,18 @@ import '../../../core/widgets/image_viewer.dart';
 import 'mood.dart';
 import 'voice/voice_player_card.dart';
 import '../../../core/tokens.dart';
+import '../domain/entry_headline.dart';
 
-String _titleOf(BuildContext context, JournalEntry e) =>
-    e.title ?? context.l10n.untitled;
+/// Judul + cuplikan tampilan entri (judul kosong → kalimat pertama isi).
+EntryHeadline headlineOf(JournalEntry e) =>
+    entryHeadline(title: e.title, body: e.body);
+
+/// Judul yang tampil: judul/isi, atau "Catatan suara" / "Tanpa judul".
+String headlineTitle(BuildContext context, JournalEntry e, EntryHeadline h) =>
+    h.title ??
+    (e.audioPath?.isNotEmpty == true
+        ? context.l10n.voiceNote
+        : context.l10n.untitled);
 
 /// Baris entri di timeline Hari Ini: jam, ikon buku, judul, mood · cerita.
 class EntryTimelineRow extends ConsumerWidget {
@@ -35,11 +44,13 @@ class EntryTimelineRow extends ConsumerWidget {
     final hasAudio = entry.audioPath != null && entry.audioPath!.isNotEmpty;
     final attachments =
         ref.watch(entryAttachmentsMapProvider)[entry.id] ?? const [];
+    final headline = headlineOf(entry);
     final sub = [
       if (entry.mood != null) moodLabel(context.l10n, entry.mood!),
-      if (hasAudio) '🎙️ ${context.l10n.voiceNote}',
+      // Judul sudah "Catatan suara" kalau entri hanya berisi rekaman.
+      if (hasAudio && headline.title != null) '🎙️ ${context.l10n.voiceNote}',
       if (attachments.isNotEmpty) '📷 ${attachments.length} foto',
-      ?entry.body,
+      ?headline.preview,
     ].join(' · ');
 
     return InkWell(
@@ -83,7 +94,7 @@ class EntryTimelineRow extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _titleOf(context, entry),
+                    headlineTitle(context, entry, headline),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
@@ -122,6 +133,7 @@ class EntryListRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = Theme.of(context).textTheme;
     final tags = entryTags(entry);
+    final headline = headlineOf(entry);
     final attachments =
         ref.watch(entryAttachmentsMapProvider)[entry.id] ?? const [];
     final imagePaths = attachments
@@ -159,16 +171,16 @@ class EntryListRow extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    _titleOf(context, entry),
+                    headlineTitle(context, entry, headline),
                     style: t.titleSmall?.copyWith(
                       fontSize: AppFontSize.title,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
-                  if (entry.body != null) ...[
+                  if (headline.preview != null) ...[
                     const SizedBox(height: AppSpace.xs),
                     Text(
-                      entry.body!,
+                      headline.preview!,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: t.bodyMedium?.copyWith(

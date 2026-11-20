@@ -285,6 +285,7 @@ class _MasterEntryItem extends StatelessWidget {
     final t = Theme.of(context).textTheme;
     final c = context.colors;
     final hasAudio = entry.audioPath != null && entry.audioPath!.isNotEmpty;
+    final headline = headlineOf(entry);
 
     return InkWell(
       onTap: onTap,
@@ -333,7 +334,7 @@ class _MasterEntryItem extends StatelessWidget {
             ),
             const SizedBox(height: AppSpace.xs),
             Text(
-              entry.title ?? context.l10n.untitled,
+              headlineTitle(context, entry, headline),
               style: t.titleSmall?.copyWith(
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w600,
                 fontSize: AppFontSize.bodyLg,
@@ -342,10 +343,10 @@ class _MasterEntryItem extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
-            if (entry.body != null && entry.body!.trim().isNotEmpty) ...[
+            if (headline.preview != null) ...[
               const SizedBox(height: AppSpace.xxs),
               Text(
-                entry.body!,
+                headline.preview!,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: AppFontSize.meta, color: c.muted, height: 1.3),
@@ -473,14 +474,17 @@ class _JournalDetailPane extends ConsumerWidget {
               ),
             ],
           ),
-          const SizedBox(height: AppSpace.lg),
-          Text(
-            e.title ?? l.untitled,
-            style: t.headlineSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              fontSize: AppFontSize.display,
+          // Judul kosong disembunyikan: isi langsung tampil di bawah.
+          if (e.title?.trim().isNotEmpty == true) ...[
+            const SizedBox(height: AppSpace.lg),
+            Text(
+              e.title!.trim(),
+              style: t.headlineSmall?.copyWith(
+                fontWeight: FontWeight.w700,
+                fontSize: AppFontSize.display,
+              ),
             ),
-          ),
+          ],
           if (e.audioPath != null && e.audioPath!.isNotEmpty) ...[
             const SizedBox(height: AppSpace.lg),
             VoicePlayerCard(
