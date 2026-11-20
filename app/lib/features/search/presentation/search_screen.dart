@@ -15,6 +15,7 @@ import '../../money/presentation/money_widgets.dart';
 import '../../../core/widgets/mascot.dart';
 import '../../journal/presentation/mood.dart';
 import '../../journal/presentation/entry_form_screen.dart';
+import '../../journal/presentation/entry_rows.dart';
 import '../../money/presentation/tx_form_screen.dart';
 import '../../../core/tokens.dart';
 
@@ -559,7 +560,7 @@ class _HitRow extends ConsumerWidget {
           color: context.colors.primary,
         ),
       );
-      title = e.title?.trim().isNotEmpty == true ? e.title! : l.untitled;
+      title = headlineTitle(context, e, headlineOf(e));
       if (e.body?.trim().isNotEmpty == true) body = _snippet(e.body!, terms);
       meta = [
         ?e.entryTime,
