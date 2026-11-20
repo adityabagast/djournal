@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.17.0 — 2026-11-20
+
+**Baru**
+- **Judul otomatis untuk jurnal tanpa judul**: kalau judul dikosongkan, kalimat pertama ceritamu tampil sebagai judul di daftar Jurnal, Hari Ini, Pencarian, dan tampilan desktop. Kalimat yang terlalu panjang dipotong dengan "…", dan cuplikan di bawahnya lanjut dari kalimat berikutnya supaya tidak dobel.
+- Entri yang hanya berisi rekaman suara kini berjudul **Catatan suara**, bukan "Tanpa judul".
+- Di halaman detail, judul yang kosong tidak ditampilkan lagi; cerita langsung terlihat.
+
+**Di balik layar**
+- Hanya tampilan yang berubah. Judul di database tetap kosong, jadi tidak ada perubahan data, sinkron, izin, atau dependensi.
+
 ## 0.16.1 — 2026-11-19
 
 **Perbaikan tampilan**
