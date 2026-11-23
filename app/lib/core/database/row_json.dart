@@ -187,6 +187,25 @@ Wishlist wishlistFromJson(Map<String, dynamic> j, {bool dirty = false}) =>
       isFulfilled: j['isFulfilled'] as bool,
     );
 
+Map<String, dynamic> planToJson(DailyPlan p) => {
+  ..._base(p.id, p.createdAt, p.updatedAt, p.deletedAt),
+  'title': p.title,
+  'planDate': p.planDate,
+  'doneAt': p.doneAt == null ? null : _ts(p.doneAt!),
+};
+
+DailyPlan planFromJson(Map<String, dynamic> j, {bool dirty = false}) =>
+    DailyPlan(
+      id: j['id'] as String,
+      createdAt: _parseTs(j['createdAt']),
+      updatedAt: _parseTs(j['updatedAt']),
+      deletedAt: _parseTsOrNull(j['deletedAt']),
+      isDirty: dirty,
+      title: j['title'] as String,
+      planDate: j['planDate'] as String,
+      doneAt: _parseTsOrNull(j['doneAt']),
+    );
+
 Map<String, dynamic> billToJson(Bill b) => {
   ..._base(b.id, b.createdAt, b.updatedAt, b.deletedAt),
   'title': b.title,

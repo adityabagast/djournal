@@ -105,13 +105,15 @@ class _DataSectionState extends ConsumerState<DataSection> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            title,
-            style: t.bodySmall?.copyWith(
-              fontWeight: FontWeight.w600,
-              color: context.colors.muted,
-              fontSize: AppFontSize.meta,
-              letterSpacing: 0.5,
+          Expanded(
+            child: Text(
+              title,
+              style: t.bodySmall?.copyWith(
+                fontWeight: FontWeight.w600,
+                color: context.colors.muted,
+                fontSize: AppFontSize.meta,
+                letterSpacing: 0.5,
+              ),
             ),
           ),
           if (tag != null)
@@ -195,64 +197,71 @@ class _DataSectionState extends ConsumerState<DataSection> {
               border: Border.all(color: colors.divider),
               borderRadius: BorderRadius.circular(AppRadius.md),
             ),
-            child: Row(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                CircleAvatar(
-                  radius: 16,
-                  backgroundColor: colors.primary,
-                  child: Text(
-                    (drive.displayName?.isNotEmpty ?? false)
-                        ? drive.displayName![0].toUpperCase()
-                        : (drive.email?.isNotEmpty ?? false)
-                        ? drive.email![0].toUpperCase()
-                        : 'G',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.w700,
-                      fontSize: AppFontSize.body,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: AppSpace.md),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        drive.displayName ??
-                            drive.email ??
-                            l.googleDriveNotConnected,
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 16,
+                      backgroundColor: colors.primary,
+                      child: Text(
+                        (drive.displayName?.isNotEmpty ?? false)
+                            ? drive.displayName![0].toUpperCase()
+                            : (drive.email?.isNotEmpty ?? false)
+                            ? drive.email![0].toUpperCase()
+                            : 'G',
                         style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
                           fontSize: AppFontSize.body,
-                          fontWeight: FontWeight.w600,
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
-                      if (drive.email != null && drive.displayName != null)
-                        Text(
-                          drive.email!,
-                          style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(width: AppSpace.md),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            drive.displayName ??
+                                drive.email ??
+                                l.googleDriveNotConnected,
+                            style: const TextStyle(
+                              fontSize: AppFontSize.body,
+                              fontWeight: FontWeight.w600,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          if (drive.email != null && drive.displayName != null)
+                            Text(
+                              drive.email!,
+                              style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        ],
+                      ),
+                    ),
+                    if (drive.isConnected)
+                      TextButton(
+                        onPressed: () =>
+                            ref.read(googleDriveProvider.notifier).signOut(),
+                        style: TextButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+                          minimumSize: Size.zero,
                         ),
-                    ],
-                  ),
+                        child: Text(
+                          l.googleDriveDisconnect,
+                          style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
+                        ),
+                      ),
+                  ],
                 ),
-                if (drive.isConnected)
-                  TextButton(
-                    onPressed: () =>
-                        ref.read(googleDriveProvider.notifier).signOut(),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
-                      minimumSize: Size.zero,
-                    ),
-                    child: Text(
-                      l.googleDriveDisconnect,
-                      style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
-                    ),
-                  )
-                else
+                // Tombol di baris sendiri supaya status tidak terpotong.
+                if (!drive.isConnected) ...[
+                  const SizedBox(height: AppSpace.sm),
                   FilledButton.tonal(
                     onPressed: () async {
                       try {
@@ -276,6 +285,7 @@ class _DataSectionState extends ConsumerState<DataSection> {
                       style: const TextStyle(fontSize: AppFontSize.caption),
                     ),
                   ),
+                ],
               ],
             ),
           ),
@@ -295,17 +305,15 @@ class _DataSectionState extends ConsumerState<DataSection> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      children: [
-                        const Text('📊 ', style: TextStyle(fontSize: AppFontSize.bodyLg)),
-                        Text(
-                          l.googleDriveFormatInfo,
-                          style: const TextStyle(
-                            fontSize: AppFontSize.meta,
-                            fontWeight: FontWeight.w700,
-                          ),
+                    const Text('📊 ', style: TextStyle(fontSize: AppFontSize.bodyLg)),
+                    Expanded(
+                      child: Text(
+                        l.googleDriveFormatInfo,
+                        style: const TextStyle(
+                          fontSize: AppFontSize.meta,
+                          fontWeight: FontWeight.w700,
                         ),
-                      ],
+                      ),
                     ),
                     if (drive.lastFileUrl != null)
                       GestureDetector(
@@ -387,21 +395,23 @@ class _DataSectionState extends ConsumerState<DataSection> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    l.autoBackupWifi,
-                    style: const TextStyle(
-                      fontSize: AppFontSize.body,
-                      fontWeight: FontWeight.w600,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      l.autoBackupWifi,
+                      style: const TextStyle(
+                        fontSize: AppFontSize.body,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  Text(
-                    l.autoBackupWifiSub,
-                    style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
-                  ),
-                ],
+                    Text(
+                      l.autoBackupWifiSub,
+                      style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
+                    ),
+                  ],
+                ),
               ),
               Switch(
                 value: drive.autoBackup,

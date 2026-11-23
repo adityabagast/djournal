@@ -48,13 +48,7 @@ class _GlobalBudgetSheetState extends ConsumerState<GlobalBudgetSheet> {
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
+    return SheetScroll(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,

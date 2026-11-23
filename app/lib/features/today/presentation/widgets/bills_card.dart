@@ -9,6 +9,7 @@ import '../../../../providers.dart';
 import '../../../money/presentation/bill_detail_sheet.dart';
 import '../../../money/presentation/bill_form_sheet.dart';
 import '../../../../core/tokens.dart';
+import '../../../../core/widgets/common.dart';
 
 class BillsCard extends ConsumerWidget {
   const BillsCard({super.key, required this.now});
@@ -34,10 +35,9 @@ class BillsCard extends ConsumerWidget {
                   children: [
                     const Text('🔔 ', style: TextStyle(fontSize: AppFontSize.title)),
                     Flexible(
-                      child: Text(
+                      child: FitText(
                         'Tagihan Mendatang',
                         style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -135,6 +135,8 @@ class BillsCard extends ConsumerWidget {
                 children: [
                   Text(
                     bill.title,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
                   ),
                   Text(
@@ -156,12 +158,19 @@ class BillsCard extends ConsumerWidget {
                 ],
               ),
             ),
+            const SizedBox(width: AppSpace.sm),
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(
-                  rupiah(bill.amount, hide: hide),
-                  style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.sizeOf(context).width * 0.28,
+                  ),
+                  child: FitText(
+                    rupiah(bill.amount, hide: hide),
+                    alignment: Alignment.centerRight,
+                    style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
+                  ),
                 ),
                 const SizedBox(height: AppSpace.xs),
                 SizedBox(

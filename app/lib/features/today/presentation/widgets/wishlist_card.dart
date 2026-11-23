@@ -8,6 +8,7 @@ import '../../../../providers.dart';
 import '../../../money/presentation/wishlist_deposit_sheet.dart';
 import '../../../money/presentation/wishlist_form_sheet.dart';
 import '../../../../core/tokens.dart';
+import '../../../../core/widgets/common.dart';
 
 class WishlistCard extends ConsumerWidget {
   const WishlistCard({super.key});
@@ -32,10 +33,9 @@ class WishlistCard extends ConsumerWidget {
                   children: [
                     const Text('✨ ', style: TextStyle(fontSize: AppFontSize.title)),
                     Flexible(
-                      child: Text(
+                      child: FitText(
                         'Wishlist & Target Impian',
                         style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700),
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
@@ -161,18 +161,16 @@ class WishlistCard extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: FitText(
                     'Terkumpul: ${rupiah(w.savedAmount, hide: hide)} ($pct%)',
-                    overflow: TextOverflow.ellipsis,
                     style: t.bodySmall?.copyWith(fontSize: AppFontSize.caption, color: context.colors.muted),
                   ),
                 ),
                 const SizedBox(width: AppSpace.sm),
-                Flexible(
-                  child: Text(
+                Expanded(
+                  child: FitText(
                     'Kurang: ${rupiah(shortfall, hide: hide)}',
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.end,
+                    alignment: Alignment.centerRight,
                     style: t.bodySmall?.copyWith(fontSize: AppFontSize.caption, color: context.colors.muted),
                   ),
                 ),

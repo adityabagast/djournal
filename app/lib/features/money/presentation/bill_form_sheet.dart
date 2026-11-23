@@ -73,13 +73,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
       _selectedWalletId = activeWallets.first.id;
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
+    return SheetScroll(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -127,6 +121,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
           ),
           const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _selectedWalletId,
             decoration: const InputDecoration(
               labelText: 'Rencana Bayar Dari Dompet',
@@ -135,7 +130,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
               for (final w in activeWallets)
                 DropdownMenuItem(
                   value: w.id,
-                  child: Text(w.name),
+                  child: Text(w.name, overflow: TextOverflow.ellipsis),
                 ),
             ],
             onChanged: (val) => setState(() => _selectedWalletId = val),
@@ -157,6 +152,7 @@ class _BillFormSheetState extends ConsumerState<BillFormSheet> {
           ),
           const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _repeatInterval,
             decoration: const InputDecoration(
               labelText: 'Pengulangan',

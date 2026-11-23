@@ -42,3 +42,27 @@ class SheetHandle extends StatelessWidget {
     );
   }
 }
+
+/// Isi form di bottom sheet: bisa digulir kalau layar pendek, font besar,
+/// atau keyboard sedang terbuka.
+class SheetScroll extends StatelessWidget {
+  const SheetScroll({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      top: false,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.fromLTRB(
+          AppSpace.xl,
+          AppSpace.xl,
+          AppSpace.xl,
+          MediaQuery.viewInsetsOf(context).bottom + AppSpace.xxl,
+        ),
+        child: child,
+      ),
+    );
+  }
+}

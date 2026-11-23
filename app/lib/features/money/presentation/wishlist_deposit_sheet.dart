@@ -60,13 +60,7 @@ class _WishlistDepositSheetState extends ConsumerState<WishlistDepositSheet> {
         ? snap?.walletById[widget.wishlist.walletId!]
         : null;
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
+    return SheetScroll(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -92,6 +86,7 @@ class _WishlistDepositSheetState extends ConsumerState<WishlistDepositSheet> {
             ),
           const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _sourceWalletId,
             decoration: const InputDecoration(
               labelText: 'Ambil dari Dompet Sumber',
@@ -100,7 +95,10 @@ class _WishlistDepositSheetState extends ConsumerState<WishlistDepositSheet> {
               for (final w in activeWallets)
                 DropdownMenuItem(
                   value: w.id,
-                  child: Text('${w.name} (${rupiah(snap?.balanceOf(w.id) ?? 0)})'),
+                  child: Text(
+                    '${w.name} (${rupiah(snap?.balanceOf(w.id) ?? 0)})',
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
             ],
             onChanged: (val) => setState(() => _sourceWalletId = val),

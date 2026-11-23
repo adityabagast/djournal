@@ -45,7 +45,7 @@ class _WalletsScreenState extends ConsumerState<WalletsScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: FitText(
           l.manageWallets,
           style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
@@ -248,13 +248,19 @@ class _WalletRow extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: AppSpace.sm),
-            Text(
-              signedRupiah(balance, hide: hideAmounts),
-              style: t.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: balance < 0
-                    ? context.colors.expense
-                    : context.colors.ink,
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.sizeOf(context).width * 0.34,
+              ),
+              child: FitText(
+                signedRupiah(balance, hide: hideAmounts),
+                alignment: Alignment.centerRight,
+                style: t.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                  color: balance < 0
+                      ? context.colors.expense
+                      : context.colors.ink,
+                ),
               ),
             ),
           ],

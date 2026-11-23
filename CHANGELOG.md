@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.18.0 — 2026-11-24
+
+**Baru**
+- **Rencana harian** di Hari Ini: satu kartu untuk rencana hari ini dan besok, geser kartunya untuk berpindah. Tombol **Tambah** membuka popup untuk memilih hari dan menulis beberapa rencana sekaligus. Ada persen progres, grafik 7 hari, dan tawaran memindahkan rencana yang belum selesai.
+- **Kirim masukan** di Pengaturan › Tentang: lapor bug atau usul fitur lewat aplikasi emailmu. Isi yang akan dikirim bisa dilihat dulu, dan info perangkat di laporan bug bisa dimatikan. Kalau tidak ada aplikasi email, alamat dan teksnya bisa disalin.
+- **Riwayat versi** di Pengaturan › Tentang kini dibuka di dalam app, bisa tanpa internet. Versi yang kamu pakai ditandai.
+
+**Perbaikan**
+- **Navigasi bawah** menyesuaikan lebar HP, ukuran font sistem, dan bahasa. Tulisannya tidak lagi keluar dari latar aksen.
+- **Tampilan di semua layar** dirapikan untuk HP kecil, font besar, HP lipat, dan layar miring: tidak ada teks atau tombol yang keluar kotak, dan label tidak patah di tengah kata.
+- **Form di lembar bawah** (tagihan, impian, setor, target budget) bisa digulir, jadi tombol simpan tetap terjangkau saat keyboard terbuka.
+- **Layar PIN** muat utuh di HP pendek, dan isi paling bawah tidak lagi tertutup navigasi di HP dengan tombol sistem.
+- **Apa yang baru** tidak lagi menampilkan petunjuk pasang dan tabel SHA-256.
+
+**Di balik layar**
+- Masukan tidak membaca jurnal atau data keuangan dan tidak lewat server Nyawtat. Tidak ada izin atau dependensi baru.
+- Database lokal schema v8 (tabel `daily_plans`). Rencana harian ikut backup JSON, belum ikut sinkron.
+
 ## 0.17.0 — 2026-11-20
 
 **Baru**

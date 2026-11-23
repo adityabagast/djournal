@@ -114,16 +114,27 @@ class GamesHubScreen extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: AppSpace.lg),
-          GridView.count(
-            crossAxisCount: 2,
-            mainAxisSpacing: 14,
-            crossAxisSpacing: 14,
-            childAspectRatio: 0.88,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: tiles,
-          ),
-          const SizedBox(height: AppSpace.lg),
+          for (var i = 0; i < tiles.length; i += 2) ...[
+            ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 180),
+              child: IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(child: tiles[i]),
+                    const SizedBox(width: AppSpace.md),
+                    Expanded(
+                      child: i + 1 < tiles.length
+                          ? tiles[i + 1]
+                          : const SizedBox.shrink(),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpace.md),
+          ],
+          const SizedBox(height: AppSpace.xs),
           Text(
             l.gameHubFootnote,
             textAlign: TextAlign.center,
@@ -169,7 +180,7 @@ class _GameTile extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadius.xl),
           child: Padding(
-            padding: const EdgeInsets.all(AppSpace.lg),
+            padding: const EdgeInsets.all(AppSpace.md),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -192,6 +203,7 @@ class _GameTile extends StatelessWidget {
                   desc,
                   style: TextStyle(fontSize: AppFontSize.meta, height: 1.45, color: c.muted),
                 ),
+                const SizedBox(height: AppSpace.sm),
                 const Spacer(),
                 if (badge != null)
                   Container(
@@ -266,7 +278,7 @@ class RestCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
+                child: FitText(
                   l.gameRest,
                   style: const TextStyle(
                     fontSize: AppFontSize.bodyLg,
@@ -274,9 +286,11 @@ class RestCard extends StatelessWidget {
                   ),
                 ),
               ),
-              TextButton(
-                onPressed: () => GamesHubScreen.open(context),
-                child: Text(l.gameRestAll),
+              Flexible(
+                child: TextButton(
+                  onPressed: () => GamesHubScreen.open(context),
+                  child: FitText(l.gameRestAll),
+                ),
               ),
             ],
           ),
@@ -301,10 +315,9 @@ class RestCard extends StatelessWidget {
                             child: Icon(icon, color: fg, size: 21),
                           ),
                           const SizedBox(height: AppSpace.sm),
-                          Text(
+                          FitText(
                             label,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+                            alignment: Alignment.center,
                             style: const TextStyle(
                               fontSize: AppFontSize.caption,
                               fontWeight: FontWeight.w500,

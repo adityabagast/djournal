@@ -53,6 +53,16 @@ void main() {
     expect((none.apkUrl, none.apkSha256), (null, null));
   });
 
+  test('petunjuk pasang dan verifikasi file tidak ikut tampil', () {
+    for (final h in ['Pasang / update', 'Verifikasi file', 'Install']) {
+      expect(
+        cleanReleaseNotes('### Baru\n- A\n\n### $h\n| File | SHA-256 |'),
+        'Baru\n• A',
+        reason: h,
+      );
+    }
+  });
+
   test('catatan rilis dibersihkan dan berhenti di bagian Unduh', () {
     const body =
         '# Nyawtat 0.12.0\n\nVersi **baru**.\n\n## Baru\n'

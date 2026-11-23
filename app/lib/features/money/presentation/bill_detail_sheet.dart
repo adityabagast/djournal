@@ -9,6 +9,7 @@ import '../../../providers.dart';
 import 'bill_form_sheet.dart';
 import '../../../core/tokens.dart';
 import '../../../core/widgets/app_sheet.dart';
+import '../../../core/widgets/common.dart';
 
 /// Sheet detail tagihan: info lengkap + aksi Bayar / Edit / Hapus.
 class BillDetailSheet extends ConsumerWidget {
@@ -69,7 +70,7 @@ class BillDetailSheet extends ConsumerWidget {
         bill.walletId != null ? moneySnap?.walletById[bill.walletId!] : null;
 
     return SafeArea(
-      child: Padding(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.xl),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -116,11 +117,14 @@ class BillDetailSheet extends ConsumerWidget {
                           overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: AppSpace.xxs),
-                        Text(
-                          rupiah(bill.amount),
-                          style: t.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: -0.3,
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            rupiah(bill.amount),
+                            style: t.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w800,
+                              letterSpacing: -0.3,
+                            ),
                           ),
                         ),
                       ],
@@ -168,7 +172,7 @@ class BillDetailSheet extends ConsumerWidget {
                   Expanded(
                     child: OutlinedButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text('Tutup'),
+                      child: const FitText('Tutup', alignment: Alignment.center),
                     ),
                   ),
                   const SizedBox(width: AppSpace.md),
@@ -179,7 +183,7 @@ class BillDetailSheet extends ConsumerWidget {
                         foregroundColor: Colors.white,
                       ),
                       onPressed: () => _confirmDelete(context, ref),
-                      child: const Text('Hapus'),
+                      child: const FitText('Hapus', alignment: Alignment.center),
                     ),
                   ),
                 ],
@@ -192,7 +196,7 @@ class BillDetailSheet extends ConsumerWidget {
                       // Sheet ditutup di dalam _pay setelah dibayar; kalau
                       // ditutup dulu, context & ref-nya sudah mati.
                       onPressed: () => _pay(context, ref),
-                      child: const Text('Bayar'),
+                      child: const FitText('Bayar', alignment: Alignment.center),
                     ),
                   ),
                   const SizedBox(width: AppSpace.sm),
@@ -202,18 +206,19 @@ class BillDetailSheet extends ConsumerWidget {
                         Navigator.pop(context);
                         await BillFormSheet.open(context, existing: bill);
                       },
-                      child: const Text('Edit'),
+                      child: const FitText('Edit', alignment: Alignment.center),
                     ),
                   ),
                   const SizedBox(width: AppSpace.sm),
                   Expanded(
                     child: FilledButton(
                       style: FilledButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
                         backgroundColor: context.colors.expense.withValues(alpha: 0.12),
                         foregroundColor: context.colors.expense,
                       ),
                       onPressed: () => _confirmDelete(context, ref),
-                      child: const Text('Hapus'),
+                      child: const FitText('Hapus', alignment: Alignment.center),
                     ),
                   ),
                 ],
@@ -267,6 +272,7 @@ class BillDetailSheet extends ConsumerWidget {
               const SizedBox(height: AppSpace.lg),
               if (activeWallets.isNotEmpty)
                 DropdownButtonFormField<String>(
+                  isExpanded: true,
                   initialValue: selectedWalletId,
                   decoration: const InputDecoration(labelText: 'Sumber Dana'),
                   items: [

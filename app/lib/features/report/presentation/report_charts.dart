@@ -91,73 +91,79 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                 // Center info display
                 Padding(
                   padding: const EdgeInsets.all(AppSpace.xxxl),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      if (selected != null) ...[
-                        Text(
-                          categoryLabel(l, selected.category),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: t.bodySmall?.copyWith(
-                            color: context.colors.muted,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpace.xxs),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            rupiah(selected.spent, hide: widget.hideAmounts),
-                            style: t.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
+                  child: FittedBox(
+                    fit: BoxFit.scaleDown,
+                    child: SizedBox(
+                      width: 116,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (selected != null) ...[
+                            Text(
+                              categoryLabel(l, selected.category),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: t.bodySmall?.copyWith(
+                                color: context.colors.muted,
+                                fontWeight: FontWeight.w600,
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpace.xxs),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
-                          decoration: BoxDecoration(
-                            color: context.colors.soft(hexColor(selected.category.color)),
-                            borderRadius: BorderRadius.circular(AppRadius.sm),
-                          ),
-                          child: Text(
-                            '${selected.percentage.toStringAsFixed(1)}%',
-                            style: TextStyle(
-                              fontSize: AppFontSize.caption,
-                              fontWeight: FontWeight.w700,
-                              color: context.colors.fg(hexColor(selected.category.color)),
+                            const SizedBox(height: AppSpace.xxs),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                rupiah(selected.spent, hide: widget.hideAmounts),
+                                style: t.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                      ] else ...[
-                        Text(
-                          l.totalExpense,
-                          style: t.bodySmall?.copyWith(
-                            color: context.colors.muted,
-                            fontSize: AppFontSize.caption,
-                          ),
-                        ),
-                        const SizedBox(height: AppSpace.xxs),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          child: Text(
-                            rupiah(total, hide: widget.hideAmounts),
-                            style: t.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
+                            const SizedBox(height: AppSpace.xxs),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
+                              decoration: BoxDecoration(
+                                color: context.colors.soft(hexColor(selected.category.color)),
+                                borderRadius: BorderRadius.circular(AppRadius.sm),
+                              ),
+                              child: Text(
+                                '${selected.percentage.toStringAsFixed(1)}%',
+                                style: TextStyle(
+                                  fontSize: AppFontSize.caption,
+                                  fontWeight: FontWeight.w700,
+                                  color: context.colors.fg(hexColor(selected.category.color)),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(height: AppSpace.xxs),
-                        Text(
-                          l.categoryCount(items.length),
-                          style: t.bodySmall?.copyWith(
-                            color: context.colors.muted,
-                            fontSize: AppFontSize.caption,
-                          ),
-                        ),
-                      ],
-                    ],
+                          ] else ...[
+                            Text(
+                              l.totalExpense,
+                              style: t.bodySmall?.copyWith(
+                                color: context.colors.muted,
+                                fontSize: AppFontSize.caption,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpace.xxs),
+                            FittedBox(
+                              fit: BoxFit.scaleDown,
+                              child: Text(
+                                rupiah(total, hide: widget.hideAmounts),
+                                style: t.titleMedium?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: AppSpace.xxs),
+                            Text(
+                              l.categoryCount(items.length),
+                              style: t.bodySmall?.copyWith(
+                                color: context.colors.muted,
+                                fontSize: AppFontSize.caption,
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -219,6 +225,40 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
+                              const SizedBox(width: AppSpace.sm),
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxWidth: MediaQuery.sizeOf(context).width * 0.32,
+                                ),
+                                child: FitText(
+                                  rupiah(item.spent, hide: widget.hideAmounts),
+                                  alignment: Alignment.centerRight,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: AppFontSize.body,
+                                    color: context.colors.ink,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: AppSpace.xs),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(AppRadius.xs),
+                                  child: LinearProgressIndicator(
+                                    value: (item.percentage / 100.0).clamp(0.0, 1.0),
+                                    minHeight: 4,
+                                    backgroundColor: context.colors.divider,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      context.colors.fg(catColor),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: AppSpace.sm),
                               Text(
                                 '${item.percentage.toStringAsFixed(1)}%',
                                 style: TextStyle(
@@ -229,28 +269,7 @@ class _ExpenseDonutChartState extends State<ExpenseDonutChart> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: AppSpace.sm),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(AppRadius.xs),
-                            child: LinearProgressIndicator(
-                              value: (item.percentage / 100.0).clamp(0.0, 1.0),
-                              minHeight: 4,
-                              backgroundColor: context.colors.divider,
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                context.colors.fg(catColor),
-                              ),
-                            ),
-                          ),
                         ],
-                      ),
-                    ),
-                    const SizedBox(width: AppSpace.lg),
-                    Text(
-                      rupiah(item.spent, hide: widget.hideAmounts),
-                      style: TextStyle(
-                        fontWeight: FontWeight.w700,
-                        fontSize: AppFontSize.body,
-                        color: isSelected ? context.colors.ink : context.colors.ink,
                       ),
                     ),
                   ],
@@ -338,7 +357,7 @@ class _DonutPainter extends CustomPainter {
 
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width / 2 - 14;
-    const strokeWidth = 24.0;
+    const strokeWidth = 20.0;
 
     final gap = items.length > 1 ? 0.04 : 0.0;
     final totalRadians = 2 * math.pi - (gap * items.length);

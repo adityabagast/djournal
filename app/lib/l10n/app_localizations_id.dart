@@ -1698,6 +1698,22 @@ class AppLocalizationsId extends AppLocalizations {
   String get aboutReleases => 'Riwayat versi';
 
   @override
+  String get aboutReleasesSub => 'Apa yang berubah di tiap versi';
+
+  @override
+  String get historyMine => 'Versi kamu';
+
+  @override
+  String get historyUpdateHint => 'Perbarui untuk dapat fitur baru';
+
+  @override
+  String get historyView => 'Lihat';
+
+  @override
+  String get historyOffline =>
+      'Riwayat ini tersimpan di dalam app dan bisa dibuka tanpa internet.';
+
+  @override
   String get aboutTester => 'Jadi tester';
 
   @override
@@ -2182,4 +2198,308 @@ class AppLocalizationsId extends AppLocalizations {
   String remCreated(int count) {
     return '$count pengingat dibuat';
   }
+
+  @override
+  String get fbTitle => 'Kirim masukan';
+
+  @override
+  String get fbSub => 'Lapor bug atau usul fitur';
+
+  @override
+  String get fbBug => 'Lapor bug';
+
+  @override
+  String get fbFeature => 'Usul fitur';
+
+  @override
+  String get fbArea => 'Bagian app';
+
+  @override
+  String get fbAreaReminders => 'Pengingat';
+
+  @override
+  String get fbAreaBackup => 'Backup & sync';
+
+  @override
+  String get fbAreaOther => 'Lainnya';
+
+  @override
+  String get fbBugTitle => 'Apa yang bermasalah?';
+
+  @override
+  String get fbBugTitleHint => 'mis. Grafik laporan tidak muncul';
+
+  @override
+  String get fbBugBody => 'Ceritakan langkahnya';
+
+  @override
+  String get fbBugBodyHint =>
+      'Buka halaman apa, tekan apa, lalu apa yang terjadi';
+
+  @override
+  String get fbFeatureTitle => 'Fitur apa yang kamu mau?';
+
+  @override
+  String get fbFeatureTitleHint => 'mis. Widget ringkasan mingguan';
+
+  @override
+  String get fbFeatureBody => 'Kenapa berguna buatmu?';
+
+  @override
+  String get fbFeatureBodyHint => 'Ceritakan kapan kamu butuh fitur ini';
+
+  @override
+  String get fbTitleError => 'Isi minimal 5 huruf.';
+
+  @override
+  String get fbBodyError => 'Isi minimal 10 huruf.';
+
+  @override
+  String get fbSeverity => 'Seberapa mengganggu?';
+
+  @override
+  String get fbSevLow => 'Sedikit';
+
+  @override
+  String get fbSevMedium => 'Cukup';
+
+  @override
+  String get fbSevHigh => 'Parah';
+
+  @override
+  String get fbDevice => 'Sertakan info perangkat';
+
+  @override
+  String get fbDeviceSub => 'Versi app, versi sistem, dan tipe perangkat';
+
+  @override
+  String get fbPrivacy =>
+      'Dikirim dari email kamu, jadi alamatmu terlihat oleh pembuat Nyawtat. Jurnal dan data keuanganmu tidak ikut. Jangan tulis nominal atau PIN di sini.';
+
+  @override
+  String get fbOpenMail => 'Buka aplikasi email';
+
+  @override
+  String get fbPreview => 'Lihat yang akan dikirim';
+
+  @override
+  String get fbPreviewTitle => 'Yang akan dikirim';
+
+  @override
+  String get fbNoTitle => '(judul belum diisi)';
+
+  @override
+  String get fbNoBody => '(cerita belum diisi)';
+
+  @override
+  String get fbPreviewSub =>
+      'Hanya teks ini. Masih bisa diubah di aplikasi email.';
+
+  @override
+  String get fbTo => 'Ke';
+
+  @override
+  String get fbSubject => 'Subjek';
+
+  @override
+  String get fbClose => 'Tutup';
+
+  @override
+  String get fbNoMail => 'Aplikasi email tidak ditemukan';
+
+  @override
+  String get fbNoMailSub =>
+      'Salin teksnya, lalu kirim dari email mana pun ke alamat ini.';
+
+  @override
+  String get fbCopyAddress => 'Salin alamat';
+
+  @override
+  String get fbCopyText => 'Salin teks';
+
+  @override
+  String get fbCopied => 'Tersalin';
+
+  @override
+  String get fbDoneTitle => 'Sudah tekan kirim di email?';
+
+  @override
+  String get fbDoneBody =>
+      'Kalau sudah, makasih ya! Kalau belum, tulisanmu masih ada di sini.';
+
+  @override
+  String get fbDoneSent => 'Sudah dikirim';
+
+  @override
+  String get fbDoneAgain => 'Buka email lagi';
+
+  @override
+  String get fbDoneEdit => 'Ubah tulisan';
+
+  @override
+  String get fbDiscardTitle => 'Buang masukan ini?';
+
+  @override
+  String get fbDiscardBody => 'Tulisanmu belum dikirim dan akan hilang.';
+
+  @override
+  String get fbDiscard => 'Buang';
+
+  @override
+  String get fbKeep => 'Lanjut menulis';
+
+  @override
+  String fbMailArea(String area) {
+    return 'Bagian: $area';
+  }
+
+  @override
+  String fbMailSeverity(String level) {
+    return 'Mengganggu: $level';
+  }
+
+  @override
+  String get planTitle => 'Rencana harian';
+
+  @override
+  String get planTomorrow => 'Besok';
+
+  @override
+  String get planTodayTitle => 'Rencana hari ini';
+
+  @override
+  String planSummary(int done, int total) {
+    return '$done dari $total selesai';
+  }
+
+  @override
+  String get planNone => 'Belum ada rencana';
+
+  @override
+  String get planAll => 'Semua';
+
+  @override
+  String planMore(int count) {
+    return '+$count lainnya';
+  }
+
+  @override
+  String get planAllDone => 'Semua rencana hari ini selesai. Keren!';
+
+  @override
+  String planPercent(int percent) {
+    return '$percent persen selesai';
+  }
+
+  @override
+  String get planTomorrowAsk => 'Mau ngapain besok?';
+
+  @override
+  String get planTomorrowTitle => 'Rencana besok';
+
+  @override
+  String get planTomorrowNone => 'Belum ada rencana untuk besok';
+
+  @override
+  String planTomorrowCount(int count, String day) {
+    return '$count rencana · $day';
+  }
+
+  @override
+  String get planHint => 'mis. Olahraga pagi';
+
+  @override
+  String get planAddToday => 'Tambah rencana hari ini';
+
+  @override
+  String get planAddTomorrow => 'Tambah rencana besok';
+
+  @override
+  String planLeft(int count) {
+    return '$count rencana sebelumnya belum selesai';
+  }
+
+  @override
+  String get planLeftKeep => 'Biarkan';
+
+  @override
+  String get planMoveToday => 'Pindahkan ke hari ini';
+
+  @override
+  String get planMoveTomorrow => 'Pindahkan ke besok';
+
+  @override
+  String planCount(int count) {
+    return '$count rencana';
+  }
+
+  @override
+  String planDoneCount(int done, int total) {
+    return '$done/$total selesai';
+  }
+
+  @override
+  String get planEmptyToday => 'Belum ada rencana untuk hari ini.';
+
+  @override
+  String get planEmptyTomorrow =>
+      'Tulis hal yang ingin kamu lakukan besok. Besok daftarnya muncul di Hari Ini.';
+
+  @override
+  String get planWeek => 'Progres 7 hari';
+
+  @override
+  String planWeekDone(int count) {
+    return '$count hari tuntas';
+  }
+
+  @override
+  String get planEdit => 'Atur rencana';
+
+  @override
+  String get planField => 'Isi rencana';
+
+  @override
+  String planMenu(String title) {
+    return 'Atur $title';
+  }
+
+  @override
+  String get planCard => 'Rencana';
+
+  @override
+  String get planCardEmpty =>
+      'Mau ngapain hari ini atau besok? Tulis satu hal kecil dulu.';
+
+  @override
+  String get planCreate => 'Buat rencana';
+
+  @override
+  String get planWhen => 'Untuk kapan?';
+
+  @override
+  String get planTodayAsk => 'Mau ngapain hari ini?';
+
+  @override
+  String get planAddToList => 'Tambahkan ke daftar';
+
+  @override
+  String planUndo(String title) {
+    return 'Batalkan $title';
+  }
+
+  @override
+  String get planDone => 'Selesai';
+
+  @override
+  String get planSwipeTomorrow => 'Geser: besok';
+
+  @override
+  String get planSwipeToday => 'Geser: hari ini';
+
+  @override
+  String get planSeeToday => 'Lihat rencana hari ini';
+
+  @override
+  String get planSeeTomorrow => 'Lihat rencana besok';
 }

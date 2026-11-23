@@ -6,15 +6,16 @@ import 'package:url_launcher/url_launcher.dart';
 import '../../../core/format.dart';
 import '../../../core/platform/platform_info.dart';
 import '../../../core/theme.dart';
+import '../../feedback/presentation/feedback_screen.dart';
 import '../../update/providers/update_controller.dart';
-import '../../update/data/update_service.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/widgets/mascot.dart';
 import '../../update/presentation/update_card.dart';
+import '../../update/presentation/version_history_screen.dart';
 import '../../update/presentation/whats_new_sheet.dart';
 import '../../../core/tokens.dart';
 
-/// Bagian "Tentang" di Pengaturan: versi, cek update, dan tautan rilis.
+/// Bagian "Tentang" di Pengaturan: versi, cek update, masukan, riwayat versi.
 class AboutSection extends ConsumerWidget {
   const AboutSection({super.key});
 
@@ -224,12 +225,17 @@ class AboutSection extends ConsumerWidget {
           ),
           divider,
           ListTile(
-            title: Text(l.aboutReleases, style: titleStyle),
+            title: Text(l.fbTitle, style: titleStyle),
+            subtitle: Text(l.fbSub, style: subStyle),
             trailing: Icon(Icons.chevron_right, color: c.faint),
-            onTap: () => launchUrl(
-              Uri.parse('https://github.com/${UpdateService.repo}/releases'),
-              mode: LaunchMode.externalApplication,
-            ),
+            onTap: () => FeedbackScreen.open(context),
+          ),
+          divider,
+          ListTile(
+            title: Text(l.aboutReleases, style: titleStyle),
+            subtitle: Text(l.aboutReleasesSub, style: subStyle),
+            trailing: Icon(Icons.chevron_right, color: c.faint),
+            onTap: () => VersionHistoryScreen.open(context),
           ),
           divider,
           ListTile(

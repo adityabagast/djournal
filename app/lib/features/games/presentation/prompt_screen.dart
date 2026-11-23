@@ -178,7 +178,10 @@ class _PromptScreenState extends State<PromptScreen> {
                           context,
                           initialTitle: question,
                         ),
-                  child: Text(l.gamePromptWrite),
+                  child: FitText(
+                    l.gamePromptWrite,
+                    alignment: Alignment.center,
+                  ),
                 ),
               ),
             ],

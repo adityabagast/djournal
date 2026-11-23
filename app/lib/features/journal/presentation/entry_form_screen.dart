@@ -412,7 +412,10 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
           const SizedBox(height: AppSpace.sm),
           label(l.entryTime, optional: true),
           const SizedBox(height: AppSpace.sm),
-          Row(
+          Wrap(
+            spacing: AppSpace.sm,
+            runSpacing: AppSpace.sm,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               OutlinedButton.icon(
                 onPressed: _pickTime,
@@ -430,7 +433,6 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                   ),
                 ),
               ),
-              const SizedBox(width: AppSpace.sm),
               OutlinedButton(
                 onPressed: () =>
                     setState(() => _time = _formatTime(TimeOfDay.now())),
@@ -494,12 +496,13 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
             onRemoveImage: _removeImage,
           ),
           const SizedBox(height: AppSpace.lg),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Wrap(
+            alignment: WrapAlignment.spaceBetween,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               label(l.story),
-              Row(
-                mainAxisSize: MainAxisSize.min,
+              Wrap(
+                spacing: AppSpace.xs,
                 children: [
                   TextButton.icon(
                     onPressed: _dictateStory,
@@ -519,7 +522,6 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                       ),
                     ),
                   ),
-                  const SizedBox(width: AppSpace.xs),
                   TextButton.icon(
                     onPressed: _recordVoice,
                     style: TextButton.styleFrom(
@@ -646,14 +648,16 @@ class _MoodChoice extends StatelessWidget {
               children: [
                 MoodFace(mood: mood, color: color, size: 26),
                 const SizedBox(height: AppSpace.xxs),
-                Text(
-                  text,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: TextStyle(
-                    fontSize: AppFontSize.caption,
-                    fontWeight: FontWeight.w600,
-                    color: color,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+                  child: FitText(
+                    text,
+                    alignment: Alignment.center,
+                    style: TextStyle(
+                      fontSize: AppFontSize.caption,
+                      fontWeight: FontWeight.w600,
+                      color: color,
+                    ),
                   ),
                 ),
               ],

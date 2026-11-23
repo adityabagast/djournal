@@ -185,7 +185,7 @@ class TxRow extends ConsumerWidget {
           children: [
             if (leadingTime)
               SizedBox(
-                width: 46,
+                width: MediaQuery.textScalerOf(context).scale(40),
                 child: Text(
                   time,
                   style: t.bodySmall?.copyWith(
@@ -242,11 +242,20 @@ class TxRow extends ConsumerWidget {
               ),
             ),
             const SizedBox(width: AppSpace.sm),
-            Text(
-              amountText,
-              style: t.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: amountColor,
+            // Nominal panjang mengecil supaya catatan tetap terbaca.
+            ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: MediaQuery.sizeOf(context).width * 0.4,
+              ),
+              child: FittedBox(
+                fit: BoxFit.scaleDown,
+                child: Text(
+                  amountText,
+                  style: t.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: amountColor,
+                  ),
+                ),
               ),
             ),
           ],

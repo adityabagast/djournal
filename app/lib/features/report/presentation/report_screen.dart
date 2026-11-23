@@ -107,7 +107,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
           child: Row(
             children: [
               Expanded(
-                child: Text(
+                child: FitText(
                   label,
                   style: TextStyle(
                     color: bold ? context.colors.ink : context.colors.muted,
@@ -115,9 +115,16 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   ),
                 ),
               ),
-              Text(
-                value,
-                style: TextStyle(fontWeight: FontWeight.w700, color: color),
+              const SizedBox(width: AppSpace.sm),
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.sizeOf(context).width * 0.45,
+                ),
+                child: FitText(
+                  value,
+                  alignment: Alignment.centerRight,
+                  style: TextStyle(fontWeight: FontWeight.w700, color: color),
+                ),
               ),
             ],
           ),
@@ -210,16 +217,18 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
         final chartsCard = AppCard(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: AppSpace.sm,
+                runSpacing: AppSpace.sm,
                 children: [
-                  Expanded(
-                    child: Text(
-                      l.chartExpenseAnalysis,
-                      style: t.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                  Text(
+                    l.chartExpenseAnalysis,
+                    style: t.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                   SegmentedButton<int>(

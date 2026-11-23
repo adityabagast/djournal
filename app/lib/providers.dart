@@ -7,11 +7,13 @@ export 'core/database/database_providers.dart';
 
 // features
 export 'features/backup/providers/google_drive_providers.dart';
+export 'features/feedback/providers/feedback_providers.dart';
 export 'features/journal/providers/journal_providers.dart';
 export 'features/money/providers/bill_providers.dart';
 export 'features/money/providers/global_budget_providers.dart';
 export 'features/money/providers/money_providers.dart';
 export 'features/money/providers/wishlist_providers.dart';
+export 'features/plan/providers/plan_providers.dart';
 export 'features/reminders/providers/reminder_providers.dart';
 export 'features/settings/providers/settings_providers.dart';
 export 'features/today/providers/streak_providers.dart';

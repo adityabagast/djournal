@@ -223,8 +223,8 @@ class MoneyCalendarCard extends StatelessWidget {
               child: Column(
                 children: [
                   Container(
-                    width: 24,
-                    height: 24,
+                    width: 28,
+                    height: 28,
                     alignment: Alignment.center,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,

@@ -4,7 +4,7 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 
 **🌐 Situs: [adityabagast.github.io/djournal](https://adityabagast.github.io/djournal/)** · [Unduh APK](../../releases/latest) · [Jadi tester](https://appdistribution.firebase.dev/i/7f0a29e4b1386d45)
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.15.1**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.18.0**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>
@@ -45,6 +45,10 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 > Sejak 30 September 2026, Android di Indonesia hanya mau memasang app dari developer yang terverifikasi. Nyawtat sudah terdaftar di Android Developer Console dengan distribusi terbatas, jadi HP harus **diizinkan developer dulu** (maksimal 20 HP). Tanpa itu muncul pesan "Aplikasi diblokir untuk melindungi perangkat Anda".
 
 ## Fitur
+
+**Rencana Harian**
+- Satu kartu di Hari Ini untuk rencana hari ini dan besok; geser untuk berpindah, centang yang sudah selesai
+- Persen progres, grafik 7 hari, dan tawaran memindahkan rencana yang belum selesai
 
 **Jurnal & Catatan Suara**
 - Beberapa entri per hari, masing-masing dengan jam (opsional), mood 1–5 (opsional), judul, isi, dan tag
