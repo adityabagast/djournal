@@ -3110,6 +3110,36 @@ abstract class AppLocalizations {
   /// **'Riwayat versi'**
   String get aboutReleases;
 
+  /// No description provided for @aboutReleasesSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang berubah di tiap versi'**
+  String get aboutReleasesSub;
+
+  /// No description provided for @historyMine.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi kamu'**
+  String get historyMine;
+
+  /// No description provided for @historyUpdateHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Perbarui untuk dapat fitur baru'**
+  String get historyUpdateHint;
+
+  /// No description provided for @historyView.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat'**
+  String get historyView;
+
+  /// No description provided for @historyOffline.
+  ///
+  /// In id, this message translates to:
+  /// **'Riwayat ini tersimpan di dalam app dan bisa dibuka tanpa internet.'**
+  String get historyOffline;
+
   /// No description provided for @aboutTester.
   ///
   /// In id, this message translates to:
@@ -3985,6 +4015,552 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'{count} pengingat dibuat'**
   String remCreated(int count);
+
+  /// No description provided for @fbTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Kirim masukan'**
+  String get fbTitle;
+
+  /// No description provided for @fbSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Lapor bug atau usul fitur'**
+  String get fbSub;
+
+  /// No description provided for @fbBug.
+  ///
+  /// In id, this message translates to:
+  /// **'Lapor bug'**
+  String get fbBug;
+
+  /// No description provided for @fbFeature.
+  ///
+  /// In id, this message translates to:
+  /// **'Usul fitur'**
+  String get fbFeature;
+
+  /// No description provided for @fbArea.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagian app'**
+  String get fbArea;
+
+  /// No description provided for @fbAreaReminders.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengingat'**
+  String get fbAreaReminders;
+
+  /// No description provided for @fbAreaBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Backup & sync'**
+  String get fbAreaBackup;
+
+  /// No description provided for @fbAreaOther.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya'**
+  String get fbAreaOther;
+
+  /// No description provided for @fbBugTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Apa yang bermasalah?'**
+  String get fbBugTitle;
+
+  /// No description provided for @fbBugTitleHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. Grafik laporan tidak muncul'**
+  String get fbBugTitleHint;
+
+  /// No description provided for @fbBugBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan langkahnya'**
+  String get fbBugBody;
+
+  /// No description provided for @fbBugBodyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka halaman apa, tekan apa, lalu apa yang terjadi'**
+  String get fbBugBodyHint;
+
+  /// No description provided for @fbFeatureTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Fitur apa yang kamu mau?'**
+  String get fbFeatureTitle;
+
+  /// No description provided for @fbFeatureTitleHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. Widget ringkasan mingguan'**
+  String get fbFeatureTitleHint;
+
+  /// No description provided for @fbFeatureBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kenapa berguna buatmu?'**
+  String get fbFeatureBody;
+
+  /// No description provided for @fbFeatureBodyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Ceritakan kapan kamu butuh fitur ini'**
+  String get fbFeatureBodyHint;
+
+  /// No description provided for @fbTitleError.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi minimal 5 huruf.'**
+  String get fbTitleError;
+
+  /// No description provided for @fbBodyError.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi minimal 10 huruf.'**
+  String get fbBodyError;
+
+  /// No description provided for @fbSeverity.
+  ///
+  /// In id, this message translates to:
+  /// **'Seberapa mengganggu?'**
+  String get fbSeverity;
+
+  /// No description provided for @fbSevLow.
+  ///
+  /// In id, this message translates to:
+  /// **'Sedikit'**
+  String get fbSevLow;
+
+  /// No description provided for @fbSevMedium.
+  ///
+  /// In id, this message translates to:
+  /// **'Cukup'**
+  String get fbSevMedium;
+
+  /// No description provided for @fbSevHigh.
+  ///
+  /// In id, this message translates to:
+  /// **'Parah'**
+  String get fbSevHigh;
+
+  /// No description provided for @fbDevice.
+  ///
+  /// In id, this message translates to:
+  /// **'Sertakan info perangkat'**
+  String get fbDevice;
+
+  /// No description provided for @fbDeviceSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi app, versi sistem, dan tipe perangkat'**
+  String get fbDeviceSub;
+
+  /// No description provided for @fbPrivacy.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikirim dari email kamu, jadi alamatmu terlihat oleh pembuat Nyawtat. Jurnal dan data keuanganmu tidak ikut. Jangan tulis nominal atau PIN di sini.'**
+  String get fbPrivacy;
+
+  /// No description provided for @fbOpenMail.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka aplikasi email'**
+  String get fbOpenMail;
+
+  /// No description provided for @fbPreview.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat yang akan dikirim'**
+  String get fbPreview;
+
+  /// No description provided for @fbPreviewTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Yang akan dikirim'**
+  String get fbPreviewTitle;
+
+  /// No description provided for @fbNoTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'(judul belum diisi)'**
+  String get fbNoTitle;
+
+  /// No description provided for @fbNoBody.
+  ///
+  /// In id, this message translates to:
+  /// **'(cerita belum diisi)'**
+  String get fbNoBody;
+
+  /// No description provided for @fbPreviewSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya teks ini. Masih bisa diubah di aplikasi email.'**
+  String get fbPreviewSub;
+
+  /// No description provided for @fbTo.
+  ///
+  /// In id, this message translates to:
+  /// **'Ke'**
+  String get fbTo;
+
+  /// No description provided for @fbSubject.
+  ///
+  /// In id, this message translates to:
+  /// **'Subjek'**
+  String get fbSubject;
+
+  /// No description provided for @fbClose.
+  ///
+  /// In id, this message translates to:
+  /// **'Tutup'**
+  String get fbClose;
+
+  /// No description provided for @fbNoMail.
+  ///
+  /// In id, this message translates to:
+  /// **'Aplikasi email tidak ditemukan'**
+  String get fbNoMail;
+
+  /// No description provided for @fbNoMailSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin teksnya, lalu kirim dari email mana pun ke alamat ini.'**
+  String get fbNoMailSub;
+
+  /// No description provided for @fbCopyAddress.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin alamat'**
+  String get fbCopyAddress;
+
+  /// No description provided for @fbCopyText.
+  ///
+  /// In id, this message translates to:
+  /// **'Salin teks'**
+  String get fbCopyText;
+
+  /// No description provided for @fbCopied.
+  ///
+  /// In id, this message translates to:
+  /// **'Tersalin'**
+  String get fbCopied;
+
+  /// No description provided for @fbDoneTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah tekan kirim di email?'**
+  String get fbDoneTitle;
+
+  /// No description provided for @fbDoneBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Kalau sudah, makasih ya! Kalau belum, tulisanmu masih ada di sini.'**
+  String get fbDoneBody;
+
+  /// No description provided for @fbDoneSent.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah dikirim'**
+  String get fbDoneSent;
+
+  /// No description provided for @fbDoneAgain.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka email lagi'**
+  String get fbDoneAgain;
+
+  /// No description provided for @fbDoneEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah tulisan'**
+  String get fbDoneEdit;
+
+  /// No description provided for @fbDiscardTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Buang masukan ini?'**
+  String get fbDiscardTitle;
+
+  /// No description provided for @fbDiscardBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulisanmu belum dikirim dan akan hilang.'**
+  String get fbDiscardBody;
+
+  /// No description provided for @fbDiscard.
+  ///
+  /// In id, this message translates to:
+  /// **'Buang'**
+  String get fbDiscard;
+
+  /// No description provided for @fbKeep.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut menulis'**
+  String get fbKeep;
+
+  /// No description provided for @fbMailArea.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagian: {area}'**
+  String fbMailArea(String area);
+
+  /// No description provided for @fbMailSeverity.
+  ///
+  /// In id, this message translates to:
+  /// **'Mengganggu: {level}'**
+  String fbMailSeverity(String level);
+
+  /// No description provided for @planTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rencana harian'**
+  String get planTitle;
+
+  /// No description provided for @planTomorrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Besok'**
+  String get planTomorrow;
+
+  /// No description provided for @planTodayTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rencana hari ini'**
+  String get planTodayTitle;
+
+  /// No description provided for @planSummary.
+  ///
+  /// In id, this message translates to:
+  /// **'{done} dari {total} selesai'**
+  String planSummary(int done, int total);
+
+  /// No description provided for @planNone.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada rencana'**
+  String get planNone;
+
+  /// No description provided for @planAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua'**
+  String get planAll;
+
+  /// No description provided for @planMore.
+  ///
+  /// In id, this message translates to:
+  /// **'+{count} lainnya'**
+  String planMore(int count);
+
+  /// No description provided for @planAllDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Semua rencana hari ini selesai. Keren!'**
+  String get planAllDone;
+
+  /// No description provided for @planPercent.
+  ///
+  /// In id, this message translates to:
+  /// **'{percent} persen selesai'**
+  String planPercent(int percent);
+
+  /// No description provided for @planTomorrowAsk.
+  ///
+  /// In id, this message translates to:
+  /// **'Mau ngapain besok?'**
+  String get planTomorrowAsk;
+
+  /// No description provided for @planTomorrowTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Rencana besok'**
+  String get planTomorrowTitle;
+
+  /// No description provided for @planTomorrowNone.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada rencana untuk besok'**
+  String get planTomorrowNone;
+
+  /// No description provided for @planTomorrowCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} rencana · {day}'**
+  String planTomorrowCount(int count, String day);
+
+  /// No description provided for @planHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. Olahraga pagi'**
+  String get planHint;
+
+  /// No description provided for @planAddToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah rencana hari ini'**
+  String get planAddToday;
+
+  /// No description provided for @planAddTomorrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah rencana besok'**
+  String get planAddTomorrow;
+
+  /// No description provided for @planLeft.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} rencana sebelumnya belum selesai'**
+  String planLeft(int count);
+
+  /// No description provided for @planLeftKeep.
+  ///
+  /// In id, this message translates to:
+  /// **'Biarkan'**
+  String get planLeftKeep;
+
+  /// No description provided for @planMoveToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Pindahkan ke hari ini'**
+  String get planMoveToday;
+
+  /// No description provided for @planMoveTomorrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Pindahkan ke besok'**
+  String get planMoveTomorrow;
+
+  /// No description provided for @planCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} rencana'**
+  String planCount(int count);
+
+  /// No description provided for @planDoneCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{done}/{total} selesai'**
+  String planDoneCount(int done, int total);
+
+  /// No description provided for @planEmptyToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada rencana untuk hari ini.'**
+  String get planEmptyToday;
+
+  /// No description provided for @planEmptyTomorrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis hal yang ingin kamu lakukan besok. Besok daftarnya muncul di Hari Ini.'**
+  String get planEmptyTomorrow;
+
+  /// No description provided for @planWeek.
+  ///
+  /// In id, this message translates to:
+  /// **'Progres 7 hari'**
+  String get planWeek;
+
+  /// No description provided for @planWeekDone.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} hari tuntas'**
+  String planWeekDone(int count);
+
+  /// No description provided for @planEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur rencana'**
+  String get planEdit;
+
+  /// No description provided for @planField.
+  ///
+  /// In id, this message translates to:
+  /// **'Isi rencana'**
+  String get planField;
+
+  /// No description provided for @planMenu.
+  ///
+  /// In id, this message translates to:
+  /// **'Atur {title}'**
+  String planMenu(String title);
+
+  /// No description provided for @planCard.
+  ///
+  /// In id, this message translates to:
+  /// **'Rencana'**
+  String get planCard;
+
+  /// No description provided for @planCardEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Mau ngapain hari ini atau besok? Tulis satu hal kecil dulu.'**
+  String get planCardEmpty;
+
+  /// No description provided for @planCreate.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat rencana'**
+  String get planCreate;
+
+  /// No description provided for @planWhen.
+  ///
+  /// In id, this message translates to:
+  /// **'Untuk kapan?'**
+  String get planWhen;
+
+  /// No description provided for @planTodayAsk.
+  ///
+  /// In id, this message translates to:
+  /// **'Mau ngapain hari ini?'**
+  String get planTodayAsk;
+
+  /// No description provided for @planAddToList.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambahkan ke daftar'**
+  String get planAddToList;
+
+  /// No description provided for @planUndo.
+  ///
+  /// In id, this message translates to:
+  /// **'Batalkan {title}'**
+  String planUndo(String title);
+
+  /// No description provided for @planDone.
+  ///
+  /// In id, this message translates to:
+  /// **'Selesai'**
+  String get planDone;
+
+  /// No description provided for @planSwipeTomorrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser: besok'**
+  String get planSwipeTomorrow;
+
+  /// No description provided for @planSwipeToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Geser: hari ini'**
+  String get planSwipeToday;
+
+  /// No description provided for @planSeeToday.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat rencana hari ini'**
+  String get planSeeToday;
+
+  /// No description provided for @planSeeTomorrow.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat rencana besok'**
+  String get planSeeTomorrow;
 }
 
 class _AppLocalizationsDelegate

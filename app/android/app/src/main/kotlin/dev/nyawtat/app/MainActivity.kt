@@ -48,6 +48,22 @@ class MainActivity : FlutterFragmentActivity() {
                 result.success(null)
             }
 
+        // Pengaturan › Tentang › Kirim masukan: versi Android dan tipe HP,
+        // hanya dipakai kalau user menyertakannya di laporan bug.
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "nyawtat/device")
+            .setMethodCallHandler { call, result ->
+                if (call.method == "info") {
+                    val model = if (Build.MODEL.startsWith(Build.MANUFACTURER, ignoreCase = true)) {
+                        Build.MODEL
+                    } else {
+                        "${Build.MANUFACTURER} ${Build.MODEL}"
+                    }
+                    result.success("Android ${Build.VERSION.RELEASE} · $model")
+                } else {
+                    result.notImplemented()
+                }
+            }
+
         // Cek update di dalam app: ABI untuk memilih APK, lalu buka installer.
         MethodChannel(flutterEngine.dartExecutor.binaryMessenger, "nyawtat/update")
             .setMethodCallHandler { call, result ->

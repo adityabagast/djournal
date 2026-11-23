@@ -20,6 +20,7 @@ String newId() => _uuid.v4();
     Bills,
     Attachments,
     Reminders,
+    DailyPlans,
     AppSettings,
   ],
 )
@@ -27,7 +28,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase([QueryExecutor? executor]) : super(executor ?? _openConnection());
 
   @override
-  int get schemaVersion => 7;
+  int get schemaVersion => 8;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -66,6 +67,10 @@ class AppDatabase extends _$AppDatabase {
       if (from < 7) {
         await m.createTable(reminders);
       }
+      if (from < 8) {
+        await m.createTable(dailyPlans);
+        await m.createIndex(idxPlanDate);
+      }
     },
     beforeOpen: (details) async {
       await customStatement('PRAGMA foreign_keys = ON');
@@ -88,6 +93,7 @@ class AppDatabase extends _$AppDatabase {
   Future<void> resetData() => transaction(() async {
     for (final table in <TableInfo>[
       reminders,
+      dailyPlans,
       attachments,
       journalEntries,
       wishlists,

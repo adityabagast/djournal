@@ -13,4 +13,7 @@ const supabaseKey = String.fromEnvironment(
   defaultValue: 'sb_publishable_VYQCFM31Cqn5wqhfqAzU1Q_Zt8FbLWk',
 );
 
+/// Alamat tujuan masukan (Pengaturan › Tentang › Kirim masukan). Publik.
+const supportEmail = 'nyawtat@gmail.com';
+
 bool get backendConfigured => supabaseUrl.isNotEmpty && supabaseKey.isNotEmpty;

@@ -199,15 +199,17 @@ class BudgetRow extends ConsumerWidget {
       children: [
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              Row(
+              // Nominal turun ke baris kedua kalau tidak muat.
+              Wrap(
+                alignment: WrapAlignment.spaceBetween,
+                crossAxisAlignment: WrapCrossAlignment.center,
+                spacing: AppSpace.sm,
                 children: [
-                  Expanded(
-                    child: Text(
-                      categoryLabel(l, category),
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
+                  Text(
+                    categoryLabel(l, category),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ),
                   Text(
                     hasBudget

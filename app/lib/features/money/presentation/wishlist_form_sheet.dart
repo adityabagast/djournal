@@ -83,13 +83,7 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
       _selectedWalletId = activeWallets.first.id;
     }
 
-    return Padding(
-      padding: EdgeInsets.only(
-        left: 20,
-        right: 20,
-        top: 20,
-        bottom: MediaQuery.of(context).viewInsets.bottom + 24,
-      ),
+    return SheetScroll(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -138,6 +132,7 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
           ),
           const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<String>(
+            isExpanded: true,
             initialValue: _selectedWalletId,
             decoration: const InputDecoration(
               labelText: 'Simpan di Dompet',
@@ -146,13 +141,14 @@ class _WishlistFormSheetState extends ConsumerState<WishlistFormSheet> {
               for (final w in activeWallets)
                 DropdownMenuItem(
                   value: w.id,
-                  child: Text(w.name),
+                  child: Text(w.name, overflow: TextOverflow.ellipsis),
                 ),
             ],
             onChanged: (val) => setState(() => _selectedWalletId = val),
           ),
           const SizedBox(height: AppSpace.lg),
           DropdownButtonFormField<int>(
+            isExpanded: true,
             initialValue: _selectedMonths,
             decoration: const InputDecoration(
               labelText: 'Target Waktu Tercapai',

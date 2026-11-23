@@ -361,7 +361,7 @@ class _StartView extends ConsumerWidget {
             children: [
               for (final (label, query, color) in suggestions)
                 ActionChip(
-                  label: Text(label),
+                  label: Text(label, overflow: TextOverflow.ellipsis),
                   onPressed: () => onPick(query),
                   backgroundColor: context.colors.soft(color),
                   side: BorderSide.none,

@@ -16,9 +16,12 @@ extension ResponsiveX on BuildContext {
   /// True jika layar lebar (desktop / tablet >= 720dp).
   bool get isWide => PlatformInfo.isWideScreen(MediaQuery.sizeOf(this).width);
 
-  /// Padding bawah daftar: 124dp untuk memberi ruang dock mengapung di HP,
-  /// atau 24dp di desktop/layar lebar karena navigasi ada di sidebar kiri.
-  double get bottomDockPadding => isWide ? 24.0 : 124.0;
+  /// Padding bawah daftar: ruang untuk dock mengapung (tinggi 72 + jarak 16 +
+  /// napas 20) ditambah navigasi sistem HP, atau 24dp di desktop/layar lebar
+  /// karena navigasi ada di sidebar kiri.
+  double get bottomDockPadding => isWide
+      ? 24.0
+      : 108.0 + MediaQuery.paddingOf(this).bottom;
 
   /// Padding standar layar yang adaptif.
   EdgeInsets get screenPadding =>
@@ -38,6 +41,28 @@ String dayLabel(BuildContext context, String localDate) {
   return base;
 }
 
+/// Teks pendek satu baris (label, nominal) yang mengecil kalau tempatnya
+/// sempit, supaya tidak patah di tengah kata atau terpotong "…".
+class FitText extends StatelessWidget {
+  const FitText(
+    this.text, {
+    super.key,
+    this.style,
+    this.alignment = Alignment.centerLeft,
+  });
+
+  final String text;
+  final TextStyle? style;
+  final Alignment alignment;
+
+  @override
+  Widget build(BuildContext context) => FittedBox(
+    fit: BoxFit.scaleDown,
+    alignment: alignment,
+    child: Text(text, maxLines: 1, softWrap: false, style: style),
+  );
+}
+
 /// Judul besar di atas layar tab: tanggal/bulan kecil + judul.
 class ScreenHeader extends StatelessWidget {
   const ScreenHeader({
@@ -54,21 +79,21 @@ class ScreenHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = Theme.of(context).textTheme;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.end,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                overline,
-                style: t.bodySmall?.copyWith(
-                  color: context.colors.muted,
-                  fontSize: AppFontSize.body,
-                ),
-              ),
-              Text(
+        // Tanggal memakai lebar penuh, jadi tidak patah di HP sempit.
+        FitText(
+          overline,
+          style: t.bodySmall?.copyWith(
+            color: context.colors.muted,
+            fontSize: AppFontSize.body,
+          ),
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: FitText(
                 title,
                 style: t.headlineMedium?.copyWith(
                   fontWeight: FontWeight.w700,
@@ -76,10 +101,12 @@ class ScreenHeader extends StatelessWidget {
                   letterSpacing: -0.5,
                 ),
               ),
-            ],
-          ),
+            ),
+            // Tinggi sama di semua tab, dengan atau tanpa tombol.
+            const SizedBox(width: AppSpace.sm, height: 48),
+            ?trailing,
+          ],
         ),
-        ?trailing,
       ],
     );
   }

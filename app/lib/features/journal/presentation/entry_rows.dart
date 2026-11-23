@@ -65,7 +65,7 @@ class EntryTimelineRow extends ConsumerWidget {
         child: Row(
           children: [
             SizedBox(
-              width: 46,
+              width: MediaQuery.textScalerOf(context).scale(40),
               // Label jam hanya tampil kalau user mengisinya.
               child: Text(
                 entry.entryTime ?? '',
@@ -154,7 +154,7 @@ class EntryListRow extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             SizedBox(
-              width: 46,
+              width: MediaQuery.textScalerOf(context).scale(40),
               child: Padding(
                 padding: const EdgeInsets.only(top: AppSpace.xxs),
                 child: Text(

@@ -14,7 +14,7 @@ class ReleaseInfo {
   final String version;
 
   /// Isi catatan rilis yang sudah dibersihkan dari markdown, hanya bagian
-  /// sebelum "Unduh"/"Download".
+  /// sebelum petunjuk file APK ("Unduh", "Pasang", "Verifikasi").
   final String notes;
   final String pageUrl;
   final DateTime? publishedAt;
@@ -84,7 +84,10 @@ int compareVersions(String a, String b) {
   return 0;
 }
 
-/// Catatan rilis jadi teks polos: berhenti di bagian unduhan, buang judul
+/// Bagian catatan rilis tentang file APK, tidak perlu tampil di app.
+const _fileSections = ['unduh', 'download', 'pasang', 'install', 'verif'];
+
+/// Catatan rilis jadi teks polos: berhenti di bagian file APK, buang judul
 /// utama, tanda markdown, dan tautan (teksnya tetap).
 String cleanReleaseNotes(String body) {
   final out = <String>[];
@@ -93,7 +96,7 @@ String cleanReleaseNotes(String body) {
     final heading = RegExp(r'^#{1,6}\s*').firstMatch(line);
     if (heading != null) {
       final title = line.substring(heading.end).trim().toLowerCase();
-      if (title.startsWith('unduh') || title.startsWith('download')) break;
+      if (_fileSections.any(title.startsWith)) break;
       if (heading.group(0)!.trim() == '#') continue;
       line = line.substring(heading.end).trim();
     }

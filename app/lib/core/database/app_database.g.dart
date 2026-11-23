@@ -6413,6 +6413,528 @@ class RemindersCompanion extends UpdateCompanion<Reminder> {
   }
 }
 
+class $DailyPlansTable extends DailyPlans
+    with TableInfo<$DailyPlansTable, DailyPlan> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $DailyPlansTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, int> createdAt =
+      GeneratedColumn<int>(
+        'created_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($DailyPlansTable.$convertercreatedAt);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime, int> updatedAt =
+      GeneratedColumn<int>(
+        'updated_at',
+        aliasedName,
+        false,
+        type: DriftSqlType.int,
+        requiredDuringInsert: true,
+      ).withConverter<DateTime>($DailyPlansTable.$converterupdatedAt);
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime?, int> deletedAt =
+      GeneratedColumn<int>(
+        'deleted_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<DateTime?>($DailyPlansTable.$converterdeletedAtn);
+  static const VerificationMeta _isDirtyMeta = const VerificationMeta(
+    'isDirty',
+  );
+  @override
+  late final GeneratedColumn<bool> isDirty = GeneratedColumn<bool>(
+    'is_dirty',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_dirty" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _planDateMeta = const VerificationMeta(
+    'planDate',
+  );
+  @override
+  late final GeneratedColumn<String> planDate = GeneratedColumn<String>(
+    'plan_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  @override
+  late final GeneratedColumnWithTypeConverter<DateTime?, int> doneAt =
+      GeneratedColumn<int>(
+        'done_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.int,
+        requiredDuringInsert: false,
+      ).withConverter<DateTime?>($DailyPlansTable.$converterdoneAtn);
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    isDirty,
+    title,
+    planDate,
+    doneAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'daily_plans';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<DailyPlan> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('is_dirty')) {
+      context.handle(
+        _isDirtyMeta,
+        isDirty.isAcceptableOrUnknown(data['is_dirty']!, _isDirtyMeta),
+      );
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('plan_date')) {
+      context.handle(
+        _planDateMeta,
+        planDate.isAcceptableOrUnknown(data['plan_date']!, _planDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_planDateMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  DailyPlan map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return DailyPlan(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      createdAt: $DailyPlansTable.$convertercreatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}created_at'],
+        )!,
+      ),
+      updatedAt: $DailyPlansTable.$converterupdatedAt.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}updated_at'],
+        )!,
+      ),
+      deletedAt: $DailyPlansTable.$converterdeletedAtn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}deleted_at'],
+        ),
+      ),
+      isDirty: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_dirty'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      planDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}plan_date'],
+      )!,
+      doneAt: $DailyPlansTable.$converterdoneAtn.fromSql(
+        attachedDatabase.typeMapping.read(
+          DriftSqlType.int,
+          data['${effectivePrefix}done_at'],
+        ),
+      ),
+    );
+  }
+
+  @override
+  $DailyPlansTable createAlias(String alias) {
+    return $DailyPlansTable(attachedDatabase, alias);
+  }
+
+  static TypeConverter<DateTime, int> $convertercreatedAt =
+      const EpochMsConverter();
+  static TypeConverter<DateTime, int> $converterupdatedAt =
+      const EpochMsConverter();
+  static TypeConverter<DateTime, int> $converterdeletedAt =
+      const EpochMsConverter();
+  static TypeConverter<DateTime?, int?> $converterdeletedAtn =
+      NullAwareTypeConverter.wrap($converterdeletedAt);
+  static TypeConverter<DateTime, int> $converterdoneAt =
+      const EpochMsConverter();
+  static TypeConverter<DateTime?, int?> $converterdoneAtn =
+      NullAwareTypeConverter.wrap($converterdoneAt);
+}
+
+class DailyPlan extends DataClass implements Insertable<DailyPlan> {
+  final String id;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final bool isDirty;
+  final String title;
+
+  /// Hari rencananya (YYYY-MM-DD).
+  final String planDate;
+
+  /// Kapan dicentang; null = belum selesai.
+  final DateTime? doneAt;
+  const DailyPlan({
+    required this.id,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.isDirty,
+    required this.title,
+    required this.planDate,
+    this.doneAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    {
+      map['created_at'] = Variable<int>(
+        $DailyPlansTable.$convertercreatedAt.toSql(createdAt),
+      );
+    }
+    {
+      map['updated_at'] = Variable<int>(
+        $DailyPlansTable.$converterupdatedAt.toSql(updatedAt),
+      );
+    }
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<int>(
+        $DailyPlansTable.$converterdeletedAtn.toSql(deletedAt),
+      );
+    }
+    map['is_dirty'] = Variable<bool>(isDirty);
+    map['title'] = Variable<String>(title);
+    map['plan_date'] = Variable<String>(planDate);
+    if (!nullToAbsent || doneAt != null) {
+      map['done_at'] = Variable<int>(
+        $DailyPlansTable.$converterdoneAtn.toSql(doneAt),
+      );
+    }
+    return map;
+  }
+
+  DailyPlansCompanion toCompanion(bool nullToAbsent) {
+    return DailyPlansCompanion(
+      id: Value(id),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      isDirty: Value(isDirty),
+      title: Value(title),
+      planDate: Value(planDate),
+      doneAt: doneAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(doneAt),
+    );
+  }
+
+  factory DailyPlan.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return DailyPlan(
+      id: serializer.fromJson<String>(json['id']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      isDirty: serializer.fromJson<bool>(json['isDirty']),
+      title: serializer.fromJson<String>(json['title']),
+      planDate: serializer.fromJson<String>(json['planDate']),
+      doneAt: serializer.fromJson<DateTime?>(json['doneAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'isDirty': serializer.toJson<bool>(isDirty),
+      'title': serializer.toJson<String>(title),
+      'planDate': serializer.toJson<String>(planDate),
+      'doneAt': serializer.toJson<DateTime?>(doneAt),
+    };
+  }
+
+  DailyPlan copyWith({
+    String? id,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    bool? isDirty,
+    String? title,
+    String? planDate,
+    Value<DateTime?> doneAt = const Value.absent(),
+  }) => DailyPlan(
+    id: id ?? this.id,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    isDirty: isDirty ?? this.isDirty,
+    title: title ?? this.title,
+    planDate: planDate ?? this.planDate,
+    doneAt: doneAt.present ? doneAt.value : this.doneAt,
+  );
+  DailyPlan copyWithCompanion(DailyPlansCompanion data) {
+    return DailyPlan(
+      id: data.id.present ? data.id.value : this.id,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      isDirty: data.isDirty.present ? data.isDirty.value : this.isDirty,
+      title: data.title.present ? data.title.value : this.title,
+      planDate: data.planDate.present ? data.planDate.value : this.planDate,
+      doneAt: data.doneAt.present ? data.doneAt.value : this.doneAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyPlan(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('isDirty: $isDirty, ')
+          ..write('title: $title, ')
+          ..write('planDate: $planDate, ')
+          ..write('doneAt: $doneAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    isDirty,
+    title,
+    planDate,
+    doneAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is DailyPlan &&
+          other.id == this.id &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.isDirty == this.isDirty &&
+          other.title == this.title &&
+          other.planDate == this.planDate &&
+          other.doneAt == this.doneAt);
+}
+
+class DailyPlansCompanion extends UpdateCompanion<DailyPlan> {
+  final Value<String> id;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<bool> isDirty;
+  final Value<String> title;
+  final Value<String> planDate;
+  final Value<DateTime?> doneAt;
+  final Value<int> rowid;
+  const DailyPlansCompanion({
+    this.id = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.isDirty = const Value.absent(),
+    this.title = const Value.absent(),
+    this.planDate = const Value.absent(),
+    this.doneAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  DailyPlansCompanion.insert({
+    required String id,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.deletedAt = const Value.absent(),
+    this.isDirty = const Value.absent(),
+    required String title,
+    required String planDate,
+    this.doneAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt),
+       title = Value(title),
+       planDate = Value(planDate);
+  static Insertable<DailyPlan> custom({
+    Expression<String>? id,
+    Expression<int>? createdAt,
+    Expression<int>? updatedAt,
+    Expression<int>? deletedAt,
+    Expression<bool>? isDirty,
+    Expression<String>? title,
+    Expression<String>? planDate,
+    Expression<int>? doneAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (isDirty != null) 'is_dirty': isDirty,
+      if (title != null) 'title': title,
+      if (planDate != null) 'plan_date': planDate,
+      if (doneAt != null) 'done_at': doneAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  DailyPlansCompanion copyWith({
+    Value<String>? id,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<bool>? isDirty,
+    Value<String>? title,
+    Value<String>? planDate,
+    Value<DateTime?>? doneAt,
+    Value<int>? rowid,
+  }) {
+    return DailyPlansCompanion(
+      id: id ?? this.id,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      isDirty: isDirty ?? this.isDirty,
+      title: title ?? this.title,
+      planDate: planDate ?? this.planDate,
+      doneAt: doneAt ?? this.doneAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<int>(
+        $DailyPlansTable.$convertercreatedAt.toSql(createdAt.value),
+      );
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<int>(
+        $DailyPlansTable.$converterupdatedAt.toSql(updatedAt.value),
+      );
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<int>(
+        $DailyPlansTable.$converterdeletedAtn.toSql(deletedAt.value),
+      );
+    }
+    if (isDirty.present) {
+      map['is_dirty'] = Variable<bool>(isDirty.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (planDate.present) {
+      map['plan_date'] = Variable<String>(planDate.value);
+    }
+    if (doneAt.present) {
+      map['done_at'] = Variable<int>(
+        $DailyPlansTable.$converterdoneAtn.toSql(doneAt.value),
+      );
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('DailyPlansCompanion(')
+          ..write('id: $id, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('isDirty: $isDirty, ')
+          ..write('title: $title, ')
+          ..write('planDate: $planDate, ')
+          ..write('doneAt: $doneAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 class $AppSettingsTable extends AppSettings
     with TableInfo<$AppSettingsTable, AppSetting> {
   @override
@@ -6633,6 +7155,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $BillsTable bills = $BillsTable(this);
   late final $AttachmentsTable attachments = $AttachmentsTable(this);
   late final $RemindersTable reminders = $RemindersTable(this);
+  late final $DailyPlansTable dailyPlans = $DailyPlansTable(this);
   late final $AppSettingsTable appSettings = $AppSettingsTable(this);
   late final Index idxTxLocalDate = Index(
     'idx_tx_local_date',
@@ -6662,6 +7185,10 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     'idx_attachment_tx',
     'CREATE INDEX idx_attachment_tx ON attachments (transaction_id)',
   );
+  late final Index idxPlanDate = Index(
+    'idx_plan_date',
+    'CREATE INDEX idx_plan_date ON daily_plans (plan_date)',
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -6676,6 +7203,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     bills,
     attachments,
     reminders,
+    dailyPlans,
     appSettings,
     idxTxLocalDate,
     idxTxWallet,
@@ -6684,6 +7212,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     idxEntryDateTime,
     idxAttachmentEntry,
     idxAttachmentTx,
+    idxPlanDate,
   ];
 }
 
@@ -11505,6 +12034,271 @@ typedef $$RemindersTableProcessedTableManager =
       Reminder,
       PrefetchHooks Function()
     >;
+typedef $$DailyPlansTableCreateCompanionBuilder = DailyPlansCompanion Function({
+  required String id,
+  required DateTime createdAt,
+  required DateTime updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<bool> isDirty,
+  required String title,
+  required String planDate,
+  Value<DateTime?> doneAt,
+  Value<int> rowid,
+});
+typedef $$DailyPlansTableUpdateCompanionBuilder = DailyPlansCompanion Function({
+  Value<String> id,
+  Value<DateTime> createdAt,
+  Value<DateTime> updatedAt,
+  Value<DateTime?> deletedAt,
+  Value<bool> isDirty,
+  Value<String> title,
+  Value<String> planDate,
+  Value<DateTime?> doneAt,
+  Value<int> rowid,
+});
+
+class $$DailyPlansTableFilterComposer
+    extends Composer<_$AppDatabase, $DailyPlansTable> {
+  $$DailyPlansTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, int> get createdAt =>
+      $composableBuilder(
+        column: $table.createdAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<DateTime, DateTime, int> get updatedAt =>
+      $composableBuilder(
+        column: $table.updatedAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, int> get deletedAt =>
+      $composableBuilder(
+        column: $table.deletedAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+
+  ColumnFilters<bool> get isDirty => $composableBuilder(
+    column: $table.isDirty,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get planDate => $composableBuilder(
+    column: $table.planDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnWithTypeConverterFilters<DateTime?, DateTime, int> get doneAt =>
+      $composableBuilder(
+        column: $table.doneAt,
+        builder: (column) => ColumnWithTypeConverterFilters(column),
+      );
+}
+
+class $$DailyPlansTableOrderingComposer
+    extends Composer<_$AppDatabase, $DailyPlansTable> {
+  $$DailyPlansTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isDirty => $composableBuilder(
+    column: $table.isDirty,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get planDate => $composableBuilder(
+    column: $table.planDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get doneAt => $composableBuilder(
+    column: $table.doneAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$DailyPlansTableAnnotationComposer
+    extends Composer<_$AppDatabase, $DailyPlansTable> {
+  $$DailyPlansTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, int> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime, int> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime?, int> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<bool> get isDirty =>
+      $composableBuilder(column: $table.isDirty, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get planDate =>
+      $composableBuilder(column: $table.planDate, builder: (column) => column);
+
+  GeneratedColumnWithTypeConverter<DateTime?, int> get doneAt =>
+      $composableBuilder(column: $table.doneAt, builder: (column) => column);
+}
+
+class $$DailyPlansTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $DailyPlansTable,
+          DailyPlan,
+          $$DailyPlansTableFilterComposer,
+          $$DailyPlansTableOrderingComposer,
+          $$DailyPlansTableAnnotationComposer,
+          $$DailyPlansTableCreateCompanionBuilder,
+          $$DailyPlansTableUpdateCompanionBuilder,
+          (
+            DailyPlan,
+            BaseReferences<_$AppDatabase, $DailyPlansTable, DailyPlan>,
+          ),
+          DailyPlan,
+          PrefetchHooks Function()
+        > {
+  $$DailyPlansTableTableManager(_$AppDatabase db, $DailyPlansTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$DailyPlansTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$DailyPlansTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$DailyPlansTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<bool> isDirty = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> planDate = const Value.absent(),
+                Value<DateTime?> doneAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DailyPlansCompanion(
+                id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                isDirty: isDirty,
+                title: title,
+                planDate: planDate,
+                doneAt: doneAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<bool> isDirty = const Value.absent(),
+                required String title,
+                required String planDate,
+                Value<DateTime?> doneAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => DailyPlansCompanion.insert(
+                id: id,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                isDirty: isDirty,
+                title: title,
+                planDate: planDate,
+                doneAt: doneAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable<$DailyPlansTable, DailyPlan>(table),
+                  BaseReferences<_$AppDatabase, $DailyPlansTable, DailyPlan>(
+                    db,
+                    table,
+                    e,
+                  ),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$DailyPlansTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $DailyPlansTable,
+      DailyPlan,
+      $$DailyPlansTableFilterComposer,
+      $$DailyPlansTableOrderingComposer,
+      $$DailyPlansTableAnnotationComposer,
+      $$DailyPlansTableCreateCompanionBuilder,
+      $$DailyPlansTableUpdateCompanionBuilder,
+      (DailyPlan, BaseReferences<_$AppDatabase, $DailyPlansTable, DailyPlan>),
+      DailyPlan,
+      PrefetchHooks Function()
+    >;
 typedef $$AppSettingsTableCreateCompanionBuilder =
     AppSettingsCompanion Function({
       required String key,
@@ -11674,6 +12468,8 @@ class $AppDatabaseManager {
       $$AttachmentsTableTableManager(_db, _db.attachments);
   $$RemindersTableTableManager get reminders =>
       $$RemindersTableTableManager(_db, _db.reminders);
+  $$DailyPlansTableTableManager get dailyPlans =>
+      $$DailyPlansTableTableManager(_db, _db.dailyPlans);
   $$AppSettingsTableTableManager get appSettings =>
       $$AppSettingsTableTableManager(_db, _db.appSettings);
 }

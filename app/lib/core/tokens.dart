@@ -61,6 +61,9 @@ abstract final class AppMotion {
   /// Transisi kecil: ganti state, fade, warna.
   static const short = Duration(milliseconds: 150);
 
+  /// Pindah halaman di dalam kartu (geser).
+  static const page = Duration(milliseconds: 250);
+
   /// Umpan balik instan.
   static const instant = Duration(milliseconds: 100);
 }

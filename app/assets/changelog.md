@@ -1,0 +1,311 @@
+# Changelog
+
+## 0.18.0 — 2026-11-24
+
+**Baru**
+- **Rencana harian** di Hari Ini: satu kartu untuk rencana hari ini dan besok, geser kartunya untuk berpindah. Tombol **Tambah** membuka popup untuk memilih hari dan menulis beberapa rencana sekaligus. Ada persen progres, grafik 7 hari, dan tawaran memindahkan rencana yang belum selesai.
+- **Kirim masukan** di Pengaturan › Tentang: lapor bug atau usul fitur lewat aplikasi emailmu. Isi yang akan dikirim bisa dilihat dulu, dan info perangkat di laporan bug bisa dimatikan. Kalau tidak ada aplikasi email, alamat dan teksnya bisa disalin.
+- **Riwayat versi** di Pengaturan › Tentang kini dibuka di dalam app, bisa tanpa internet. Versi yang kamu pakai ditandai.
+
+**Perbaikan**
+- **Navigasi bawah** menyesuaikan lebar HP, ukuran font sistem, dan bahasa. Tulisannya tidak lagi keluar dari latar aksen.
+- **Tampilan di semua layar** dirapikan untuk HP kecil, font besar, HP lipat, dan layar miring: tidak ada teks atau tombol yang keluar kotak, dan label tidak patah di tengah kata.
+- **Form di lembar bawah** (tagihan, impian, setor, target budget) bisa digulir, jadi tombol simpan tetap terjangkau saat keyboard terbuka.
+- **Layar PIN** muat utuh di HP pendek, dan isi paling bawah tidak lagi tertutup navigasi di HP dengan tombol sistem.
+- **Apa yang baru** tidak lagi menampilkan petunjuk pasang dan tabel SHA-256.
+
+**Di balik layar**
+- Masukan tidak membaca jurnal atau data keuangan dan tidak lewat server Nyawtat. Tidak ada izin atau dependensi baru.
+- Database lokal schema v8 (tabel `daily_plans`). Rencana harian ikut backup JSON, belum ikut sinkron.
+
+## 0.17.0 — 2026-11-20
+
+**Baru**
+- **Judul otomatis untuk jurnal tanpa judul**: kalau judul dikosongkan, kalimat pertama ceritamu tampil sebagai judul di daftar Jurnal, Hari Ini, Pencarian, dan tampilan desktop. Kalimat yang terlalu panjang dipotong dengan "…", dan cuplikan di bawahnya lanjut dari kalimat berikutnya supaya tidak dobel.
+- Entri yang hanya berisi rekaman suara kini berjudul **Catatan suara**, bukan "Tanpa judul".
+- Di halaman detail, judul yang kosong tidak ditampilkan lagi; cerita langsung terlihat.
+
+**Di balik layar**
+- Hanya tampilan yang berubah. Judul di database tetap kosong, jadi tidak ada perubahan data, sinkron, izin, atau dependensi.
+
+## 0.16.1 — 2026-11-19
+
+**Perbaikan tampilan**
+- Ukuran teks, jarak, dan sudut membulat dirapikan di semua layar supaya lebih konsisten. Teks paling kecil sedikit lebih besar sehingga lebih mudah dibaca.
+- Semua lembar bawah (bottom sheet) kini punya bentuk sudut dan pegangan yang sama.
+- Badge **Google Drive terhubung** dan **Server terhubung** di kartu akun kini ikut mode gelap.
+
+**Di balik layar**
+- Kode aplikasi ditata ulang per fitur dan memakai token desain bersama. Tidak ada perubahan fungsi, izin, atau dependensi.
+
+## 0.16.0 — 2026-11-16
+
+**Baru**
+- **Warna roda putar**: pilih palet Pelangi, Aksen, Pastel, Senja, Laut, Hutan, atau **Kustom** (atur 6 warna irisan sendiri). Di warna kustom, tulisan otomatis hitam/putih agar tetap terbaca.
+
+## 0.15.1 — 2026-11-15
+
+**Perbaikan**
+- **Ingatkan aku** di form jurnal tidak merespons apa pun di 0.15.0. Penyebabnya, ikon notifikasi terbuang saat build rilis sehingga notifikasi gagal disiapkan. Ikonnya kini ikut terpasang.
+- Kalau notifikasi gagal karena sebab lain, pengingat tetap tersimpan dan tampil di **Acara mendatang** di Hari Ini.
+
+## 0.15.0 — 2026-11-15
+
+**Baru**
+- **Kalender di Keuangan**: kalender bulanan dengan total keluar/masuk per tanggal. Ketuk tanggal untuk melihat transaksi hari itu, geser bulan dengan panah.
+- **Pengingat dari jurnal**: saat menulis cerita yang menyebut rencana ("besok jam 9 pagi servis motor", "21 November jam 1 siang workshop"), Nyaw menawarkan pengingat. Bisa diterima, diubah (judul, tanggal, jam, kapan diingatkan), atau diabaikan. Kalimatnya dikenali di HP sendiri, tanpa internet, dan untuk saat ini hanya bahasa Indonesia.
+- **Acara mendatang** di Hari Ini: daftar pengingat yang sudah dibuat; ketuk untuk melihat detail atau menghapusnya.
+- Pengingat disimpan di perangkat saja (tidak ikut sinkron, backup, atau ekspor). Kalau PIN aktif, isi notifikasi disembunyikan di layar kunci.
+
+**Izin Android baru**
+- `POST_NOTIFICATIONS`: menampilkan notifikasi pengingat. Hanya diminta saat pertama kali menerima pengingat; tanpa izin, acara tetap tampil di Hari Ini.
+- `RECEIVE_BOOT_COMPLETED`: menjadwalkan ulang pengingat setelah HP dinyalakan lagi.
+- Dependensi baru: `flutter_local_notifications` dan `timezone` (pub.dev). Notifikasi dijadwalkan lokal; tidak ada data yang dikirim ke jaringan.
+
+## 0.14.0 — 2026-11-10
+
+**Baru**
+- **Warna aksen kustom**: di Pengaturan › Tampilan › Warna aksen ada pilihan **Kustom**. Pilih warna sendiri lewat penggeser Warna, Kepekatan, dan Kecerahan, atau ketik kode hex (`#RRGGBB`). Ada pratinjau langsung (kartu Total saldo, tombol, chip) dan daftar **Terakhir dipakai** (6 warna terakhir).
+- Muncul catatan kalau warna hampir abu-abu, terlalu terang, atau terlalu gelap.
+
+**Perbaikan**
+- Teks di chip/label terpilih kini selalu cukup kontras, juga untuk warna aksen yang terang.
+
+## 0.13.1 — 2026-11-08
+
+**Perbaikan**
+- **Update di Pengaturan › Tentang**: saat mengunduh kini tampil progres (ukuran, bar, tombol Batalkan), tombol **Pasang sekarang** saat selesai, dan pesan error kalau gagal. Sebelumnya halaman itu tidak menunjukkan apa pun setelah Unduh ditekan.
+- **Pesan gagal cek update** kini sesuai penyebabnya: rilis belum ditemukan, terlalu sering mengecek, atau server GitHub bermasalah. "Periksa koneksi internet" hanya muncul kalau memang tidak ada koneksi.
+
+**Baru**
+- **Kocok ide** jauh lebih beragam: 24 pertanyaan per tema (sebelumnya 4), pertanyaan pertama acak, dan tidak ada yang muncul lagi sebelum semuanya keluar.
+
+## 0.13.0 — 2026-11-07
+
+**Baru**
+- **Permainan untuk rehat**: kartu **Rehat sebentar** di Hari Ini (dan halaman **Permainan** lewat "Semua permainan") berisi empat permainan kecil: **Roda putar** (Makan apa? / Minum apa? / Ya-Tidak / Mau ngapain?, isinya bisa diubah, hasil makan/minum bisa langsung dicatat sebagai pengeluaran), **Batu gunting kertas** lawan Nyaw dengan skor, **Memory kartu** (cocokkan 6 pasang pose Nyaw, rekor langkah tersimpan), dan **Kocok ide** (pertanyaan acak yang jadi judul jurnal baru). Skor dan rekor tersimpan di HP saja.
+
+**Perbaikan**
+- **Tagihan**: tombol Bayar tidak lagi menutup sheet sebelum pembayaran diproses, jadi pembayaran dan pembaruan data tagihan berjalan benar.
+
+## 0.12.0 — 2026-11-02
+
+**Baru**
+- **Cek update di dalam app**: sekali sehari (saat ada internet) Nyawtat membaca rilis terbaru di GitHub. Kalau ada versi baru, muncul kartu di Hari Ini: unduh di dalam app dengan progres, file dicek keasliannya (sha256), lalu tinggal ketuk **Pasang sekarang**.
+- **Apa yang baru?**: catatan rilis bisa dibaca sebelum mengunduh.
+- **Pengaturan › Tentang**: versi app, tombol **Cek update**, sakelar cek otomatis, riwayat versi, dan tautan jadi tester. Versi di Pengaturan kini selalu sesuai versi terpasang (sebelumnya tertulis 0.9.0).
+
+**Izin baru**
+- `REQUEST_INSTALL_PACKAGES`: supaya update yang diunduh bisa dibuka di installer Android. Android tetap meminta konfirmasi untuk setiap pemasangan, dan Nyawtat hanya membuka file dari rilis resminya sendiri.
+
+**Privasi**
+- Cek update hanya membaca daftar rilis publik di GitHub; tidak ada data pribadi yang dikirim. Bisa dimatikan di Pengaturan › Tentang.
+
+## 0.11.0 — 2026-11-02
+
+**Baru**
+- **Tampilan baru yang lebih bersih dan imut**: kartu tanpa garis tepi dengan bayangan halus, tombol dan dock berbentuk kapsul, isian berlatar lembut, dan badge kategori bulat.
+- **Maskot Nyaw versi baru**: lebih bulat dan sederhana dengan mata besar, tetap 9 pose (juga di widget layar utama).
+- **Sapaan di Hari Ini**: Nyaw menyapa sesuai jam dan menghitung catatan hari ini (tidur kalau belum ada catatan).
+- **Pertanyaan harian di Jurnal**: pemancing ide menulis yang berganti tiap hari.
+- **Layar PIN** berlatar mint pastel dengan tombol angka putih.
+
+## 0.10.0 — 2026-11-02
+
+**Baru**
+- **Subkategori**: tiap kategori bisa punya subkategori (satu tingkat), mis. Makan › Sarapan, Makan › Kopi & jajan. Tambah lewat **Kelola kategori** › ikon panah di kategori › **+ Subkategori**. Warna subkategori mengikuti induknya.
+- **Pemilih kategori minimalis** di form catat transaksi: chip kecil bertitik warna menggantikan kotak ikon besar. Pilih kategori utama, lalu subkategori muncul di bawahnya ("Semua Makan" = tanpa subkategori). Kategori terpilih tampil sebagai "Makan › Kopi".
+- Budget dan laporan tetap per kategori utama: pengeluaran subkategori dijumlahkan ke induknya. Riwayat transaksi, pencarian, dan ekspor Excel menampilkan nama lengkap "Induk › Sub".
+- Hapus kategori utama ikut menghapus subkategorinya (hanya kalau belum dipakai); gabung kategori utama memindahkan subkategorinya ke kategori tujuan.
+
+**Perbaikan**
+- **Backup JSON** kini menyertakan wishlist dan tagihan (sebelumnya hilang saat pulih/pindah HP). File backup lama tetap bisa diimpor.
+- **Sembunyikan nominal** kini juga berlaku di kartu Tagihan, Wishlist, dan banner peringatan di Hari Ini.
+- Form tagihan/wishlist dan dialog bayar tidak crash lagi bila dompetnya sudah diarsip/dihapus; date picker tagihan tidak crash untuk tagihan yang sudah lama lewat tempo.
+- Setoran wishlist tidak lagi mentransfer ke dompet yang diarsip/dihapus.
+- Banner membedakan tagihan lewat tempo dan yang segera jatuh tempo; "Kurang" di wishlist tidak lagi negatif.
+- Hitungan streak dan budget mingguan aman di zona waktu ber-DST (desktop).
+
+**Teknis**
+- Database lokal schema v6 (kolom `parent_id` di kategori). Backup JSON lama tetap bisa dipulihkan.
+- Migration Supabase `20261102000000_category_parent.sql`: sinkronisasi membawa `parentId`.
+
+## 0.9.3 — 2026-10-29
+
+**Perbaikan**
+- **Foto struk gagal tersimpan** di HP yang sudah memakai Nyawtat sejak versi awal (database hasil upgrade dari schema v1/v2). Schema v5 membangun ulang tabel lampiran beserta indeksnya; data lama tetap utuh.
+- **Tagihan berulang**: membayar tagihan bulanan/tahunan kini menjadwalkan jatuh tempo berikutnya (tanggal yang tidak ada di bulan tujuan dipotong ke akhir bulan, mis. 31 Jan → 28 Feb). Sebelumnya tagihan langsung ditandai lunas dan hilang dari Hari Ini. Tagihan "Satu Kali Saja" tetap ditandai lunas.
+- **Bayar tagihan & setor wishlist** berjalan dalam satu transaksi database, jadi tidak ada lagi keadaan uang sudah tercatat keluar tapi tagihan/wishlist belum ter-update.
+- **Streak › Menabung** hanya tercentang oleh setoran wishlist, bukan oleh transfer biasa seperti tarik tunai.
+
+## 0.9.2 — 2026-10-22
+
+**Baru**
+- **Detail Tagihan**: ketuk baris tagihan di Hari Ini untuk melihat detail (nominal, jatuh tempo, dompet, pengulangan, status).
+- **Edit Tagihan**: ubah nama, nominal, tanggal jatuh tempo, dompet, dan pengulangan dari sheet detail.
+- **Hapus Tagihan**: dialog konfirmasi sebelum menghapus (dari sheet detail maupun form edit).
+
+## 0.9.1 — 2026-10-21
+
+**Perbaikan**
+- **Wishlist & Target Impian**: tombol **+ Nabung** tidak lagi tergeser/overflow di layar Android sempit. Teks rincian tabungan kini menyesuaikan lebar dan tombol tetap rapi di kanan.
+- Prototipe UI (`docs/wishlist-budget-prototype`): dock navigasi tidak menimpa konten, layout responsif Android, dan tab interaktif.
+
+## 0.9.0 — 2026-10-21
+
+**Baru**
+- **Target Wishlist & Rincian Tabungan Pintar (Smart Savings)**:
+  - Wujudkan impian barang idaman (mis. beli HP seharga 8 juta, laptop, kendaraan) dengan kalkulasi otomatis: tentukan nominal target dan tenggat waktu (bulan/tanggal), sistem otomatis menghitung rincian tabungan bulanan dan harian yang harus disisihkan.
+  - Alokasi Dompet Penyimpanan: Pilih dan tentukan di dompet mana dana tabungan disimpan (mis. Rekening Tabungan BCA, Dompet Khusus).
+  - Modal Tambah Tabungan Cepat (*Deposit Sheet*): Tambah saldo tabungan kapan saja dengan pilihan dompet sumber dana, mencatat mutasi transfer antar dompet atau pengeluaran tabungan secara teratur.
+- **Pengingat & Peringatan Tagihan Rutin (Bill Reminders & Early Warnings)**:
+  - Manajemen tagihan terjadwal atau berkala (internet, listrik, sewa, asuransi, langganan) dengan tanggal jatuh tempo (*due date*).
+  - Peringatan Dini (*Early Warning Alert*): Indikator visual dan badge peringatan saat mendekati jatuh tempo (H-3, H-2, H-1), jatuh tempo hari ini, atau telat bayar.
+  - Tombol Bayar Cepat (*Quick Pay*): Bayar tagihan langsung dari linimasa Hari Ini dengan memilih dompet pembayaran; otomatis mencatat transaksi pengeluaran dan menjadwalkan tanggal jatuh tempo berikutnya (bulanan, mingguan, tahunan).
+- **Target Budget Global & Indikator Peringatan Bertingkat (Threshold Warning)**:
+  - Kontrol limit pengeluaran terpadu dengan memilih periode fleksibel: Harian, Mingguan, atau Bulanan.
+  - Indikator Dinamis 3 Tingkat:
+    - 🟢 **Aman** (< 75%): Bilah kemajuan hijau tenang dengan sisa budget yang jelas.
+    - 🟡 **Waspada** (75% – 99%): Bilah kemajuan kuning dengan peringatan dini pengeluaran mendekati batas.
+    - 🔴 **Bahaya / Overbudget** (≥ 100%): Banner peringatan merah menyala yang mengingatkan bahwa pengeluaran telah melampaui target yang ditetapkan.
+- **Gamifikasi Streak Api Rutinitas (🔥 Streak Counter)**:
+  - Membangun kebiasaan mencatat harian dengan ikon Streak Api di kartu linimasa Hari Ini.
+  - Api streak tetap menyala setiap kali pengguna menyelesaikan minimal 1 aktivitas per hari (menulis entri jurnal, mencatat transaksi keuangan, atau menabung untuk wishlist).
+
+## 0.8.0 — 2026-10-18
+
+**Baru**
+- **Cadangan Google Drive Cloud & Format Excel (.xlsx)**:
+  - Pencadangan cloud langsung ke Google Drive Anda dalam format spreadsheet Excel (`.xlsx`) yang dapat langsung dibuka, diedit, dan dianalisis di **Google Sheets**.
+  - Spreadsheet terbagi dalam 4 lembar kerja (Sheet Tabs) rapi: `📑 Transaksi`, `📖 Jurnal Catatan`, `💵 Dompet & Saldo`, dan `🎯 Budget Bulanan`.
+  - Tombol aksi cepat "Buka di Sheets" untuk membuka file cadangan langsung di aplikasi Google Sheets / Browser.
+  - Data sistem cadangan tertanam secara aman di file Excel sehingga pemulihan (*restore*) dari Google Drive dapat mengembalikan 100% relasi database, foto, dan catatan tanpa kehilangan format.
+- **Pilihan Rentang Waktu Pencadangan (Period Range Filter)**:
+  - Fleksibilitas memilih data yang ingin dicadangkan:
+    - **Semua Riwayat**: Seluruh riwayat dari awal penggunaan hingga saat ini.
+    - **Tahun Ini**: Khusus transaksi dan catatan dalam 1 tahun kalender.
+    - **Bulan Ini**: Khusus transaksi dan catatan bulan berjalan.
+    - **Rentang Kustom**: Pemilih tanggal kustom (*date range picker*) dari tanggal A s.d. tanggal B.
+- **Penyederhanaan Menu Data & Cadangan (Dari 4 Menu Menjadi 2 Pintu Ringkas)**:
+  - Menggantikan 4 menu ekspor/impor terpisah yang membingungkan menjadi 2 opsi bersih:
+    1. **📤 Cadangkan Data (Ekspor)**: Satu modal praktis untuk memilih format file (Excel `.xlsx` atau Backup `.json`) dan rentang waktu sebelum diekspor.
+    2. **📥 Pulihkan / Impor Data**: Satu pintu pemulihan pintar dengan **deteksi format otomatis** (*auto-detection*). Cukup pilih file dari penyimpanan HP, aplikasi secara otomatis mengenali apakah itu file `.json` Nyawtat, file `.xlsx` Nyawtat, atau database Money Manager (`.mmbak`, `.sqlite`, `.db`, `.xlsx`).
+- **Masuk dengan Akun Google (Google Sign-In) & Kartu Akun Terpadu**:
+  - Tombol "Masuk dengan Google" di form Masuk untuk otentikasi cepat dan sinkronisasi Google Drive.
+  - **Penyatuan Kartu Akun di Pengaturan**: Kartu profil paling atas otomatis menampilkan status Google Drive maupun Server Nyawtat yang aktif (Avatar, Nama, Email, status cadangan, tombol aksi cepat cadangkan & keluar).
+  - Tampilan Mode Tamu (Offline) yang bersih dengan opsi masuk fleksibel (Google vs Email & Kata Sandi).
+
+## 0.7.0 — 2026-10-18
+
+**Baru**
+- **Lampiran Gambar di Jurnal & Foto Struk di Transaksi Keuangan**:
+  - **Lampiran Gambar Jurnal**:
+    - Mendukung hingga 10 foto per entri jurnal, baik dari Kamera langsung maupun Galeri foto.
+    - Grid pratinjau thumbnail 3 kolom yang responsif dengan nomor urut foto dan tombol hapus instan.
+    - Kompresi gambar on-the-fly di perangkat (JPEG 80%, maks 1600px) menjaga efisiensi ruang penyimpanan dan performa ponsel.
+    - Strip pratinjau thumbnail foto mini di feed daftar Jurnal.
+    - Indikator `📷 X foto` pada linimasa Hari Ini.
+  - **Foto Struk / Nota Transaksi Keuangan**:
+    - Tombol khusus "Foto Struk Belanja" di form transaksi untuk melampirkan bukti pembayaran dari kamera atau galeri.
+    - Pratinjau struk proporsional dengan opsi ganti atau hapus foto struk.
+    - Ikon nota `🧾` otomatis muncul di samping nama transaksi pada daftar riwayat dan linimasa Hari Ini.
+  - **Fullscreen Image Viewer**:
+    - Pratinjau foto layar penuh dengan gestur *pinch-to-zoom*, geser (*swipe* antar gambar), dan tombol tutup.
+  - **Optimasi Mobile & Offline-First**:
+    - Penyimpanan file lokal persisten di sandbox aplikasi.
+    - Skema database Drift SQLite terindeks untuk lookup instan di linimasa tanpa lag scroll.
+
+## 0.6.0 — 2026-10-14
+
+**Baru**
+- **Grafik Analisis Pengeluaran interaktif di Laporan**:
+  - **Donut Chart (Distribusi Kategori)**: Diagram lingkaran modern yang memvisualisasikan proporsi belanja per kategori secara proporsional dengan warna khas tiap kategori.
+    - Bagian tengah menampilkan total pengeluaran dan jumlah kategori; saat kategori atau diagram disentuh, menampilkan nama, nominal, dan persentase belanja kategori tersebut.
+    - Daftar peringkat kategori di bawah diagram dilengkapi ikon kategori, persentase, *progress bar* proporsional, nominal, dan penyorotan interaktif.
+  - **Bar Chart (Tren Mingguan)**: Diagram batang vertikal yang membagi pengeluaran sebulan ke dalam 4–5 minggu kalender.
+    - Memvisualisasikan perbandingan minggu hemat vs minggu boros dengan indikator minggu tertinggi.
+    - Dilengkapi ringkasan rata-rata pengeluaran per minggu dan nominal minggu tertinggi.
+  - **Navigasi Bulan di Laporan**: Tombol panah bulan sebelumnya (`<`) dan berikutnya (`>`) untuk melihat riwayat laporan dan grafik di bulan-bulan yang lalu, plus tombol pintas "Bulan ini" untuk kembali dengan cepat.
+
+**Perbaikan**
+- **Label versi Pengaturan**: Memperbaiki label versi di Pengaturan yang sebelumnya tertinggal.
+- **Mode Privasi**: Memperbaiki kebocoran nominal pada subtotal harian di layar Keuangan dan saldo dompet pada form Transfer saat mode privasi aktif.
+
+## 0.5.0 — 2026-10-14
+
+**Baru**
+- **Catatan suara (Voice Note & Transkripsi Suara)**: Merekam audio suara asli dan dikte ucapan menjadi teks (*speech-to-text*) secara on-device di entri jurnal.
+  - Pilihan 2 mode terdedikasi untuk kualitas maksimal dan mencegah konflik mikrofon Android: **🎙️ Catatan Suara** (rekam audio M4A/AAC jernih hemat ruang dengan kartu pemutar) dan **✍️ Dikte Suara** (ucapan langsung diubah jadi teks ke cerita jurnal secara *real-time*).
+  - Dilengkapi animasi detak mikrofon, visualisasi gelombang suara (*waveform*), dan transkripsi *real-time* saat berbicara.
+  - Kartu pemutar audio (*VoicePlayerCard*) dengan tombol play/pause, visual *waveform scrubber*, durasi, kontrol kecepatan (1.0x, 1.5x, 2.0x), serta tombol salin transkripsi ke cerita.
+  - Pemutar audio ringkas langsung di feed Jurnal dan badge `🎙️ Catatan suara` di timeline Hari Ini.
+  - Tombol aksi cepat Catatan Suara di menu tambah cepat (+) dock utama.
+  - Teks transkripsi suara otomatis terindeks dan bisa dicari lewat fitur Pencarian.
+- **Sembunyikan nominal (Mode privasi)**: Opsi untuk menyembunyikan semua angka nominal uang (`Rp •••••`) di seluruh aplikasi demi privasi saat membuka aplikasi di tempat umum.
+  - Ikon mata (buka/tutup) di kartu **Total saldo** (Keuangan) dan kartu **Hari ini** (pengeluaran harian) untuk menyembunyikan/menampilkan nominal secara instan.
+  - Sakelar permanen di **Pengaturan › Keamanan › Sembunyikan nominal**.
+  - Mencakup total saldo, saldo tiap dompet, riwayat transaksi, laporan (pemasukan, pengeluaran, per kategori, budget), hasil pencarian, header pengeluaran di jurnal, dan otomatis disinkronkan ke widget layar utama Android.
+- **Warna aksen** (prototipe): Pengaturan › Tampilan › Warna aksen — pilih dari tujuh warna (Hijau sage bawaan, Biru laut, Ungu, Mawar, Pink, Amber, Teal). Tombol, ikon aktif, kartu Total saldo, layar PIN, dan splash ikut berubah, di mode terang maupun gelap. Pilihan tersimpan di app_settings ('accent_color') dan pratinjaunya ada di docs/screenshots/accent-preview.png.
+
+**Perbaikan**
+- **Formulir dompet (Penyesuaian saldo)**: Menambahkan scroll otomatis pada lembar tambah/ubah dompet agar tidak terjadi *bottom overflow* saat keyboard angka muncul.
+- **Urutan linimasa & entri (Descending)**: Linimasa aktivitas di tab **Hari Ini** dan daftar catatan dalam satu hari di tab **Jurnal** kini diurutkan menurun (*descending*) dengan jam terbaru tampil di paling atas, sehingga aktivitas/catatan yang baru saja dibuat langsung terlihat di atas.
+
+## 0.4.0 — 2026-10-11
+
+**Baru**
+- **Mode gelap**: Pengaturan › Tampilan › Sistem / Terang / Gelap. Bawaannya "Sistem" (ikut pengaturan HP). Semua layar, warna kategori, dan maskot punya versi gelap; kartu Total saldo dan layar PIN tetap hijau tua.
+  - Splash saat app dibuka ikut gelap (latar gelap, kucing sama). Di Android 12 ke atas splash mengikuti pilihan di app; di versi lebih lama mengikuti pengaturan HP.
+  - Widget layar utama (Ringkas, Hari ini, Jurnal cepat) ikut tema yang dipilih.
+- **Pencarian** (ikon cari di Hari Ini, Jurnal, Keuangan): cari jurnal dan transaksi (judul, isi, tag, catatan, kategori, dompet, nominal), saring jenis dan periode, kata yang cocok disorot, ringkasan total, dan pencarian terakhir.
+- Halaman **Kelola kategori** (Pengaturan › Data › Kelola kategori, atau "Atur" di form catat transaksi): urutkan kategori dengan tahan & geser (urutan ini dipakai di form), ubah nama dan warna, **sembunyikan** kategori dari form (transaksi lamanya tetap), **gabungkan** ke kategori lain (transaksi dan budget ikut pindah), hapus kategori yang belum dipakai, dan tambah kategori baru.
+- **Ikon kategori** (opsional): pilih dari 19 ikon saat membuat atau mengubah kategori; dipakai di semua badge kategori.
+
+**Lainnya**
+- Nama paket `dev.nyawtat.app` dan kunci rilisnya sudah didaftarkan di Android Developer Console. Sejak aturan verifikasi developer Android berlaku di Indonesia (30 September 2026), APK Nyawtat bisa dipasang di HP yang sudah diizinkan, tanpa diblokir Play Protect.
+
+## 0.3.0 — 2026-10-11
+
+**Baru**
+- Splash screen: latar mint dengan kucing Nyawtat saat app dibuka (bukan layar putih lagi), lalu kucing melompat, berkedip, dan memudar ke app. Animasi dilewati kalau animasi dimatikan di pengaturan HP. Tawaran sidik jari/wajah baru muncul setelah animasi selesai.
+- Geser kiri/kanan untuk pindah antar-tab (Hari Ini, Jurnal, Keuangan, Laporan). Posisi scroll tiap tab tetap tersimpan.
+- Transfer antar dompet: pilih **Transfer** di Catat Transaksi, lalu dompet asal dan tujuan (tombol ⇅ untuk menukar). Transfer tidak dihitung sebagai pemasukan/pengeluaran di laporan dan budget; ada peringatan kalau saldo asal kurang. Di Keuangan ada filter **Transfer** baru.
+- Halaman **Kelola dompet** (Keuangan › Kelola): daftar dompet aktif dan arsip, tambah dompet. Dompet bisa **diarsipkan**: tidak tampil di daftar dan total saldo, tapi transaksinya tetap ada di riwayat dan laporan.
+- Saat mengubah dompet, isi **Saldo sekarang** (boleh negatif). Selisihnya dicatat sebagai transaksi **Lainnya** dengan catatan "Penyesuaian saldo" (pemasukan kalau naik, pengeluaran kalau turun).
+- Impor dari **Money Manager (Realbyte)**: Pengaturan › Data › Impor dari Money Manager, pilih file cadangan `.mmbak` atau ekspor `.xlsx`, periksa pratinjaunya, lalu impor.
+  - Akun jadi dompet; akun tunai utama masuk ke Tunai; akun yang sudah dihapus di Money Manager jadi dompet arsip.
+  - Kategori yang cocok memakai kategori bawaan, sisanya dibuat baru; sub kategori masuk ke catatan.
+  - "Edit saldo" masuk ke saldo awal dompet, jadi laporan tidak tercampur angka koreksi.
+  - Impor ulang, atau impor `.xlsx` yang lebih baru setelah `.mmbak`, tidak membuat transaksi dobel; impor ulang `.mmbak` juga memperbaiki hasil impor sebelumnya.
+
+**Perbaikan**
+- Font Poppins dibundel lengkap (Regular, Medium, SemiBold, Bold): tampil benar tanpa internet, teks tebal memakai huruf tebal asli, dan app tidak lagi menghubungi server Google Fonts.
+- Label beberapa tombol ("Tulis" di Hari Ini, "Atur" di Laporan, tombol di form jurnal, "Pakai biometrik"/"Lupa PIN?") memakai font bawaan sistem, bukan Poppins.
+- Saldo dompet yang negatif tetap bertanda minus saat dompet diubah.
+- README: screenshot aplikasi.
+
+## 0.2.0 — 2026-10-09
+
+**Baru**
+- Jurnal: tap tanggal di strip minggu untuk memfilter entri; tap lagi atau "Tampilkan semua" untuk melepas filter. Panah untuk pindah ke minggu sebelumnya. Tanggal tanpa entri menampilkan tombol "Tulis di tanggal ini".
+- Keuangan: dompet bisa diubah (nama, jenis, saldo awal) dan dihapus dengan tap kartu dompet. Menghapus dompet ikut menghapus transaksinya; dompet terakhir tidak bisa dihapus.
+- Widget layar utama Android:
+  - **Ringkas** (2×2): saldo, keluar hari ini, tombol Catat
+  - **Hari ini** (4×2): keluar hari ini, budget bulan ini, tombol Catat dan Tulis
+  - **Jurnal cepat** (4×1): jumlah entri hari ini dan jam terakhir, tombol Tulis
+  - Nominal disembunyikan otomatis saat PIN aktif; isi jurnal tidak pernah tampil di widget.
+
+**Perbaikan**
+- Sinkronisasi pertama tidak lagi menggabungkan dompet "Tunai" bawaan ke dompet yang sudah dihapus di device lain.
+
+## 0.1.0 — 2026-10-09
+
+Rilis pertama.
+
+- Jurnal harian: beberapa entri per hari, jam dan mood opsional, tag
+- Keuangan: dompet, kategori, transaksi, budget bulanan, laporan
+- Timeline "Hari Ini" yang mencampur jurnal dan transaksi
+- Login dan sinkronisasi lewat Supabase
+- Ekspor Excel, backup dan impor JSON
+- Kunci PIN dan biometrik; build rilis memblokir screenshot
+- Bahasa Indonesia dan Inggris, maskot kucing, icon Nyawtat

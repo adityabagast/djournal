@@ -1730,6 +1730,22 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutReleases => 'Version history';
 
   @override
+  String get aboutReleasesSub => 'What changed in each version';
+
+  @override
+  String get historyMine => 'Your version';
+
+  @override
+  String get historyUpdateHint => 'Update to get new features';
+
+  @override
+  String get historyView => 'View';
+
+  @override
+  String get historyOffline =>
+      'This history is stored in the app (in Indonesian) and works offline.';
+
+  @override
   String get aboutTester => 'Become a tester';
 
   @override
@@ -2214,4 +2230,331 @@ class AppLocalizationsEn extends AppLocalizations {
   String remCreated(int count) {
     return '$count reminders created';
   }
+
+  @override
+  String get fbTitle => 'Send feedback';
+
+  @override
+  String get fbSub => 'Report a bug or suggest a feature';
+
+  @override
+  String get fbBug => 'Report a bug';
+
+  @override
+  String get fbFeature => 'Suggest a feature';
+
+  @override
+  String get fbArea => 'Part of the app';
+
+  @override
+  String get fbAreaReminders => 'Reminders';
+
+  @override
+  String get fbAreaBackup => 'Backup & sync';
+
+  @override
+  String get fbAreaOther => 'Other';
+
+  @override
+  String get fbBugTitle => 'What went wrong?';
+
+  @override
+  String get fbBugTitleHint => 'e.g. Report chart does not show';
+
+  @override
+  String get fbBugBody => 'Describe the steps';
+
+  @override
+  String get fbBugBodyHint =>
+      'Which page you opened, what you tapped, then what happened';
+
+  @override
+  String get fbFeatureTitle => 'What feature would you like?';
+
+  @override
+  String get fbFeatureTitleHint => 'e.g. Weekly summary widget';
+
+  @override
+  String get fbFeatureBody => 'Why would it help you?';
+
+  @override
+  String get fbFeatureBodyHint => 'Tell us when you would need it';
+
+  @override
+  String get fbTitleError => 'Enter at least 5 characters.';
+
+  @override
+  String get fbBodyError => 'Enter at least 10 characters.';
+
+  @override
+  String get fbSeverity => 'How disruptive is it?';
+
+  @override
+  String get fbSevLow => 'Minor';
+
+  @override
+  String get fbSevMedium => 'Moderate';
+
+  @override
+  String get fbSevHigh => 'Severe';
+
+  @override
+  String get fbDevice => 'Include device info';
+
+  @override
+  String get fbDeviceSub => 'App version, system version, and device model';
+
+  @override
+  String get fbPrivacy =>
+      'Sent from your own email, so the maker of Nyawtat can see your address. Your journal and money data are not included. Do not write amounts or your PIN here.';
+
+  @override
+  String get fbOpenMail => 'Open email app';
+
+  @override
+  String get fbPreview => 'See what will be sent';
+
+  @override
+  String get fbPreviewTitle => 'What will be sent';
+
+  @override
+  String get fbNoTitle => '(no title yet)';
+
+  @override
+  String get fbNoBody => '(no details yet)';
+
+  @override
+  String get fbPreviewSub =>
+      'Only this text. You can still edit it in your email app.';
+
+  @override
+  String get fbTo => 'To';
+
+  @override
+  String get fbSubject => 'Subject';
+
+  @override
+  String get fbClose => 'Close';
+
+  @override
+  String get fbNoMail => 'No email app found';
+
+  @override
+  String get fbNoMailSub =>
+      'Copy the text, then send it from any email to this address.';
+
+  @override
+  String get fbCopyAddress => 'Copy address';
+
+  @override
+  String get fbCopyText => 'Copy text';
+
+  @override
+  String get fbCopied => 'Copied';
+
+  @override
+  String get fbDoneTitle => 'Did you press send in your email?';
+
+  @override
+  String get fbDoneBody => 'If so, thank you! If not, your text is still here.';
+
+  @override
+  String get fbDoneSent => 'Sent';
+
+  @override
+  String get fbDoneAgain => 'Open email again';
+
+  @override
+  String get fbDoneEdit => 'Edit text';
+
+  @override
+  String get fbDiscardTitle => 'Discard this feedback?';
+
+  @override
+  String get fbDiscardBody => 'Your text has not been sent and will be lost.';
+
+  @override
+  String get fbDiscard => 'Discard';
+
+  @override
+  String get fbKeep => 'Keep writing';
+
+  @override
+  String fbMailArea(String area) {
+    return 'Area: $area';
+  }
+
+  @override
+  String fbMailSeverity(String level) {
+    return 'Severity: $level';
+  }
+
+  @override
+  String get planTitle => 'Daily plan';
+
+  @override
+  String get planTomorrow => 'Tomorrow';
+
+  @override
+  String get planTodayTitle => 'Today\'s plan';
+
+  @override
+  String planSummary(int done, int total) {
+    return '$done of $total done';
+  }
+
+  @override
+  String get planNone => 'No plans yet';
+
+  @override
+  String get planAll => 'All';
+
+  @override
+  String planMore(int count) {
+    return '+$count more';
+  }
+
+  @override
+  String get planAllDone => 'All of today\'s plans are done. Nice!';
+
+  @override
+  String planPercent(int percent) {
+    return '$percent percent done';
+  }
+
+  @override
+  String get planTomorrowAsk => 'What will you do tomorrow?';
+
+  @override
+  String get planTomorrowTitle => 'Tomorrow\'s plan';
+
+  @override
+  String get planTomorrowNone => 'Nothing planned for tomorrow';
+
+  @override
+  String planTomorrowCount(int count, String day) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count plans',
+      one: '1 plan',
+    );
+    return '$_temp0 · $day';
+  }
+
+  @override
+  String get planHint => 'e.g. Morning workout';
+
+  @override
+  String get planAddToday => 'Add a plan for today';
+
+  @override
+  String get planAddTomorrow => 'Add a plan for tomorrow';
+
+  @override
+  String planLeft(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count earlier plans are',
+      one: '1 earlier plan is',
+    );
+    return '$_temp0 not done';
+  }
+
+  @override
+  String get planLeftKeep => 'Leave it';
+
+  @override
+  String get planMoveToday => 'Move to today';
+
+  @override
+  String get planMoveTomorrow => 'Move to tomorrow';
+
+  @override
+  String planCount(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count plans',
+      one: '1 plan',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String planDoneCount(int done, int total) {
+    return '$done/$total done';
+  }
+
+  @override
+  String get planEmptyToday => 'Nothing planned for today.';
+
+  @override
+  String get planEmptyTomorrow =>
+      'Write what you want to do tomorrow. Tomorrow the list shows up on Today.';
+
+  @override
+  String get planWeek => '7-day progress';
+
+  @override
+  String planWeekDone(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count days',
+      one: '1 day',
+    );
+    return '$_temp0 complete';
+  }
+
+  @override
+  String get planEdit => 'Edit plan';
+
+  @override
+  String get planField => 'Plan';
+
+  @override
+  String planMenu(String title) {
+    return 'Edit $title';
+  }
+
+  @override
+  String get planCard => 'Plans';
+
+  @override
+  String get planCardEmpty =>
+      'What will you do today or tomorrow? Start with one small thing.';
+
+  @override
+  String get planCreate => 'Make a plan';
+
+  @override
+  String get planWhen => 'For when?';
+
+  @override
+  String get planTodayAsk => 'What will you do today?';
+
+  @override
+  String get planAddToList => 'Add to the list';
+
+  @override
+  String planUndo(String title) {
+    return 'Undo $title';
+  }
+
+  @override
+  String get planDone => 'Done';
+
+  @override
+  String get planSwipeTomorrow => 'Swipe: tomorrow';
+
+  @override
+  String get planSwipeToday => 'Swipe: today';
+
+  @override
+  String get planSeeToday => 'See today\'s plan';
+
+  @override
+  String get planSeeTomorrow => 'See tomorrow\'s plan';
 }

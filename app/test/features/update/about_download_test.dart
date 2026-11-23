@@ -1,3 +1,4 @@
+import 'package:djournal/features/feedback/presentation/feedback_screen.dart';
 import 'package:djournal/features/update/providers/update_controller.dart';
 import 'package:djournal/features/update/domain/release_info.dart';
 import 'package:djournal/features/settings/presentation/about_section.dart';
@@ -81,5 +82,15 @@ void main() {
       ),
     );
     expect(find.text('Pasang sekarang'), findsOneWidget);
+  });
+
+  testWidgets('Pengaturan › Tentang › Kirim masukan membuka form', (
+    tester,
+  ) async {
+    await tester.pumpWidget(_app(const UpdateState()));
+    await tester.ensureVisible(find.text('Kirim masukan'));
+    await tester.tap(find.text('Kirim masukan'));
+    await tester.pumpAndSettle();
+    expect(find.byType(FeedbackScreen), findsOneWidget);
   });
 }

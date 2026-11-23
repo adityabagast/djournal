@@ -42,6 +42,10 @@ Folder `docs/*-prototype/` lama hanya arsip.
 - Pindah layar: `<a href="Today.dc.html">` (path relatif ke artboard lain).
 - Aksesibilitas: `<button>`/`<a>`/`<input>`+`<label>` asli, `aria-label` di tombol ikon, target sentuh ≥ 44 px.
 
+- **Gaya bersama ditaruh di dalam tiap artboard** (blok "Nyawtat: aturan bersama" di `<style>` helmet). Artboard baru: salin blok itu dari artboard lain, misalnya `Search.dc.html`. Jangan mengganti blob CSS: pernah dicoba 2026-11-23 dan semua layar kehilangan gaya di canvas.
+- Tulis aturan khusus layar dengan awalan `.ph ` (mis. `.ph .kartu{…}`), karena reset `.ph a, .ph button` menghapus padding, latar, dan ukuran huruf kelas tanpa awalan itu.
+- Gabungkan angka dan satuannya dalam satu lubang (`{{pctText}}`, bukan `{{pct}}%`): di flex/grid keduanya jadi item terpisah.
+
 ### Kelas siap pakai (dari `nyawtat-tokens.css`)
 
 `body` `hdr` `ib` `card` `ch` `h3` `sm` `big` `btn` (`sm` `soft` `ghost` `block`) `seg` (`button.on`) `chip`/`chips` `state ok|warn|bad`
@@ -61,21 +65,41 @@ Blob hanya tampil di dalam canvas.
 
 ## Tata letak canvas
 
-- Ukuran layar ponsel: lebar **390**, tinggi 844 (boleh lebih untuk halaman panjang). Jarak antar frame 80 px (x += 470), antar baris 120 px + judul.
-- Penomoran judul: `"NN Nama layar"` melanjutkan nomor terakhir (saat ini terakhir **33 Pengaturan › Warna aksen kustom**).
-- Baris (y frame): Pembuka 0 · Tab utama 1244 · Sub-halaman 3204 · Form & sheet 5164 · Cek update 6564 · Permainan 7808 · Desktop (Windows) 9228, frame 1280 lebar.
-  Judul baris = note `kind: "title1"`; perbarui `maxW` bila baris bertambah panjang.
-- Artboard yang bisa diklik diberi `"is_interactive": true`.
+Canvas punya 4 halaman (`pages`). Hanya halaman **Alur aplikasi** (`alur`) yang ikut Play.
 
-## Daftar artboard (per 2026-11-03)
+| Halaman | Isi |
+|---|---|
+| `alur` · Alur aplikasi | semua layar app yang berlaku sekarang, urut sesuai pemakaian |
+| `desktop` · Desktop | layar Windows (belum diimplementasi) |
+| `sistem` · Sistem desain | maskot, design system, token UI |
+| `arsip` · Arsip & usulan | prototipe lama, perbandingan sebelum/sesudah, dan usulan yang ditunda |
 
-00 Maskot, 00 Design system · 01 Splash, 02 Kunci PIN, 03 Atur PIN · 04 Hari Ini, 05 Jurnal, 06 Keuangan, 07 Laporan ·
-08 Pencarian, 09 Pengaturan, 10 Masuk Akun, 11 Kelola dompet, 12 Kelola kategori, 13 Budget,
-33 Pengaturan › Warna aksen kustom (`AccentCustom.dc.html`, x 2820 di baris Sub-halaman — sudah diimplementasi di `app/lib/features/settings/presentation/custom_accent_sheet.dart`) ·
-14 Tambah cepat, 15 Catat transaksi, 16 Tulis jurnal, 17 Catatan suara, 18 Detail tagihan, 19 Tagihan baru, 20 Impian baru,
-21 Tambah tabungan, 22 Target budget global, 23 Ubah dompet, 24 Streak, 27 Permainan (hub, `Games.dc.html`), 28 Roda putar & suit (`Spin.dc.html`), 29 Memory kartu, 30 Kocok pertanyaan (semua sudah diimplementasi di `app/lib/features/games/`) ·
-25 Banner versi baru, 26 Pengaturan › Tentang ·
-31 Desktop · aplikasi penuh (`Desktop.dc.html`, 1280×820), 32 Desktop · jendela mini vs widget (`DesktopMini.dc.html`) — belum diimplementasi.
+Aturan halaman `alur`:
+
+- **Play dimulai dari 1.1 Splash.** Setiap layar harus bisa dicapai dari Splash dan bisa kembali ke Hari Ini lewat tautan; jangan menautkan ke halaman `arsip`.
+- Semua layar **390 × 844** (`radius` 36) seperti HP; isi panjang digulir di dalam `.body`, dock tetap di bawah. Salin 4 baris CSS ini ke akhir `<style>` artboard:
+  `.ph .body{height:844px;overflow-y:auto;scrollbar-width:none}` · `.ph .body::-webkit-scrollbar{display:none}` · `.ph .body>*{flex-shrink:0}` · `.ph .sheet{max-height:92%;overflow-y:auto}`
+- Satu baris per bagian app; jarak antar frame 80 px (x += 470), antar baris y += 1264. Judul baris = note `title1` (y baris − 300, `page: "alur"`).
+- Judul artboard = `"<baris>.<urutan> <nama>"`. Layar baru masuk di baris bagiannya, di urutan paling kanan.
+- Layar yang perlu berbagi state (mis. centang rencana) digabung dalam **satu** artboard, karena state tiap artboard terpisah.
+- Prototipe usulan baru boleh mulai di `arsip`; setelah disetujui, pindahkan atau gabungkan ke `alur`.
+
+## Daftar artboard (per 2026-11-23)
+
+1. **Buka aplikasi:** 1.1 Splash (`Main`), 1.2 Kunci PIN (`Lock`)
+2. **Hari Ini:** 2.1 Hari Ini + rencana harian (`Today`), 2.2 Streak, 2.3 Pencarian (`Search`), 2.4 Target budget (`GlobalBudget`), 2.5 Detail tagihan (`BillDetail`), 2.6 Tagihan baru (`BillForm`), 2.7 Impian baru (`WishForm`), 2.8 Tambah tabungan (`Deposit`)
+3. **Tambah cepat:** 3.1 Tambah cepat (`Quick`), 3.2 Catat transaksi (`TxForm`), 3.3 Tulis jurnal (`EntryForm`), 3.4 Catatan suara (`Voice`), 3.5 Pengingat dari jurnal (`Reminder`)
+4. **Jurnal:** 4.1 Jurnal (`Journal`)
+5. **Keuangan:** 5.1 Keuangan + kalender (`MoneyCalendar`), 5.2 Kelola dompet (`Wallets`), 5.3 Ubah dompet (`WalletForm`)
+6. **Laporan:** 6.1 Laporan (`Report`), 6.2 Budget per kategori (`Budget`)
+7. **Permainan:** 7.1 Permainan (`Games`), 7.2 Roda putar & suit (`Spin`), 7.3 Memory kartu (`Memory`), 7.4 Kocok pertanyaan (`Prompt`)
+8. **Pengaturan:** 8.1 Pengaturan (`Settings`), 8.2 Warna aksen kustom (`AccentCustom`), 8.3 Atur PIN (`PinSetup`), 8.4 Kelola kategori (`Categories`), 8.5 Masuk akun (`SignIn`), 8.6 Tentang & cek update (`UpdateSettings`), 8.7 Banner versi baru (`UpdateBanner`), 8.8 Kirim masukan (`Feedback`), 8.9 Riwayat versi (`VersionHistory`)
+
+- **Desktop:** D.1 Aplikasi penuh (`Desktop`, 1280×820), D.2 Jendela mini vs widget (`DesktopMini`) — belum diimplementasi
+- **Sistem desain:** S.1 Maskot, S.2 Design system, S.3 Token UI Fase 1, S.4 Usulan token Fase 2
+- **Arsip:** A.1 Rencana besok (`DailyPlan`, prototipe awal), A.2 Keuangan lama (`Money`), A.3 Judul otomatis (`JournalAutoTitle`), A.4 Kirim masukan dalam app (`FeedbackInApp`, ditunda)
+
+Semua layar 1–8 sudah diimplementasi di `app/`.
 
 ## Aturan data di prototipe
 

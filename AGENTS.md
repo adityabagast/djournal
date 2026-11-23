@@ -25,12 +25,12 @@ Dokumen ini berisi aturan dan konvensi pengembangan proyek **Nyawtat** untuk dii
    ├─ providers/     # Riverpod provider & Notifier/controller fitur ini
    └─ presentation/  # screen, sheet, widget
    ```
-   - Fitur: `journal`, `money` (dompet, kategori, budget, tagihan, wishlist), `today`, `report`, `search`, `reminders`, `backup` (backup/restore, Google Drive, ekspor Excel, impor Money Manager), `account` (login + sync Supabase), `lock` (PIN), `settings`, `update`, `games`, `home_widget`, `shell`, `splash`.
+   - Fitur: `journal`, `money` (dompet, kategori, budget, tagihan, wishlist), `today`, `plan` (rencana hari ini & besok), `report`, `search`, `reminders`, `backup` (backup/restore, Google Drive, ekspor Excel, impor Money Manager), `account` (login + sync Supabase), `lock` (PIN), `settings`, `update`, `feedback` (lapor bug & usul fitur lewat email), `games`, `home_widget`, `shell`, `splash`.
    - `lib/core/`: yang dipakai banyak fitur — `database/` (Drift `AppDatabase`, tabel, `databaseProvider`), `storage/` (settings key-value), `attachments/`, `widgets/` (common, mascot, image viewer), `platform/`, `theme.dart`, `format.dart`, `config.dart`.
    - `lib/providers.dart`: barrel yang mengekspor semua provider; provider baru tetap ditulis di folder fiturnya lalu ditambahkan ke barrel.
    - Tes mengikuti struktur yang sama: `test/features/<fitur>/`, `test/core/`.
    - `core/` tidak boleh bergantung pada UI fitur; fitur boleh memakai `core/` dan `domain`/`providers` fitur lain.
-   - **UI:** warna dari `context.colors` (`AppPalette`); spasi, radius, ukuran font, dan durasi animasi dari token di `core/tokens.dart` (`AppSpace`, `AppRadius`, `AppFontSize`, `AppMotion`), bukan angka langsung. Bottom sheet pakai `showAppSheet()` + `SheetHandle` dari `core/widgets/app_sheet.dart`.
+   - **UI:** warna dari `context.colors` (`AppPalette`); spasi, radius, ukuran font, dan durasi animasi dari token di `core/tokens.dart` (`AppSpace`, `AppRadius`, `AppFontSize`, `AppMotion`), bukan angka langsung. Bottom sheet pakai `showAppSheet()` + `SheetHandle` dari `core/widgets/app_sheet.dart`; form di sheet dibungkus `SheetScroll`. Label/nominal satu baris di ruang sempit pakai `FitText`. Layar baru ditambahkan ke `test/layout_matrix_test.dart` (uji banyak ukuran HP, font, bahasa, keyboard).
 
 2. **Dukungan Multi-Platform (Android & Desktop):**
    - Selalu gunakan `PlatformInfo` dari `core/platform/platform_info.dart` untuk memisahkan fitur khusus platform.
@@ -67,6 +67,7 @@ Nyawtat menyimpan jurnal pribadi dan data keuangan. Setiap tahap wajib dicek:
    - Jangan commit perubahan yang melemahkan keamanan (mis. menghapus `FLAG_SECURE` di rilis, cleartext di manifest rilis, RLS dimatikan) tanpa persetujuan eksplisit user.
 
 4. **Rilis**
+   - Setelah CHANGELOG.md final, salin ke `app/assets/changelog.md` (dipakai Pengaturan › Riwayat versi); tes gagal kalau keduanya berbeda.
    - Build rilis wajib memakai release key (bukan debug key); cek dengan `apksigner verify --print-certs` bahwa SHA-256 sertifikat sama dengan yang terdaftar di Android Developer Console.
    - Cantumkan sha256 tiap APK di catatan rilis GitHub (`Get-FileHash <apk> -Algorithm SHA256`) supaya user dan fitur update di app bisa memverifikasi file.
    - Migration Supabase direview dulu: RLS tetap aktif, fungsi `security definer` memakai `set search_path = ''`, dan menolak data milik user lain. Jalankan tes SQL lokal sebelum diterapkan ke server.

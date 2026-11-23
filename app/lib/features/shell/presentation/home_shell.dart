@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -24,6 +23,7 @@ import '../../settings/presentation/settings_screen.dart';
 import '../../today/presentation/today_screen.dart';
 import '../../../core/tokens.dart';
 import '../../../core/widgets/app_sheet.dart';
+import 'home_dock.dart';
 
 /// Kerangka utama: 4 tab yang bisa digeser + floating dock dengan tombol
 /// tambah di tengah.
@@ -106,9 +106,10 @@ class _HomeShellState extends ConsumerState<HomeShell> {
     final l = context.l10n;
     final choice = await showAppSheet<String>(
       context: context,
+      isScrollControlled: true,
       constraints: const BoxConstraints(maxWidth: 480),
       builder: (ctx) => SafeArea(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.md, AppSpace.xl, AppSpace.xxl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -253,27 +254,31 @@ class _HomeShellState extends ConsumerState<HomeShell> {
                       ],
                     ),
                   ),
-                  Positioned(
-                    left: 16,
-                    right: 16,
-                    bottom: 16 + MediaQuery.paddingOf(context).bottom,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 520),
-                        child: _Dock(
-                          index: _index,
-                          onSelect: _goTo,
-                          onAdd: _openQuickAdd,
-                          items: [
-                            for (final (icon, label, _) in navItems)
-                              (icon, label),
-                          ],
-                          addLabel: l.add,
+                  // Disembunyikan saat mengetik supaya kolomnya tidak tertutup.
+                  if (MediaQuery.viewInsetsOf(context).bottom == 0)
+                    Positioned(
+                      left: HomeDock.sideMargin(constraints.maxWidth),
+                      right: HomeDock.sideMargin(constraints.maxWidth),
+                      bottom:
+                          HomeDock.bottomMargin +
+                          MediaQuery.paddingOf(context).bottom,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: ConstrainedBox(
+                          constraints: const BoxConstraints(maxWidth: 520),
+                          child: HomeDock(
+                            index: _index,
+                            onSelect: _goTo,
+                            onAdd: _openQuickAdd,
+                            items: [
+                              for (final (icon, label, _) in navItems)
+                                (icon, label),
+                            ],
+                            addLabel: l.add,
+                          ),
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             );
@@ -609,153 +614,6 @@ class _KeepAliveState extends State<_KeepAlive>
   Widget build(BuildContext context) {
     super.build(context);
     return widget.child;
-  }
-}
-
-class _Dock extends StatelessWidget {
-  const _Dock({
-    required this.index,
-    required this.onSelect,
-    required this.onAdd,
-    required this.items,
-    required this.addLabel,
-  });
-
-  final int index;
-  final ValueChanged<int> onSelect;
-  final VoidCallback onAdd;
-  final List<(IconData, String)> items;
-  final String addLabel;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = context.colors;
-    Widget tab(int i) => _DockTab(
-      icon: items[i].$1,
-      label: items[i].$2,
-      selected: index == i,
-      onTap: () => onSelect(i),
-    );
-
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-        boxShadow: [
-          BoxShadow(
-            color: c.shadow.withValues(alpha: c.isDark ? 0.45 : 0.16),
-            blurRadius: 32,
-            offset: const Offset(0, 12),
-          ),
-          BoxShadow(
-            color: c.shadow.withValues(alpha: c.isDark ? 0.2 : 0.06),
-            blurRadius: 6,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppRadius.pill),
-        child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
-          child: Container(
-            height: 72,
-            padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
-            decoration: BoxDecoration(
-              color: c.isDark
-                  ? const Color(0xFF1E2421).withValues(alpha: 0.88)
-                  : Colors.white.withValues(alpha: 0.86),
-              borderRadius: BorderRadius.circular(AppRadius.pill),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                tab(0),
-                tab(1),
-                Tooltip(
-                  message: addLabel,
-                  child: Material(
-                    color: context.colors.primary,
-                    elevation: 6,
-                    shadowColor: c.isDark
-                        ? Colors.black
-                        : c.primary.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(AppRadius.pill),
-                    child: InkWell(
-                      onTap: onAdd,
-                      borderRadius: BorderRadius.circular(AppRadius.pill),
-                      child: SizedBox(
-                        width: 54,
-                        height: 54,
-                        child: Icon(Icons.add, color: c.onPrimary, size: 28),
-                      ),
-                    ),
-                  ),
-                ),
-                tab(2),
-                tab(3),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _DockTab extends StatelessWidget {
-  const _DockTab({
-    required this.icon,
-    required this.label,
-    required this.selected,
-    required this.onTap,
-  });
-
-  final IconData icon;
-  final String label;
-  final bool selected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final color = selected
-        ? context.colors.onPrimarySoft
-        : context.colors.muted;
-    return Semantics(
-      selected: selected,
-      button: true,
-      label: label,
-      excludeSemantics: true,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppRadius.xl),
-        child: AnimatedContainer(
-          duration: AppMotion.short,
-          width: 64,
-          height: 54,
-          decoration: BoxDecoration(
-            color: selected ? context.colors.primarySoft : Colors.transparent,
-            borderRadius: BorderRadius.circular(AppRadius.xl),
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, color: color, size: 24),
-              const SizedBox(height: AppSpace.xxs),
-              Text(
-                label,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: AppFontSize.caption,
-                  fontWeight: FontWeight.w600,
-                  color: color,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }
 

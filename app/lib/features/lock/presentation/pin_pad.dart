@@ -91,7 +91,11 @@ class _PinPadState extends State<PinPad> {
       color: bg,
       child: SafeArea(
         child: LayoutBuilder(
-          builder: (context, box) => SingleChildScrollView(
+          builder: (context, box) {
+            // HP pendek: maskot dan jarak mengecil supaya keypad tetap utuh.
+            final tight = box.maxHeight < 800;
+            final tiny = box.maxHeight < 620;
+            return SingleChildScrollView(
             child: ConstrainedBox(
               constraints: BoxConstraints(minHeight: box.maxHeight),
               child: Padding(
@@ -101,7 +105,7 @@ class _PinPadState extends State<PinPad> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: widget.onBack == null
-                          ? const SizedBox(height: 48)
+                          ? SizedBox(height: tight ? AppSpace.sm : 48)
                           : IconButton(
                               tooltip: l.back,
                               onPressed: widget.onBack,
@@ -110,8 +114,10 @@ class _PinPadState extends State<PinPad> {
                             ),
                     ),
                     const SizedBox(height: AppSpace.sm),
-                    const Mascot(MascotPose.gembok, size: 128),
-                    const SizedBox(height: AppSpace.lg),
+                    if (!tiny) ...[
+                      Mascot(MascotPose.gembok, size: tight ? 80 : 128),
+                      const SizedBox(height: AppSpace.lg),
+                    ],
                     Text(
                       widget.title,
                       textAlign: TextAlign.center,
@@ -127,7 +133,7 @@ class _PinPadState extends State<PinPad> {
                       textAlign: TextAlign.center,
                       style: TextStyle(color: onDark, fontSize: AppFontSize.title),
                     ),
-                    const SizedBox(height: AppSpace.xxxl),
+                    SizedBox(height: tight ? AppSpace.lg : AppSpace.xxxl),
                     Semantics(
                       label: '${_pin.length} / ${PinStore.pinLength}',
                       child: Row(
@@ -168,35 +174,45 @@ class _PinPadState extends State<PinPad> {
                       ['4', '5', '6'],
                       ['7', '8', '9'],
                     ]) ...[
-                      Row(
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            for (final d in row) ...[
+                              key(d),
+                              if (d != row.last) const SizedBox(width: AppSpace.xxxl),
+                            ],
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: tight ? AppSpace.sm : AppSpace.lg),
+                    ],
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          for (final d in row) ...[
-                            key(d),
-                            if (d != row.last) const SizedBox(width: AppSpace.xxxl),
-                          ],
+                          SizedBox(
+                          width: MediaQuery.sizeOf(context).height < 860
+                              ? 62
+                              : 72,
+                        ),
+                          const SizedBox(width: AppSpace.xxxl),
+                          key('0'),
+                          const SizedBox(width: AppSpace.xxxl),
+                          _KeyButton(
+                            label: l.deleteDigit,
+                            filled: false,
+                            onTap: _delete,
+                            child: Icon(
+                              Icons.backspace_outlined,
+                              color: onHero,
+                              size: 26,
+                            ),
+                          ),
                         ],
                       ),
-                      const SizedBox(height: AppSpace.lg),
-                    ],
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const SizedBox(width: 72),
-                        const SizedBox(width: AppSpace.xxxl),
-                        key('0'),
-                        const SizedBox(width: AppSpace.xxxl),
-                        _KeyButton(
-                          label: l.deleteDigit,
-                          filled: false,
-                          onTap: _delete,
-                          child: Icon(
-                            Icons.backspace_outlined,
-                            color: onHero,
-                            size: 26,
-                          ),
-                        ),
-                      ],
                     ),
                     const SizedBox(height: AppSpace.lg),
                     ?widget.footer,
@@ -204,7 +220,8 @@ class _PinPadState extends State<PinPad> {
                 ),
               ),
             ),
-          ),
+          );
+          },
         ),
       ),
     );
@@ -238,7 +255,10 @@ class _KeyButton extends StatelessWidget {
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: onTap,
-          child: SizedBox(width: 72, height: 72, child: Center(child: child)),
+          child: SizedBox.square(
+            dimension: MediaQuery.sizeOf(context).height < 860 ? 62 : 72,
+            child: Center(child: child),
+          ),
         ),
       ),
     );

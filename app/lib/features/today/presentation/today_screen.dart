@@ -11,6 +11,7 @@ import '../../../core/widgets/common.dart';
 import '../../money/presentation/money_widgets.dart';
 import '../../../core/widgets/mascot.dart';
 import '../../games/presentation/games_hub_screen.dart';
+import '../../plan/presentation/plan_section.dart';
 import '../../journal/presentation/entry_form_screen.dart';
 import '../../journal/presentation/entry_rows.dart';
 import '../../money/presentation/tx_form_screen.dart';
@@ -87,11 +88,13 @@ class TodayScreen extends ConsumerWidget {
                       children: [
                         Row(
                           children: [
-                            Text(
-                              l.todaySpent,
-                              style: t.bodySmall?.copyWith(
-                                color: context.colors.muted,
-                                fontSize: AppFontSize.body,
+                            Flexible(
+                              child: Text(
+                                l.todaySpent,
+                                style: t.bodySmall?.copyWith(
+                                  color: context.colors.muted,
+                                  fontSize: AppFontSize.body,
+                                ),
                               ),
                             ),
                             const SizedBox(width: AppSpace.sm),
@@ -260,6 +263,8 @@ class TodayScreen extends ConsumerWidget {
             const SizedBox(height: AppSpace.md),
             const UpdateCard(),
             _GreetingCard(now: now, count: timeline.length),
+            const SizedBox(height: AppSpace.lg),
+            PlanSection(now: now),
             const SizedBox(height: AppSpace.lg),
             const RestCard(),
             const SizedBox(height: AppSpace.lg),

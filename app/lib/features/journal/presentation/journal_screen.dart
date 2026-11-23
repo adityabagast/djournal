@@ -706,15 +706,20 @@ class _WeekStrip extends StatelessWidget {
                     final isToday = day == today;
                     final isFuture = day.isAfter(today);
                     final isSelected = date == selected;
-                    return SizedBox(
-                      width: 40,
+                    return Expanded(
                       child: Column(
                         children: [
-                          Text(
-                            dayName.format(day),
-                            style: TextStyle(
-                              fontSize: AppFontSize.meta,
-                              color: context.colors.muted,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: AppSpace.xxs,
+                            ),
+                            child: FitText(
+                              dayName.format(day),
+                              alignment: Alignment.center,
+                              style: TextStyle(
+                                fontSize: AppFontSize.meta,
+                                color: context.colors.muted,
+                              ),
                             ),
                           ),
                           const SizedBox(height: AppSpace.xs),
@@ -837,15 +842,15 @@ class _DayHeader extends ConsumerWidget {
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.baseline,
-        textBaseline: TextBaseline.alphabetic,
+      // Ringkasan turun ke baris kedua kalau tidak muat.
+      child: Wrap(
+        alignment: WrapAlignment.spaceBetween,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        spacing: AppSpace.sm,
         children: [
-          Expanded(
-            child: Text(
-              dayLabel(context, date),
-              style: const TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w600),
-            ),
+          Text(
+            dayLabel(context, date),
+            style: const TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w600),
           ),
           Text(
             summary,

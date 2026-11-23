@@ -221,10 +221,9 @@ class _AccentOption extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: AppSpace.sm),
-              Text(
+              FitText(
                 label,
-                textAlign: TextAlign.center,
-                overflow: TextOverflow.ellipsis,
+                alignment: Alignment.center,
                 style: TextStyle(
                   fontSize: AppFontSize.meta,
                   fontWeight: selected ? FontWeight.w600 : FontWeight.w500,
@@ -273,7 +272,7 @@ class _ModeOption extends StatelessWidget {
           onTap: onTap,
           borderRadius: BorderRadius.circular(AppRadius.md),
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(AppSpace.xs, AppSpace.md, AppSpace.xs, AppSpace.sm),
+            padding: const EdgeInsets.fromLTRB(AppSpace.sm, AppSpace.md, AppSpace.sm, AppSpace.sm),
             child: Column(
               children: [
                 _MiniScreen(mode: mode),
@@ -303,11 +302,10 @@ class _ModeOption extends StatelessWidget {
                             )
                           : null,
                     ),
-                    const SizedBox(width: AppSpace.sm),
+                    const SizedBox(width: AppSpace.xs),
                     Flexible(
-                      child: Text(
+                      child: FitText(
                         label,
-                        overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                           fontSize: AppFontSize.body,
                           fontWeight: FontWeight.w600,

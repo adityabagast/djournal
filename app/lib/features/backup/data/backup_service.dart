@@ -57,13 +57,16 @@ class BackupService {
           .map(budgetToJson)
           .toList(),
       'journalEntries': entryQuery.map(entryToJson).toList(),
-      // Wishlist dan tagihan belum ikut sync, jadi file backup satu-satunya
+      // Wishlist, tagihan, dan rencana harian belum ikut sync, jadi file backup satu-satunya
       // cadangannya. Selalu disertakan penuh (bukan per periode) karena
-      // keduanya rencana ke depan, bukan riwayat.
+      // semuanya rencana ke depan, bukan riwayat.
       'wishlists': (await _db.select(_db.wishlists).get())
           .map(wishlistToJson)
           .toList(),
       'bills': (await _db.select(_db.bills).get()).map(billToJson).toList(),
+      'dailyPlans': (await _db.select(_db.dailyPlans).get())
+          .map(planToJson)
+          .toList(),
     };
     return const JsonEncoder.withIndent('  ').convert(data);
   }
@@ -116,6 +119,7 @@ class BackupService {
       (j) => wishlistFromJson(j, dirty: true),
     );
     final bills = rows('bills', (j) => billFromJson(j, dirty: true));
+    final plans = rows('dailyPlans', (j) => planFromJson(j, dirty: true));
 
     var imported = 0;
     var skipped = 0;
@@ -190,6 +194,9 @@ class BackupService {
       }
       for (final b in bills) {
         await put(_db.bills, b, b.id, b.updatedAt);
+      }
+      for (final p in plans) {
+        await put(_db.dailyPlans, p, p.id, p.updatedAt);
       }
     });
 

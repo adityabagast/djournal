@@ -220,8 +220,8 @@ class _WheelRpsScreenState extends State<WheelRpsScreen> {
           SegmentedButton<int>(
             showSelectedIcon: false,
             segments: [
-              ButtonSegment(value: 0, label: Text(l.gameWheel)),
-              ButtonSegment(value: 1, label: Text(l.gameRps)),
+              ButtonSegment(value: 0, label: FitText(l.gameWheel)),
+              ButtonSegment(value: 1, label: FitText(l.gameRps)),
             ],
             selected: {_tab},
             onSelectionChanged: (s) => setState(() => _tab = s.first),

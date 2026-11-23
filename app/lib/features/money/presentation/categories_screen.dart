@@ -116,7 +116,7 @@ class _CategoriesScreenState extends ConsumerState<CategoriesScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: FitText(
           l.manageCategories,
           style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
@@ -394,10 +394,8 @@ class _CategoryRow extends StatelessWidget {
                                 Row(
                                   children: [
                                     Flexible(
-                                      child: Text(
+                                      child: FitText(
                                         categoryLabel(l, category),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
                                         style: t.bodyMedium?.copyWith(
                                           fontWeight: FontWeight.w600,
                                         ),

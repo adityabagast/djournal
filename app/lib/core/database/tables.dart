@@ -175,6 +175,19 @@ class Attachments extends Table with SyncColumns {
   IntColumn get height => integer().nullable()();
 }
 
+/// Hal yang ingin dilakukan di satu hari (Hari Ini › Rencana). Belum ikut
+/// sinkron; cadangannya lewat backup JSON.
+@TableIndex(name: 'idx_plan_date', columns: {#planDate})
+class DailyPlans extends Table with SyncColumns {
+  TextColumn get title => text()();
+
+  /// Hari rencananya (YYYY-MM-DD).
+  TextColumn get planDate => text()();
+
+  /// Kapan dicentang; null = belum selesai.
+  IntColumn get doneAt => integer().map(const EpochMsConverter()).nullable()();
+}
+
 /// Pengingat acara yang dikenali dari cerita jurnal. Lokal di perangkat,
 /// tidak disinkronkan (notifikasinya juga hanya ada di perangkat ini).
 class Reminders extends Table {

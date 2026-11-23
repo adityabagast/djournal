@@ -358,7 +358,8 @@ class _MoneyScreenState extends ConsumerState<MoneyScreen> {
             walletsHeader,
             const SizedBox(height: AppSpace.xs),
             SizedBox(
-              height: 64,
+              // Dua baris teks; ikut tinggi font sistem.
+              height: 24 + MediaQuery.textScalerOf(context).scale(42),
               child: ListView(
                 scrollDirection: Axis.horizontal,
                 children: [
@@ -424,7 +425,7 @@ class _BalanceCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            FitText(
               label,
               style: t.bodySmall?.copyWith(color: context.colors.onHeroMuted),
             ),

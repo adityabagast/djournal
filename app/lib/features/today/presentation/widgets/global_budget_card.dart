@@ -8,6 +8,7 @@ import '../../../money/domain/money_snapshot.dart';
 import '../../../../providers.dart';
 import '../../../money/presentation/global_budget_sheet.dart';
 import '../../../../core/tokens.dart';
+import '../../../../core/widgets/common.dart';
 
 class GlobalBudgetCard extends ConsumerWidget {
   const GlobalBudgetCard({
@@ -85,9 +86,11 @@ class GlobalBudgetCard extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'Target Budget Global',
-                style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+              Expanded(
+                child: Text(
+                  'Target Budget Global',
+                  style: t.titleSmall?.copyWith(fontWeight: FontWeight.w700),
+                ),
               ),
               InkWell(
                 onTap: () => GlobalBudgetSheet.open(context),
@@ -127,19 +130,33 @@ class GlobalBudgetCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.baseline,
             textBaseline: TextBaseline.alphabetic,
             children: [
-              Text(
-                rupiah(spent, hide: hideAmounts),
-                style: t.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  fontSize: AppFontSize.display,
+              // Turun ke baris kedua kalau nominalnya panjang.
+              Expanded(
+                child: Wrap(
+                  spacing: AppSpace.sm,
+                  crossAxisAlignment: WrapCrossAlignment.end,
+                  children: [
+                    Text(
+                      rupiah(spent, hide: hideAmounts),
+                      style: t.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                        fontSize: AppFontSize.display,
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: AppSpace.xs),
+                      child: Text(
+                        limit > 0
+                            ? 'dari ${rupiah(limit, hide: hideAmounts)}'
+                            : 'belum ada target',
+                        style: t.bodySmall?.copyWith(
+                          color: context.colors.muted,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(width: AppSpace.sm),
-              Text(
-                limit > 0 ? 'dari ${rupiah(limit, hide: hideAmounts)}' : 'belum ada target',
-                style: t.bodySmall?.copyWith(color: context.colors.muted),
-              ),
-              const Spacer(),
               if (limit > 0)
                 Text(
                   '$pct%',
@@ -162,8 +179,9 @@ class GlobalBudgetCard extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: AppSpace.sm),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Wrap(
+              alignment: WrapAlignment.spaceBetween,
+              spacing: AppSpace.sm,
               children: [
                 if (remaining >= 0)
                   Text(
@@ -237,9 +255,9 @@ class GlobalBudgetCard extends ConsumerWidget {
                   ]
                 : null,
           ),
-          child: Text(
+          child: FitText(
             label,
-            textAlign: TextAlign.center,
+            alignment: Alignment.center,
             style: TextStyle(
               fontSize: AppFontSize.meta,
               fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,

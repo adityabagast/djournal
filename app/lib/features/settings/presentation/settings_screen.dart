@@ -52,16 +52,19 @@ class SettingsScreen extends ConsumerWidget {
           AppCard(
             padding: const EdgeInsets.symmetric(horizontal: AppSpace.lg, vertical: AppSpace.xs),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: AppSpace.md),
-                  child: Row(
+                  child: Wrap(
+                    alignment: WrapAlignment.spaceBetween,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: AppSpace.sm,
+                    runSpacing: AppSpace.sm,
                     children: [
-                      Expanded(
-                        child: Text(
-                          l.language,
-                          style: const TextStyle(fontWeight: FontWeight.w500),
-                        ),
+                      Text(
+                        l.language,
+                        style: const TextStyle(fontWeight: FontWeight.w500),
                       ),
                       SegmentedButton<String>(
                         showSelectedIcon: false,

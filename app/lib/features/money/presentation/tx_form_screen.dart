@@ -617,8 +617,10 @@ class _Segment extends StatelessWidget {
                   ]
                 : null,
           ),
-          child: Text(
+          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+          child: FitText(
             label,
+            alignment: Alignment.center,
             style: TextStyle(
               fontWeight: FontWeight.w600,
               color: selected ? context.colors.ink : context.colors.muted,
@@ -793,7 +795,7 @@ class _WalletChips extends StatelessWidget {
       children: [
         for (final w in wallets)
           ChoiceChip(
-            label: Text(w.name),
+            label: Text(w.name, overflow: TextOverflow.ellipsis),
             selected: w.id == selectedId,
             showCheckmark: false,
             onSelected: w.id == disabledId ? null : (_) => onSelect(w.id),
