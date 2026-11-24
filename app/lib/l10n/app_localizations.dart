@@ -4561,6 +4561,210 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Lihat rencana besok'**
   String get planSeeTomorrow;
+
+  /// No description provided for @xlSheetSummary.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan'**
+  String get xlSheetSummary;
+
+  /// No description provided for @xlTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Ringkasan Nyawtat'**
+  String get xlTitle;
+
+  /// No description provided for @xlAsOf.
+  ///
+  /// In id, this message translates to:
+  /// **'Data sampai'**
+  String get xlAsOf;
+
+  /// No description provided for @xlPickMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Pilih bulan'**
+  String get xlPickMonth;
+
+  /// No description provided for @xlPickMonthHint.
+  ///
+  /// In id, this message translates to:
+  /// **'‹ ubah lewat dropdown'**
+  String get xlPickMonthHint;
+
+  /// No description provided for @xlSelectedMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Bulan dipilih'**
+  String get xlSelectedMonth;
+
+  /// No description provided for @xlValue.
+  ///
+  /// In id, this message translates to:
+  /// **'Nilai'**
+  String get xlValue;
+
+  /// No description provided for @xlNet.
+  ///
+  /// In id, this message translates to:
+  /// **'Selisih'**
+  String get xlNet;
+
+  /// No description provided for @xlAvgPerDay.
+  ///
+  /// In id, this message translates to:
+  /// **'Rata-rata pengeluaran per hari'**
+  String get xlAvgPerDay;
+
+  /// No description provided for @xlTxCount.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah transaksi'**
+  String get xlTxCount;
+
+  /// No description provided for @xlTotalBalance.
+  ///
+  /// In id, this message translates to:
+  /// **'Total saldo dompet'**
+  String get xlTotalBalance;
+
+  /// No description provided for @xlPerMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Per bulan'**
+  String get xlPerMonth;
+
+  /// No description provided for @xlByCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengeluaran per kategori'**
+  String get xlByCategory;
+
+  /// No description provided for @xlShare.
+  ///
+  /// In id, this message translates to:
+  /// **'Porsi'**
+  String get xlShare;
+
+  /// No description provided for @xlOthers.
+  ///
+  /// In id, this message translates to:
+  /// **'Lainnya (gabungan)'**
+  String get xlOthers;
+
+  /// No description provided for @xlMoodOfMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Mood jurnal (bulan dipilih)'**
+  String get xlMoodOfMonth;
+
+  /// No description provided for @xlEntryCount.
+  ///
+  /// In id, this message translates to:
+  /// **'Jumlah entri'**
+  String get xlEntryCount;
+
+  /// No description provided for @xlFilterTotal.
+  ///
+  /// In id, this message translates to:
+  /// **'Total mengikuti filter (Nominal = masuk − keluar, transfer tidak dihitung)'**
+  String get xlFilterTotal;
+
+  /// No description provided for @xlIn.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk'**
+  String get xlIn;
+
+  /// No description provided for @xlOut.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar'**
+  String get xlOut;
+
+  /// No description provided for @xlMainCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Kategori utama'**
+  String get xlMainCategory;
+
+  /// No description provided for @xlChange.
+  ///
+  /// In id, this message translates to:
+  /// **'Perubahan'**
+  String get xlChange;
+
+  /// No description provided for @xlBalanceBefore.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo sebelum periode'**
+  String get xlBalanceBefore;
+
+  /// No description provided for @xlBalanceEnd.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo akhir periode'**
+  String get xlBalanceEnd;
+
+  /// No description provided for @xlTotal.
+  ///
+  /// In id, this message translates to:
+  /// **'Total'**
+  String get xlTotal;
+
+  /// No description provided for @xlBudgetMonth.
+  ///
+  /// In id, this message translates to:
+  /// **'Budget bulan'**
+  String get xlBudgetMonth;
+
+  /// No description provided for @xlUsedPercent.
+  ///
+  /// In id, this message translates to:
+  /// **'Terpakai %'**
+  String get xlUsedPercent;
+
+  /// No description provided for @xlChartCategory.
+  ///
+  /// In id, this message translates to:
+  /// **'Pengeluaran bulan dipilih'**
+  String get xlChartCategory;
+
+  /// No description provided for @xlChartMonthly.
+  ///
+  /// In id, this message translates to:
+  /// **'Pemasukan dan pengeluaran per bulan'**
+  String get xlChartMonthly;
+
+  /// No description provided for @xlChartMood.
+  ///
+  /// In id, this message translates to:
+  /// **'Mood jurnal'**
+  String get xlChartMood;
+
+  /// No description provided for @xlChartWallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Saldo per dompet'**
+  String get xlChartWallet;
+
+  /// No description provided for @xlChartBudget.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas dan terpakai'**
+  String get xlChartBudget;
+
+  /// No description provided for @xlMillion.
+  ///
+  /// In id, this message translates to:
+  /// **'jt'**
+  String get xlMillion;
+
+  /// No description provided for @xlLimit.
+  ///
+  /// In id, this message translates to:
+  /// **'Batas'**
+  String get xlLimit;
 }
 
 class _AppLocalizationsDelegate
