@@ -4,7 +4,7 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
 
 **🌐 Situs: [adityabagast.github.io/djournal](https://adityabagast.github.io/djournal/)** · [Unduh APK](../../releases/latest) · [Jadi tester](https://appdistribution.firebase.dev/i/7f0a29e4b1386d45)
 
-> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.18.0**, lihat [CHANGELOG.md](CHANGELOG.md).
+> Repo ini bernama `djournal` (nama awal proyek). Versi terbaru: **0.19.0**, lihat [CHANGELOG.md](CHANGELOG.md).
 
 <table>
   <tr>
@@ -14,7 +14,7 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
   </tr>
   <tr>
     <td align="center"><img src="docs/screenshots/laporan.png" width="240" alt="Layar Laporan: grafik analisis pengeluaran (donut & mingguan), navigasi bulan, dan budget"><br><b>Laporan</b></td>
-    <td align="center"><img src="docs/screenshots/tulis-jurnal.png" width="240" alt="Form entri jurnal: jam, mood, judul, cerita, tag, dan transaksi di hari yang sama"><br><b>Tulis jurnal</b></td>
+    <td align="center"><img src="docs/screenshots/tulis-jurnal.png" width="240" alt="Menulis catatan jurnal: judul dan cerita tanpa kotak, bilah alat, dan transaksi di hari yang sama"><br><b>Tulis jurnal</b></td>
     <td align="center"><img src="docs/screenshots/kunci.png" width="240" alt="Layar kunci PIN dengan maskot kucing"><br><b>Kunci PIN</b></td>
   </tr>
   <tr>
@@ -23,7 +23,7 @@ Aplikasi pribadi yang menggabungkan **jurnal harian** dan **catatan keuangan** d
     <td align="center"><img src="docs/screenshots/kelola-kategori.png" width="240" alt="Kelola kategori: daftar kategori pengeluaran dengan pegangan geser, jumlah transaksi, dan budget"><br><b>Kelola kategori</b></td>
   </tr>
   <tr>
-    <td align="center"><img src="docs/screenshots/catatan-suara.png" width="240" alt="Form entri jurnal dengan pemutar rekaman suara dan transkripsi"><br><b>Catatan suara</b></td>
+    <td align="center"><img src="docs/screenshots/catatan-suara.png" width="240" alt="Membaca catatan jurnal dengan pemutar rekaman suara"><br><b>Catatan suara</b></td>
     <td align="center"><img src="docs/screenshots/mode-privasi.png" width="240" alt="Layar Keuangan saat mode privasi aktif: semua nominal uang disembunyikan"><br><b>Mode privasi</b></td>
     <td align="center"><img src="docs/screenshots/kelola-dompet.png" width="240" alt="Layar Kelola Dompet: daftar dompet aktif dan arsip"><br><b>Kelola dompet</b></td>
   </tr>

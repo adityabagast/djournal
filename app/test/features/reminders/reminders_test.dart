@@ -86,28 +86,45 @@ void main() {
     });
   });
 
+  /// Bilah tawaran + daftar pengingat, seperti di halaman catatan.
+  Widget noteReminders(
+    ReminderSuggestionController controller,
+    String text,
+    ReminderNotifier notifier,
+  ) => ProviderScope(
+    overrides: [reminderNotifierProvider.overrideWithValue(notifier)],
+    child: MaterialApp(
+      key: ValueKey(text),
+      locale: const Locale('id'),
+      supportedLocales: AppLocalizations.supportedLocales,
+      localizationsDelegates: AppLocalizations.localizationsDelegates,
+      home: Scaffold(
+        body: StatefulBuilder(
+          builder: (context, setState) => Column(
+            children: [
+              NoteReminders(
+                controller: controller,
+                text: text,
+                onChanged: () => setState(() {}),
+              ),
+              ReminderBar(
+                controller: controller,
+                text: text,
+                onChanged: () => setState(() {}),
+              ),
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
+
   testWidgets('Ingatkan aku tetap jalan walau notifikasi gagal', (
     tester,
   ) async {
     final controller = ReminderSuggestionController();
     const text = 'Besok jam 9 pagi servis motor.';
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          reminderNotifierProvider.overrideWithValue(_BrokenNotifier()),
-        ],
-        child: MaterialApp(
-          locale: const Locale('id'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          home: Scaffold(
-            body: SingleChildScrollView(
-              child: ReminderSuggestions(controller: controller, text: text),
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(noteReminders(controller, text, _BrokenNotifier()));
     await tester.pumpAndSettle();
 
     await tester.tap(find.text('Ingatkan aku'));
@@ -186,7 +203,7 @@ void main() {
     });
   });
 
-  testWidgets('saran pengingat: terima, batal, abaikan', (tester) async {
+  testWidgets('saran pengingat: terima, abaikan, batal', (tester) async {
     tester.view.physicalSize = const Size(390, 1600);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.reset);
@@ -198,33 +215,16 @@ void main() {
     const text =
         'Pagi ini beres-beres kamar. Besok jam 9 pagi servis motor. '
         'Lusa jam 3 sore rapat RT.';
-
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: [
-          reminderNotifierProvider.overrideWithValue(_FakeNotifier()),
-        ],
-        child: MaterialApp(
-          locale: const Locale('id'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          home: Scaffold(
-            body: SingleChildScrollView(
-              child: ReminderSuggestions(controller: controller, text: text),
-            ),
-          ),
-        ),
-      ),
-    );
+    await tester.pumpWidget(noteReminders(controller, text, _FakeNotifier()));
     await tester.pumpAndSettle();
 
+    // Ditawarkan satu per satu.
     expect(find.text('Servis motor'), findsOneWidget);
-    expect(find.text('Rapat RT'), findsOneWidget);
-    expect(find.text('Besok'), findsOneWidget);
-    expect(find.text('Ingatkan aku'), findsNWidgets(2));
+    expect(find.text('Besok · 09.00 · +1 lagi'), findsOneWidget);
+    expect(find.text('Rapat RT'), findsNothing);
     expect(controller.acceptedDrafts(text, DateTime.now()), isEmpty);
 
-    await tester.tap(find.text('Ingatkan aku').first);
+    await tester.tap(find.text('Ingatkan aku'));
     await tester.pumpAndSettle();
     expect(find.text('Pengingat aktif · 1 jam sebelum'), findsOneWidget);
     final accepted = controller.acceptedDrafts(text, DateTime.now());
@@ -232,32 +232,45 @@ void main() {
       'Servis motor $tomorrow 09:00',
     ]);
 
-    await tester.tap(find.text('Abaikan'));
+    expect(find.text('Rapat RT'), findsOneWidget);
+    await tester.tap(find.byTooltip('Abaikan'));
     await tester.pumpAndSettle();
     expect(find.text('Rapat RT'), findsNothing);
 
-    await tester.tap(find.text('Batal'));
+    // Batalkan yang sudah diterima lewat lembar ubah.
+    await tester.tap(find.text('Servis motor'));
     await tester.pumpAndSettle();
+    await tester.tap(find.text('Abaikan'));
+    await tester.pumpAndSettle();
+    expect(find.text('Servis motor'), findsNothing);
     expect(controller.acceptedDrafts(text, DateTime.now()), isEmpty);
   });
 
-  testWidgets('tanpa rencana menampilkan petunjuk', (tester) async {
+  testWidgets('jam ambigu ditanya dulu', (tester) async {
+    final controller = ReminderSuggestionController();
+    const text = 'Besok jam 7 rapat.';
+    await tester.pumpWidget(noteReminders(controller, text, _FakeNotifier()));
+    await tester.pumpAndSettle();
+    expect(find.textContaining('Jamnya belum jelas'), findsOneWidget);
+    await tester.tap(find.text('19.00'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Ingatkan aku'));
+    await tester.pumpAndSettle();
+    expect(
+      controller.acceptedDrafts(text, DateTime.now()).single.time,
+      '19:00',
+    );
+  });
+
+  testWidgets('tanpa rencana tidak menampilkan apa pun', (tester) async {
     await tester.pumpWidget(
-      ProviderScope(
-        child: MaterialApp(
-          locale: const Locale('id'),
-          supportedLocales: AppLocalizations.supportedLocales,
-          localizationsDelegates: AppLocalizations.localizationsDelegates,
-          home: Scaffold(
-            body: ReminderSuggestions(
-              controller: ReminderSuggestionController(),
-              text: 'Hari ini santai saja di rumah.',
-            ),
-          ),
-        ),
+      noteReminders(
+        ReminderSuggestionController(),
+        'Hari ini santai saja di rumah.',
+        _FakeNotifier(),
       ),
     );
     await tester.pumpAndSettle();
-    expect(find.textContaining('Belum ada tanggal atau jam'), findsOneWidget);
+    expect(find.text('Ingatkan aku'), findsNothing);
   });
 }
