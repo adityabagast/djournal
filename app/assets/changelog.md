@@ -2,11 +2,17 @@
 
 ## Belum dirilis
 
+**Baru**
+- **File Excel** kini bisa dipakai menganalisis langsung: lembar **Ringkasan** dengan pilihan bulan, grafik pengeluaran per kategori dan per bulan, filter di Transaksi dan Jurnal, serta saldo dan budget yang dihitung dengan rumus. Budget yang lewat batas ditandai merah.
+
 **Perbaikan**
+- **File Excel dengan banyak data** kini bisa dibuka di Microsoft Excel. Sebelumnya gagal dibuka karena data pemulihannya terlalu panjang untuk satu sel.
+- **Cadangan Google Drive** selalu menyimpan data pemulihan lengkap. Pilihan periode hanya membatasi isi tabel yang tampil.
 - **Cadangan Google Drive** kini masuk ke folder **Nyawtat** yang dibuat otomatis, tidak lagi bercampur dengan file lain di My Drive. Folder boleh kamu ganti nama atau pindahkan. Cadangan lama tetap di tempatnya dan masih bisa dipulihkan.
 
 **Di balik layar**
-- Tidak ada izin, dependensi, atau perubahan database baru.
+- File Excel buatan versi ini tidak bisa dipulihkan oleh app versi lama. File lama tetap bisa dipulihkan.
+- `archive` dan `xml` (sudah terpasang lewat paket lain) jadi dependensi langsung. Tidak ada izin atau perubahan database baru.
 
 ## 0.18.0 — 2026-11-24
 

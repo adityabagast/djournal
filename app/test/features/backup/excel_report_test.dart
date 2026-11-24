@@ -15,7 +15,7 @@ void main() {
   setUp(() => db = AppDatabase(NativeDatabase.memory()));
   tearDown(() => db.close());
 
-  test('laporan Excel berisi 4 sheet dengan data yang benar', () async {
+  test('laporan Excel berisi semua sheet dengan data yang benar', () async {
     final money = MoneyRepository(db);
     final journal = JournalRepository(db);
     final wallet = (await money.watchWallets().first).single;
@@ -60,20 +60,22 @@ void main() {
     // Baca balik file yang dihasilkan.
     final excel = Excel.decodeBytes(bytes);
     expect(excel.tables.keys.toSet(), {
+      'Ringkasan',
       'Transaksi',
       'Jurnal',
       'Dompet',
       'Budget',
+      '_Hitung',
     }, reason: 'sheet bawaan "Sheet1" sudah dibuang');
 
     final tx = excel.tables['Transaksi']!;
-    expect(tx.maxRows, 2);
-    expect(tx.row(0).first?.value.toString(), 'Tanggal');
-    final txRow = tx.row(1);
+    expect(tx.maxRows, 4);
+    expect(tx.row(2).first?.value.toString(), 'Tanggal');
+    final txRow = tx.row(3);
     expect(txRow[2]?.value.toString(), 'Pengeluaran');
     expect(txRow[3]?.value.toString(), 'Makan');
     expect((txRow[6]?.value as IntCellValue).value, -25000);
-    expect(txRow[7]?.value.toString(), 'Kopi susu');
+    expect(txRow[9]?.value.toString(), 'Kopi susu');
 
     final entry = excel.tables['Jurnal']!.row(1);
     expect(entry[2]?.value.toString(), 'Baik');
@@ -81,12 +83,12 @@ void main() {
 
     final walletRow = excel.tables['Dompet']!.row(1);
     expect(walletRow[0]?.value.toString(), 'Tunai');
-    expect((walletRow[3]?.value as IntCellValue).value, -25000);
+    expect(walletRow[4]?.value, isA<FormulaCellValue>());
 
-    final budget = excel.tables['Budget']!.row(1);
+    final budget = excel.tables['Budget']!.row(3);
     expect(budget[0]?.value.toString(), 'Makan');
     expect((budget[1]?.value as IntCellValue).value, 1000000);
-    expect((budget[3]?.value as IntCellValue).value, 975000);
+    expect(budget[3]?.value, isA<FormulaCellValue>());
   });
 
   test('laporan Excel dapat memfilter rentang periode dan mengekstrak raw JSON', () async {
@@ -138,9 +140,9 @@ void main() {
 
     final excel = Excel.decodeBytes(bytes);
     final tx = excel.tables['Transaksi']!;
-    // Hanya 1 transaksi (Oktober) + 1 baris header = 2 baris
-    expect(tx.maxRows, 2);
-    expect(tx.row(1)[7]?.value.toString(), 'Sarapan Oktober');
+    // Hanya 1 transaksi (Oktober) + total, kosong, dan header
+    expect(tx.maxRows, 4);
+    expect(tx.row(3)[9]?.value.toString(), 'Sarapan Oktober');
 
     // Ekstrak kembali raw JSON
     final extracted = extractRawBackupJsonFromExcel(bytes);

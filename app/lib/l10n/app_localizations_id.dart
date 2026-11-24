@@ -2502,4 +2502,107 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get planSeeTomorrow => 'Lihat rencana besok';
+
+  @override
+  String get xlSheetSummary => 'Ringkasan';
+
+  @override
+  String get xlTitle => 'Ringkasan Nyawtat';
+
+  @override
+  String get xlAsOf => 'Data sampai';
+
+  @override
+  String get xlPickMonth => 'Pilih bulan';
+
+  @override
+  String get xlPickMonthHint => '‹ ubah lewat dropdown';
+
+  @override
+  String get xlSelectedMonth => 'Bulan dipilih';
+
+  @override
+  String get xlValue => 'Nilai';
+
+  @override
+  String get xlNet => 'Selisih';
+
+  @override
+  String get xlAvgPerDay => 'Rata-rata pengeluaran per hari';
+
+  @override
+  String get xlTxCount => 'Jumlah transaksi';
+
+  @override
+  String get xlTotalBalance => 'Total saldo dompet';
+
+  @override
+  String get xlPerMonth => 'Per bulan';
+
+  @override
+  String get xlByCategory => 'Pengeluaran per kategori';
+
+  @override
+  String get xlShare => 'Porsi';
+
+  @override
+  String get xlOthers => 'Lainnya (gabungan)';
+
+  @override
+  String get xlMoodOfMonth => 'Mood jurnal (bulan dipilih)';
+
+  @override
+  String get xlEntryCount => 'Jumlah entri';
+
+  @override
+  String get xlFilterTotal =>
+      'Total mengikuti filter (Nominal = masuk − keluar, transfer tidak dihitung)';
+
+  @override
+  String get xlIn => 'Masuk';
+
+  @override
+  String get xlOut => 'Keluar';
+
+  @override
+  String get xlMainCategory => 'Kategori utama';
+
+  @override
+  String get xlChange => 'Perubahan';
+
+  @override
+  String get xlBalanceBefore => 'Saldo sebelum periode';
+
+  @override
+  String get xlBalanceEnd => 'Saldo akhir periode';
+
+  @override
+  String get xlTotal => 'Total';
+
+  @override
+  String get xlBudgetMonth => 'Budget bulan';
+
+  @override
+  String get xlUsedPercent => 'Terpakai %';
+
+  @override
+  String get xlChartCategory => 'Pengeluaran bulan dipilih';
+
+  @override
+  String get xlChartMonthly => 'Pemasukan dan pengeluaran per bulan';
+
+  @override
+  String get xlChartMood => 'Mood jurnal';
+
+  @override
+  String get xlChartWallet => 'Saldo per dompet';
+
+  @override
+  String get xlChartBudget => 'Batas dan terpakai';
+
+  @override
+  String get xlMillion => 'jt';
+
+  @override
+  String get xlLimit => 'Batas';
 }

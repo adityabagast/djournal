@@ -2557,4 +2557,107 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get planSeeTomorrow => 'See tomorrow\'s plan';
+
+  @override
+  String get xlSheetSummary => 'Summary';
+
+  @override
+  String get xlTitle => 'Nyawtat summary';
+
+  @override
+  String get xlAsOf => 'Data as of';
+
+  @override
+  String get xlPickMonth => 'Pick a month';
+
+  @override
+  String get xlPickMonthHint => '‹ change with the dropdown';
+
+  @override
+  String get xlSelectedMonth => 'Selected month';
+
+  @override
+  String get xlValue => 'Value';
+
+  @override
+  String get xlNet => 'Net';
+
+  @override
+  String get xlAvgPerDay => 'Average spending per day';
+
+  @override
+  String get xlTxCount => 'Number of transactions';
+
+  @override
+  String get xlTotalBalance => 'Total wallet balance';
+
+  @override
+  String get xlPerMonth => 'By month';
+
+  @override
+  String get xlByCategory => 'Spending by category';
+
+  @override
+  String get xlShare => 'Share';
+
+  @override
+  String get xlOthers => 'Others (combined)';
+
+  @override
+  String get xlMoodOfMonth => 'Journal mood (selected month)';
+
+  @override
+  String get xlEntryCount => 'Entries';
+
+  @override
+  String get xlFilterTotal =>
+      'Totals follow the filter (Amount = in − out, transfers excluded)';
+
+  @override
+  String get xlIn => 'In';
+
+  @override
+  String get xlOut => 'Out';
+
+  @override
+  String get xlMainCategory => 'Main category';
+
+  @override
+  String get xlChange => 'Change';
+
+  @override
+  String get xlBalanceBefore => 'Balance before period';
+
+  @override
+  String get xlBalanceEnd => 'Balance at period end';
+
+  @override
+  String get xlTotal => 'Total';
+
+  @override
+  String get xlBudgetMonth => 'Budget month';
+
+  @override
+  String get xlUsedPercent => 'Used %';
+
+  @override
+  String get xlChartCategory => 'Spending in selected month';
+
+  @override
+  String get xlChartMonthly => 'Income and spending by month';
+
+  @override
+  String get xlChartMood => 'Journal mood';
+
+  @override
+  String get xlChartWallet => 'Balance by wallet';
+
+  @override
+  String get xlChartBudget => 'Limit and spent';
+
+  @override
+  String get xlMillion => 'M';
+
+  @override
+  String get xlLimit => 'Limit';
 }

@@ -621,8 +621,10 @@ class _DataSectionState extends ConsumerState<DataSection> {
     if (money == null || entries == null) return;
 
     try {
-      final rawJson = await BackupService(ref.read(databaseProvider))
-          .exportJson(period: _selectedPeriod);
+      // Data pemulihan selalu lengkap: Pulihkan memakai cadangan terbaru.
+      // Pilihan periode hanya membatasi isi tabelnya.
+      final rawJson =
+          await BackupService(ref.read(databaseProvider)).exportJson();
       final bytes = buildExcelReport(
         l: l,
         money: money,
