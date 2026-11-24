@@ -1,5 +1,13 @@
 # Changelog
 
+## Belum dirilis
+
+**Perbaikan**
+- **Cadangan Google Drive** kini masuk ke folder **Nyawtat** yang dibuat otomatis, tidak lagi bercampur dengan file lain di My Drive. Folder boleh kamu ganti nama atau pindahkan. Cadangan lama tetap di tempatnya dan masih bisa dipulihkan.
+
+**Di balik layar**
+- Tidak ada izin, dependensi, atau perubahan database baru.
+
 ## 0.18.0 — 2026-11-24
 
 **Baru**

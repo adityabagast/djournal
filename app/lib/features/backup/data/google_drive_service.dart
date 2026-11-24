@@ -6,6 +6,7 @@ import 'package:googleapis/drive/v3.dart' as drive;
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/storage/settings_repository.dart';
+import 'drive_backup_folder.dart';
 
 class GoogleDriveInfo {
   const GoogleDriveInfo({
@@ -140,23 +141,10 @@ class GoogleDriveService {
       if (client == null) return null;
 
       final driveApi = drive.DriveApi(client);
-      final media = drive.Media(
-        Stream.value(bytes),
-        bytes.length,
-        contentType:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-      );
-
-      final fileToUpload = drive.File()
-        ..name = fileName
-        ..description = 'Cadangan data Nyawtat (Format Excel / Google Sheets)'
-        ..mimeType =
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-
-      final created = await driveApi.files.create(
-        fileToUpload,
-        uploadMedia: media,
-        $fields: 'id, name, webViewLink, webContentLink, createdTime, size',
+      final created = await uploadBackupToFolder(
+        driveApi,
+        bytes: bytes,
+        fileName: fileName,
       );
 
       final now = DateTime.now();
