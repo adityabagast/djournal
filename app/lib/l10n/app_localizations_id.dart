@@ -2605,4 +2605,134 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get xlLimit => 'Batas';
+
+  @override
+  String moreCount(int count) {
+    return '+$count lagi';
+  }
+
+  @override
+  String get noteEditAction => 'Edit catatan';
+
+  @override
+  String get noteKeyboard => 'Ketik';
+
+  @override
+  String get noteToolMoney => 'Uang';
+
+  @override
+  String get noteToolPhoto => 'Foto';
+
+  @override
+  String get noteToolRecord => 'Rekam';
+
+  @override
+  String get noteToolRecordAgain => 'Ulang';
+
+  @override
+  String get noteToolDictate => 'Dikte';
+
+  @override
+  String get noteToolTag => 'Tag';
+
+  @override
+  String get noteAddTime => '+ Jam';
+
+  @override
+  String get noteMoodAsk => 'Bagaimana perasaanmu?';
+
+  @override
+  String get noteMoodUndo => 'Ketuk lagi untuk membatalkan pilihan.';
+
+  @override
+  String get noteTagHint => 'mis. teman, kerja';
+
+  @override
+  String get noteTagLabel => 'Tag (pisahkan dengan koma)';
+
+  @override
+  String get noteTagEmpty => 'Belum ada tag.';
+
+  @override
+  String noteTagRemove(String tag) {
+    return 'Hapus tag $tag';
+  }
+
+  @override
+  String notePhotoLabel(int n) {
+    return 'Lihat foto $n';
+  }
+
+  @override
+  String get notePhotoRemove => 'Hapus foto';
+
+  @override
+  String get notePhotoMax => 'Maksimal 10 gambar';
+
+  @override
+  String get noteDiscardTitle => 'Simpan catatan ini?';
+
+  @override
+  String get noteDiscardBody => 'Ada tulisan yang belum disimpan.';
+
+  @override
+  String get noteKeepWriting => 'Lanjut menulis';
+
+  @override
+  String get noteDiscard => 'Buang';
+
+  @override
+  String get noteTxPanel => 'Transaksi dari catatan';
+
+  @override
+  String get noteTxEmpty =>
+      'Tulis nominal di ceritamu, misalnya “kopi 25rb pakai GoPay”. Nyaw menawarkannya jadi transaksi, jadi tidak perlu dicatat dua kali.';
+
+  @override
+  String get noteTxRecord => 'Catat';
+
+  @override
+  String get noteTxRecordAll => 'Catat semua';
+
+  @override
+  String get noteTxRecorded => 'Dicatat';
+
+  @override
+  String get noteTxExists => 'Sudah ada';
+
+  @override
+  String get noteTxDismiss => 'Jangan catat';
+
+  @override
+  String noteTxCount(int count) {
+    return '$count transaksi';
+  }
+
+  @override
+  String noteTxSaved(int count) {
+    return '$count transaksi dicatat';
+  }
+
+  @override
+  String get noteTxNew => 'Baru';
+
+  @override
+  String get noteTxWithSave => 'ikut Simpan';
+
+  @override
+  String get noteTxAdd => 'Tambah transaksi';
+
+  @override
+  String get noteTxEdit => 'Ubah transaksi';
+
+  @override
+  String get noteTxWhen =>
+      'Tanggal dan jam ikut catatan ini. Dicatat saat catatan disimpan.';
+
+  @override
+  String get noteTxNone => 'Belum ada';
+
+  @override
+  String get noteNoWallet =>
+      'Buat dompet dulu di Keuangan untuk mencatat transaksi.';
 }

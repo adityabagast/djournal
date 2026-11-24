@@ -418,6 +418,8 @@ void main() {
       await tester.tap(find.text('Jalan sore di taman'));
       await settle(tester);
       await shoot(tester, 'catatan-suara');
+      await tester.tap(find.byIcon(Icons.edit_outlined));
+      await settle(tester);
       await shoot(tester, 'tulis-jurnal');
       Navigator.of(tester.element(find.byType(EntryFormScreen))).pop();
       await settle(tester);

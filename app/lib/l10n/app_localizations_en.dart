@@ -2660,4 +2660,134 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get xlLimit => 'Limit';
+
+  @override
+  String moreCount(int count) {
+    return '+$count more';
+  }
+
+  @override
+  String get noteEditAction => 'Edit note';
+
+  @override
+  String get noteKeyboard => 'Type';
+
+  @override
+  String get noteToolMoney => 'Money';
+
+  @override
+  String get noteToolPhoto => 'Photo';
+
+  @override
+  String get noteToolRecord => 'Record';
+
+  @override
+  String get noteToolRecordAgain => 'Redo';
+
+  @override
+  String get noteToolDictate => 'Dictate';
+
+  @override
+  String get noteToolTag => 'Tag';
+
+  @override
+  String get noteAddTime => '+ Time';
+
+  @override
+  String get noteMoodAsk => 'How do you feel?';
+
+  @override
+  String get noteMoodUndo => 'Tap again to clear your choice.';
+
+  @override
+  String get noteTagHint => 'e.g. friends, work';
+
+  @override
+  String get noteTagLabel => 'Tags (separate with commas)';
+
+  @override
+  String get noteTagEmpty => 'No tags yet.';
+
+  @override
+  String noteTagRemove(String tag) {
+    return 'Remove tag $tag';
+  }
+
+  @override
+  String notePhotoLabel(int n) {
+    return 'View photo $n';
+  }
+
+  @override
+  String get notePhotoRemove => 'Remove photo';
+
+  @override
+  String get notePhotoMax => '10 images at most';
+
+  @override
+  String get noteDiscardTitle => 'Save this note?';
+
+  @override
+  String get noteDiscardBody => 'You have unsaved changes.';
+
+  @override
+  String get noteKeepWriting => 'Keep writing';
+
+  @override
+  String get noteDiscard => 'Discard';
+
+  @override
+  String get noteTxPanel => 'Transactions from this note';
+
+  @override
+  String get noteTxEmpty =>
+      'Write an amount in your story in Indonesian, for example “kopi 25rb pakai GoPay”. Nyaw offers it as a transaction, so you only write it once.';
+
+  @override
+  String get noteTxRecord => 'Record';
+
+  @override
+  String get noteTxRecordAll => 'Record all';
+
+  @override
+  String get noteTxRecorded => 'Added';
+
+  @override
+  String get noteTxExists => 'Already there';
+
+  @override
+  String get noteTxDismiss => 'Don’t record';
+
+  @override
+  String noteTxCount(int count) {
+    return '$count transactions';
+  }
+
+  @override
+  String noteTxSaved(int count) {
+    return '$count transactions recorded';
+  }
+
+  @override
+  String get noteTxNew => 'New';
+
+  @override
+  String get noteTxWithSave => 'saved with note';
+
+  @override
+  String get noteTxAdd => 'Add transaction';
+
+  @override
+  String get noteTxEdit => 'Edit transaction';
+
+  @override
+  String get noteTxWhen =>
+      'Date and time follow this note. Recorded when the note is saved.';
+
+  @override
+  String get noteTxNone => 'None yet';
+
+  @override
+  String get noteNoWallet =>
+      'Create a wallet in Money first to record transactions.';
 }

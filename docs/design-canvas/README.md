@@ -84,11 +84,11 @@ Aturan halaman `alur`:
 - Layar yang perlu berbagi state (mis. centang rencana) digabung dalam **satu** artboard, karena state tiap artboard terpisah.
 - Prototipe usulan baru boleh mulai di `arsip`; setelah disetujui, pindahkan atau gabungkan ke `alur`.
 
-## Daftar artboard (per 2026-11-23)
+## Daftar artboard (per 2026-11-25)
 
 1. **Buka aplikasi:** 1.1 Splash (`Main`), 1.2 Kunci PIN (`Lock`)
 2. **Hari Ini:** 2.1 Hari Ini + rencana harian (`Today`), 2.2 Streak, 2.3 Pencarian (`Search`), 2.4 Target budget (`GlobalBudget`), 2.5 Detail tagihan (`BillDetail`), 2.6 Tagihan baru (`BillForm`), 2.7 Impian baru (`WishForm`), 2.8 Tambah tabungan (`Deposit`)
-3. **Tambah cepat:** 3.1 Tambah cepat (`Quick`), 3.2 Catat transaksi (`TxForm`), 3.3 Tulis jurnal (`EntryForm`), 3.4 Catatan suara (`Voice`), 3.5 Pengingat dari jurnal (`Reminder`)
+3. **Tambah cepat:** 3.1 Tambah cepat (`Quick`), 3.2 Catat transaksi (`TxForm`), 3.3 Catatan jurnal, baca + tulis + transaksi (`EntryForm`), 3.4 Catatan suara (`Voice`), 3.5 Pengingat dari jurnal (`Reminder`)
 4. **Jurnal:** 4.1 Jurnal (`Journal`)
 5. **Keuangan:** 5.1 Keuangan + kalender (`MoneyCalendar`), 5.2 Kelola dompet (`Wallets`), 5.3 Ubah dompet (`WalletForm`)
 6. **Laporan:** 6.1 Laporan (`Report`), 6.2 Budget per kategori (`Budget`)
@@ -97,7 +97,7 @@ Aturan halaman `alur`:
 
 - **Desktop:** D.1 Aplikasi penuh (`Desktop`, 1280×820), D.2 Jendela mini vs widget (`DesktopMini`) — belum diimplementasi
 - **Sistem desain:** S.1 Maskot, S.2 Design system, S.3 Token UI Fase 1, S.4 Usulan token Fase 2
-- **Arsip:** A.1 Rencana besok (`DailyPlan`, prototipe awal), A.2 Keuangan lama (`Money`), A.3 Judul otomatis (`JournalAutoTitle`), A.4 Kirim masukan dalam app (`FeedbackInApp`, ditunda)
+- **Arsip:** A.1 Rencana besok (`DailyPlan`, prototipe awal), A.2 Keuangan lama (`Money`), A.3 Judul otomatis (`JournalAutoTitle`), A.4 Kirim masukan dalam app (`FeedbackInApp`, ditunda), A.5 Jurnal gaya buku notes (`JournalBook`, tidak dipilih), A.6 Tulis jurnal lama (`EntryFormOld`)
 
 Semua layar 1–8 sudah diimplementasi di `app/`.
 

@@ -1,16 +1,21 @@
 # Changelog
 
-## Belum dirilis
+## 0.19.0 — 2026-11-25
 
 **Baru**
+- **Halaman catatan jurnal** kini seperti aplikasi notes: judul dan cerita tanpa kotak, alat (Uang, Foto, Rekam, Dikte, Mood, Tag) di bilah atas keyboard. Entri lama dibuka untuk dibaca dulu; ketuk teksnya untuk mengedit.
+- **Transaksi dari jurnal**: tulis "kopi 28rb pakai GoPay" di cerita, Nyaw menawarkannya jadi transaksi lengkap dengan tebakan kategori dan dompet. Dicatat hanya kalau kamu setujui, saat catatan disimpan. Nominal yang sudah ada di hari itu tidak ditawarkan lagi. Bisa juga ditambah manual lewat **Uang**.
+- **Konfirmasi sebelum keluar** kalau ada tulisan yang belum disimpan.
 - **File Excel** kini bisa dipakai menganalisis langsung: lembar **Ringkasan** dengan pilihan bulan, grafik pengeluaran per kategori dan per bulan, filter di Transaksi dan Jurnal, serta saldo dan budget yang dihitung dengan rumus. Budget yang lewat batas ditandai merah.
 
 **Perbaikan**
+- **Foto jurnal** tidak ikut terhapus kalau gagal dibaca saat catatan disimpan.
 - **File Excel dengan banyak data** kini bisa dibuka di Microsoft Excel. Sebelumnya gagal dibuka karena data pemulihannya terlalu panjang untuk satu sel.
 - **Cadangan Google Drive** selalu menyimpan data pemulihan lengkap. Pilihan periode hanya membatasi isi tabel yang tampil.
 - **Cadangan Google Drive** kini masuk ke folder **Nyawtat** yang dibuat otomatis, tidak lagi bercampur dengan file lain di My Drive. Folder boleh kamu ganti nama atau pindahkan. Cadangan lama tetap di tempatnya dan masih bisa dipulihkan.
 
 **Di balik layar**
+- Transaksi di cerita dikenali di perangkat, tanpa internet. Tidak ada izin, dependensi, atau perubahan database baru untuk fitur ini.
 - File Excel buatan versi ini tidak bisa dipulihkan oleh app versi lama. File lama tetap bisa dipulihkan.
 - `archive` dan `xml` (sudah terpasang lewat paket lain) jadi dependensi langsung. Tidak ada izin atau perubahan database baru.
 

@@ -1,31 +1,65 @@
+import 'dart:math' as math;
+
+import 'package:flutter/foundation.dart' show listEquals;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 
 import '../../../core/format.dart';
 import '../../../core/theme.dart';
 import '../../../core/database/app_database.dart';
 import '../data/journal_repository.dart';
 import '../../money/domain/money_snapshot.dart';
+import '../../money/domain/tx_suggestions.dart';
+import '../../money/presentation/money_widgets.dart';
+import '../../money/presentation/tx_note_widgets.dart';
 import '../../lock/providers/lock_controller.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
-import '../../money/presentation/money_widgets.dart';
 import '../../../core/widgets/image_viewer.dart';
 import '../../../core/widgets/mascot.dart';
 import 'mood.dart';
-import '../../money/presentation/tx_form_screen.dart';
+import 'note/note_parts.dart';
+import 'note/note_toolbar.dart';
 import '../../reminders/presentation/reminder_format.dart';
 import '../../reminders/presentation/reminder_suggestions.dart';
 import 'voice/voice_player_card.dart';
 import 'voice/voice_record_sheet.dart';
 import '../../../core/tokens.dart';
 
-/// Form tulis / edit entri jurnal. [existing] null = entri baru;
+/// Isi catatan, untuk mengenali perubahan yang belum disimpan.
+typedef _Draft = ({
+  String date,
+  String? time,
+  int? mood,
+  String title,
+  String body,
+  List<String> tags,
+  String? audioPath,
+  int? audioDurationMs,
+  String? audioTranscript,
+  List<String> images,
+});
+
+bool _sameDraft(_Draft a, _Draft b) =>
+    a.date == b.date &&
+    a.time == b.time &&
+    a.mood == b.mood &&
+    a.title.trim() == b.title.trim() &&
+    a.body.trim() == b.body.trim() &&
+    a.audioPath == b.audioPath &&
+    listEquals(a.tags, b.tags) &&
+    listEquals(a.images, b.images);
+
+/// Halaman catatan jurnal: baca dan tulis di layar yang sama. [existing] null
+/// = catatan baru (langsung tulis); entri lama dibuka untuk dibaca dulu.
 /// [initialDate] (YYYY-MM-DD) = tanggal awal entri baru, default hari ini.
 class EntryFormScreen extends ConsumerStatefulWidget {
   const EntryFormScreen({
     super.key,
     this.existing,
+    this.startEditing = false,
     this.initialDate,
     this.initialTitle,
     this.initialAudioPath,
@@ -34,6 +68,10 @@ class EntryFormScreen extends ConsumerStatefulWidget {
   });
 
   final JournalEntry? existing;
+
+  /// Entri lama langsung dibuka untuk diedit dan ditutup setelah disimpan
+  /// (desktop sudah punya panel baca sendiri).
+  final bool startEditing;
   final String? initialDate;
 
   /// Judul awal entri baru (mis. dari pertanyaan permainan Kocok ide).
@@ -45,6 +83,7 @@ class EntryFormScreen extends ConsumerStatefulWidget {
   static Future<void> open(
     BuildContext context, {
     JournalEntry? existing,
+    bool startEditing = false,
     String? initialDate,
     String? initialTitle,
     String? initialAudioPath,
@@ -55,6 +94,7 @@ class EntryFormScreen extends ConsumerStatefulWidget {
       MaterialPageRoute(
         builder: (_) => EntryFormScreen(
           existing: existing,
+          startEditing: startEditing,
           initialDate: initialDate,
           initialTitle: initialTitle,
           initialAudioPath: initialAudioPath,
@@ -70,59 +110,85 @@ class EntryFormScreen extends ConsumerStatefulWidget {
 }
 
 class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
+  static const _maxImages = 10;
+
   final _title = TextEditingController();
   final _body = TextEditingController();
-  final _tags = TextEditingController();
+  final _tagInput = TextEditingController();
+  final _titleFocus = FocusNode();
+  final _bodyFocus = FocusNode();
+  final _scroll = ScrollController();
+
   late String _date;
 
   /// "HH:mm" atau null.
   String? _time;
   int? _mood;
+  List<String> _tags = [];
   String? _audioPath;
   int? _audioDurationMs;
   String? _audioTranscript;
   List<String> _imagePaths = [];
+
+  /// Selesai setelah foto lama dibaca; sebelum itu daftar fotonya belum
+  /// lengkap dan tidak boleh dipakai untuk menyimpan.
+  Future<bool> _imagesLoading = Future.value(true);
+
+  /// Id entri yang tersimpan; null = catatan baru.
+  String? _entryId;
+
+  /// Isi terakhir yang tersimpan.
+  late _Draft _saved;
+  late bool _editing;
+  NotePanel? _panel;
+  bool _txOpen = false;
   bool _showEmptyError = false;
   bool _saving = false;
 
-  /// Pilihan pengingat dari cerita selama form terbuka.
-  final _reminders = ReminderSuggestionController();
+  /// Pilihan pengingat dan transaksi dari cerita selama mode tulis.
+  var _reminders = ReminderSuggestionController();
+  var _txs = TxSuggestionController();
 
-  /// Pengingat yang sudah dibuat dari entri ini (saat mengedit).
+  /// Pengingat yang sudah dibuat dari entri ini.
   List<Reminder> _existingReminders = const [];
-
-  bool get _isEdit => widget.existing != null;
 
   @override
   void initState() {
     super.initState();
     final e = widget.existing;
+    _entryId = e?.id;
+    _editing = e == null || widget.startEditing;
     _date = e?.entryDate ?? widget.initialDate ?? toLocalDate(DateTime.now());
-    _time = e?.entryTime;
-    _mood = e?.mood;
-    _audioPath = e?.audioPath ?? widget.initialAudioPath;
-    _audioDurationMs = e?.audioDurationMs ?? widget.initialAudioDurationMs;
-    _audioTranscript = e?.audioTranscript ?? widget.initialAudioTranscript;
-    if (e == null) _title.text = widget.initialTitle ?? '';
     if (e != null) {
+      _time = e.entryTime;
+      _mood = e.mood;
       _title.text = e.title ?? '';
       _body.text = e.body ?? '';
-      _tags.text = entryTags(e).join(', ');
-      ref.read(reminderRepositoryProvider).forEntry(e.id).then((rows) {
-        if (mounted) setState(() => _existingReminders = rows);
+      _tags = entryTags(e);
+      _audioPath = e.audioPath;
+      _audioDurationMs = e.audioDurationMs;
+      _audioTranscript = e.audioTranscript;
+      _loadReminders(e.id);
+      _imagesLoading = _loadImages(e.id);
+    } else {
+      _title.text = widget.initialTitle ?? '';
+    }
+    _saved = _draft();
+    if (e == null) {
+      // Rekaman dari Tambah cepat belum tersimpan sampai user menekan Simpan.
+      _audioPath = widget.initialAudioPath;
+      _audioDurationMs = widget.initialAudioDurationMs;
+      _audioTranscript = widget.initialAudioTranscript;
+      _body.text = widget.initialAudioTranscript ?? '';
+    }
+    // Saran dan tanda "belum disimpan" dibaca dari isi catatan.
+    for (final c in [_title, _body]) {
+      c.addListener(_onText);
+    }
+    for (final f in [_titleFocus, _bodyFocus]) {
+      f.addListener(() {
+        if (f.hasFocus && _panel != null) setState(() => _panel = null);
       });
-      ref.read(attachmentRepositoryProvider).getAttachmentsForEntry(e.id).then((atts) {
-        if (mounted) {
-          setState(() {
-            _imagePaths = atts
-                .map((a) => a.localPath)
-                .whereType<String>()
-                .toList();
-          });
-        }
-      });
-    } else if (_audioTranscript != null && _audioTranscript!.isNotEmpty) {
-      _body.text = _audioTranscript!;
     }
   }
 
@@ -130,9 +196,174 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
   void dispose() {
     _title.dispose();
     _body.dispose();
-    _tags.dispose();
+    _tagInput.dispose();
+    _titleFocus.dispose();
+    _bodyFocus.dispose();
+    _scroll.dispose();
     super.dispose();
   }
+
+  void _onText() => setState(() => _showEmptyError = false);
+
+  /// true kalau foto lama berhasil dibaca (atau memang belum ada).
+  Future<bool> _loadImages(String entryId) async {
+    try {
+      final atts = await ref
+          .read(attachmentRepositoryProvider)
+          .getAttachmentsForEntry(entryId);
+      if (!mounted) return false;
+      final paths = atts.map((a) => a.localPath).whereType<String>().toList();
+      setState(() {
+        _imagePaths = [...paths, ..._imagePaths];
+        _saved = _withImages(_saved, paths);
+      });
+      return true;
+    } catch (e) {
+      debugPrint('Foto jurnal gagal dibaca: ${e.runtimeType}');
+      return false;
+    }
+  }
+
+  Future<void> _loadReminders(String entryId) async {
+    final rows = await ref.read(reminderRepositoryProvider).forEntry(entryId);
+    if (mounted) setState(() => _existingReminders = rows);
+  }
+
+  _Draft _draft() => (
+    date: _date,
+    time: _time,
+    mood: _mood,
+    title: _title.text,
+    body: _body.text,
+    tags: [..._tags],
+    audioPath: _audioPath,
+    audioDurationMs: _audioDurationMs,
+    audioTranscript: _audioTranscript,
+    images: [..._imagePaths],
+  );
+
+  static _Draft _withImages(_Draft d, List<String> images) => (
+    date: d.date,
+    time: d.time,
+    mood: d.mood,
+    title: d.title,
+    body: d.body,
+    tags: d.tags,
+    audioPath: d.audioPath,
+    audioDurationMs: d.audioDurationMs,
+    audioTranscript: d.audioTranscript,
+    images: [...images],
+  );
+
+  bool get _dirty =>
+      _editing &&
+      (!_sameDraft(_draft(), _saved) ||
+          _txs.hasAccepted ||
+          parseTags(_tagInput.text).isNotEmpty ||
+          _reminders
+              .acceptedDrafts(
+                _body.text,
+                DateTime.now(),
+                existing: _existingReminders,
+              )
+              .isNotEmpty);
+
+  bool get _empty =>
+      _title.text.trim().isEmpty &&
+      _body.text.trim().isEmpty &&
+      (_audioPath?.trim().isEmpty ?? true) &&
+      _imagePaths.isEmpty;
+
+  // ---------------------------------------------------------------- mode
+
+  void _startEdit() {
+    setState(() {
+      _editing = true;
+      _panel = null;
+    });
+    _bodyFocus.requestFocus();
+  }
+
+  void _toRead() {
+    _unfocus();
+    setState(() {
+      _editing = false;
+      _panel = null;
+      _showEmptyError = false;
+      _tagInput.clear();
+      _reminders = ReminderSuggestionController();
+      _txs = TxSuggestionController();
+    });
+    if (_scroll.hasClients) _scroll.jumpTo(0);
+  }
+
+  void _restore(_Draft d) {
+    _date = d.date;
+    _time = d.time;
+    _mood = d.mood;
+    _title.text = d.title;
+    _body.text = d.body;
+    _tags = [...d.tags];
+    _audioPath = d.audioPath;
+    _audioDurationMs = d.audioDurationMs;
+    _audioTranscript = d.audioTranscript;
+    _imagePaths = [...d.images];
+  }
+
+  /// Kembali dari mode tulis: tutup panel, konfirmasi kalau ada yang belum
+  /// disimpan, lalu ke mode baca atau keluar.
+  Future<void> _onBack() async {
+    if (_panel != null) {
+      setState(() => _panel = null);
+      return;
+    }
+    final navigator = Navigator.of(context);
+    if (_dirty) {
+      final answer = await NoteLeaveSheet.show(context);
+      if (!mounted) return;
+      switch (answer) {
+        case NoteLeave.save:
+          await _save();
+          return;
+        case NoteLeave.discard:
+          _restore(_saved);
+        case NoteLeave.stay || null:
+          return;
+      }
+    }
+    if (_entryId != null && !widget.startEditing) {
+      _toRead();
+    } else {
+      navigator.pop();
+    }
+  }
+
+  /// Lepas fokus dari kolomnya sendiri; lewat FocusScope, fokus (dan
+  /// keyboard) kembali ke kolom itu setelah sheet ditutup.
+  void _unfocus() => FocusManager.instance.primaryFocus?.unfocus();
+
+  void _togglePanel(NotePanel p) {
+    if (_panel == p) {
+      setState(() => _panel = null);
+      _bodyFocus.requestFocus();
+      return;
+    }
+    _unfocus();
+    setState(() => _panel = p);
+  }
+
+  void _toggleKeyboard(bool open) {
+    if (open) {
+      _unfocus();
+      return;
+    }
+    setState(() => _panel = null);
+    _bodyFocus.requestFocus();
+    // Fokus bisa sudah di sini walau keyboard-nya ditutup.
+    SystemChannels.textInput.invokeMethod<void>('TextInput.show');
+  }
+
+  // --------------------------------------------------------------- isian
 
   Future<void> _pickDate() async {
     final picked = await showDatePicker(
@@ -165,7 +396,16 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
   static String _formatTime(TimeOfDay t) =>
       '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
 
+  void _addTags() {
+    final added = parseTags(_tagInput.text);
+    setState(() {
+      _tags = {..._tags, ...added}.toList();
+      _tagInput.clear();
+    });
+  }
+
   Future<void> _recordVoice() async {
+    _unfocus();
     final result = await VoiceRecordSheet.show(
       context,
       initialMode: VoiceRecordMode.voiceOnly,
@@ -178,15 +418,14 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
       }
       if (result.transcript.isNotEmpty) {
         _audioTranscript = result.transcript;
-        if (_body.text.trim().isEmpty) {
-          _body.text = result.transcript;
-        }
+        if (_body.text.trim().isEmpty) _body.text = result.transcript;
       }
-      if (_showEmptyError) _showEmptyError = false;
+      _showEmptyError = false;
     });
   }
 
   Future<void> _dictateStory() async {
+    _unfocus();
     final result = await VoiceRecordSheet.show(
       context,
       initialMode: VoiceRecordMode.textOnly,
@@ -198,17 +437,25 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
         _audioDurationMs = result.durationMs;
       }
       if (result.transcript.isNotEmpty) {
-        if (_body.text.trim().isEmpty) {
-          _body.text = result.transcript;
-        } else {
-          _body.text += ' ${result.transcript}';
-        }
+        _body.text = _body.text.trim().isEmpty
+            ? result.transcript
+            : '${_body.text} ${result.transcript}';
       }
-      if (_showEmptyError) _showEmptyError = false;
+      _showEmptyError = false;
     });
   }
 
   Future<void> _pickImage() async {
+    if (_imagePaths.length >= _maxImages) {
+      showMascotSnackBar(
+        context,
+        MascotPose.sedih,
+        context.l10n.notePhotoMax,
+        aboveDock: false,
+      );
+      return;
+    }
+    _unfocus();
     final source = await showImageSourcePicker(context);
     if (source == null || !mounted) return;
     final path = await ref
@@ -216,48 +463,97 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
         .pickAndStoreImage(source: source);
     if (path != null && mounted) {
       setState(() {
-        _imagePaths.add(path);
-        if (_showEmptyError) _showEmptyError = false;
+        _imagePaths = [..._imagePaths, path];
+        _showEmptyError = false;
       });
     }
   }
 
-  void _removeImage(int index) {
-    setState(() {
-      _imagePaths.removeAt(index);
-    });
+  // -------------------------------------------------------------- simpan
+
+  /// Transaksi dari jurnal memakai tanggal catatan; jamnya jam kejadian,
+  /// atau sekarang (hari ini), atau tengah hari (hari lalu).
+  DateTime _occurredAt() {
+    final day = parseLocalDate(_date);
+    final now = DateTime.now();
+    if (_time case final t?) {
+      return DateTime(
+        day.year,
+        day.month,
+        day.day,
+        int.parse(t.substring(0, 2)),
+        int.parse(t.substring(3, 5)),
+      );
+    }
+    return _date == toLocalDate(now)
+        ? now
+        : DateTime(day.year, day.month, day.day, 12);
   }
 
   Future<void> _save() async {
-    final hasAudio = _audioPath != null && _audioPath!.trim().isNotEmpty;
-    final hasImages = _imagePaths.isNotEmpty;
-    if (_title.text.trim().isEmpty &&
-        _body.text.trim().isEmpty &&
-        !hasAudio &&
-        !hasImages) {
+    _addTags();
+    if (_empty) {
       setState(() => _showEmptyError = true);
+      if (_scroll.hasClients) _scroll.jumpTo(0);
       return;
     }
     setState(() => _saving = true);
+    final isNew = _entryId == null;
     final entryId = await ref
         .read(journalRepositoryProvider)
         .saveEntry(
-          id: widget.existing?.id,
+          id: _entryId,
           entryDate: _date,
           entryTime: _time,
           mood: _mood,
           title: _title.text,
           body: _body.text,
-          tags: parseTags(_tags.text),
+          tags: _tags,
           audioPath: _audioPath,
           audioDurationMs: _audioDurationMs,
           audioTranscript: _audioTranscript,
         );
-    await ref
-        .read(attachmentRepositoryProvider)
-        .syncEntryAttachments(entryId, _imagePaths);
+    // Foto yang gagal dibaca jangan sampai dianggap dihapus.
+    if (await _imagesLoading) {
+      await ref
+          .read(attachmentRepositoryProvider)
+          .syncEntryAttachments(entryId, _imagePaths);
+    }
 
     if (!mounted) return;
+    final l = context.l10n;
+    final reminderCount = await _saveReminders(entryId);
+    if (!mounted) return;
+    final (txCount, overBudget) = await _saveTransactions();
+    if (!mounted) return;
+
+    showMascotSnackBar(
+      context,
+      overBudget == null ? MascotPose.senang : MascotPose.sedih,
+      [
+        isNew ? l.toastEntrySaved : l.toastEntryUpdated,
+        if (txCount > 0) l.noteTxSaved(txCount),
+        if (reminderCount > 0) l.remCreated(reminderCount),
+        if (overBudget != null)
+          l.toastBudgetOver(categoryLabel(l, overBudget)),
+      ].join(' · '),
+      aboveDock: widget.startEditing,
+    );
+    if (widget.startEditing) {
+      Navigator.of(context).pop();
+      return;
+    }
+    _entryId = entryId;
+    _title.text = _title.text.trim();
+    _body.text = _body.text.trim();
+    _saved = _draft();
+    _saving = false;
+    if (txCount > 0) _txOpen = true;
+    _toRead();
+    await _loadReminders(entryId);
+  }
+
+  Future<int> _saveReminders(String entryId) async {
     final l = context.l10n;
     final drafts = _reminders.acceptedDrafts(
       _body.text,
@@ -293,17 +589,44 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
         private: private,
       );
     }
+    return jobs.length;
+  }
 
-    if (!mounted) return;
-    final saved = widget.existing == null
-        ? l.toastEntrySaved
-        : l.toastEntryUpdated;
-    showMascotSnackBar(
-      context,
-      MascotPose.senang,
-      jobs.isEmpty ? saved : '$saved · ${l.remCreated(jobs.length)}',
-    );
-    Navigator.of(context).pop();
+  /// Catat transaksi yang diterima. Hasil: jumlahnya, dan kategori yang
+  /// budget bulannya jadi terlewati (kalau ada).
+  Future<(int, Category?)> _saveTransactions() async {
+    final snap = ref.read(moneySnapshotProvider).value;
+    if (snap == null) return (0, null);
+    final drafts = _txs.accepted(_body.text, _date, snap);
+    final at = _occurredAt();
+    final repo = ref.read(moneyRepositoryProvider);
+    for (final d in drafts) {
+      await repo.saveTransaction(
+        type: d.type,
+        amount: d.amount,
+        walletId: d.walletId,
+        categoryId: d.categoryId,
+        note: d.note,
+        occurredAt: at,
+      );
+    }
+    final month = toMonthKey(at);
+    final spent = <String, int>{};
+    for (final d in drafts) {
+      if (d.type != 'expense' || d.categoryId == null) continue;
+      spent.update(
+        snap.rootIdOf(d.categoryId!),
+        (n) => n + d.amount,
+        ifAbsent: () => d.amount,
+      );
+    }
+    for (final MapEntry(key: root, value: amount) in spent.entries) {
+      final budget = snap.budgetFor(root, month);
+      if (budget > 0 && snap.spentIn(root, month) + amount > budget) {
+        return (drafts.length, snap.categoryById[root]);
+      }
+    }
+    return (drafts.length, null);
   }
 
   Future<void> _delete() async {
@@ -328,398 +651,414 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
       ),
     );
     if (ok != true) return;
-    await ref.read(journalRepositoryProvider).deleteEntry(widget.existing!.id);
-    await ref.read(reminderServiceProvider).deleteForEntry(widget.existing!.id);
+    await ref.read(journalRepositoryProvider).deleteEntry(_entryId!);
+    await ref.read(reminderServiceProvider).deleteForEntry(_entryId!);
     if (mounted) Navigator.of(context).pop();
   }
 
+  // ------------------------------------------------------------ tampilan
+
   @override
   Widget build(BuildContext context) {
     final l = context.l10n;
-    final t = Theme.of(context).textTheme;
+    final c = context.colors;
     final snap = ref.watch(moneySnapshotProvider).value;
+    final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
+    final items = _editing && snap != null
+        ? _txs.items(_body.text, _date, snap)
+        : const <TxDraft>[];
+    final leavesApp = _entryId == null || widget.startEditing;
 
-    Widget label(String text, {bool optional = false}) => Text.rich(
-      TextSpan(
-        text: text,
-        children: [
-          if (optional)
-            TextSpan(
-              text: ' ${l.optional}',
-              style: const TextStyle(fontWeight: FontWeight.w400),
-            ),
-        ],
-      ),
-      style: t.bodySmall?.copyWith(
-        fontSize: AppFontSize.body,
-        fontWeight: FontWeight.w600,
-        color: context.colors.muted,
-      ),
-    );
-
-    final outlined = OutlinedButton.styleFrom(
-      minimumSize: const Size(0, 44),
-      backgroundColor: context.colors.surface,
-      foregroundColor: context.colors.primary,
-      side: BorderSide(color: context.colors.line),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppRadius.md)),
-      textStyle: buttonTextStyle(
-        context,
-        const TextStyle(fontSize: AppFontSize.body, fontWeight: FontWeight.w600),
-      ),
-    );
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          _isEdit ? l.editEntryTitle : l.newEntryTitle,
-          style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+    return PopScope(
+      canPop: !_editing || (_panel == null && !_dirty && leavesApp),
+      onPopInvokedWithResult: (didPop, _) {
+        if (!didPop) _onBack();
+      },
+      child: Scaffold(
+        backgroundColor: c.surface,
+        appBar: AppBar(
+          backgroundColor: c.surface,
+          scrolledUnderElevation: 0,
+          actions: [
+            if (_entryId != null)
+              IconButton(
+                tooltip: l.delete,
+                onPressed: _delete,
+                icon: const Icon(Icons.delete_outline),
+              ),
+            if (_editing)
+              Padding(
+                padding: const EdgeInsets.only(right: AppSpace.md),
+                child: FilledButton(
+                  onPressed: _saving ? null : _save,
+                  child: Text(l.save),
+                ),
+              )
+            else
+              IconButton(
+                tooltip: l.noteEditAction,
+                onPressed: _startEdit,
+                icon: const Icon(Icons.edit_outlined),
+              ),
+          ],
         ),
-        actions: [
-          if (_isEdit)
-            IconButton(
-              tooltip: l.delete,
-              onPressed: _delete,
-              icon: const Icon(Icons.delete_outline),
-            ),
-          Padding(
-            padding: const EdgeInsets.only(right: AppSpace.md),
-            child: FilledButton(
-              onPressed: _saving ? null : _save,
-              style: FilledButton.styleFrom(minimumSize: const Size(0, 40)),
-              child: Text(l.save),
-            ),
-          ),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.fromLTRB(AppSpace.xl, AppSpace.sm, AppSpace.xl, AppSpace.xxxl),
-        children: [
-          // Tanggal entri; bisa diganti untuk mencatat hari yang lalu.
-          Align(
-            alignment: Alignment.centerLeft,
-            child: TextButton.icon(
-              onPressed: _pickDate,
-              style: TextButton.styleFrom(
-                foregroundColor: context.colors.muted,
-                padding: EdgeInsets.zero,
-                minimumSize: const Size(0, 36),
-              ),
-              icon: const Icon(Icons.calendar_today_outlined, size: 16),
-              label: Text(dayLabel(context, _date)),
-            ),
-          ),
-          const SizedBox(height: AppSpace.sm),
-          label(l.entryTime, optional: true),
-          const SizedBox(height: AppSpace.sm),
-          Wrap(
-            spacing: AppSpace.sm,
-            runSpacing: AppSpace.sm,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              OutlinedButton.icon(
-                onPressed: _pickTime,
-                style: outlined.copyWith(
-                  foregroundColor: WidgetStatePropertyAll(
-                    _time == null ? context.colors.muted : context.colors.ink,
+        body: SafeArea(
+          top: false,
+          child: LayoutBuilder(
+            builder: (context, box) => Column(
+              children: [
+                Expanded(child: _page(snap, items)),
+                if (_editing) ...[
+                  // Di layar sangat pendek tulisan didahulukan.
+                  if (_panel == null && box.maxHeight > 200)
+                    _suggestionBar(snap, items),
+                  NoteToolbar(
+                    panel: _panel,
+                    mood: _mood,
+                    hasAudio: _audioPath != null,
+                    keyboardOpen: keyboardOpen,
+                    onPanel: _togglePanel,
+                    onPhoto: _pickImage,
+                    onRecord: _recordVoice,
+                    onDictate: _dictateStory,
+                    onKeyboard: () => _toggleKeyboard(keyboardOpen),
                   ),
-                ),
-                icon: const Icon(Icons.schedule, size: 18),
-                label: Text(
-                  _time ?? l.pickTime,
-                  style: TextStyle(
-                    fontSize: _time == null ? 13 : 15,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              OutlinedButton(
-                onPressed: () =>
-                    setState(() => _time = _formatTime(TimeOfDay.now())),
-                style: outlined,
-                child: Text(l.now),
-              ),
-              if (_time != null)
-                TextButton(
-                  onPressed: () => setState(() => _time = null),
-                  style: TextButton.styleFrom(
-                    foregroundColor: context.colors.muted,
-                    textStyle: buttonTextStyle(
-                      context,
-                      const TextStyle(
-                        fontSize: AppFontSize.body,
-                        fontWeight: FontWeight.w600,
-                        decoration: TextDecoration.underline,
+                  if (_panel != null)
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        maxHeight: math.max(0, box.maxHeight * 0.48),
                       ),
+                      child: NotePanelFrame(child: _panelBody(snap, items)),
                     ),
-                  ),
-                  child: Text(l.clearTime),
-                ),
-            ],
-          ),
-          const SizedBox(height: AppSpace.lg),
-          label(l.mood, optional: true),
-          const SizedBox(height: AppSpace.sm),
-          Row(
-            children: [
-              for (var v = 1; v <= 5; v++) ...[
-                if (v > 1) const SizedBox(width: AppSpace.sm),
-                Expanded(
-                  child: _MoodChoice(
-                    mood: v,
-                    selected: _mood == v,
-                    // Tap lagi untuk membatalkan pilihan.
-                    onTap: () => setState(() => _mood = _mood == v ? null : v),
-                  ),
-                ),
+                ],
               ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _suggestionBar(MoneySnapshot? snap, List<TxDraft> items) {
+    final pending = items
+        .where((d) => d.state == TxDraftState.pending)
+        .toList();
+    if (snap != null && pending.isNotEmpty) {
+      return TxSuggestionBar(
+        controller: _txs,
+        pending: pending,
+        snapshot: snap,
+        onChanged: () => setState(() {}),
+        onOpenPanel: () => _togglePanel(NotePanel.money),
+      );
+    }
+    return ReminderBar(
+      controller: _reminders,
+      text: _body.text,
+      existing: _existingReminders,
+      onChanged: () => setState(() {}),
+    );
+  }
+
+  Widget _panelBody(MoneySnapshot? snap, List<TxDraft> items) =>
+      switch (_panel!) {
+        NotePanel.when => WhenPanel(
+          date: _date,
+          time: _time,
+          onPickDate: _pickDate,
+          onPickTime: _pickTime,
+          onNow: () => setState(() => _time = _formatTime(TimeOfDay.now())),
+          onClear: () => setState(() => _time = null),
+        ),
+        NotePanel.mood => MoodPanel(
+          mood: _mood,
+          onChanged: (v) => setState(() => _mood = v),
+        ),
+        NotePanel.tag => TagPanel(
+          controller: _tagInput,
+          tags: _tags,
+          onAdd: _addTags,
+          onRemove: (tag) =>
+              setState(() => _tags = _tags.where((t) => t != tag).toList()),
+        ),
+        NotePanel.money =>
+          snap == null
+              ? const Center(child: CircularProgressIndicator())
+              : TxSuggestionPanel(
+                  controller: _txs,
+                  items: items,
+                  snapshot: snap,
+                  onChanged: () => setState(() {}),
+                ),
+      };
+
+  Widget _page(MoneySnapshot? snap, List<TxDraft> items) {
+    final c = context.colors;
+    final accepted = items
+        .where((d) => d.state == TxDraftState.accepted)
+        .toList();
+    const gap = SizedBox(height: AppSpace.lg);
+
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 760),
+        child: ListView(
+          controller: _scroll,
+          padding: const EdgeInsets.fromLTRB(
+            AppSpace.xl,
+            0,
+            AppSpace.xl,
+            AppSpace.xxxl,
+          ),
+          children: [
+            if (_editing) ..._writeText() else ..._readText(),
+            if (_imagePaths.isNotEmpty) ...[
+              gap,
+              NotePhotos(
+                paths: _imagePaths,
+                onRemove: _editing
+                    ? (i) => setState(
+                        () => _imagePaths = [..._imagePaths]..removeAt(i),
+                      )
+                    : null,
+              ),
             ],
-          ),
-          const SizedBox(height: AppSpace.lg),
-          label(l.entryTitle),
-          const SizedBox(height: AppSpace.sm),
-          TextField(
-            controller: _title,
-            textCapitalization: TextCapitalization.sentences,
-            onChanged: (_) {
-              if (_showEmptyError) setState(() => _showEmptyError = false);
-            },
-            style: t.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-            decoration: InputDecoration(hintText: l.entryTitleHint),
-          ),
-          const SizedBox(height: AppSpace.lg),
-          label('Lampiran Gambar', optional: true),
-          const SizedBox(height: AppSpace.sm),
-          JournalImageGrid(
-            imagePaths: _imagePaths,
-            onAddImage: _pickImage,
-            onRemoveImage: _removeImage,
-          ),
-          const SizedBox(height: AppSpace.lg),
-          Wrap(
-            alignment: WrapAlignment.spaceBetween,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              label(l.story),
+            if (_audioPath != null) ...[gap, _player()],
+            if (_tags.isNotEmpty) ...[
+              gap,
               Wrap(
-                spacing: AppSpace.xs,
+                spacing: AppSpace.md,
+                runSpacing: AppSpace.xs,
                 children: [
-                  TextButton.icon(
-                    onPressed: _dictateStory,
-                    style: TextButton.styleFrom(
-                      foregroundColor: context.colors.primary,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpace.sm, vertical: AppSpace.xs),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    icon: const Icon(Icons.mode_comment_outlined, size: 14),
-                    label: const Text(
-                      'Dikte',
+                  for (final tag in _tags)
+                    Text(
+                      '#$tag',
                       style: TextStyle(
-                        fontSize: AppFontSize.meta,
-                        fontWeight: FontWeight.w600,
+                        fontSize: AppFontSize.body,
+                        fontWeight: FontWeight.w500,
+                        color: c.primary,
                       ),
                     ),
-                  ),
-                  TextButton.icon(
-                    onPressed: _recordVoice,
-                    style: TextButton.styleFrom(
-                      foregroundColor: context.colors.primary,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: AppSpace.sm, vertical: AppSpace.xs),
-                      minimumSize: Size.zero,
-                      tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    icon: Icon(
-                      _audioPath != null
-                          ? Icons.replay_rounded
-                          : Icons.mic_rounded,
-                      size: 15,
-                    ),
-                    label: Text(
-                      _audioPath != null ? l.recordAgain : l.recordVoice,
-                      style: const TextStyle(
-                        fontSize: AppFontSize.meta,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
                 ],
               ),
             ],
-          ),
-          const SizedBox(height: AppSpace.sm),
-          if (_audioPath != null) ...[
-            VoicePlayerCard(
-              audioPath: _audioPath!,
-              durationMs: _audioDurationMs,
-              transcript: _audioTranscript,
-              onDelete: () => setState(() {
-                _audioPath = null;
-                _audioDurationMs = null;
-                _audioTranscript = null;
-              }),
-              onCopyToNotes: (text) {
-                if (_body.text.trim().isEmpty) {
-                  _body.text = text;
-                } else {
-                  _body.text += '\n\n$text';
-                }
-                showMascotSnackBar(
-                  context,
-                  MascotPose.senang,
-                  l.copiedToStory,
-                );
-              },
+            NoteReminders(
+              controller: _reminders,
+              text: _editing ? _body.text : '',
+              existing: _existingReminders,
+              onChanged: () => setState(() {}),
             ),
-            const SizedBox(height: AppSpace.md),
+            if (snap != null) ...[
+              gap,
+              NoteDayTransactions(
+                date: _date,
+                snapshot: snap,
+                open: _txOpen,
+                onToggle: () => setState(() => _txOpen = !_txOpen),
+                accepted: accepted,
+                onEditDraft: (d) async {
+                  await editTxDraft(context, _txs, d);
+                  if (mounted) setState(() {});
+                },
+              ),
+            ],
           ],
-          TextField(
-            controller: _body,
-            minLines: 6,
-            maxLines: null,
-            keyboardType: TextInputType.multiline,
-            textCapitalization: TextCapitalization.sentences,
-            // Selalu rebuild: saran pengingat dibaca dari isi cerita.
-            onChanged: (_) => setState(() => _showEmptyError = false),
-            style: t.bodyLarge?.copyWith(height: 1.55),
-            decoration: InputDecoration(
-              hintText: l.storyHint,
-              errorText: _showEmptyError ? l.entryEmptyError : null,
-            ),
-          ),
-          const SizedBox(height: AppSpace.lg),
-          ReminderSuggestions(
-            controller: _reminders,
-            text: _body.text,
-            existing: _existingReminders,
-          ),
-          const SizedBox(height: AppSpace.lg),
-          label(l.tags, optional: true),
-          const SizedBox(height: AppSpace.sm),
-          TextField(
-            controller: _tags,
-            decoration: InputDecoration(hintText: l.tagsHint),
-          ),
-          const SizedBox(height: AppSpace.lg),
-          if (snap != null) _DayTransactions(date: _date, snapshot: snap),
-        ],
+        ),
       ),
     );
   }
-}
 
-class _MoodChoice extends StatelessWidget {
-  const _MoodChoice({
-    required this.mood,
-    required this.selected,
-    required this.onTap,
-  });
+  Widget _player() {
+    final key = ValueKey(_audioPath);
+    if (!_editing) {
+      return VoicePlayerCard(
+        key: key,
+        audioPath: _audioPath!,
+        durationMs: _audioDurationMs,
+        transcript: _audioTranscript,
+      );
+    }
+    return VoicePlayerCard(
+      key: key,
+      audioPath: _audioPath!,
+      durationMs: _audioDurationMs,
+      transcript: _audioTranscript,
+      onDelete: () => setState(() {
+        _audioPath = null;
+        _audioDurationMs = null;
+        _audioTranscript = null;
+      }),
+      onCopyToNotes: (text) {
+        _body.text = _body.text.trim().isEmpty
+            ? text
+            : '${_body.text}\n\n$text';
+        showMascotSnackBar(
+          context,
+          MascotPose.senang,
+          context.l10n.copiedToStory,
+        );
+      },
+    );
+  }
 
-  final int mood;
-  final bool selected;
-  final VoidCallback onTap;
+  TextStyle get _titleStyle => TextStyle(
+    fontSize: AppFontSize.display,
+    height: 1.3,
+    fontWeight: FontWeight.w700,
+    color: context.colors.ink,
+  );
 
-  @override
-  Widget build(BuildContext context) {
-    final color = selected ? context.colors.primary : context.colors.muted;
-    final text = moodLabel(context.l10n, mood);
-    return Semantics(
-      selected: selected,
-      button: true,
-      label: text,
-      excludeSemantics: true,
-      child: Material(
-        color: selected ? context.colors.primarySoft : context.colors.surface,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          side: BorderSide(
-            color: selected ? context.colors.primary : context.colors.line,
+  TextStyle get _bodyStyle => TextStyle(
+    fontSize: AppFontSize.title,
+    height: 1.7,
+    color: context.colors.ink,
+  );
+
+  List<Widget> _writeText() {
+    final l = context.l10n;
+    final c = context.colors;
+    ButtonStyle meta(bool active) => TextButton.styleFrom(
+      foregroundColor: active ? c.muted : c.primary,
+      padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
+      minimumSize: const Size(0, 44),
+      textStyle: buttonTextStyle(
+        context,
+        const TextStyle(
+          fontSize: AppFontSize.body,
+          fontWeight: FontWeight.w500,
+        ),
+      ),
+    );
+    InputDecoration plain(String hint, TextStyle style) => InputDecoration(
+      hintText: hint,
+      hintStyle: style.copyWith(color: c.muted),
+      filled: false,
+      isDense: true,
+      contentPadding: EdgeInsets.zero,
+      border: InputBorder.none,
+      enabledBorder: InputBorder.none,
+      focusedBorder: InputBorder.none,
+    );
+
+    return [
+      Transform.translate(
+        // Teks tombol sejajar dengan judul di bawahnya.
+        offset: const Offset(-AppSpace.sm, 0),
+        child: Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            TextButton.icon(
+              onPressed: () => _togglePanel(NotePanel.when),
+              style: meta(true),
+              icon: const Icon(Icons.calendar_today_outlined, size: 16),
+              label: Text(
+                DateFormat(
+                  'EEE, d MMM',
+                  context.localeTag,
+                ).format(parseLocalDate(_date)),
+              ),
+            ),
+            TextButton(
+              onPressed: () => _togglePanel(NotePanel.when),
+              style: meta(_time != null),
+              child: Text(_time ?? l.noteAddTime),
+            ),
+            TextButton.icon(
+              onPressed: () => _togglePanel(NotePanel.mood),
+              style: meta(_mood != null),
+              icon: _mood == null
+                  ? const Icon(Icons.add_reaction_outlined, size: 18)
+                  : MoodFace(mood: _mood!, color: c.primary, size: 18),
+              label: Text(_mood == null ? l.mood : moodLabel(l, _mood!)),
+            ),
+          ],
+        ),
+      ),
+      TextField(
+        key: const Key('noteTitle'),
+        controller: _title,
+        focusNode: _titleFocus,
+        maxLines: null,
+        keyboardType: TextInputType.text,
+        textInputAction: TextInputAction.next,
+        inputFormatters: [FilteringTextInputFormatter.deny('\n')],
+        onSubmitted: (_) => _bodyFocus.requestFocus(),
+        textCapitalization: TextCapitalization.sentences,
+        style: _titleStyle,
+        decoration: plain(l.entryTitle, _titleStyle),
+      ),
+      if (_showEmptyError)
+        Padding(
+          padding: const EdgeInsets.only(top: AppSpace.xs),
+          child: Text(
+            l.entryEmptyError,
+            style: TextStyle(fontSize: AppFontSize.body, color: c.expense),
           ),
         ),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(AppRadius.md),
-          child: SizedBox(
-            height: 64,
+      const SizedBox(height: AppSpace.md),
+      TextField(
+        key: const Key('noteBody'),
+        controller: _body,
+        focusNode: _bodyFocus,
+        autofocus: _entryId == null && widget.initialAudioPath == null,
+        minLines: 8,
+        maxLines: null,
+        keyboardType: TextInputType.multiline,
+        textCapitalization: TextCapitalization.sentences,
+        style: _bodyStyle,
+        decoration: plain(l.storyHint, _bodyStyle),
+      ),
+    ];
+  }
+
+  List<Widget> _readText() {
+    final l = context.l10n;
+    final c = context.colors;
+    final meta = TextStyle(fontSize: AppFontSize.body, color: c.muted);
+    final date = DateFormat(
+      'EEEE, d MMMM y',
+      context.localeTag,
+    ).format(parseLocalDate(_date));
+    return [
+      ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 44),
+        child: Wrap(
+          spacing: AppSpace.md,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          children: [
+            Text([date, ?_time].join(' · '), style: meta),
+            if (_mood != null)
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  MoodFace(mood: _mood!, color: c.primary, size: 18),
+                  const SizedBox(width: AppSpace.xs),
+                  Text(moodLabel(l, _mood!), style: meta),
+                ],
+              ),
+          ],
+        ),
+      ),
+      if (!(_title.text.isEmpty && _body.text.isEmpty))
+        Semantics(
+          button: true,
+          onTapHint: l.noteEditAction,
+          child: GestureDetector(
+            behavior: HitTestBehavior.opaque,
+            onTap: _startEdit,
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                MoodFace(mood: mood, color: color, size: 26),
-                const SizedBox(height: AppSpace.xxs),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
-                  child: FitText(
-                    text,
-                    alignment: Alignment.center,
-                    style: TextStyle(
-                      fontSize: AppFontSize.caption,
-                      fontWeight: FontWeight.w600,
-                      color: color,
-                    ),
-                  ),
-                ),
+                if (_title.text.isNotEmpty) ...[
+                  Text(_title.text, style: _titleStyle),
+                  const SizedBox(height: AppSpace.md),
+                ],
+                if (_body.text.isNotEmpty) Text(_body.text, style: _bodyStyle),
               ],
             ),
           ),
         ),
-      ),
-    );
-  }
-}
-
-/// Transaksi di tanggal yang sama, terhubung lewat local_date (tanpa FK).
-class _DayTransactions extends ConsumerWidget {
-  const _DayTransactions({required this.date, required this.snapshot});
-
-  final String date;
-  final MoneySnapshot snapshot;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l = context.l10n;
-    final t = Theme.of(context).textTheme;
-    final hideAmounts = ref.watch(hideAmountsProvider).value ?? false;
-    final txs = snapshot.onDate(date).toList()
-      ..sort((a, b) => b.occurredAt.compareTo(a.occurredAt));
-    final out = MoneySnapshot.sumOf(txs, 'expense');
-
-    return AppCard(
-      padding: const EdgeInsets.fromLTRB(AppSpace.lg, AppSpace.lg, AppSpace.lg, AppSpace.sm),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  l.dayTransactions,
-                  style: t.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-                ),
-              ),
-              if (out > 0)
-                Text(
-                  signedRupiah(-out, hide: hideAmounts),
-                  style: t.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
-                ),
-            ],
-          ),
-          Text(
-            l.linkedByDate,
-            style: t.bodySmall?.copyWith(color: context.colors.muted),
-          ),
-          if (txs.isEmpty) EmptyNote(l.noTransactions),
-          for (var i = 0; i < txs.length; i++)
-            TxRow(
-              tx: txs[i],
-              snapshot: snapshot,
-              leadingTime: true,
-              showDivider: i < txs.length - 1,
-              onTap: () => TxFormScreen.open(context, existing: txs[i]),
-            ),
-        ],
-      ),
-    );
+    ];
   }
 }

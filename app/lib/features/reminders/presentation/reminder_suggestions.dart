@@ -8,6 +8,7 @@ import '../../../core/database/app_database.dart';
 import '../domain/reminder_parser.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
+import '../../../core/widgets/note_bar.dart';
 import 'reminder_format.dart';
 import '../../../core/tokens.dart';
 import '../../../core/widgets/app_sheet.dart';
@@ -40,6 +41,7 @@ class ReminderDraft {
 
 class _Override {
   const _Override({
+    this.dismissed = false,
     this.title,
     this.date,
     this.time,
@@ -47,6 +49,8 @@ class _Override {
     this.lead,
   });
 
+  /// User membatalkan pengingat ini dari lembar ubah.
+  final bool dismissed;
   final String? title;
   final String? date;
   final String? time;
@@ -111,12 +115,67 @@ class ReminderSuggestionController {
   ).where((d) => _accepted.contains(d.key)).toList();
 }
 
-/// Kartu-kartu "Pengingat dari ceritamu" di form jurnal.
-class ReminderSuggestions extends ConsumerStatefulWidget {
-  const ReminderSuggestions({
+/// Izin notifikasi hanya ditanya sekali; pengingat tetap diterima apa pun
+/// jawabannya.
+Future<void> _acceptReminder(
+  BuildContext context,
+  WidgetRef ref,
+  ReminderSuggestionController controller,
+  String key,
+) async {
+  const askedKey = 'reminder_perm_asked';
+  final notifier = ref.read(reminderNotifierProvider);
+  final settings = ref.read(settingsRepositoryProvider);
+  try {
+    if (notifier.supported && !await notifier.isAllowed()) {
+      final asked = await settings.watch(askedKey).first;
+      if (asked == null && context.mounted) {
+        final allow = await _PermissionSheet.show(context);
+        await settings.set(askedKey, '1');
+        if (allow == true) {
+          await notifier.requestPermission();
+          ref.invalidate(reminderPermissionProvider);
+        }
+      }
+    }
+  } catch (e) {
+    // Notifikasi gagal tidak boleh menghalangi pengingat; acara tetap
+    // tampil di Hari Ini.
+    debugPrint('Izin notifikasi gagal: ${e.runtimeType}');
+  } finally {
+    controller._accepted.add(key);
+  }
+}
+
+Future<void> _editReminder(
+  BuildContext context,
+  WidgetRef ref,
+  ReminderSuggestionController controller,
+  ReminderDraft d,
+) async {
+  final result = await _EditSheet.show(
+    context,
+    d,
+    accepted: controller.isAccepted(d.key),
+  );
+  if (result == null) return;
+  if (result.dismissed) {
+    controller._accepted.remove(d.key);
+    controller._dismissed.add(d.key);
+    return;
+  }
+  controller._overrides[d.key] = result;
+  if (context.mounted) await _acceptReminder(context, ref, controller, d.key);
+}
+
+/// Bilah di atas alat catatan: menawarkan satu acara dari cerita. Kosong
+/// kalau tidak ada acara yang menunggu jawaban.
+class ReminderBar extends ConsumerWidget {
+  const ReminderBar({
     super.key,
     required this.controller,
     required this.text,
+    required this.onChanged,
     this.existing = const [],
   });
 
@@ -124,274 +183,211 @@ class ReminderSuggestions extends ConsumerStatefulWidget {
   final String text;
   final List<Reminder> existing;
 
-  @override
-  ConsumerState<ReminderSuggestions> createState() =>
-      _ReminderSuggestionsState();
-}
-
-class _ReminderSuggestionsState extends ConsumerState<ReminderSuggestions> {
-  static const _askedKey = 'reminder_perm_asked';
-
-  ReminderSuggestionController get _c => widget.controller;
-
-  /// Izin notifikasi hanya ditanya sekali; pengingat tetap disimpan apa pun
-  /// jawabannya.
-  Future<void> _accept(String key) async {
-    final notifier = ref.read(reminderNotifierProvider);
-    final settings = ref.read(settingsRepositoryProvider);
-    try {
-      if (notifier.supported && !await notifier.isAllowed()) {
-        final asked = await settings.watch(_askedKey).first;
-        if (asked == null && mounted) {
-          final allow = await _PermissionSheet.show(context);
-          await settings.set(_askedKey, '1');
-          if (allow == true) {
-            await notifier.requestPermission();
-            ref.invalidate(reminderPermissionProvider);
-          }
-        }
-      }
-    } catch (e) {
-      // Notifikasi gagal tidak boleh menghalangi pengingat; acara tetap
-      // tampil di Hari Ini.
-      debugPrint('Izin notifikasi gagal: ${e.runtimeType}');
-    } finally {
-      if (mounted) setState(() => _c._accepted.add(key));
-    }
-  }
-
-  Future<void> _edit(ReminderDraft d) async {
-    final result = await _EditSheet.show(context, d);
-    if (result == null || !mounted) return;
-    _c._overrides[d.key] = result;
-    await _accept(d.key);
-  }
+  /// Dipanggil setelah user menjawab, supaya form ikut dibangun ulang.
+  final VoidCallback onChanged;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final l = context.l10n;
     final c = context.colors;
-    final t = Theme.of(context).textTheme;
-    final drafts = _c.drafts(
-      widget.text,
-      DateTime.now(),
-      existing: widget.existing,
-    );
+    final waiting = controller
+        .drafts(text, DateTime.now(), existing: existing)
+        .where((d) => !controller.isAccepted(d.key))
+        .toList();
+    if (waiting.isEmpty) return const SizedBox.shrink();
+    final d = waiting.first;
+    final ask = d.ambiguous && d.baseTime != null;
+    final when = [
+      reminderRel(context, d.date),
+      if (ask)
+        l.remAmbiguous
+      else
+        d.time == null ? l.remAllDay : reminderTime(context, d.time!),
+      if (waiting.length > 1) l.moreCount(waiting.length - 1),
+    ].join(' · ');
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Text(
-          l.remSection,
-          style: t.labelSmall?.copyWith(
-            color: c.muted,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.6,
-          ),
-        ),
-        const SizedBox(height: AppSpace.sm),
-        if (drafts.isEmpty)
-          AppCard(
-            padding: const EdgeInsets.all(AppSpace.lg),
-            child: Row(
-              children: [
-                const ReminderIconDot(Icons.notifications_none_rounded),
-                const SizedBox(width: AppSpace.md),
-                Expanded(
-                  child: Text(
-                    l.remNone,
-                    style: t.bodySmall?.copyWith(color: c.muted, height: 1.5),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        for (final d in drafts) ...[
-          _card(context, d),
-          const SizedBox(height: AppSpace.md),
-        ],
-        const SizedBox(height: AppSpace.sm),
-        Row(
-          children: [
-            Icon(Icons.lock_outline_rounded, size: 15, color: c.muted),
-            const SizedBox(width: AppSpace.sm),
-            Expanded(
-              child: Text(
-                l.remPrivacy,
-                style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _card(BuildContext context, ReminderDraft d) {
-    final l = context.l10n;
-    final c = context.colors;
-    final accepted = _c.isAccepted(d.key);
-    final title = d.title.isEmpty ? l.remDefaultTitle : d.title;
-
-    return AppCard(
-      key: ValueKey('rem-${d.key}'),
-      padding: const EdgeInsets.all(AppSpace.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const ReminderIconDot(Icons.event_outlined),
-              const SizedBox(width: AppSpace.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      accepted ? l.remWillRemind : l.remDetected,
-                      style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
-                    ),
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: AppFontSize.title,
-                        fontWeight: FontWeight.w600,
-                        height: 1.35,
-                      ),
-                    ),
-                    Text(
-                      reminderWhen(context, d.date, d.time),
-                      style: TextStyle(fontSize: AppFontSize.body, color: c.ink),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: AppSpace.sm),
-              RelPill(reminderRel(context, d.date)),
-            ],
-          ),
-          if (d.ambiguous && d.baseTime != null) ...[
-            const SizedBox(height: AppSpace.md),
-            Text(
-              l.remAmbiguous,
-              style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
-            ),
-            const SizedBox(height: AppSpace.sm),
-            _amPm(context, d),
-          ],
-          if (d.saidWeekday != null) ...[
-            const SizedBox(height: AppSpace.md),
-            _mismatchNote(context, d),
-          ],
-          const SizedBox(height: AppSpace.md),
-          Wrap(
-            spacing: 4,
-            runSpacing: 4,
-            crossAxisAlignment: WrapCrossAlignment.center,
-            children: [
-              if (accepted)
-                Padding(
-                  padding: const EdgeInsets.only(right: AppSpace.sm),
-                  child: Text(
-                    l.remActive(reminderLeadName(l, d.lead, d.time)),
-                    style: TextStyle(
-                      fontSize: AppFontSize.meta,
-                      fontWeight: FontWeight.w600,
-                      color: c.income,
-                    ),
-                  ),
-                )
-              else
-                FilledButton(
-                  onPressed: () => _accept(d.key),
-                  style: FilledButton.styleFrom(
-                    minimumSize: const Size(0, 38),
-                  ),
-                  child: Text(l.remAccept),
-                ),
-              TextButton(onPressed: () => _edit(d), child: Text(l.remEdit)),
-              if (accepted)
-                TextButton(
-                  onPressed: () => setState(() => _c._accepted.remove(d.key)),
-                  child: Text(l.cancel),
-                )
-              else
-                TextButton(
-                  onPressed: () => setState(() => _c._dismissed.add(d.key)),
-                  child: Text(l.remDismiss),
-                ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _amPm(BuildContext context, ReminderDraft d) {
-    final h = int.parse(d.baseTime!.substring(0, 2)) % 12;
-    final mm = d.baseTime!.substring(3);
-    String two(int n) => n.toString().padLeft(2, '0');
-    final am = '${two(h)}:$mm';
-    final pm = '${two(h + 12)}:$mm';
-    void pick(String time) => setState(() {
-      final o = _c._overrides[d.key] ?? const _Override();
-      _c._overrides[d.key] = _Override(
-        title: o.title,
-        date: o.date,
-        time: time,
-        timeSet: true,
-        lead: o.lead,
-      );
-    });
-    return Row(
-      children: [
-        for (final time in [am, pm]) ...[
-          if (time == pm) const SizedBox(width: AppSpace.sm),
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => pick(time),
+    return NoteBar(
+      background: c.warnSoft,
+      foreground: c.onWarnSoft,
+      title: d.title.isEmpty ? l.remDefaultTitle : d.title,
+      subtitle: when,
+      note: d.saidWeekday == null ? null : _mismatch(context, d),
+      onTap: () async {
+        await _editReminder(context, ref, controller, d);
+        onChanged();
+      },
+      dismissLabel: l.remDismiss,
+      onDismiss: () {
+        controller._dismissed.add(d.key);
+        onChanged();
+      },
+      actions: [
+        if (ask)
+          for (final time in _amPm(d.baseTime!))
+            FilledButton(
+              onPressed: () {
+                final o = controller._overrides[d.key] ?? const _Override();
+                controller._overrides[d.key] = _Override(
+                  title: o.title,
+                  date: o.date,
+                  time: time,
+                  timeSet: true,
+                  lead: o.lead,
+                );
+                onChanged();
+              },
               child: Text(reminderTime(context, time)),
-            ),
+            )
+        else
+          FilledButton(
+            onPressed: () async {
+              await _acceptReminder(context, ref, controller, d.key);
+              onChanged();
+            },
+            child: Text(l.remAccept),
           ),
-        ],
       ],
     );
   }
 
-  Widget _mismatchNote(BuildContext context, ReminderDraft d) {
-    final c = context.colors;
+  static List<String> _amPm(String baseTime) {
+    final h = int.parse(baseTime.substring(0, 2)) % 12;
+    final mm = baseTime.substring(3);
+    String two(int n) => n.toString().padLeft(2, '0');
+    return ['${two(h)}:$mm', '${two(h + 12)}:$mm'];
+  }
+
+  static String _mismatch(BuildContext context, ReminderDraft d) {
     final tag = context.localeTag;
     final date = parseLocalDate(d.date);
     // 5 Jan 2026 = Senin; dipakai hanya untuk nama hari.
     String dayName(int weekday) =>
         DateFormat.EEEE(tag).format(DateTime(2026, 1, 4 + weekday));
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
-      decoration: BoxDecoration(
-        color: c.warnSoft,
-        borderRadius: BorderRadius.circular(AppRadius.md),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(Icons.info_outline_rounded, size: 16, color: c.onWarnSoft),
-          const SizedBox(width: AppSpace.sm),
-          Expanded(
-            child: Text(
-              context.l10n.remMismatch(
-                DateFormat('d MMM y', tag).format(date),
-                dayName(date.weekday),
-                dayName(d.saidWeekday!),
-              ),
-              style: TextStyle(
-                fontSize: AppFontSize.meta,
-                height: 1.45,
-                color: c.onWarnSoft,
-              ),
+    return context.l10n.remMismatch(
+      DateFormat('d MMM y', tag).format(date),
+      dayName(date.weekday),
+      dayName(d.saidWeekday!),
+    );
+  }
+}
+
+/// Pengingat dari catatan ini: yang baru diterima (bisa diubah) dan yang
+/// sudah tersimpan.
+class NoteReminders extends ConsumerWidget {
+  const NoteReminders({
+    super.key,
+    required this.controller,
+    required this.text,
+    required this.onChanged,
+    this.existing = const [],
+  });
+
+  final ReminderSuggestionController controller;
+  final String text;
+  final List<Reminder> existing;
+  final VoidCallback onChanged;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l = context.l10n;
+    final accepted = controller.acceptedDrafts(
+      text,
+      DateTime.now(),
+      existing: existing,
+    );
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final d in accepted)
+          _NoteReminderRow(
+            title: d.title.isEmpty ? l.remDefaultTitle : d.title,
+            when: reminderWhen(context, d.date, d.time),
+            status: l.remActive(reminderLeadName(l, d.lead, d.time)),
+            onTap: () async {
+              await _editReminder(context, ref, controller, d);
+              onChanged();
+            },
+          ),
+        for (final r in existing)
+          _NoteReminderRow(
+            title: r.title,
+            when: reminderWhen(context, r.eventDate, r.eventTime),
+            status: l.remActive(
+              reminderLeadName(l, ReminderLead.fromCode(r.lead), r.eventTime),
             ),
           ),
-        ],
+      ],
+    );
+  }
+}
+
+class _NoteReminderRow extends StatelessWidget {
+  const _NoteReminderRow({
+    required this.title,
+    required this.when,
+    required this.status,
+    this.onTap,
+  });
+
+  final String title;
+  final String when;
+  final String status;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    return Padding(
+      padding: const EdgeInsets.only(top: AppSpace.sm),
+      child: Material(
+        color: c.warnSoft,
+        borderRadius: BorderRadius.circular(AppRadius.md),
+        child: InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(AppRadius.md),
+          child: Padding(
+            padding: const EdgeInsets.all(AppSpace.md),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.notifications_active_outlined,
+                  size: 20,
+                  color: c.onWarnSoft,
+                ),
+                const SizedBox(width: AppSpace.md),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        title,
+                        style: TextStyle(
+                          fontSize: AppFontSize.body,
+                          fontWeight: FontWeight.w600,
+                          color: c.onWarnSoft,
+                        ),
+                      ),
+                      Text(
+                        when,
+                        style: TextStyle(
+                          fontSize: AppFontSize.meta,
+                          color: c.onWarnSoft,
+                        ),
+                      ),
+                      Text(
+                        status,
+                        style: TextStyle(
+                          fontSize: AppFontSize.meta,
+                          color: c.onWarnSoft,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -544,12 +540,21 @@ class _PermissionSheet extends StatelessWidget {
 }
 
 class _EditSheet extends StatefulWidget {
-  const _EditSheet(this.draft);
+  const _EditSheet(this.draft, {required this.accepted});
 
   final ReminderDraft draft;
 
-  static Future<_Override?> show(BuildContext context, ReminderDraft draft) =>
-      showReminderSheet<_Override>(context, _EditSheet(draft));
+  /// Sudah diterima: tombol kiri membatalkan pengingatnya.
+  final bool accepted;
+
+  static Future<_Override?> show(
+    BuildContext context,
+    ReminderDraft draft, {
+    required bool accepted,
+  }) => showReminderSheet<_Override>(
+    context,
+    _EditSheet(draft, accepted: accepted),
+  );
 
   @override
   State<_EditSheet> createState() => _EditSheetState();
@@ -697,10 +702,26 @@ class _EditSheetState extends State<_EditSheet> {
         const SizedBox(height: AppSpace.lg),
         Row(
           children: [
+            Icon(Icons.lock_outline_rounded, size: 15, color: c.muted),
+            const SizedBox(width: AppSpace.sm),
+            Expanded(
+              child: Text(
+                l.remPrivacy,
+                style: TextStyle(fontSize: AppFontSize.meta, color: c.muted),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: AppSpace.lg),
+        Row(
+          children: [
             Expanded(
               child: OutlinedButton(
-                onPressed: () => Navigator.pop(context),
-                child: Text(l.cancel),
+                onPressed: () => Navigator.pop(
+                  context,
+                  widget.accepted ? const _Override(dismissed: true) : null,
+                ),
+                child: Text(widget.accepted ? l.remDismiss : l.cancel),
               ),
             ),
             const SizedBox(width: AppSpace.md),

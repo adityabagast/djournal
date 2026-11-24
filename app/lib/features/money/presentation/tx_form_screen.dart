@@ -471,7 +471,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               runSpacing: 6,
               children: [
                 for (final c in roots)
-                  _CategoryPill(
+                  TxCategoryPill(
                     category: c,
                     selected: c.id == selectedRoot?.id,
                     onTap: () => setState(() => _categoryId = c.id),
@@ -479,7 +479,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
               ],
             ),
             if (selectedRoot != null && subs.isNotEmpty)
-              _SubcategoryRow(
+              TxSubcategoryRow(
                 root: selectedRoot,
                 subs: subs,
                 selectedId: _categoryId,
@@ -488,7 +488,7 @@ class _TxFormScreenState extends ConsumerState<TxFormScreen> {
             const SizedBox(height: AppSpace.xl),
             label(l.wallet),
             const SizedBox(height: AppSpace.sm),
-            _WalletChips(
+            TxWalletChips(
               wallets: wallets,
               selectedId: _walletId,
               onSelect: (id) => setState(() => _walletId = id),
@@ -633,8 +633,9 @@ class _Segment extends StatelessWidget {
 }
 
 /// Pilihan kategori utama: chip kecil dengan titik warna kategori.
-class _CategoryPill extends StatelessWidget {
-  const _CategoryPill({
+class TxCategoryPill extends StatelessWidget {
+  const TxCategoryPill({
+    super.key,
     required this.category,
     required this.selected,
     required this.onTap,
@@ -698,8 +699,9 @@ class _CategoryPill extends StatelessWidget {
 /// Baris subkategori di bawah kategori utama yang terpilih: teks kecil
 /// dengan garis di kiri, pilihan aktif bergaris bawah. "Semua X" = tanpa
 /// subkategori.
-class _SubcategoryRow extends StatelessWidget {
-  const _SubcategoryRow({
+class TxSubcategoryRow extends StatelessWidget {
+  const TxSubcategoryRow({
+    super.key,
     required this.root,
     required this.subs,
     required this.selectedId,
@@ -774,8 +776,9 @@ class _SubcategoryRow extends StatelessWidget {
 
 /// Pilihan dompet berbentuk chip. [disabledId] tidak bisa dipilih (dompet
 /// asal di baris tujuan transfer).
-class _WalletChips extends StatelessWidget {
-  const _WalletChips({
+class TxWalletChips extends StatelessWidget {
+  const TxWalletChips({
+    super.key,
     required this.wallets,
     required this.selectedId,
     required this.onSelect,
@@ -888,7 +891,7 @@ class _TransferWallets extends StatelessWidget {
         children: [
           header(l.transferFrom, fromId),
           const SizedBox(height: AppSpace.sm),
-          _WalletChips(wallets: wallets, selectedId: fromId, onSelect: onFrom),
+          TxWalletChips(wallets: wallets, selectedId: fromId, onSelect: onFrom),
           if (from != null && hasTo && amount > balanceOf(from.id))
             Padding(
               padding: const EdgeInsets.only(top: AppSpace.sm),
@@ -921,7 +924,7 @@ class _TransferWallets extends StatelessWidget {
           header(l.transferTo, toId),
           const SizedBox(height: AppSpace.sm),
           if (wallets.length >= 2)
-            _WalletChips(
+            TxWalletChips(
               wallets: wallets,
               selectedId: toId,
               onSelect: onTo,

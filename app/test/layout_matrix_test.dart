@@ -24,6 +24,7 @@ import 'package:djournal/features/games/presentation/prompt_screen.dart';
 import 'package:djournal/features/home_widget/data/home_widget_sync.dart';
 import 'package:djournal/features/journal/data/journal_repository.dart';
 import 'package:djournal/features/journal/presentation/entry_form_screen.dart';
+import 'package:djournal/features/journal/presentation/note/note_parts.dart';
 import 'package:djournal/features/lock/presentation/lock_screen.dart';
 import 'package:djournal/features/lock/presentation/pin_setup_screen.dart';
 import 'package:djournal/features/lock/providers/lock_controller.dart';
@@ -36,6 +37,7 @@ import 'package:djournal/features/money/presentation/bill_form_sheet.dart';
 import 'package:djournal/features/money/presentation/budget_screen.dart';
 import 'package:djournal/features/money/presentation/categories_screen.dart';
 import 'package:djournal/features/money/presentation/global_budget_sheet.dart';
+import 'package:djournal/features/money/presentation/tx_draft_sheet.dart';
 import 'package:djournal/features/money/presentation/tx_form_screen.dart';
 import 'package:djournal/features/money/presentation/wallet_form_sheet.dart';
 import 'package:djournal/features/money/presentation/wallets_screen.dart';
@@ -324,7 +326,27 @@ final _screens = <String, _Screen>{
   'catat': _page(() => const TxFormScreen()),
   'catat-ubah': _page(() => TxFormScreen(existing: _snap.transactions.first)),
   'tulis': _page(() => const EntryFormScreen()),
-  'tulis-ubah': _page(() => EntryFormScreen(existing: _entries.first)),
+  'tulis-pengingat': _page(
+    () => const EntryFormScreen(
+      initialTitle: 'Ngopi sambil menulis di kafe dekat kantor',
+      initialAudioTranscript: 'Besok jam 7 servis kendaraan bermotor.',
+    ),
+  ),
+  'tulis-transaksi': _page(
+    () => const EntryFormScreen(
+      initialTitle: 'Ngopi sambil menulis di kafe dekat kantor',
+      initialAudioTranscript:
+          'Beli es kopi susu gula aren 28rb pakai GoPay, parkir 2rb.',
+    ),
+  ),
+  'tulis-ubah': _page(
+    () => EntryFormScreen(existing: _entries.first, startEditing: true),
+  ),
+  'baca': _page(() => EntryFormScreen(existing: _entries.first)),
+  's-transaksi-jurnal': _sheetOf(
+    () => TxDraftSheet(draft: emptyTxDraft('m', _snap), isNew: true),
+  ),
+  's-keluar-jurnal': _sheetOf(() => const NoteLeaveSheet()),
   'masuk': _page(() => const SignInScreen()),
   'masukan': _page(() => const FeedbackScreen()),
   'riwayat-versi': _page(() => const VersionHistoryScreen()),

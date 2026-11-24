@@ -4765,6 +4765,240 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Batas'**
   String get xlLimit;
+
+  /// No description provided for @moreCount.
+  ///
+  /// In id, this message translates to:
+  /// **'+{count} lagi'**
+  String moreCount(int count);
+
+  /// No description provided for @noteEditAction.
+  ///
+  /// In id, this message translates to:
+  /// **'Edit catatan'**
+  String get noteEditAction;
+
+  /// No description provided for @noteKeyboard.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketik'**
+  String get noteKeyboard;
+
+  /// No description provided for @noteToolMoney.
+  ///
+  /// In id, this message translates to:
+  /// **'Uang'**
+  String get noteToolMoney;
+
+  /// No description provided for @noteToolPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto'**
+  String get noteToolPhoto;
+
+  /// No description provided for @noteToolRecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Rekam'**
+  String get noteToolRecord;
+
+  /// No description provided for @noteToolRecordAgain.
+  ///
+  /// In id, this message translates to:
+  /// **'Ulang'**
+  String get noteToolRecordAgain;
+
+  /// No description provided for @noteToolDictate.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikte'**
+  String get noteToolDictate;
+
+  /// No description provided for @noteToolTag.
+  ///
+  /// In id, this message translates to:
+  /// **'Tag'**
+  String get noteToolTag;
+
+  /// No description provided for @noteAddTime.
+  ///
+  /// In id, this message translates to:
+  /// **'+ Jam'**
+  String get noteAddTime;
+
+  /// No description provided for @noteMoodAsk.
+  ///
+  /// In id, this message translates to:
+  /// **'Bagaimana perasaanmu?'**
+  String get noteMoodAsk;
+
+  /// No description provided for @noteMoodUndo.
+  ///
+  /// In id, this message translates to:
+  /// **'Ketuk lagi untuk membatalkan pilihan.'**
+  String get noteMoodUndo;
+
+  /// No description provided for @noteTagHint.
+  ///
+  /// In id, this message translates to:
+  /// **'mis. teman, kerja'**
+  String get noteTagHint;
+
+  /// No description provided for @noteTagLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Tag (pisahkan dengan koma)'**
+  String get noteTagLabel;
+
+  /// No description provided for @noteTagEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada tag.'**
+  String get noteTagEmpty;
+
+  /// No description provided for @noteTagRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus tag {tag}'**
+  String noteTagRemove(String tag);
+
+  /// No description provided for @notePhotoLabel.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat foto {n}'**
+  String notePhotoLabel(int n);
+
+  /// No description provided for @notePhotoRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus foto'**
+  String get notePhotoRemove;
+
+  /// No description provided for @notePhotoMax.
+  ///
+  /// In id, this message translates to:
+  /// **'Maksimal 10 gambar'**
+  String get notePhotoMax;
+
+  /// No description provided for @noteDiscardTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Simpan catatan ini?'**
+  String get noteDiscardTitle;
+
+  /// No description provided for @noteDiscardBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Ada tulisan yang belum disimpan.'**
+  String get noteDiscardBody;
+
+  /// No description provided for @noteKeepWriting.
+  ///
+  /// In id, this message translates to:
+  /// **'Lanjut menulis'**
+  String get noteKeepWriting;
+
+  /// No description provided for @noteDiscard.
+  ///
+  /// In id, this message translates to:
+  /// **'Buang'**
+  String get noteDiscard;
+
+  /// No description provided for @noteTxPanel.
+  ///
+  /// In id, this message translates to:
+  /// **'Transaksi dari catatan'**
+  String get noteTxPanel;
+
+  /// No description provided for @noteTxEmpty.
+  ///
+  /// In id, this message translates to:
+  /// **'Tulis nominal di ceritamu, misalnya “kopi 25rb pakai GoPay”. Nyaw menawarkannya jadi transaksi, jadi tidak perlu dicatat dua kali.'**
+  String get noteTxEmpty;
+
+  /// No description provided for @noteTxRecord.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat'**
+  String get noteTxRecord;
+
+  /// No description provided for @noteTxRecordAll.
+  ///
+  /// In id, this message translates to:
+  /// **'Catat semua'**
+  String get noteTxRecordAll;
+
+  /// No description provided for @noteTxRecorded.
+  ///
+  /// In id, this message translates to:
+  /// **'Dicatat'**
+  String get noteTxRecorded;
+
+  /// No description provided for @noteTxExists.
+  ///
+  /// In id, this message translates to:
+  /// **'Sudah ada'**
+  String get noteTxExists;
+
+  /// No description provided for @noteTxDismiss.
+  ///
+  /// In id, this message translates to:
+  /// **'Jangan catat'**
+  String get noteTxDismiss;
+
+  /// No description provided for @noteTxCount.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi'**
+  String noteTxCount(int count);
+
+  /// No description provided for @noteTxSaved.
+  ///
+  /// In id, this message translates to:
+  /// **'{count} transaksi dicatat'**
+  String noteTxSaved(int count);
+
+  /// No description provided for @noteTxNew.
+  ///
+  /// In id, this message translates to:
+  /// **'Baru'**
+  String get noteTxNew;
+
+  /// No description provided for @noteTxWithSave.
+  ///
+  /// In id, this message translates to:
+  /// **'ikut Simpan'**
+  String get noteTxWithSave;
+
+  /// No description provided for @noteTxAdd.
+  ///
+  /// In id, this message translates to:
+  /// **'Tambah transaksi'**
+  String get noteTxAdd;
+
+  /// No description provided for @noteTxEdit.
+  ///
+  /// In id, this message translates to:
+  /// **'Ubah transaksi'**
+  String get noteTxEdit;
+
+  /// No description provided for @noteTxWhen.
+  ///
+  /// In id, this message translates to:
+  /// **'Tanggal dan jam ikut catatan ini. Dicatat saat catatan disimpan.'**
+  String get noteTxWhen;
+
+  /// No description provided for @noteTxNone.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum ada'**
+  String get noteTxNone;
+
+  /// No description provided for @noteNoWallet.
+  ///
+  /// In id, this message translates to:
+  /// **'Buat dompet dulu di Keuangan untuk mencatat transaksi.'**
+  String get noteNoWallet;
 }
 
 class _AppLocalizationsDelegate

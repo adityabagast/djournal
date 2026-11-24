@@ -436,7 +436,11 @@ class _JournalDetailPane extends ConsumerWidget {
               const Spacer(),
               IconButton.outlined(
                 tooltip: l.editEntryTitle,
-                onPressed: () => EntryFormScreen.open(context, existing: e),
+                onPressed: () => EntryFormScreen.open(
+                  context,
+                  existing: e,
+                  startEditing: true,
+                ),
                 icon: const Icon(Icons.edit_outlined, size: 18),
                 visualDensity: VisualDensity.compact,
               ),

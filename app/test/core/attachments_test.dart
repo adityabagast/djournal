@@ -5,6 +5,7 @@ import 'package:djournal/features/journal/data/journal_repository.dart';
 import 'package:djournal/features/money/data/money_repository.dart';
 import 'package:djournal/l10n/app_localizations.dart';
 import 'package:djournal/core/widgets/image_viewer.dart';
+import 'package:djournal/features/journal/presentation/note/note_parts.dart';
 import 'package:drift/native.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -100,22 +101,23 @@ void main() {
       expect(receiptDeleted, isNull);
     });
 
-    testWidgets('JournalImageGrid me-render tombol tambah dan batas maksimal gambar', (tester) async {
-      await tester.pumpWidget(
-        wrapWithTheme(
-          JournalImageGrid(
-            imagePaths: const ['/mock/1.jpg', '/mock/2.jpg'],
-            onAddImage: () {},
-            onRemoveImage: (_) {},
-          ),
+    testWidgets('NotePhotos: tombol hapus hanya di mode tulis', (tester) async {
+      final removed = <int>[];
+      Widget grid(ValueChanged<int>? onRemove) => wrapWithTheme(
+        NotePhotos(
+          paths: const ['/mock/1.jpg', '/mock/2.jpg'],
+          onRemove: onRemove,
         ),
       );
-
+      await tester.pumpWidget(grid(null));
       await tester.pumpAndSettle();
-      expect(find.text('Galeri'), findsOneWidget);
-      expect(find.text('Kamera'), findsOneWidget);
-      expect(find.text('Tambah'), findsOneWidget);
-      expect(find.textContaining('Maks 10 gambar'), findsOneWidget);
+      expect(find.byIcon(Icons.broken_image_rounded), findsNWidgets(2));
+      expect(find.byIcon(Icons.close_rounded), findsNothing);
+
+      await tester.pumpWidget(grid(removed.add));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byIcon(Icons.close_rounded).last);
+      expect(removed, [1]);
     });
 
     testWidgets('TxReceiptSection me-render tombol foto struk bila belum ada', (tester) async {
