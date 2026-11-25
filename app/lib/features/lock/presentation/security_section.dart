@@ -30,6 +30,13 @@ class SecuritySection extends ConsumerWidget {
       }
     }
 
+    Future<void> changePin() async {
+      if (await PinVerifyScreen.open(context) != true || !context.mounted) {
+        return;
+      }
+      await PinSetupScreen.open(context);
+    }
+
     Future<void> toggleBiometric(bool on) async {
       // Pastikan sensor benar-benar bisa dipakai sebelum diaktifkan.
       if (on && !await controller.authenticateBiometric(l.biometricReason)) {
@@ -78,6 +85,12 @@ class SecuritySection extends ConsumerWidget {
             activeTrackColor: context.colors.primary,
           ),
           if (lock.pinEnabled) ...[
+            divider,
+            ListTile(
+              onTap: changePin,
+              leading: Icon(Icons.pin_outlined, color: context.colors.primary),
+              title: Text(l.changePin, style: titleStyle),
+            ),
             divider,
             ListTile(
               onTap: controller.lockNow,

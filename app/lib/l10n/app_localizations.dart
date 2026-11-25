@@ -1538,12 +1538,6 @@ abstract class AppLocalizations {
   /// **'Belum pernah sinkron'**
   String get neverSynced;
 
-  /// No description provided for @signOutConfirm.
-  ///
-  /// In id, this message translates to:
-  /// **'Keluar dari akun?'**
-  String get signOutConfirm;
-
   /// No description provided for @signOutBody.
   ///
   /// In id, this message translates to:
@@ -2516,18 +2510,6 @@ abstract class AppLocalizations {
   /// **'{count} kategori'**
   String categoryCount(int count);
 
-  /// No description provided for @googleDriveBackup.
-  ///
-  /// In id, this message translates to:
-  /// **'Cadangan Google Drive'**
-  String get googleDriveBackup;
-
-  /// No description provided for @googleDriveBackupSub.
-  ///
-  /// In id, this message translates to:
-  /// **'Sinkronisasi Cloud otomatis & mandiri'**
-  String get googleDriveBackupSub;
-
   /// No description provided for @googleDriveConnected.
   ///
   /// In id, this message translates to:
@@ -2540,18 +2522,6 @@ abstract class AppLocalizations {
   /// **'Belum terhubung'**
   String get googleDriveNotConnected;
 
-  /// No description provided for @googleDriveConnect.
-  ///
-  /// In id, this message translates to:
-  /// **'Hubungkan Akun Google'**
-  String get googleDriveConnect;
-
-  /// No description provided for @googleDriveDisconnect.
-  ///
-  /// In id, this message translates to:
-  /// **'Putuskan Akun'**
-  String get googleDriveDisconnect;
-
   /// No description provided for @googleDriveLastBackup.
   ///
   /// In id, this message translates to:
@@ -2563,18 +2533,6 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Belum pernah dicadangkan'**
   String get googleDriveNever;
-
-  /// No description provided for @googleDriveFormatInfo.
-  ///
-  /// In id, this message translates to:
-  /// **'Format: Excel (.xlsx) / Sheets'**
-  String get googleDriveFormatInfo;
-
-  /// No description provided for @googleDriveFormatDesc.
-  ///
-  /// In id, this message translates to:
-  /// **'Bisa dibuka langsung di Google Sheets dengan 4 lembar kerja: Transaksi, Jurnal, Dompet, dan Budget.'**
-  String get googleDriveFormatDesc;
 
   /// No description provided for @googleDriveSheetsPreview.
   ///
@@ -2606,29 +2564,239 @@ abstract class AppLocalizations {
   /// **'Masuk dengan Google atau Email server untuk mencadangkan data.'**
   String get guestModePrompt;
 
-  /// No description provided for @nyawtatServerConnected.
+  /// No description provided for @settingsApp.
   ///
   /// In id, this message translates to:
-  /// **'Server Nyawtat Terhubung'**
-  String get nyawtatServerConnected;
+  /// **'Aplikasi'**
+  String get settingsApp;
 
-  /// No description provided for @googleDriveConnectedBadge.
+  /// No description provided for @settingsAppearance.
   ///
   /// In id, this message translates to:
-  /// **'Google Drive Terhubung'**
-  String get googleDriveConnectedBadge;
+  /// **'Tampilan & bahasa'**
+  String get settingsAppearance;
 
-  /// No description provided for @signInAccount.
+  /// No description provided for @settingsFinanceSub.
   ///
   /// In id, this message translates to:
-  /// **'Masuk Akun'**
-  String get signInAccount;
+  /// **'Dompet, kategori, budget'**
+  String get settingsFinanceSub;
 
-  /// No description provided for @backupRange.
+  /// No description provided for @manageWalletsSub.
   ///
   /// In id, this message translates to:
-  /// **'Rentang Data Cadangan'**
-  String get backupRange;
+  /// **'Tambah, ubah saldo, arsip'**
+  String get manageWalletsSub;
+
+  /// No description provided for @settingsBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangan & pemulihan'**
+  String get settingsBackup;
+
+  /// No description provided for @settingsBackupDriveSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Google Drive, ekspor, impor'**
+  String get settingsBackupDriveSub;
+
+  /// No description provided for @settingsBackupLocalSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Ekspor dan impor file'**
+  String get settingsBackupLocalSub;
+
+  /// No description provided for @settingsPinOn.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN aktif'**
+  String get settingsPinOn;
+
+  /// No description provided for @settingsPinBioOn.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN dan biometrik aktif'**
+  String get settingsPinBioOn;
+
+  /// No description provided for @settingsPinOff.
+  ///
+  /// In id, this message translates to:
+  /// **'PIN tidak aktif'**
+  String get settingsPinOff;
+
+  /// No description provided for @settingsVersion.
+  ///
+  /// In id, this message translates to:
+  /// **'Versi & update'**
+  String get settingsVersion;
+
+  /// No description provided for @changePin.
+  ///
+  /// In id, this message translates to:
+  /// **'Ganti PIN'**
+  String get changePin;
+
+  /// No description provided for @openBackup.
+  ///
+  /// In id, this message translates to:
+  /// **'Buka cadangan'**
+  String get openBackup;
+
+  /// No description provided for @serverTagOff.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum masuk'**
+  String get serverTagOff;
+
+  /// No description provided for @driveNotConnected.
+  ///
+  /// In id, this message translates to:
+  /// **'Google Drive belum terhubung'**
+  String get driveNotConnected;
+
+  /// No description provided for @backupRangeHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Periode tabel yang tampil. Data pemulihan selalu lengkap.'**
+  String get backupRangeHint;
+
+  /// No description provided for @disconnectDriveConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Putuskan Google Drive?'**
+  String get disconnectDriveConfirm;
+
+  /// No description provided for @disconnectDriveBody.
+  ///
+  /// In id, this message translates to:
+  /// **'Data di perangkat dan cadangan di Drive tetap ada. Login server tidak berubah.'**
+  String get disconnectDriveBody;
+
+  /// No description provided for @stayConnected.
+  ///
+  /// In id, this message translates to:
+  /// **'Tetap terhubung'**
+  String get stayConnected;
+
+  /// No description provided for @disconnect.
+  ///
+  /// In id, this message translates to:
+  /// **'Putuskan'**
+  String get disconnect;
+
+  /// No description provided for @backupFirst.
+  ///
+  /// In id, this message translates to:
+  /// **'Cadangkan dulu'**
+  String get backupFirst;
+
+  /// No description provided for @signOutAck.
+  ///
+  /// In id, this message translates to:
+  /// **'Saya mengerti data di perangkat ini akan dihapus'**
+  String get signOutAck;
+
+  /// No description provided for @signOutAndDelete.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar dan hapus data'**
+  String get signOutAndDelete;
+
+  /// No description provided for @serverName.
+  ///
+  /// In id, this message translates to:
+  /// **'Server Nyawtat'**
+  String get serverName;
+
+  /// No description provided for @serverNotSignedIn.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum masuk, data belum tersinkron'**
+  String get serverNotSignedIn;
+
+  /// No description provided for @serverAutoSynced.
+  ///
+  /// In id, this message translates to:
+  /// **'Sinkron otomatis · terakhir {time}'**
+  String serverAutoSynced(String time);
+
+  /// No description provided for @connect.
+  ///
+  /// In id, this message translates to:
+  /// **'Hubungkan'**
+  String get connect;
+
+  /// No description provided for @retry.
+  ///
+  /// In id, this message translates to:
+  /// **'Coba lagi'**
+  String get retry;
+
+  /// No description provided for @serverSignInTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Masuk ke server'**
+  String get serverSignInTitle;
+
+  /// No description provided for @serverRegisterTitle.
+  ///
+  /// In id, this message translates to:
+  /// **'Daftar akun server'**
+  String get serverRegisterTitle;
+
+  /// No description provided for @serverDriveStays.
+  ///
+  /// In id, this message translates to:
+  /// **'Google Drive tetap terhubung. Akun server terpisah dari akun Google.'**
+  String get serverDriveStays;
+
+  /// No description provided for @serverDataScope.
+  ///
+  /// In id, this message translates to:
+  /// **'Dikirim ke server: jurnal (teks), transaksi, dompet, kategori, dan budget. Tagihan, impian, rencana, pengingat, lampiran, dan rekaman suara tetap hanya di perangkat ini.'**
+  String get serverDataScope;
+
+  /// No description provided for @googleDriveOnlyHint.
+  ///
+  /// In id, this message translates to:
+  /// **'Google hanya untuk cadangan Drive. Atau pakai server:'**
+  String get googleDriveOnlyHint;
+
+  /// No description provided for @disconnectDrive.
+  ///
+  /// In id, this message translates to:
+  /// **'Putuskan Google Drive'**
+  String get disconnectDrive;
+
+  /// No description provided for @disconnectDriveSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Data di perangkat ini tetap ada'**
+  String get disconnectDriveSub;
+
+  /// No description provided for @signOutServer.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar dari server'**
+  String get signOutServer;
+
+  /// No description provided for @signOutServerSub.
+  ///
+  /// In id, this message translates to:
+  /// **'Data di perangkat ini akan dihapus'**
+  String get signOutServerSub;
+
+  /// No description provided for @signOutServerConfirm.
+  ///
+  /// In id, this message translates to:
+  /// **'Keluar dari server?'**
+  String get signOutServerConfirm;
+
+  /// No description provided for @signOutLocalOnly.
+  ///
+  /// In id, this message translates to:
+  /// **'Tagihan, impian, rencana, pengingat, lampiran, dan rekaman suara tidak ada di server dan akan hilang. Cadangkan dulu kalau masih dipakai.'**
+  String get signOutLocalOnly;
 
   /// No description provided for @rangeAll.
   ///
@@ -2699,7 +2867,7 @@ abstract class AppLocalizations {
   /// No description provided for @restoreFromDriveConfirm.
   ///
   /// In id, this message translates to:
-  /// **'Pulihkan data dari cadangan Google Drive? Data lokal akan disinkronkan.'**
+  /// **'Cadangan digabung ke data di perangkat. Catatan yang lebih baru di perangkat tidak ditimpa, dan akunmu tetap masuk.'**
   String get restoreFromDriveConfirm;
 
   /// No description provided for @restoreFromDriveSuccess.
@@ -2779,18 +2947,6 @@ abstract class AppLocalizations {
   /// In id, this message translates to:
   /// **'Mendukung .json (Nyawtat) atau .mmbak / .sqlite / .xlsx (Money Manager)'**
   String get selectBackupFileHint;
-
-  /// No description provided for @autoBackupWifi.
-  ///
-  /// In id, this message translates to:
-  /// **'Cadangkan Otomatis'**
-  String get autoBackupWifi;
-
-  /// No description provided for @autoBackupWifiSub.
-  ///
-  /// In id, this message translates to:
-  /// **'Saat terhubung ke jaringan Wi-Fi'**
-  String get autoBackupWifiSub;
 
   /// No description provided for @unsupportedFileFormat.
   ///

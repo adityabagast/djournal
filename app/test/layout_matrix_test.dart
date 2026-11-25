@@ -14,8 +14,14 @@ import 'package:djournal/core/format.dart';
 import 'package:djournal/core/storage/settings_repository.dart';
 import 'package:djournal/core/theme.dart';
 import 'package:djournal/core/widgets/app_sheet.dart';
+import 'package:djournal/features/account/data/backend.dart';
+import 'package:djournal/features/account/presentation/account_screen.dart';
+import 'package:djournal/features/account/presentation/account_sheets.dart';
 import 'package:djournal/features/account/presentation/sign_in_screen.dart';
 import 'package:djournal/features/account/providers/account_controller.dart';
+import 'package:djournal/features/backup/data/google_drive_service.dart';
+import 'package:djournal/features/backup/presentation/backup_screen.dart';
+import 'package:djournal/features/settings/presentation/settings_pages.dart';
 import 'package:djournal/features/feedback/presentation/feedback_screen.dart';
 import 'package:djournal/features/games/presentation/games_hub_screen.dart';
 import 'package:djournal/features/games/presentation/games_screen.dart';
@@ -75,6 +81,42 @@ class _FakeAccount extends AccountController {
   @override
   Future<void> sync() async {}
 }
+
+class _FakeServerAccount extends AccountController {
+  @override
+  AccountState build() => AccountState(
+    loading: false,
+    email: 'server.nyawtat@contoh.id',
+    lastSyncAt: DateTime(2026, 11, 25, 14, 32),
+  );
+}
+
+class _FakeServerError extends AccountController {
+  @override
+  AccountState build() => const AccountState(
+    loading: false,
+    email: 'server.nyawtat@contoh.id',
+    error: ApiError.network,
+  );
+}
+
+class _FakeDrive extends GoogleDriveController {
+  @override
+  GoogleDriveInfo build() => const GoogleDriveInfo(
+    email: 'nyaw.contoh.panjang@contoh.id',
+    displayName: 'Nyaw Contoh Panjang',
+  );
+}
+
+/// Layar dengan Drive terhubung dan keadaan server tertentu.
+Widget _withAccount(AccountController Function() server, Widget child) =>
+    ProviderScope(
+  overrides: [
+    accountProvider.overrideWith(server),
+    googleDriveProvider.overrideWith(_FakeDrive.new),
+  ],
+  child: child,
+);
 
 class _FakeLock extends LockController {
   @override
@@ -348,6 +390,29 @@ final _screens = <String, _Screen>{
   ),
   's-keluar-jurnal': _sheetOf(() => const NoteLeaveSheet()),
   'masuk': _page(() => const SignInScreen()),
+  'pengaturan-drive': _page(
+    () => _withAccount(_FakeAccount.new, const SettingsScreen()),
+  ),
+  'akun-tamu': _page(() => const AccountScreen()),
+  'akun-drive': _page(
+    () => _withAccount(_FakeAccount.new, const AccountScreen()),
+  ),
+  'akun-keduanya': _page(
+    () => _withAccount(_FakeServerAccount.new, const AccountScreen()),
+  ),
+  'akun-gagal-sinkron': _page(
+    () => _withAccount(_FakeServerError.new, const AccountScreen()),
+  ),
+  'tampilan': _page(() => const AppearancePage()),
+  'keamanan': _page(() => const SecurityPage()),
+  'pengaturan-keuangan': _page(() => const FinancePage()),
+  'versi': _page(() => const VersionPage()),
+  'cadangan': _page(() => const BackupScreen()),
+  'cadangan-drive': _page(
+    () => _withAccount(_FakeAccount.new, const BackupScreen()),
+  ),
+  's-putus-drive': _sheetOf(() => const DriveDisconnectSheet()),
+  's-keluar-server': _sheetOf(() => const ServerSignOutSheet(unsynced: true)),
   'masukan': _page(() => const FeedbackScreen()),
   'riwayat-versi': _page(() => const VersionHistoryScreen()),
   'permainan': _page(() => const GamesHubScreen()),

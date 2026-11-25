@@ -17,7 +17,10 @@ import '../../../core/tokens.dart';
 
 /// Bagian "Tentang" di Pengaturan: versi, cek update, masukan, riwayat versi.
 class AboutSection extends ConsumerWidget {
-  const AboutSection({super.key});
+  const AboutSection({super.key, this.links = true});
+
+  /// Tampilkan tautan Kirim masukan dan Riwayat versi.
+  final bool links;
 
   static const _testerUrl =
       'https://appdistribution.firebase.dev/i/7f0a29e4b1386d45';
@@ -223,20 +226,22 @@ class AboutSection extends ConsumerWidget {
             padding: const EdgeInsets.fromLTRB(AppSpace.lg, 0, AppSpace.lg, AppSpace.md),
             child: Text(l.updatePrivacyNote, style: subStyle),
           ),
-          divider,
-          ListTile(
-            title: Text(l.fbTitle, style: titleStyle),
-            subtitle: Text(l.fbSub, style: subStyle),
-            trailing: Icon(Icons.chevron_right, color: c.faint),
-            onTap: () => FeedbackScreen.open(context),
-          ),
-          divider,
-          ListTile(
-            title: Text(l.aboutReleases, style: titleStyle),
-            subtitle: Text(l.aboutReleasesSub, style: subStyle),
-            trailing: Icon(Icons.chevron_right, color: c.faint),
-            onTap: () => VersionHistoryScreen.open(context),
-          ),
+          if (links) ...[
+            divider,
+            ListTile(
+              title: Text(l.fbTitle, style: titleStyle),
+              subtitle: Text(l.fbSub, style: subStyle),
+              trailing: Icon(Icons.chevron_right, color: c.faint),
+              onTap: () => FeedbackScreen.open(context),
+            ),
+            divider,
+            ListTile(
+              title: Text(l.aboutReleases, style: titleStyle),
+              subtitle: Text(l.aboutReleasesSub, style: subStyle),
+              trailing: Icon(Icons.chevron_right, color: c.faint),
+              onTap: () => VersionHistoryScreen.open(context),
+            ),
+          ],
           divider,
           ListTile(
             title: Text(l.aboutTester, style: titleStyle),

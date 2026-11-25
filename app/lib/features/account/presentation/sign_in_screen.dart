@@ -8,6 +8,7 @@ import '../../../l10n/app_localizations.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
 import '../../../core/tokens.dart';
+import 'account_sheets.dart';
 
 String apiErrorText(AppLocalizations l, ApiError e) => switch (e) {
   ApiError.network => l.errNetwork,
@@ -20,7 +21,15 @@ String apiErrorText(AppLocalizations l, ApiError e) => switch (e) {
   ApiError.server => l.errServer,
 };
 
-/// Form masuk / daftar.
+String googleSignInErrorText(Object error) {
+  final text = error.toString();
+  return text.contains('10') || text.contains('DEVELOPER_ERROR')
+      ? 'Gagal masuk (Kode 10: DEVELOPER_ERROR). SHA-1 aplikasi belum didaftarkan di Firebase Console.'
+      : text;
+}
+
+/// Form masuk / daftar akun server. Tombol Google (cadangan Drive) hanya
+/// ditawarkan selama belum ada akun yang terhubung.
 class SignInScreen extends ConsumerStatefulWidget {
   const SignInScreen({super.key});
 
@@ -85,15 +94,7 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
         if (mounted) Navigator.of(context).pop();
       }
     } catch (e) {
-      final err = e.toString();
-      if (err.contains('10') || err.contains('DEVELOPER_ERROR')) {
-        setState(
-          () => _error =
-              'Gagal masuk (Kode 10: DEVELOPER_ERROR). SHA-1 aplikasi belum didaftarkan di Firebase Console.',
-        );
-      } else {
-        setState(() => _error = err);
-      }
+      setState(() => _error = googleSignInErrorText(e));
     } finally {
       if (mounted) setState(() => _busy = false);
     }
@@ -103,11 +104,13 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
   Widget build(BuildContext context) {
     final l = context.l10n;
     final t = Theme.of(context).textTheme;
+    final driveConnected = ref.watch(googleDriveProvider).isConnected;
+    final showGoogle = !driveConnected && !ref.watch(accountProvider).loggedIn;
 
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          _register ? l.register : l.signIn,
+          _register ? l.serverRegisterTitle : l.serverSignInTitle,
           style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
       ),
@@ -120,41 +123,35 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
               style: t.bodyMedium?.copyWith(color: context.colors.muted),
             ),
             const SizedBox(height: AppSpace.lg),
-            OutlinedButton.icon(
-              onPressed: _busy ? null : _signInWithGoogle,
-              style: OutlinedButton.styleFrom(
-                minimumSize: const Size.fromHeight(48),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-              ),
-              icon: const SizedBox.square(
-                dimension: 20,
-                child: Center(
-                  child: Text('G', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue, fontSize: AppFontSize.heading)),
-                ),
-              ),
-              label: Text(l.googleSignIn, style: const TextStyle(fontWeight: FontWeight.w600)),
-            ),
-            const SizedBox(height: AppSpace.lg),
-            Row(
-              children: [
-                Expanded(child: Divider(color: context.colors.divider)),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
-                  child: Text(
-                    'ATAU',
-                    style: TextStyle(
-                      fontSize: AppFontSize.caption,
-                      fontWeight: FontWeight.w600,
-                      color: context.colors.muted,
-                    ),
+            if (showGoogle) ...[
+              OutlinedButton.icon(
+                onPressed: _busy ? null : _signInWithGoogle,
+                style: OutlinedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(AppRadius.md),
                   ),
                 ),
-                Expanded(child: Divider(color: context.colors.divider)),
-              ],
-            ),
-            const SizedBox(height: AppSpace.lg),
+                icon: const SizedBox.square(
+                  dimension: 20,
+                  child: Center(
+                    child: Text('G', style: TextStyle(fontWeight: FontWeight.w900, color: Colors.blue, fontSize: AppFontSize.heading)),
+                  ),
+                ),
+                label: Text(l.googleSignIn, style: const TextStyle(fontWeight: FontWeight.w600)),
+              ),
+              const SizedBox(height: AppSpace.md),
+              Text(
+                l.googleDriveOnlyHint,
+                textAlign: TextAlign.center,
+                style: t.bodySmall?.copyWith(color: context.colors.muted),
+              ),
+              const SizedBox(height: AppSpace.lg),
+            ],
+            if (driveConnected) ...[
+              AccountNote(icon: Icons.check, text: l.serverDriveStays),
+              const SizedBox(height: AppSpace.lg),
+            ],
             TextField(
               controller: _email,
               keyboardType: TextInputType.emailAddress,
@@ -193,6 +190,12 @@ class _SignInScreenState extends ConsumerState<SignInScreen> {
                 style: t.bodyMedium?.copyWith(color: context.colors.expense),
               ),
             ],
+            const SizedBox(height: AppSpace.lg),
+            AccountNote(
+              icon: Icons.info_outline,
+              text: l.serverDataScope,
+              warning: true,
+            ),
             const SizedBox(height: AppSpace.xl),
             FilledButton(
               onPressed: _busy ? null : _submit,

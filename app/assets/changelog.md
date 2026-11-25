@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.20.0 — 2026-11-25
+
+**Baru**
+- **Pengaturan** lebih ringkas: halaman utama berisi status akun dan daftar menu, tiap menu dibuka di halaman sendiri (Tampilan & bahasa, Keamanan, Keuangan, Cadangan & pemulihan, Versi & update).
+- **Ganti PIN** di Pengaturan › Keamanan, dan **Kelola dompet** di Pengaturan › Keuangan.
+
+**Perbaikan**
+- **Masuk ke server** kini bisa walau Google Drive sudah terhubung. Sebelumnya tombolnya hilang, jadi data berhenti tersinkron tanpa tanda apa pun.
+- **Layar masuk** menjelaskan data apa yang dikirim ke server dan apa yang tetap di perangkat.
+- **Keluar dari server** pindah ke halaman Akun dan baru bisa setelah mencentang persetujuan. Sebelumnya data langsung dihapus tanpa konfirmasi kalau Drive juga terhubung.
+- **Memutus Google Drive** selalu minta konfirmasi. Data di perangkat dan login server tidak berubah.
+- **Cadangkan Otomatis** dihapus dari Pengaturan karena belum berfungsi. Cadangan Drive dibuat lewat tombol.
+
+**Di balik layar**
+- Tidak ada perubahan database, sesi login, izin, atau dependensi. Memperbarui app tidak menghapus data dan tidak mengeluarkan akun.
+
 ## 0.19.0 — 2026-11-25
 
 **Baru**

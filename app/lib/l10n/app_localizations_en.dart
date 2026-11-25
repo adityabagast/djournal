@@ -796,9 +796,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get neverSynced => 'Never synced';
 
   @override
-  String get signOutConfirm => 'Sign out?';
-
-  @override
   String get signOutBody =>
       'Data on this device will be removed. Synced data stays safe on the server and comes back when you sign in again.';
 
@@ -1375,22 +1372,10 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get googleDriveBackup => 'Google Drive Backup';
-
-  @override
-  String get googleDriveBackupSub => 'Automatic & self-hosted cloud sync';
-
-  @override
   String get googleDriveConnected => 'Connected';
 
   @override
   String get googleDriveNotConnected => 'Not connected';
-
-  @override
-  String get googleDriveConnect => 'Connect Google Account';
-
-  @override
-  String get googleDriveDisconnect => 'Disconnect Account';
 
   @override
   String googleDriveLastBackup(String time) {
@@ -1399,13 +1384,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get googleDriveNever => 'Never backed up';
-
-  @override
-  String get googleDriveFormatInfo => 'Format: Excel (.xlsx) / Sheets';
-
-  @override
-  String get googleDriveFormatDesc =>
-      'View and edit directly in Google Sheets with 4 tabs: Transactions, Journal, Wallets, and Budget.';
 
   @override
   String get googleDriveSheetsPreview => 'Sheets Preview';
@@ -1425,16 +1403,129 @@ class AppLocalizationsEn extends AppLocalizations {
       'Sign in with Google or server Email to backup your data.';
 
   @override
-  String get nyawtatServerConnected => 'Nyawtat Server Connected';
+  String get settingsApp => 'App';
 
   @override
-  String get googleDriveConnectedBadge => 'Google Drive Connected';
+  String get settingsAppearance => 'Appearance & language';
 
   @override
-  String get signInAccount => 'Sign In';
+  String get settingsFinanceSub => 'Wallets, categories, budgets';
 
   @override
-  String get backupRange => 'Backup Data Range';
+  String get manageWalletsSub => 'Add, adjust balance, archive';
+
+  @override
+  String get settingsBackup => 'Backup & restore';
+
+  @override
+  String get settingsBackupDriveSub => 'Google Drive, export, import';
+
+  @override
+  String get settingsBackupLocalSub => 'Export and import files';
+
+  @override
+  String get settingsPinOn => 'PIN on';
+
+  @override
+  String get settingsPinBioOn => 'PIN and biometrics on';
+
+  @override
+  String get settingsPinOff => 'PIN off';
+
+  @override
+  String get settingsVersion => 'Version & updates';
+
+  @override
+  String get changePin => 'Change PIN';
+
+  @override
+  String get openBackup => 'Open backup';
+
+  @override
+  String get serverTagOff => 'Not signed in';
+
+  @override
+  String get driveNotConnected => 'Google Drive not connected';
+
+  @override
+  String get backupRangeHint =>
+      'Period shown in the tables. Restore data is always complete.';
+
+  @override
+  String get disconnectDriveConfirm => 'Disconnect Google Drive?';
+
+  @override
+  String get disconnectDriveBody =>
+      'Data on this device and backups in Drive are kept. Your server sign-in doesn\'t change.';
+
+  @override
+  String get stayConnected => 'Stay connected';
+
+  @override
+  String get disconnect => 'Disconnect';
+
+  @override
+  String get backupFirst => 'Back up first';
+
+  @override
+  String get signOutAck => 'I understand data on this device will be removed';
+
+  @override
+  String get signOutAndDelete => 'Sign out and remove data';
+
+  @override
+  String get serverName => 'Nyawtat server';
+
+  @override
+  String get serverNotSignedIn => 'Not signed in, data isn\'t synced';
+
+  @override
+  String serverAutoSynced(String time) {
+    return 'Auto sync · last $time';
+  }
+
+  @override
+  String get connect => 'Connect';
+
+  @override
+  String get retry => 'Try again';
+
+  @override
+  String get serverSignInTitle => 'Sign in to server';
+
+  @override
+  String get serverRegisterTitle => 'Create server account';
+
+  @override
+  String get serverDriveStays =>
+      'Google Drive stays connected. Your server account is separate from your Google account.';
+
+  @override
+  String get serverDataScope =>
+      'Sent to the server: journal (text), transactions, wallets, categories, and budgets. Bills, wishes, plans, reminders, attachments, and voice recordings stay on this device only.';
+
+  @override
+  String get googleDriveOnlyHint =>
+      'Google is for Drive backups only. Or use the server:';
+
+  @override
+  String get disconnectDrive => 'Disconnect Google Drive';
+
+  @override
+  String get disconnectDriveSub => 'Data on this device is kept';
+
+  @override
+  String get signOutServer => 'Sign out of server';
+
+  @override
+  String get signOutServerSub => 'Data on this device will be removed';
+
+  @override
+  String get signOutServerConfirm => 'Sign out of server?';
+
+  @override
+  String get signOutLocalOnly =>
+      'Bills, wishes, plans, reminders, attachments, and voice recordings aren\'t on the server and will be lost. Back up first if you still need them.';
 
   @override
   String get rangeAll => 'All Time';
@@ -1471,7 +1562,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get restoreFromDriveConfirm =>
-      'Restore data from Google Drive backup? Local data will be synced.';
+      'The backup is merged into the data on this device. Newer notes on this device are not overwritten, and you stay signed in.';
 
   @override
   String get restoreFromDriveSuccess =>
@@ -1516,12 +1607,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get selectBackupFileHint =>
       'Supports .json (Nyawtat) or .mmbak / .sqlite / .xlsx (Money Manager)';
-
-  @override
-  String get autoBackupWifi => 'Auto Backup';
-
-  @override
-  String get autoBackupWifiSub => 'When connected to Wi-Fi';
 
   @override
   String get unsupportedFileFormat =>

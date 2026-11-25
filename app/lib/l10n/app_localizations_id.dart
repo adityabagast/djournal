@@ -785,9 +785,6 @@ class AppLocalizationsId extends AppLocalizations {
   String get neverSynced => 'Belum pernah sinkron';
 
   @override
-  String get signOutConfirm => 'Keluar dari akun?';
-
-  @override
   String get signOutBody =>
       'Data di perangkat ini akan dihapus. Data yang sudah tersinkron tetap aman di server dan kembali saat kamu masuk lagi.';
 
@@ -1356,22 +1353,10 @@ class AppLocalizationsId extends AppLocalizations {
   }
 
   @override
-  String get googleDriveBackup => 'Cadangan Google Drive';
-
-  @override
-  String get googleDriveBackupSub => 'Sinkronisasi Cloud otomatis & mandiri';
-
-  @override
   String get googleDriveConnected => 'Terhubung';
 
   @override
   String get googleDriveNotConnected => 'Belum terhubung';
-
-  @override
-  String get googleDriveConnect => 'Hubungkan Akun Google';
-
-  @override
-  String get googleDriveDisconnect => 'Putuskan Akun';
 
   @override
   String googleDriveLastBackup(String time) {
@@ -1380,13 +1365,6 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get googleDriveNever => 'Belum pernah dicadangkan';
-
-  @override
-  String get googleDriveFormatInfo => 'Format: Excel (.xlsx) / Sheets';
-
-  @override
-  String get googleDriveFormatDesc =>
-      'Bisa dibuka langsung di Google Sheets dengan 4 lembar kerja: Transaksi, Jurnal, Dompet, dan Budget.';
 
   @override
   String get googleDriveSheetsPreview => 'Pratinjau Sheets';
@@ -1406,16 +1384,129 @@ class AppLocalizationsId extends AppLocalizations {
       'Masuk dengan Google atau Email server untuk mencadangkan data.';
 
   @override
-  String get nyawtatServerConnected => 'Server Nyawtat Terhubung';
+  String get settingsApp => 'Aplikasi';
 
   @override
-  String get googleDriveConnectedBadge => 'Google Drive Terhubung';
+  String get settingsAppearance => 'Tampilan & bahasa';
 
   @override
-  String get signInAccount => 'Masuk Akun';
+  String get settingsFinanceSub => 'Dompet, kategori, budget';
 
   @override
-  String get backupRange => 'Rentang Data Cadangan';
+  String get manageWalletsSub => 'Tambah, ubah saldo, arsip';
+
+  @override
+  String get settingsBackup => 'Cadangan & pemulihan';
+
+  @override
+  String get settingsBackupDriveSub => 'Google Drive, ekspor, impor';
+
+  @override
+  String get settingsBackupLocalSub => 'Ekspor dan impor file';
+
+  @override
+  String get settingsPinOn => 'PIN aktif';
+
+  @override
+  String get settingsPinBioOn => 'PIN dan biometrik aktif';
+
+  @override
+  String get settingsPinOff => 'PIN tidak aktif';
+
+  @override
+  String get settingsVersion => 'Versi & update';
+
+  @override
+  String get changePin => 'Ganti PIN';
+
+  @override
+  String get openBackup => 'Buka cadangan';
+
+  @override
+  String get serverTagOff => 'Belum masuk';
+
+  @override
+  String get driveNotConnected => 'Google Drive belum terhubung';
+
+  @override
+  String get backupRangeHint =>
+      'Periode tabel yang tampil. Data pemulihan selalu lengkap.';
+
+  @override
+  String get disconnectDriveConfirm => 'Putuskan Google Drive?';
+
+  @override
+  String get disconnectDriveBody =>
+      'Data di perangkat dan cadangan di Drive tetap ada. Login server tidak berubah.';
+
+  @override
+  String get stayConnected => 'Tetap terhubung';
+
+  @override
+  String get disconnect => 'Putuskan';
+
+  @override
+  String get backupFirst => 'Cadangkan dulu';
+
+  @override
+  String get signOutAck => 'Saya mengerti data di perangkat ini akan dihapus';
+
+  @override
+  String get signOutAndDelete => 'Keluar dan hapus data';
+
+  @override
+  String get serverName => 'Server Nyawtat';
+
+  @override
+  String get serverNotSignedIn => 'Belum masuk, data belum tersinkron';
+
+  @override
+  String serverAutoSynced(String time) {
+    return 'Sinkron otomatis · terakhir $time';
+  }
+
+  @override
+  String get connect => 'Hubungkan';
+
+  @override
+  String get retry => 'Coba lagi';
+
+  @override
+  String get serverSignInTitle => 'Masuk ke server';
+
+  @override
+  String get serverRegisterTitle => 'Daftar akun server';
+
+  @override
+  String get serverDriveStays =>
+      'Google Drive tetap terhubung. Akun server terpisah dari akun Google.';
+
+  @override
+  String get serverDataScope =>
+      'Dikirim ke server: jurnal (teks), transaksi, dompet, kategori, dan budget. Tagihan, impian, rencana, pengingat, lampiran, dan rekaman suara tetap hanya di perangkat ini.';
+
+  @override
+  String get googleDriveOnlyHint =>
+      'Google hanya untuk cadangan Drive. Atau pakai server:';
+
+  @override
+  String get disconnectDrive => 'Putuskan Google Drive';
+
+  @override
+  String get disconnectDriveSub => 'Data di perangkat ini tetap ada';
+
+  @override
+  String get signOutServer => 'Keluar dari server';
+
+  @override
+  String get signOutServerSub => 'Data di perangkat ini akan dihapus';
+
+  @override
+  String get signOutServerConfirm => 'Keluar dari server?';
+
+  @override
+  String get signOutLocalOnly =>
+      'Tagihan, impian, rencana, pengingat, lampiran, dan rekaman suara tidak ada di server dan akan hilang. Cadangkan dulu kalau masih dipakai.';
 
   @override
   String get rangeAll => 'Semua Riwayat';
@@ -1452,7 +1543,7 @@ class AppLocalizationsId extends AppLocalizations {
 
   @override
   String get restoreFromDriveConfirm =>
-      'Pulihkan data dari cadangan Google Drive? Data lokal akan disinkronkan.';
+      'Cadangan digabung ke data di perangkat. Catatan yang lebih baru di perangkat tidak ditimpa, dan akunmu tetap masuk.';
 
   @override
   String get restoreFromDriveSuccess =>
@@ -1498,12 +1589,6 @@ class AppLocalizationsId extends AppLocalizations {
   @override
   String get selectBackupFileHint =>
       'Mendukung .json (Nyawtat) atau .mmbak / .sqlite / .xlsx (Money Manager)';
-
-  @override
-  String get autoBackupWifi => 'Cadangkan Otomatis';
-
-  @override
-  String get autoBackupWifiSub => 'Saat terhubung ke jaringan Wi-Fi';
 
   @override
   String get unsupportedFileFormat =>
