@@ -101,7 +101,7 @@ class AppearanceSection extends ConsumerWidget {
                 SizedBox(
                   width: 88,
                   child: _AccentOption(
-                    label: _accentName(l, o.id),
+                    label: accentName(l, o.id),
                     color: o.color,
                     selected: accentId == o.id,
                     onTap: () => ref
@@ -137,7 +137,7 @@ class AppearanceSection extends ConsumerWidget {
   }
 }
 
-String _accentName(AppLocalizations l, String id) => switch (id) {
+String accentName(AppLocalizations l, String id) => switch (id) {
   'sage' => l.accentSage,
   'ocean' => l.accentOcean,
   'violet' => l.accentViolet,

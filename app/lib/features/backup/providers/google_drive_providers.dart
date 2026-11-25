@@ -42,12 +42,6 @@ class GoogleDriveController extends Notifier<GoogleDriveInfo> {
     );
   }
 
-  Future<void> toggleAutoBackup() async {
-    final updated = !state.autoBackup;
-    await _service.setAutoBackup(updated);
-    state = state.copyWith(autoBackup: updated);
-  }
-
   Future<bool> backupToDrive({
     required List<int> bytes,
     required String fileName,

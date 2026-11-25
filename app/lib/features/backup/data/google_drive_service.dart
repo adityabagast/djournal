@@ -18,7 +18,6 @@ class GoogleDriveInfo {
     this.lastFileUrl,
     this.lastFileSize,
     this.isUploading = false,
-    this.autoBackup = true,
   });
 
   final String? email;
@@ -29,7 +28,6 @@ class GoogleDriveInfo {
   final String? lastFileUrl;
   final int? lastFileSize;
   final bool isUploading;
-  final bool autoBackup;
 
   bool get isConnected => email != null;
 
@@ -42,7 +40,6 @@ class GoogleDriveInfo {
     String? Function()? lastFileUrl,
     int? Function()? lastFileSize,
     bool? isUploading,
-    bool? autoBackup,
   }) {
     return GoogleDriveInfo(
       email: email != null ? email() : this.email,
@@ -54,7 +51,6 @@ class GoogleDriveInfo {
       lastFileUrl: lastFileUrl != null ? lastFileUrl() : this.lastFileUrl,
       lastFileSize: lastFileSize != null ? lastFileSize() : this.lastFileSize,
       isUploading: isUploading ?? this.isUploading,
-      autoBackup: autoBackup ?? this.autoBackup,
     );
   }
 }
@@ -75,7 +71,6 @@ class GoogleDriveService {
   static const lastDriveBackupKey = 'gdrive_last_backup_time';
   static const lastDriveFileUrlKey = 'gdrive_last_file_url';
   static const lastDriveFileNameKey = 'gdrive_last_file_name';
-  static const autoDriveBackupKey = 'gdrive_auto_backup';
 
   GoogleSignInAccount? get currentUser => _googleSignIn.currentUser;
 
@@ -83,7 +78,6 @@ class GoogleDriveService {
     final lastTimeStr = await _settings.watch(lastDriveBackupKey).first;
     final lastUrl = await _settings.watch(lastDriveFileUrlKey).first;
     final lastName = await _settings.watch(lastDriveFileNameKey).first;
-    final autoBackupVal = await _settings.watch(autoDriveBackupKey).first;
 
     DateTime? lastTime;
     if (lastTimeStr != null) {
@@ -106,7 +100,6 @@ class GoogleDriveService {
       lastBackupTime: lastTime,
       lastFileName: lastName,
       lastFileUrl: lastUrl,
-      autoBackup: autoBackupVal != 'false',
     );
   }
 
@@ -213,10 +206,6 @@ class GoogleDriveService {
       debugPrint('downloadFile error: $e');
       return null;
     }
-  }
-
-  Future<void> setAutoBackup(bool enabled) async {
-    await _settings.set(autoDriveBackupKey, enabled ? 'true' : 'false');
   }
 }
 

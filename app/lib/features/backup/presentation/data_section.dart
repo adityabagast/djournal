@@ -16,15 +16,12 @@ import '../data/import/money_manager_import.dart';
 import '../domain/backup_period.dart';
 import '../../../providers.dart';
 import '../../../core/widgets/common.dart';
-import '../../money/presentation/budget_screen.dart';
-import '../../money/presentation/categories_screen.dart';
+import '../../account/presentation/account_card.dart';
+import '../../account/presentation/account_screen.dart';
 import '../../../core/tokens.dart';
 import '../../../core/widgets/app_sheet.dart';
 
-/// Bagian "Data" di Pengaturan yang disederhanakan:
-/// 1. Cadangan Google Drive (Cloud otomatis & Excel viewable di Sheets)
-/// 2. Penyimpanan Lokal (2 menu ringkas: Cadangkan Data & Pulihkan Data)
-/// 3. Pengaturan Master (Budget & Kategori)
+/// Isi halaman Cadangan & pemulihan: Google Drive, lalu ekspor/impor file.
 class DataSection extends ConsumerStatefulWidget {
   const DataSection({super.key});
 
@@ -85,405 +82,119 @@ class _DataSectionState extends ConsumerState<DataSection> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _buildGoogleDriveCard(context, drive),
-        const SizedBox(height: AppSpace.lg),
-        _buildSectionHeader(
-          title: l.localDataTitle.toUpperCase(),
-          tag: '2 Opsi Ringkas',
-        ),
-        _buildLocalSection(context),
-        const SizedBox(height: AppSpace.lg),
-        _buildSectionHeader(title: 'PENGATURAN KEUANGAN'),
-        _buildFinanceSection(context),
-      ],
-    );
-  }
-
-  Widget _buildSectionHeader({required String title, String? tag}) {
-    final t = Theme.of(context).textTheme;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(AppSpace.xs, 0, AppSpace.xs, AppSpace.sm),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              title,
-              style: t.bodySmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: context.colors.muted,
-                fontSize: AppFontSize.meta,
-                letterSpacing: 0.5,
-              ),
+        const SizedBox(height: AppSpace.xl),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(
+            AppSpace.xs,
+            0,
+            AppSpace.xs,
+            AppSpace.sm,
+          ),
+          child: Text(
+            l.localDataTitle.toUpperCase(),
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.w600,
+              color: context.colors.muted,
             ),
           ),
-          if (tag != null)
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
-              decoration: BoxDecoration(
-                color: context.colors.primary.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(AppRadius.sm),
-              ),
-              child: Text(
-                tag,
-                style: TextStyle(
-                  fontSize: AppFontSize.caption,
-                  fontWeight: FontWeight.w700,
-                  color: context.colors.primary,
-                ),
-              ),
-            ),
-        ],
-      ),
+        ),
+        _buildLocalSection(context),
+      ],
     );
   }
 
   // ══ 1. KARTU GOOGLE DRIVE CLOUD BACKUP ══
   Widget _buildGoogleDriveCard(BuildContext context, GoogleDriveInfo drive) {
     final l = context.l10n;
-    final t = Theme.of(context).textTheme;
     final colors = context.colors;
 
-    return AppCard(
-      padding: const EdgeInsets.all(AppSpace.lg),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Header Baris Utama
-          Row(
-            children: [
-              Container(
-                width: 42,
-                height: 42,
-                decoration: BoxDecoration(
-                  color: colors.primary.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(AppRadius.md),
-                ),
-                child: Center(
-                  child: Icon(
-                    Icons.cloud_sync_outlined,
-                    color: colors.primary,
-                    size: 24,
-                  ),
+    return ServiceCard(
+      title: 'Google Drive',
+      tag: drive.isConnected
+          ? l.googleDriveConnected
+          : l.googleDriveNotConnected,
+      tagOk: drive.isConnected,
+      status: driveStatus(context, l, drive).text,
+      children: drive.isConnected
+          ? [
+              Text(
+                l.backupRangeHint,
+                style: TextStyle(
+                  fontSize: AppFontSize.meta,
+                  color: colors.muted,
                 ),
               ),
-              const SizedBox(width: AppSpace.md),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l.googleDriveBackup,
-                      style: t.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        fontSize: AppFontSize.title,
+              const SizedBox(height: AppSpace.sm),
+              Wrap(
+                spacing: AppSpace.sm,
+                runSpacing: AppSpace.xs,
+                children: [
+                  for (final (label, selected, onTap) in [
+                    (
+                      l.rangeAll,
+                      _selectedPeriod.type == BackupPeriodType.all,
+                      () => setState(
+                        () => _selectedPeriod = const BackupPeriod.all(),
                       ),
                     ),
-                    Text(
-                      l.googleDriveBackupSub,
-                      style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpace.lg),
-
-          // Status Akun Google Terhubung
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: AppSpace.md, vertical: AppSpace.md),
-            decoration: BoxDecoration(
-              color: colors.surface,
-              border: Border.all(color: colors.divider),
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  children: [
-                    CircleAvatar(
-                      radius: 16,
-                      backgroundColor: colors.primary,
-                      child: Text(
-                        (drive.displayName?.isNotEmpty ?? false)
-                            ? drive.displayName![0].toUpperCase()
-                            : (drive.email?.isNotEmpty ?? false)
-                            ? drive.email![0].toUpperCase()
-                            : 'G',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700,
-                          fontSize: AppFontSize.body,
-                        ),
+                    (
+                      l.rangeThisYear,
+                      _selectedPeriod.type == BackupPeriodType.thisYear,
+                      () => setState(
+                        () => _selectedPeriod = BackupPeriod.thisYear(),
                       ),
                     ),
-                    const SizedBox(width: AppSpace.md),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            drive.displayName ??
-                                drive.email ??
-                                l.googleDriveNotConnected,
-                            style: const TextStyle(
-                              fontSize: AppFontSize.body,
-                              fontWeight: FontWeight.w600,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          if (drive.email != null && drive.displayName != null)
-                            Text(
-                              drive.email!,
-                              style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                        ],
+                    (
+                      l.rangeThisMonth,
+                      _selectedPeriod.type == BackupPeriodType.thisMonth,
+                      () => setState(
+                        () => _selectedPeriod = BackupPeriod.thisMonth(),
                       ),
                     ),
-                    if (drive.isConnected)
-                      TextButton(
-                        onPressed: () =>
-                            ref.read(googleDriveProvider.notifier).signOut(),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm),
-                          minimumSize: Size.zero,
-                        ),
-                        child: Text(
-                          l.googleDriveDisconnect,
-                          style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
-                        ),
-                      ),
-                  ],
-                ),
-                // Tombol di baris sendiri supaya status tidak terpotong.
-                if (!drive.isConnected) ...[
-                  const SizedBox(height: AppSpace.sm),
-                  FilledButton.tonal(
-                    onPressed: () async {
-                      try {
-                        await ref.read(googleDriveProvider.notifier).signIn();
-                      } catch (e) {
-                        if (context.mounted) {
-                          final msg = e.toString().contains('10')
-                              ? 'Gagal masuk (Kode 10: DEVELOPER_ERROR). SHA-1 aplikasi belum didaftarkan di Firebase Console.'
-                              : e.toString();
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text(msg)));
-                        }
-                      }
-                    },
-                    style: FilledButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: AppSpace.md),
-                      minimumSize: const Size(0, 32),
+                    (
+                      _selectedPeriod.type == BackupPeriodType.custom
+                          ? _selectedPeriod.label(l)
+                          : l.rangeCustom,
+                      _selectedPeriod.type == BackupPeriodType.custom,
+                      () {
+                        _pickCustomDateRange();
+                      },
                     ),
-                    child: Text(
-                      l.googleDriveConnect,
-                      style: const TextStyle(fontSize: AppFontSize.caption),
+                  ])
+                    _periodChip(
+                      label: label,
+                      isSelected: selected,
+                      onTap: onTap,
                     ),
-                  ),
                 ],
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpace.md),
-
-          // Format Preview Banner
-          Container(
-            padding: const EdgeInsets.all(AppSpace.md),
-            decoration: BoxDecoration(
-              color: colors.surface,
-              border: Border.all(color: colors.divider),
-              borderRadius: BorderRadius.circular(AppRadius.md),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text('📊 ', style: TextStyle(fontSize: AppFontSize.bodyLg)),
-                    Expanded(
-                      child: Text(
-                        l.googleDriveFormatInfo,
-                        style: const TextStyle(
-                          fontSize: AppFontSize.meta,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ),
-                    if (drive.lastFileUrl != null)
-                      GestureDetector(
-                        onTap: () => ref
-                            .read(googleDriveProvider.notifier)
-                            .openInSheets(),
-                        child: Text(
-                          '${l.openInSheets} ›',
-                          style: TextStyle(
-                            fontSize: AppFontSize.caption,
-                            fontWeight: FontWeight.w700,
-                            color: colors.primary,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: AppSpace.xs),
-                Text(
-                  l.googleDriveFormatDesc,
-                  style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
-                ),
-                const SizedBox(height: AppSpace.sm),
-                Wrap(
-                  spacing: 6,
-                  runSpacing: 4,
-                  children: [
-                    _sheetBadge('📑 Transaksi', colors),
-                    _sheetBadge('📖 Jurnal', colors),
-                    _sheetBadge('💵 Dompet', colors),
-                    _sheetBadge('🎯 Budget', colors),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: AppSpace.md),
-
-          // Pilihan Rentang Waktu Pencadangan
-          Text(
-            l.backupRange,
-            style: const TextStyle(fontSize: AppFontSize.meta, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: AppSpace.sm),
-          Wrap(
-            spacing: 6,
-            runSpacing: 6,
-            children: [
-              _periodChip(
-                label: l.rangeAll,
-                isSelected: _selectedPeriod.type == BackupPeriodType.all,
-                onTap: () =>
-                    setState(() => _selectedPeriod = const BackupPeriod.all()),
               ),
-              _periodChip(
-                label: '${l.rangeThisYear} (${DateTime.now().year})',
-                isSelected: _selectedPeriod.type == BackupPeriodType.thisYear,
-                onTap: () =>
-                    setState(() => _selectedPeriod = BackupPeriod.thisYear()),
-              ),
-              _periodChip(
-                label: l.rangeThisMonth,
-                isSelected: _selectedPeriod.type == BackupPeriodType.thisMonth,
-                onTap: () =>
-                    setState(() => _selectedPeriod = BackupPeriod.thisMonth()),
-              ),
-              _periodChip(
-                label: _selectedPeriod.type == BackupPeriodType.custom
-                    ? _selectedPeriod.label(l)
-                    : '${l.rangeCustom}...',
-                isSelected: _selectedPeriod.type == BackupPeriodType.custom,
-                onTap: _pickCustomDateRange,
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpace.md),
-
-          // Sakelar Cadangkan Otomatis
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l.autoBackupWifi,
-                      style: const TextStyle(
-                        fontSize: AppFontSize.body,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    Text(
-                      l.autoBackupWifiSub,
-                      style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
-                    ),
-                  ],
-                ),
-              ),
-              Switch(
-                value: drive.autoBackup,
-                onChanged: (_) =>
-                    ref.read(googleDriveProvider.notifier).toggleAutoBackup(),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpace.md),
-
-          // Tombol Cadangkan Sekarang & Pulihkan
-          Row(
-            children: [
-              Expanded(
-                child: FilledButton.icon(
-                  onPressed: drive.isUploading
-                      ? null
-                      : () => _backupToGoogleDrive(context),
-                  icon: drive.isUploading
-                      ? const SizedBox.square(
-                          dimension: 16,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.cloud_upload_outlined, size: 18),
-                  label: Text(
-                    drive.isUploading ? l.backupNowLoading : l.backupNow,
-                    style: const TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                ),
+              const SizedBox(height: AppSpace.md),
+              FilledButton(
+                onPressed: drive.isUploading
+                    ? null
+                    : () => _backupToGoogleDrive(context),
+                child: Text(drive.isUploading ? l.backupNowLoading : l.backupNow),
               ),
               if (drive.lastFileUrl != null) ...[
-                const SizedBox(width: AppSpace.sm),
-                OutlinedButton.icon(
+                const SizedBox(height: AppSpace.sm),
+                OutlinedButton(
                   onPressed: () =>
                       ref.read(googleDriveProvider.notifier).openInSheets(),
-                  icon: const Icon(Icons.table_chart_outlined, size: 18),
-                  label: Text(l.openInSheets),
+                  child: Text(l.openInSheets),
                 ),
               ],
-            ],
-          ),
-          const SizedBox(height: AppSpace.sm),
-          Center(
-            child: TextButton.icon(
-              onPressed: () => _restoreFromGoogleDrive(context),
-              icon: const Icon(Icons.restore_outlined, size: 16),
-              label: Text(
-                l.restoreFromDrive,
-                style: const TextStyle(fontSize: AppFontSize.meta),
+              const SizedBox(height: AppSpace.sm),
+              OutlinedButton(
+                onPressed: () => _restoreFromGoogleDrive(context),
+                child: Text(l.restoreFromDrive),
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _sheetBadge(String title, dynamic colors) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppSpace.sm, vertical: AppSpace.xxs),
-      decoration: BoxDecoration(
-        color: const Color(0xFFE6F4EA),
-        borderRadius: BorderRadius.circular(AppRadius.sm),
-      ),
-      child: Text(
-        title,
-        style: const TextStyle(
-          color: Color(0xFF137333),
-          fontSize: AppFontSize.caption,
-          fontWeight: FontWeight.w600,
-        ),
-      ),
+            ]
+          : [
+              FilledButton(
+                onPressed: () => connectDrive(context, ref),
+                child: Text(l.connect),
+              ),
+            ],
     );
   }
 
@@ -540,7 +251,13 @@ class _DataSectionState extends ConsumerState<DataSection> {
           ),
           child: Icon(icon, color: colors.primary, size: 20),
         ),
-        title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: AppFontSize.bodyLg,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
         subtitle: Text(
           subtitle,
           style: TextStyle(fontSize: AppFontSize.caption, color: colors.muted),
@@ -565,46 +282,6 @@ class _DataSectionState extends ConsumerState<DataSection> {
             subtitle: l.localRestoreSub,
             icon: Icons.file_download_outlined,
             onTap: () => _smartRestore(context),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // ══ 3. PENGATURAN KEUANGAN MASTER ══
-  Widget _buildFinanceSection(BuildContext context) {
-    final l = context.l10n;
-    final colors = context.colors;
-
-    Widget tile(
-      String title,
-      String sub,
-      IconData icon,
-      VoidCallback onTap,
-    ) => ListTile(
-      onTap: onTap,
-      leading: Icon(icon, color: colors.primary),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w500)),
-      subtitle: Text(sub, style: TextStyle(fontSize: AppFontSize.meta, color: colors.muted)),
-      trailing: Icon(Icons.chevron_right, color: colors.muted),
-    );
-
-    return AppCard(
-      padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
-      child: Column(
-        children: [
-          tile(
-            l.budget,
-            l.budgetSubtitle,
-            Icons.pie_chart_outline,
-            () => BudgetScreen.open(context),
-          ),
-          Divider(height: 1, indent: 56, color: colors.divider),
-          tile(
-            l.manageCategories,
-            l.categoriesSub,
-            Icons.category_outlined,
-            () => CategoriesScreen.open(context),
           ),
         ],
       ),

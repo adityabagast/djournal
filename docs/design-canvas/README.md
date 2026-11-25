@@ -93,11 +93,11 @@ Aturan halaman `alur`:
 5. **Keuangan:** 5.1 Keuangan + kalender (`MoneyCalendar`), 5.2 Kelola dompet (`Wallets`), 5.3 Ubah dompet (`WalletForm`)
 6. **Laporan:** 6.1 Laporan (`Report`), 6.2 Budget per kategori (`Budget`)
 7. **Permainan:** 7.1 Permainan (`Games`), 7.2 Roda putar & suit (`Spin`), 7.3 Memory kartu (`Memory`), 7.4 Kocok pertanyaan (`Prompt`)
-8. **Pengaturan:** 8.1 Pengaturan (`Settings`), 8.2 Warna aksen kustom (`AccentCustom`), 8.3 Atur PIN (`PinSetup`), 8.4 Kelola kategori (`Categories`), 8.5 Masuk akun (`SignIn`), 8.6 Tentang & cek update (`UpdateSettings`), 8.7 Banner versi baru (`UpdateBanner`), 8.8 Kirim masukan (`Feedback`), 8.9 Riwayat versi (`VersionHistory`)
+8. **Pengaturan:** 8.1 Pengaturan + halaman isinya (`Settings`), 8.2 Warna aksen kustom (`AccentCustom`), 8.3 Atur PIN (`PinSetup`), 8.4 Kelola kategori (`Categories`), 8.5 Masuk akun (`SignIn`), 8.6 Tentang & cek update (`UpdateSettings`), 8.7 Banner versi baru (`UpdateBanner`), 8.8 Kirim masukan (`Feedback`), 8.9 Riwayat versi (`VersionHistory`), 8.10 Masuk server (`AccountServer`)
 
 - **Desktop:** D.1 Aplikasi penuh (`Desktop`, 1280×820), D.2 Jendela mini vs widget (`DesktopMini`) — belum diimplementasi
 - **Sistem desain:** S.1 Maskot, S.2 Design system, S.3 Token UI Fase 1, S.4 Usulan token Fase 2
-- **Arsip:** A.1 Rencana besok (`DailyPlan`, prototipe awal), A.2 Keuangan lama (`Money`), A.3 Judul otomatis (`JournalAutoTitle`), A.4 Kirim masukan dalam app (`FeedbackInApp`, ditunda), A.5 Jurnal gaya buku notes (`JournalBook`, tidak dipilih), A.6 Tulis jurnal lama (`EntryFormOld`)
+- **Arsip:** A.1 Rencana besok (`DailyPlan`, prototipe awal), A.2 Keuangan lama (`Money`), A.3 Judul otomatis (`JournalAutoTitle`), A.4 Kirim masukan dalam app (`FeedbackInApp`, ditunda), A.5 Jurnal gaya buku notes (`JournalBook`, tidak dipilih), A.6 Tulis jurnal lama (`EntryFormOld`), A.7 Pengaturan lama (`SettingsOld`)
 
 Semua layar 1–8 sudah diimplementasi di `app/`.
 
