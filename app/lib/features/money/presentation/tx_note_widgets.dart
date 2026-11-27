@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -14,9 +16,8 @@ import 'money_widgets.dart';
 import 'tx_draft_sheet.dart';
 
 /// Nama draft: catatan, atau jenisnya kalau catatan kosong.
-String txDraftTitle(AppLocalizations l, TxDraft d) => d.note.isNotEmpty
-    ? d.note
-    : (d.type == 'income' ? l.income : l.expense);
+String txDraftTitle(AppLocalizations l, TxDraft d) =>
+    d.note.isNotEmpty ? d.note : (d.type == 'income' ? l.income : l.expense);
 
 String txDraftAmount(TxDraft d, {bool hide = false}) => signedRupiah(
   d.type == 'income' ? d.amount : -d.amount,
@@ -24,10 +25,24 @@ String txDraftAmount(TxDraft d, {bool hide = false}) => signedRupiah(
   explicitPlus: true,
 );
 
-String txDraftMeta(AppLocalizations l, MoneySnapshot snap, TxDraft d) => [
+String txDraftMeta(
+  AppLocalizations l,
+  MoneySnapshot snap,
+  TxDraft d, {
+  List<String> photos = const [],
+}) => [
   if (snap.categoryById[d.categoryId] case final c?) categoryPath(l, snap, c),
   if (snap.walletById[d.walletId] case final w?) w.name,
+  ?txDraftReceiptTag(l, d, photos),
 ].join(' · ');
+
+/// "nota foto 2" kalau notanya foto catatan, "ada nota" kalau foto sendiri.
+String? txDraftReceiptTag(AppLocalizations l, TxDraft d, List<String> photos) {
+  final path = d.receiptPath;
+  if (path == null) return null;
+  final i = photos.indexOf(path);
+  return i < 0 ? l.noteTxReceiptAny : l.noteTxReceiptTag(i + 1);
+}
 
 /// Ubah [d] (atau tambah baru) lewat lembar, lalu simpan ke [controller].
 Future<void> editTxDraft(
@@ -36,7 +51,12 @@ Future<void> editTxDraft(
   TxDraft d, {
   bool isNew = false,
 }) async {
-  final result = await TxDraftSheet.show(context, draft: d, isNew: isNew);
+  final result = await TxDraftSheet.show(
+    context,
+    draft: d,
+    isNew: isNew,
+    controller: controller,
+  );
   if (result == null) return;
   if (!result.remove) {
     controller.save(result.draft);
@@ -44,6 +64,49 @@ Future<void> editTxDraft(
     controller.undo(d);
   } else {
     controller.dismiss(d.key);
+  }
+}
+
+/// Gambar kecil nota (dekorasi; keterangannya ada di teks baris).
+class ReceiptThumb extends StatelessWidget {
+  const ReceiptThumb({
+    super.key,
+    required this.path,
+    this.width = 36,
+    this.height = 36,
+  });
+
+  final String path;
+  final double width;
+  final double height;
+
+  @override
+  Widget build(BuildContext context) {
+    final c = context.colors;
+    final file = File(path);
+    final broken = ColoredBox(
+      color: c.subtle,
+      child: Center(
+        child: Icon(Icons.receipt_long_rounded, size: 18, color: c.muted),
+      ),
+    );
+    return ExcludeSemantics(
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppRadius.sm),
+        child: SizedBox(
+          width: width,
+          height: height,
+          child: file.existsSync()
+              ? Image.file(
+                  file,
+                  fit: BoxFit.cover,
+                  cacheWidth: 200,
+                  errorBuilder: (_, _, _) => broken,
+                )
+              : broken,
+        ),
+      ),
+    );
   }
 }
 
@@ -82,7 +145,7 @@ class TxSuggestionBar extends ConsumerWidget {
       subtitle: single
           ? [
               txDraftAmount(first, hide: hide),
-              txDraftMeta(l, snapshot, first),
+              txDraftMeta(l, snapshot, first, photos: controller.photos),
             ].join(' · ')
           : pending.map((d) => txDraftAmount(d, hide: hide)).join(' · '),
       dismissLabel: l.noteTxDismiss,
@@ -175,9 +238,10 @@ class TxSuggestionPanel extends ConsumerWidget {
             padding: const EdgeInsets.symmetric(vertical: AppSpace.xs),
             child: _PanelRow(
               title: txDraftTitle(l, d),
-              meta: txDraftMeta(l, snapshot, d),
+              meta: txDraftMeta(l, snapshot, d, photos: controller.photos),
               amount: txDraftAmount(d, hide: hide),
               amountColor: d.type == 'income' ? c.income : c.expense,
+              receiptPath: d.receiptPath,
               onTap: d.state == TxDraftState.recorded
                   ? null
                   : () async {
@@ -217,6 +281,7 @@ class _PanelRow extends StatelessWidget {
     required this.amount,
     required this.amountColor,
     required this.trailing,
+    this.receiptPath,
     this.onTap,
   });
 
@@ -225,12 +290,17 @@ class _PanelRow extends StatelessWidget {
   final String amount;
   final Color amountColor;
   final Widget trailing;
+  final String? receiptPath;
   final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
+        if (receiptPath case final path?) ...[
+          ReceiptThumb(path: path),
+          const SizedBox(width: AppSpace.md),
+        ],
         Expanded(
           child: InkWell(
             onTap: onTap,

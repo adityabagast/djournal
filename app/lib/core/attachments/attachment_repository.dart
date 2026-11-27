@@ -33,7 +33,9 @@ class AttachmentRepository {
   Stream<Attachment?> watchAttachmentForTx(String txId) {
     final q = _db.select(_db.attachments)
       ..where((a) => a.deletedAt.isNull() & a.transactionId.equals(txId))
-      ..orderBy([(a) => OrderingTerm(expression: a.createdAt, mode: OrderingMode.desc)])
+      ..orderBy([
+        (a) => OrderingTerm(expression: a.createdAt, mode: OrderingMode.desc),
+      ])
       ..limit(1);
     return q.watchSingleOrNull();
   }
@@ -48,7 +50,9 @@ class AttachmentRepository {
   Future<Attachment?> getAttachmentForTx(String txId) {
     final q = _db.select(_db.attachments)
       ..where((a) => a.deletedAt.isNull() & a.transactionId.equals(txId))
-      ..orderBy([(a) => OrderingTerm(expression: a.createdAt, mode: OrderingMode.desc)])
+      ..orderBy([
+        (a) => OrderingTerm(expression: a.createdAt, mode: OrderingMode.desc),
+      ])
       ..limit(1);
     return q.getSingleOrNull();
   }
@@ -72,7 +76,8 @@ class AttachmentRepository {
     }
 
     final ext = p.extension(picked.path).toLowerCase();
-    final safeExt = (ext == '.jpg' || ext == '.jpeg' || ext == '.png' || ext == '.webp')
+    final safeExt =
+        (ext == '.jpg' || ext == '.jpeg' || ext == '.png' || ext == '.webp')
         ? ext
         : '.jpg';
     final fileName = 'att_${newId()}$safeExt';
@@ -83,16 +88,34 @@ class AttachmentRepository {
     return targetPath;
   }
 
+  /// Salin gambar yang sudah tersimpan ke file baru, supaya lampiran lain
+  /// (mis. foto jurnal yang dipakai jadi nota) tidak berbagi file.
+  Future<String> copyStoredImage(String sourcePath) async {
+    if (!await File(sourcePath).exists()) return sourcePath;
+    final ext = p.extension(sourcePath).toLowerCase();
+    final target = p.join(
+      p.dirname(sourcePath),
+      'att_${newId()}${ext.isEmpty ? '.jpg' : ext}',
+    );
+    await File(sourcePath).copy(target);
+    return target;
+  }
+
   /// Menyinkronkan daftar gambar lokal untuk sebuah entri jurnal.
   /// Gambar yang dihilangkan akan di-soft-delete, gambar baru akan di-insert.
-  Future<void> syncEntryAttachments(String entryId, List<String> currentLocalPaths) async {
+  Future<void> syncEntryAttachments(
+    String entryId,
+    List<String> currentLocalPaths,
+  ) async {
     final now = DateTime.now().toUtc();
     final existing = await getAttachmentsForEntry(entryId);
 
     // Hapus attachment lama yang sudah tidak ada di list
     for (final att in existing) {
       if (att.localPath == null || !currentLocalPaths.contains(att.localPath)) {
-        await (_db.update(_db.attachments)..where((a) => a.id.equals(att.id))).write(
+        await (_db.update(
+          _db.attachments,
+        )..where((a) => a.id.equals(att.id))).write(
           AttachmentsCompanion(
             deletedAt: Value(now),
             updatedAt: Value(now),
@@ -111,17 +134,19 @@ class AttachmentRepository {
         if (await f.exists()) {
           size = await f.length();
         }
-        await _db.into(_db.attachments).insert(
-          AttachmentsCompanion.insert(
-            id: newId(),
-            createdAt: now,
-            updatedAt: now,
-            entryId: Value(entryId),
-            localPath: Value(path),
-            mimeType: 'image/jpeg',
-            sizeBytes: size,
-          ),
-        );
+        await _db
+            .into(_db.attachments)
+            .insert(
+              AttachmentsCompanion.insert(
+                id: newId(),
+                createdAt: now,
+                updatedAt: now,
+                entryId: Value(entryId),
+                localPath: Value(path),
+                mimeType: 'image/jpeg',
+                sizeBytes: size,
+              ),
+            );
       }
     }
   }
@@ -134,7 +159,9 @@ class AttachmentRepository {
     if (currentLocalPath == null) {
       // Hapus jika ada
       if (existing != null) {
-        await (_db.update(_db.attachments)..where((a) => a.id.equals(existing.id))).write(
+        await (_db.update(
+          _db.attachments,
+        )..where((a) => a.id.equals(existing.id))).write(
           AttachmentsCompanion(
             deletedAt: Value(now),
             updatedAt: Value(now),
@@ -152,7 +179,9 @@ class AttachmentRepository {
 
     // Hapus yang lama jika ada
     if (existing != null) {
-      await (_db.update(_db.attachments)..where((a) => a.id.equals(existing.id))).write(
+      await (_db.update(
+        _db.attachments,
+      )..where((a) => a.id.equals(existing.id))).write(
         AttachmentsCompanion(
           deletedAt: Value(now),
           updatedAt: Value(now),
@@ -167,17 +196,19 @@ class AttachmentRepository {
     if (await f.exists()) {
       size = await f.length();
     }
-    await _db.into(_db.attachments).insert(
-      AttachmentsCompanion.insert(
-        id: newId(),
-        createdAt: now,
-        updatedAt: now,
-        transactionId: Value(txId),
-        localPath: Value(currentLocalPath),
-        mimeType: 'image/jpeg',
-        sizeBytes: size,
-      ),
-    );
+    await _db
+        .into(_db.attachments)
+        .insert(
+          AttachmentsCompanion.insert(
+            id: newId(),
+            createdAt: now,
+            updatedAt: now,
+            transactionId: Value(txId),
+            localPath: Value(currentLocalPath),
+            mimeType: 'image/jpeg',
+            sizeBytes: size,
+          ),
+        );
   }
 
   /// Soft delete attachment by id.
@@ -192,4 +223,3 @@ class AttachmentRepository {
     );
   }
 }
-

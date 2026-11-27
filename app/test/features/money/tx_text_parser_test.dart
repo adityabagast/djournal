@@ -40,13 +40,13 @@ void main() {
     });
 
     test('pemasukan', () {
-      expect(parse('Gajian 5,5 juta masuk ke BCA.'), [
-        'Gajian|5500000|income',
-      ]);
+      expect(parse('Gajian 5,5 juta masuk ke BCA.'), ['Gajian|5500000|income']);
       expect(parse('Dapat bonus 300rb.'), ['Bonus|300000|income']);
       // "dapat" + kata beli tetap pengeluaran.
-      expect(parse('Akhirnya dapat sepatu, beli sepatu 200rb.').single,
-          'Sepatu|200000|expense');
+      expect(
+        parse('Akhirnya dapat sepatu, beli sepatu 200rb.').single,
+        'Sepatu|200000|expense',
+      );
     });
 
     test('bukan transaksi', () {
@@ -184,6 +184,38 @@ void main() {
       controller.undo(items().first);
       expect(controller.accepted(text, date, s), isEmpty);
       expect(controller.hasChoices, isTrue); // roti diabaikan
+    });
+
+    test('nota tiap transaksi terpisah, pemakaian foto terlacak', () async {
+      final s = await snap();
+      const text = 'Kopi 25rb, roti 12rb.';
+      final [kopi, roti] = controller.items(text, date, s);
+      controller.photos = ['/f/1.jpg', '/f/2.jpg'];
+      TxDraft withReceipt(TxDraft d, String path) => TxDraft(
+        key: d.key,
+        note: d.note,
+        amount: d.amount,
+        type: d.type,
+        categoryId: d.categoryId,
+        walletId: d.walletId,
+        receiptPath: path,
+      );
+
+      controller.save(withReceipt(kopi, '/f/1.jpg'));
+      controller.save(withReceipt(roti, '/f/2.jpg'));
+      final [a, b] = controller.accepted(text, date, s);
+      expect(a.receiptPath, '/f/1.jpg');
+      expect(b.receiptPath, '/f/2.jpg');
+
+      expect(
+        controller.receiptUser('/f/1.jpg', exceptKey: roti.key)?.key,
+        kopi.key,
+      );
+      // Draft sendiri tidak dihitung sebagai pemakai lain.
+      expect(controller.receiptUser('/f/1.jpg', exceptKey: kopi.key), isNull);
+      // Yang dibatalkan tidak lagi memakai fotonya.
+      controller.undo(a);
+      expect(controller.receiptUser('/f/1.jpg', exceptKey: roti.key), isNull);
     });
 
     test('tanpa dompet tidak menawarkan apa pun', () {

@@ -28,9 +28,7 @@ class NotePhotos extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, box) {
         final single = paths.length == 1;
-        final width = single
-            ? box.maxWidth
-            : (box.maxWidth - AppSpace.sm) / 2;
+        final width = single ? box.maxWidth : (box.maxWidth - AppSpace.sm) / 2;
         return Wrap(
           spacing: AppSpace.sm,
           runSpacing: AppSpace.sm,
@@ -62,11 +60,8 @@ class NotePhotos extends StatelessWidget {
           button: true,
           label: l.notePhotoLabel(i + 1),
           child: GestureDetector(
-            onTap: () => openImageViewer(
-              context,
-              paths: paths,
-              initialIndex: i,
-            ),
+            onTap: () =>
+                openImageViewer(context, paths: paths, initialIndex: i),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(AppRadius.lg),
               child: file.existsSync()
@@ -80,6 +75,34 @@ class NotePhotos extends StatelessWidget {
             ),
           ),
         ),
+        // Nomor foto, dipakai saat memilih nota transaksi.
+        if (onRemove != null && paths.length > 1)
+          Positioned(
+            left: AppSpace.sm,
+            bottom: AppSpace.sm,
+            child: ExcludeSemantics(
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 22),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpace.sm,
+                  vertical: AppSpace.xxs,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.black54,
+                  borderRadius: BorderRadius.circular(AppRadius.pill),
+                ),
+                child: Text(
+                  '${i + 1}',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: AppFontSize.caption,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ),
+          ),
         if (onRemove != null)
           Positioned(
             top: 0,
@@ -109,6 +132,7 @@ class NoteDayTransactions extends ConsumerWidget {
     required this.open,
     required this.onToggle,
     this.accepted = const [],
+    this.notePhotos = const [],
     this.onEditDraft,
   });
 
@@ -117,6 +141,9 @@ class NoteDayTransactions extends ConsumerWidget {
   final bool open;
   final VoidCallback onToggle;
   final List<TxDraft> accepted;
+
+  /// Foto catatan, untuk keterangan "nota foto N".
+  final List<String> notePhotos;
   final ValueChanged<TxDraft>? onEditDraft;
 
   @override
@@ -196,10 +223,13 @@ class NoteDayTransactions extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(vertical: AppSpace.sm),
                 child: Row(
                   children: [
-                    CategoryBadge(
-                      category: snapshot.categoryById[d.categoryId],
-                      size: 36,
-                    ),
+                    if (d.receiptPath case final path?)
+                      ReceiptThumb(path: path)
+                    else
+                      CategoryBadge(
+                        category: snapshot.categoryById[d.categoryId],
+                        size: 36,
+                      ),
                     const SizedBox(width: AppSpace.md),
                     Expanded(
                       child: Column(
@@ -215,7 +245,11 @@ class NoteDayTransactions extends ConsumerWidget {
                             ),
                           ),
                           Text(
-                            '${l.noteTxNew} · ${l.noteTxWithSave}',
+                            [
+                              l.noteTxNew,
+                              ?txDraftReceiptTag(l, d, notePhotos),
+                              l.noteTxWithSave,
+                            ].join(' · '),
                             style: TextStyle(
                               fontSize: AppFontSize.meta,
                               color: c.primary,
@@ -287,10 +321,7 @@ class NoteLeaveSheet extends StatelessWidget {
             style: t.titleMedium?.copyWith(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: AppSpace.xs),
-          Text(
-            l.noteDiscardBody,
-            style: t.bodySmall?.copyWith(color: c.muted),
-          ),
+          Text(l.noteDiscardBody, style: t.bodySmall?.copyWith(color: c.muted)),
           const SizedBox(height: AppSpace.lg),
           FilledButton(
             onPressed: () => Navigator.pop(context, NoteLeave.save),

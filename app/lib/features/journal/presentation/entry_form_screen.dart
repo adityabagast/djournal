@@ -534,8 +534,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
         isNew ? l.toastEntrySaved : l.toastEntryUpdated,
         if (txCount > 0) l.noteTxSaved(txCount),
         if (reminderCount > 0) l.remCreated(reminderCount),
-        if (overBudget != null)
-          l.toastBudgetOver(categoryLabel(l, overBudget)),
+        if (overBudget != null) l.toastBudgetOver(categoryLabel(l, overBudget)),
       ].join(' · '),
       aboveDock: widget.startEditing,
     );
@@ -600,8 +599,9 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
     final drafts = _txs.accepted(_body.text, _date, snap);
     final at = _occurredAt();
     final repo = ref.read(moneyRepositoryProvider);
+    final attachments = ref.read(attachmentRepositoryProvider);
     for (final d in drafts) {
-      await repo.saveTransaction(
+      final txId = await repo.saveTransaction(
         type: d.type,
         amount: d.amount,
         walletId: d.walletId,
@@ -609,6 +609,14 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
         note: d.note,
         occurredAt: at,
       );
+      if (d.receiptPath case final path?) {
+        // Foto catatan disalin agar nota tetap ada kalau fotonya dihapus
+        // dari catatan.
+        final own = _imagePaths.contains(path)
+            ? await attachments.copyStoredImage(path)
+            : path;
+        await attachments.syncTxAttachment(txId, own);
+      }
     }
     final month = toMonthKey(at);
     final spent = <String, int>{};
@@ -664,6 +672,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
     final c = context.colors;
     final snap = ref.watch(moneySnapshotProvider).value;
     final keyboardOpen = MediaQuery.viewInsetsOf(context).bottom > 0;
+    _txs.photos = _imagePaths;
     final items = _editing && snap != null
         ? _txs.items(_body.text, _date, snap)
         : const <TxDraft>[];
@@ -857,6 +866,7 @@ class _EntryFormScreenState extends ConsumerState<EntryFormScreen> {
                 open: _txOpen,
                 onToggle: () => setState(() => _txOpen = !_txOpen),
                 accepted: accepted,
+                notePhotos: _imagePaths,
                 onEditDraft: (d) async {
                   await editTxDraft(context, _txs, d);
                   if (mounted) setState(() {});
