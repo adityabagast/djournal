@@ -301,9 +301,8 @@ void main() {
     await tester.enterText(find.byKey(const Key('noteTag')), '#kerja');
     await tapText(tester, 'Simpan');
 
-    final e = (await tester.runAsync(
-      () => journal.watchEntries().first,
-    ))!.single;
+    final e = (await tester.runAsync(() => journal.watchEntries().first))!
+        .single;
     expect(e.mood, 5);
     expect(entryTags(e), ['teman', 'kerja']);
     await settle(tester);
@@ -327,6 +326,72 @@ void main() {
     expect(saved.map((t) => t.localDate).toSet(), {today});
     expect(saved.every((t) => t.type == 'expense'), isTrue);
     expect(find.textContaining('2 transaksi dicatat'), findsOneWidget);
+    await settle(tester);
+  });
+
+  testWidgets('foto catatan jadi nota, tiap transaksi notanya sendiri', (
+    tester,
+  ) async {
+    final attachments = AttachmentRepository(db);
+    final e = (await tester.runAsync(() async {
+      final id = await journal.saveEntry(
+        entryDate: today,
+        entryTime: '10:00',
+        mood: 3,
+        title: 'Belanja',
+        body: 'Kopi 25rb, roti 12rb.',
+        tags: const [],
+      );
+      await attachments.syncEntryAttachments(id, ['/n1.jpg', '/n2.jpg']);
+      return (await journal.watchEntries().first).single;
+    }))!;
+    await open(tester, existing: e, startEditing: true);
+    await settle(tester);
+    await tester.tap(find.bySemanticsLabel('Uang'));
+    await settle(tester);
+
+    Future<void> openTx(String tx) async {
+      final row = find.text(tx).last;
+      await tester.ensureVisible(row);
+      await settle(tester);
+      await tapText(tester, tx);
+    }
+
+    Future<void> pick(int photo) async {
+      final p = find.bySemanticsLabel(RegExp('^Pakai foto $photo'));
+      await tester.ensureVisible(p);
+      await settle(tester);
+      await tester.tap(p);
+      await settle(tester);
+      await tester.ensureVisible(find.text('Catat').last);
+      await settle(tester);
+      await tapText(tester, 'Catat');
+    }
+
+    await openTx('Kopi');
+    await pick(1);
+    await openTx('Roti');
+    // Foto 1 sudah dipakai Kopi; terlihat sebelum memilih.
+    expect(find.text('Dipakai Kopi'), findsOneWidget);
+    await pick(2);
+
+    await back(tester); // tutup panel
+    await tapText(tester, 'Simpan');
+    final rows = (await tester.runAsync(
+      () => money.watchTransactions().first,
+    ))!;
+    final paths = {
+      for (final t in rows)
+        t.note: (await tester.runAsync(
+          () => attachments.getAttachmentForTx(t.id),
+        ))?.localPath,
+    };
+    expect(paths, {'Kopi': '/n1.jpg', 'Roti': '/n2.jpg'});
+    // Foto catatan tidak berubah.
+    final entryPhotos = (await tester.runAsync(
+      () => attachments.getAttachmentsForEntry(e.id),
+    ))!;
+    expect(entryPhotos.map((a) => a.localPath), ['/n1.jpg', '/n2.jpg']);
     await settle(tester);
   });
 

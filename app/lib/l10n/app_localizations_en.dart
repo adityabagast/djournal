@@ -2873,6 +2873,58 @@ class AppLocalizationsEn extends AppLocalizations {
   String get noteTxNone => 'None yet';
 
   @override
+  String get noteTxReceipt => 'Receipt (optional)';
+
+  @override
+  String get noteTxReceiptFromNote => 'Use a photo from this note';
+
+  @override
+  String noteTxPhotoN(int n) {
+    return 'Photo $n';
+  }
+
+  @override
+  String get noteTxPhotoFree => 'Not used yet';
+
+  @override
+  String noteTxPhotoUsed(String name) {
+    return 'Used by $name';
+  }
+
+  @override
+  String noteTxPhotoPick(int n) {
+    return 'Use photo $n as the receipt';
+  }
+
+  @override
+  String get noteTxCamera => 'Camera';
+
+  @override
+  String get noteTxGallery => 'Gallery';
+
+  @override
+  String noteTxReceiptFromPhoto(int n) {
+    return 'Photo $n from this note. It stays in the note too.';
+  }
+
+  @override
+  String get noteTxReceiptOwn => 'Saved only with the transaction.';
+
+  @override
+  String get noteTxReceiptView => 'View receipt';
+
+  @override
+  String get noteTxReceiptRemove => 'Remove receipt';
+
+  @override
+  String noteTxReceiptTag(int n) {
+    return 'receipt photo $n';
+  }
+
+  @override
+  String get noteTxReceiptAny => 'has receipt';
+
+  @override
   String get noteNoWallet =>
       'Create a wallet in Money first to record transactions.';
 }

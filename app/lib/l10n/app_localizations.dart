@@ -5150,6 +5150,90 @@ abstract class AppLocalizations {
   /// **'Belum ada'**
   String get noteTxNone;
 
+  /// No description provided for @noteTxReceipt.
+  ///
+  /// In id, this message translates to:
+  /// **'Nota belanja (opsional)'**
+  String get noteTxReceipt;
+
+  /// No description provided for @noteTxReceiptFromNote.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai foto dari catatan ini'**
+  String get noteTxReceiptFromNote;
+
+  /// No description provided for @noteTxPhotoN.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto {n}'**
+  String noteTxPhotoN(int n);
+
+  /// No description provided for @noteTxPhotoFree.
+  ///
+  /// In id, this message translates to:
+  /// **'Belum dipakai'**
+  String get noteTxPhotoFree;
+
+  /// No description provided for @noteTxPhotoUsed.
+  ///
+  /// In id, this message translates to:
+  /// **'Dipakai {name}'**
+  String noteTxPhotoUsed(String name);
+
+  /// No description provided for @noteTxPhotoPick.
+  ///
+  /// In id, this message translates to:
+  /// **'Pakai foto {n} sebagai nota'**
+  String noteTxPhotoPick(int n);
+
+  /// No description provided for @noteTxCamera.
+  ///
+  /// In id, this message translates to:
+  /// **'Kamera'**
+  String get noteTxCamera;
+
+  /// No description provided for @noteTxGallery.
+  ///
+  /// In id, this message translates to:
+  /// **'Galeri'**
+  String get noteTxGallery;
+
+  /// No description provided for @noteTxReceiptFromPhoto.
+  ///
+  /// In id, this message translates to:
+  /// **'Foto {n} dari catatan ini. Foto tetap ada di catatan.'**
+  String noteTxReceiptFromPhoto(int n);
+
+  /// No description provided for @noteTxReceiptOwn.
+  ///
+  /// In id, this message translates to:
+  /// **'Hanya tersimpan di transaksi.'**
+  String get noteTxReceiptOwn;
+
+  /// No description provided for @noteTxReceiptView.
+  ///
+  /// In id, this message translates to:
+  /// **'Lihat nota'**
+  String get noteTxReceiptView;
+
+  /// No description provided for @noteTxReceiptRemove.
+  ///
+  /// In id, this message translates to:
+  /// **'Hapus nota'**
+  String get noteTxReceiptRemove;
+
+  /// No description provided for @noteTxReceiptTag.
+  ///
+  /// In id, this message translates to:
+  /// **'nota foto {n}'**
+  String noteTxReceiptTag(int n);
+
+  /// No description provided for @noteTxReceiptAny.
+  ///
+  /// In id, this message translates to:
+  /// **'ada nota'**
+  String get noteTxReceiptAny;
+
   /// No description provided for @noteNoWallet.
   ///
   /// In id, this message translates to:

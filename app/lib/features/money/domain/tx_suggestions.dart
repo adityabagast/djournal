@@ -25,6 +25,7 @@ class TxDraft {
     required this.walletId,
     this.state = TxDraftState.pending,
     this.manual = false,
+    this.receiptPath,
   });
 
   final String key;
@@ -39,6 +40,9 @@ class TxDraft {
 
   /// Ditambah lewat tombol, bukan dari teks.
   final bool manual;
+
+  /// Foto nota: salah satu foto catatan, atau foto baru khusus transaksi.
+  final String? receiptPath;
 
   TxDraft copyWith({
     String? note,
@@ -56,6 +60,7 @@ class TxDraft {
     walletId: walletId ?? this.walletId,
     state: state ?? this.state,
     manual: manual,
+    receiptPath: receiptPath,
   );
 }
 
@@ -66,6 +71,21 @@ class TxSuggestionController {
   final _overrides = <String, TxDraft>{};
   final _manual = <TxDraft>[];
   var _manualCount = 0;
+
+  /// Foto di catatan yang sedang ditulis; bisa dipilih jadi nota.
+  List<String> photos = const [];
+
+  /// Draft lain (diterima) yang sudah memakai foto [path] sebagai nota.
+  TxDraft? receiptUser(String path, {required String exceptKey}) {
+    for (final d in [
+      for (final MapEntry(:key, :value) in _overrides.entries)
+        if (_accepted.contains(key)) value,
+      ..._manual,
+    ]) {
+      if (d.key != exceptKey && d.receiptPath == path) return d;
+    }
+    return null;
+  }
 
   /// Ada jawaban atau tambahan yang belum disimpan.
   bool get hasChoices =>
@@ -242,9 +262,7 @@ final _expenseWords = {
     r'\b(belanja|pasar|sayur|beras|sabun|baju|celana|sepatu|galon)\b',
   ),
   'bills': RegExp(r'\b(listrik|internet|wifi|pulsa|kuota|kos|kost|pdam)\b'),
-  'entertainment': RegExp(
-    r'\b(film|bioskop|nonton|game|langganan|konser)\b',
-  ),
+  'entertainment': RegExp(r'\b(film|bioskop|nonton|game|langganan|konser)\b'),
 };
 
 final _incomeWords = {

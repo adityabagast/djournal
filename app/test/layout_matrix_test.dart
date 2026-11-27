@@ -38,6 +38,7 @@ import 'package:djournal/features/money/data/bill_repository.dart';
 import 'package:djournal/features/money/data/money_repository.dart';
 import 'package:djournal/features/money/data/wishlist_repository.dart';
 import 'package:djournal/features/money/domain/money_snapshot.dart';
+import 'package:djournal/features/money/domain/tx_suggestions.dart';
 import 'package:djournal/features/money/presentation/bill_detail_sheet.dart';
 import 'package:djournal/features/money/presentation/bill_form_sheet.dart';
 import 'package:djournal/features/money/presentation/budget_screen.dart';
@@ -111,12 +112,12 @@ class _FakeDrive extends GoogleDriveController {
 /// Layar dengan Drive terhubung dan keadaan server tertentu.
 Widget _withAccount(AccountController Function() server, Widget child) =>
     ProviderScope(
-  overrides: [
-    accountProvider.overrideWith(server),
-    googleDriveProvider.overrideWith(_FakeDrive.new),
-  ],
-  child: child,
-);
+      overrides: [
+        accountProvider.overrideWith(server),
+        googleDriveProvider.overrideWith(_FakeDrive.new),
+      ],
+      child: child,
+    );
 
 class _FakeLock extends LockController {
   @override
@@ -387,6 +388,45 @@ final _screens = <String, _Screen>{
   'baca': _page(() => EntryFormScreen(existing: _entries.first)),
   's-transaksi-jurnal': _sheetOf(
     () => TxDraftSheet(draft: emptyTxDraft('m', _snap), isNew: true),
+  ),
+  's-transaksi-jurnal-nota': _sheetOf(() {
+    final txs = TxSuggestionController()
+      ..photos = ['/dummy/nota-1.jpg', '/dummy/nota-2.jpg', '/dummy/3.jpg'];
+    final empty = emptyTxDraft(txs.newManualKey(), _snap);
+    txs.save(
+      TxDraft(
+        key: empty.key,
+        note: 'Belanja bulanan di pasar swalayan dekat rumah',
+        amount: 245000,
+        type: 'expense',
+        categoryId: null,
+        walletId: empty.walletId,
+        manual: true,
+        receiptPath: '/dummy/nota-1.jpg',
+      ),
+    );
+    return TxDraftSheet(
+      draft: emptyTxDraft(txs.newManualKey(), _snap),
+      isNew: true,
+      controller: txs,
+    );
+  }),
+  's-transaksi-jurnal-nota-dipilih': _sheetOf(
+    () => TxDraftSheet(
+      draft: TxDraft(
+        key: 'm',
+        note: 'Es kopi',
+        amount: 28000,
+        type: 'expense',
+        categoryId: null,
+        walletId: _snap.wallets.first.id,
+        manual: true,
+        receiptPath: '/dummy/nota-2.jpg',
+      ),
+      isNew: false,
+      controller: TxSuggestionController()
+        ..photos = ['/dummy/nota-1.jpg', '/dummy/nota-2.jpg'],
+    ),
   ),
   's-keluar-jurnal': _sheetOf(() => const NoteLeaveSheet()),
   'masuk': _page(() => const SignInScreen()),

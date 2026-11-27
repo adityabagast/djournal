@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.21.0 — 2026-11-27
+
+**Baru**
+- **Nota belanja di transaksi dari jurnal**: saat memeriksa atau menambah transaksi di catatan, pilih foto yang sudah ada di catatan sebagai nota, atau ambil dari Kamera/Galeri.
+- **Tiap transaksi punya notanya sendiri**: foto di catatan diberi nomor, dan foto yang sudah jadi nota transaksi lain ditandai "Dipakai …", jadi nota tidak tertukar. Transaksi yang ikut tersimpan menampilkan gambar kecil notanya.
+
+**Di balik layar**
+- Foto catatan yang dipakai jadi nota disalin, jadi nota tetap ada walau fotonya dihapus dari catatan.
+- Tidak ada perubahan database, izin, atau dependensi. Memperbarui app tidak menghapus data dan tidak mengeluarkan akun.
+
 ## 0.20.0 — 2026-11-25
 
 **Baru**

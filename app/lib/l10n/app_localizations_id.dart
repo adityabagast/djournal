@@ -2818,6 +2818,58 @@ class AppLocalizationsId extends AppLocalizations {
   String get noteTxNone => 'Belum ada';
 
   @override
+  String get noteTxReceipt => 'Nota belanja (opsional)';
+
+  @override
+  String get noteTxReceiptFromNote => 'Pakai foto dari catatan ini';
+
+  @override
+  String noteTxPhotoN(int n) {
+    return 'Foto $n';
+  }
+
+  @override
+  String get noteTxPhotoFree => 'Belum dipakai';
+
+  @override
+  String noteTxPhotoUsed(String name) {
+    return 'Dipakai $name';
+  }
+
+  @override
+  String noteTxPhotoPick(int n) {
+    return 'Pakai foto $n sebagai nota';
+  }
+
+  @override
+  String get noteTxCamera => 'Kamera';
+
+  @override
+  String get noteTxGallery => 'Galeri';
+
+  @override
+  String noteTxReceiptFromPhoto(int n) {
+    return 'Foto $n dari catatan ini. Foto tetap ada di catatan.';
+  }
+
+  @override
+  String get noteTxReceiptOwn => 'Hanya tersimpan di transaksi.';
+
+  @override
+  String get noteTxReceiptView => 'Lihat nota';
+
+  @override
+  String get noteTxReceiptRemove => 'Hapus nota';
+
+  @override
+  String noteTxReceiptTag(int n) {
+    return 'nota foto $n';
+  }
+
+  @override
+  String get noteTxReceiptAny => 'ada nota';
+
+  @override
   String get noteNoWallet =>
       'Buat dompet dulu di Keuangan untuk mencatat transaksi.';
 }
